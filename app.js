@@ -38,6 +38,60 @@ const $=(s,root=document)=>root.querySelector(s);
         if(panel) panel.scrollTop=0;
       }catch(e){}
     }
+
+
+    function updatePhotoUploadLabel(){
+      const input=$('#imageInput');
+      const box=$('#photoUploadVisibleBlock');
+      if(!input || !box) return;
+      const label=box.querySelector('.photo-upload-drop b');
+      const small=box.querySelector('.photo-upload-drop small');
+      if(input.files && input.files[0]){
+        if(label) label.textContent='첨부 완료';
+        if(small) small.textContent=input.files[0].name;
+        box.classList.add('has-file');
+      }else{
+        if(label) label.textContent='사진 첨부하기';
+        if(small) small.textContent='JPG, PNG, WEBP 등 이미지 파일';
+        box.classList.remove('has-file');
+      }
+    }
+    if($('#imageInput')){
+      $('#imageInput').addEventListener('change', updatePhotoUploadLabel);
+    }
+
+    function syncCustomerInputs(){
+      const pairs=[
+        ['#brandInput','#brandInput2'],
+        ['#emailInput','#emailInput2'],
+        ['#phoneInput','#phoneInput2']
+      ];
+      pairs.forEach(([aSel,bSel])=>{
+        const a=$(aSel), b=$(bSel);
+        if(!a || !b || a.dataset.synced==='1') return;
+        a.dataset.synced='1'; b.dataset.synced='1';
+        const sync=(from,to)=>{ if(to.value!==from.value) to.value=from.value; };
+        a.addEventListener('input',()=>sync(a,b));
+        b.addEventListener('input',()=>sync(b,a));
+      });
+    }
+    syncCustomerInputs();
+
+    function getCustomerValue(primary, secondary){
+      const a=$(primary), b=$(secondary);
+      return ((b && b.value.trim()) || (a && a.value.trim()) || '');
+    }
+    function focusCustomerField(primary, secondary){
+      const target=$(secondary) || $(primary);
+      if(!target) return;
+      try{
+        target.scrollIntoView({behavior:'smooth', block:'center'});
+        target.classList.add('field-attention');
+        setTimeout(()=>target.classList.remove('field-attention'),1900);
+        setTimeout(()=>{ try{ target.focus({preventScroll:true}); }catch(e){ target.focus(); } },260);
+      }catch(e){}
+    }
+
     function focusAndReveal(selector){
       const el=$(selector);
       if(!el) return;
@@ -53,6 +107,7 @@ const $=(s,root=document)=>root.querySelector(s);
       modalCard.classList.add('plan-choosing');
       modal.classList.add('on');
       document.body.style.overflow='hidden';
+      if(window.__avvmLenis) window.__avvmLenis.stop();
       setTimeout(scrollModalToTop,0);
     }
     function openOrder(plan){
@@ -66,12 +121,18 @@ const $=(s,root=document)=>root.querySelector(s);
       setOrderSummary();
       modal.classList.add('on');
       document.body.style.overflow='hidden';
+      if(window.__avvmLenis) window.__avvmLenis.stop();
       requestAnimationFrame(()=>{
         scrollModalToTop();
-        setTimeout(()=>focusAndReveal('#brandInput'),120);
+        setTimeout(()=>{ syncCustomerInputs(); focusAndReveal('#photoUploadVisibleBlock'); },120);
       });
     }
-    function closeOrder(){ modal.classList.remove('on'); modalCard.classList.remove('plan-choosing'); document.body.style.overflow=''; }
+    function closeOrder(){ 
+      modal.classList.remove('on'); 
+      modalCard.classList.remove('plan-choosing'); 
+      document.body.style.overflow=''; 
+      if(window.__avvmLenis) window.__avvmLenis.start();
+    }
     $$('[data-open]').forEach(b=>b.addEventListener('click',()=>openOrder(b.dataset.plan)));
     document.addEventListener('click', function(e){
       const choice=e.target.closest('[data-plan-choice]');
@@ -81,13 +142,26 @@ const $=(s,root=document)=>root.querySelector(s);
     $('#closeModal').addEventListener('click',closeOrder); modal.addEventListener('click',e=>{if(e.target===modal)closeOrder();});
 
     $$('.cat').forEach(b=>b.addEventListener('click',()=>{$$('.cat').forEach(x=>x.classList.remove('active'));b.classList.add('active'); toast(`${b.textContent} mood selected`);}));
-    $('#imageInput').addEventListener('change',e=>{ const file=e.target.files&&e.target.files[0]; if(!file) return; const url=URL.createObjectURL(file); $('#previewImg').src=url; $('#imagePreview').classList.add('on'); toast('Image inserted'); });
+    $('#imageInput').addEventListener('change',e=>{ 
+      const file=e.target.files&&e.target.files[0]; 
+      if(!file) return; 
+      const url=URL.createObjectURL(file); 
+      $('#previewImg').src=url; 
+      $('#imagePreview').classList.add('on'); 
+      toast('Image inserted'); 
+      const block = document.getElementById('photoUploadVisibleBlock');
+      if(block) {
+        block.classList.add('has-file');
+        const label = block.querySelector('.photo-upload-drop b');
+        if(label) label.textContent = '사진 첨부 완료 ✓';
+      }
+    });
     let lastOrder=null;
     function makeOrderId(){ return 'AVVM-' + new Date().toISOString().slice(0,10).replaceAll('-','') + '-' + Math.random().toString(36).slice(2,7).toUpperCase(); }
     async function createOrder(){
-      const brand=$('#brandInput').value.trim();
-      const email=$('#emailInput').value.trim();
-      const phone=$('#phoneInput') ? $('#phoneInput').value.trim() : '';
+      syncCustomerInputs(); const brand=getCustomerValue('#brandInput','#brandInput2');
+      const email=getCustomerValue('#emailInput','#emailInput2');
+      const phone=getCustomerValue('#phoneInput','#phoneInput2');
       const privacyConsent=!!($('#privacyConsent') && $('#privacyConsent').checked);
       const notifyConsent=!!($('#notifyConsent') && $('#notifyConsent').checked);
       const refundConsent=!!($('#refundConsent') && $('#refundConsent').checked);
@@ -95,9 +169,9 @@ const $=(s,root=document)=>root.querySelector(s);
       const category=$('.cat.active')?.textContent || 'Custom';
       const mood=$('#moodInput').value.trim();
 
-      if(!brand){toast('성함 / 브랜드명을 입력해주세요'); focusAndReveal('#brandInput'); return;}
-      if(email && !email.includes('@')){toast('이메일 형식을 확인해주세요'); focusAndReveal('#emailInput'); return;}
-      if(!phone){toast('카톡/문자 알림용 휴대폰 번호를 입력해주세요'); focusAndReveal('#phoneInput'); return;}
+      if(!brand){toast('성함 / 브랜드명을 입력해주세요'); focusCustomerField('#brandInput','#brandInput2'); return;}
+      if(email && !email.includes('@')){toast('이메일 형식을 확인해주세요'); focusCustomerField('#emailInput','#emailInput2'); return;}
+      if(!phone){toast('카톡/문자 알림용 휴대폰 번호를 입력해주세요'); focusCustomerField('#phoneInput','#phoneInput2'); return;}
       if(!privacyConsent || !notifyConsent || !refundConsent){toast('필수 동의 항목을 확인해주세요'); focusAndReveal('#consentGroup'); return;}
 
       const token=(crypto && crypto.getRandomValues) ? Array.from(crypto.getRandomValues(new Uint8Array(16))).map(b=>b.toString(16).padStart(2,'0')).join('') : Math.random().toString(36).slice(2)+Date.now().toString(36);
@@ -154,7 +228,7 @@ const $=(s,root=document)=>root.querySelector(s);
     }
     $('#submitOrder').addEventListener('click',createOrder);
     $('#downloadOrder').addEventListener('click',()=>{ if(!lastOrder){toast('저장된 주문이 없습니다'); return;} const blob=new Blob([JSON.stringify(lastOrder,null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=lastOrder.orderId+'.json'; a.click(); URL.revokeObjectURL(a.href); });
-    $('#resetOrder').addEventListener('click',()=>{ modalCard.classList.remove('done'); $('#brandInput').value=''; $('#emailInput').value=''; if($('#phoneInput')) $('#phoneInput').value=''; if($('#notifyConsent')) $('#notifyConsent').checked=true; $('#moodInput').value=''; $('#imageInput').value=''; $('#imagePreview').classList.remove('on'); if($('#viewOrderLink')) $('#viewOrderLink').href='#'; lastOrder=null; setTimeout(()=>focusAndReveal('#brandInput'),80); });
+    $('#resetOrder').addEventListener('click',()=>{ modalCard.classList.remove('done'); $('#brandInput').value=''; $('#emailInput').value=''; if($('#phoneInput')) $('#phoneInput').value=''; if($('#brandInput2')) $('#brandInput2').value=''; if($('#emailInput2')) $('#emailInput2').value=''; if($('#phoneInput2')) $('#phoneInput2').value=''; if($('#notifyConsent')) $('#notifyConsent').checked=true; $('#moodInput').value=''; $('#imageInput').value=''; $('#imagePreview').classList.remove('on'); updatePhotoUploadLabel(); if($('#viewOrderLink')) $('#viewOrderLink').href='#'; lastOrder=null; setTimeout(()=>{ syncCustomerInputs(); focusAndReveal('#photoUploadVisibleBlock'); },80); });
 
     const showreelModal=$('#showreelModal'); const showreelVideo=$('#showreelVideo');
     $('#watchShowreel').addEventListener('click',()=>{ showreelModal.classList.add('on'); document.body.style.overflow='hidden'; showreelVideo.play().catch(()=>{}); });
@@ -695,7 +769,7 @@ const $=(s,root=document)=>root.querySelector(s);
             <h2 id="legalTitle">Business Profile</h2>
             <p>AVVM.studio is a registered business operating in compliance with Republic of Korea e-commerce regulations.</p>
             <h3>Company Details</h3>
-            <p>Company: Lalaland Mom / AVVM · Representative: Dongkuk Yoon</p>
+            <p>Company: 라라랜드맘 / AVVM · Representative: Dongkuk Yoon</p>
             <h3>Contact</h3>
             <p>Email: airyoon72@naver.com · Hotline: 0505-007-5221</p>
             <h3>Registrations</h3>
@@ -715,7 +789,7 @@ const $=(s,root=document)=>root.querySelector(s);
             <h2 id="legalTitle">企业基本信息</h2>
             <p>AVVM.studio 是遵守大韩民国相关法律法规的正规注册企业。</p>
             <h3>公司名称与代表</h3>
-            <p>名称: Lalaland Mom / AVVM · 代表人: 尹东国</p>
+            <p>名称: 라라랜드맘 / AVVM · 代表人: 尹东国</p>
             <h3>联络方式</h3>
             <p>电子邮箱: airyoon72@naver.com · 电话: 0505-007-5221</p>
             <h3>注册信息</h3>
@@ -807,7 +881,7 @@ const $=(s,root=document)=>root.querySelector(s);
    ========================================================================== */
 (function(){
   const I18N={"ko": {"startProject": "START PROJECT ↗", "viewShowreel": "VIEW SHOWREEL", "scrollExplore": "SCROLL TO EXPLORE", "heroEyebrow": "THE AI VIDEO VENDING MACHINE", "heroSub": "사진 한 장으로 완성하는 프리미엄 시네마틱 영상.", "beforeAfterCopy": "사진 한 장을 업로드하면, AVVM이 광고급 시네마틱 결과물로 전환합니다.", "demoEyebrow": "IMAGE TO CINEMA", "demoTitle": "사진 한 장에서<br>광고 영상으로.", "demoCopy": "사진 한 장이 브랜드 광고 영상으로 확장되는 대표 데모입니다. 인물, 제품, 분위기 이미지를 기반으로 시네마틱한 컷과 움직임을 구성합니다.", "demoChip1": "이미지 기반", "demoChip2": "시네마틱 모션", "demoChip3": "광고용 결과", "watchTransformation": "WATCH TRANSFORMATION ↗", "beautyCopy": "FANCL 클렌징 오일 스타일의 15초 뷰티 광고 샘플입니다. 물결, 투명한 라이트 블루 톤, 피부 클로즈업, 제품 중심 컷을 조합한 프리미엄 스킨케어 무드입니다.", "speedTitle": "AI SPEED.<br>HUMAN FINISH.", "keepTitle": "KEEP THE<br>PRODUCT RIGHT.", "tryTitle": "TRY BEFORE<br>FULL ORDER.", "includedTitle": "WHAT IS<br>INCLUDED?", "portfolioKicker": "Portfolio expansion", "portfolioTitle": "7 SECTORS.<br>ONE ENGINE.", "portfolioCopy": "AVVM은 뷰티뿐 아니라 자동차, 문화, 기업, 축제, 스토리, 액션까지 다양한 산업군의 영상 샘플로 확장됩니다.", "portAuto": "공중 추적, 고속 코너링, 레이스 에너지를 보여주는 자동차 섹터 샘플입니다.", "portHeritage": "전통 장인성과 미래 기술 이미지를 결합한 문화/관광 영상 샘플입니다.", "portBusiness": "기업, 서비스, 스타트업 소개에 맞는 짧은 비즈니스 영상 샘플입니다.", "portFestival": "불꽃, 야간 행사, 지역 축제 홍보에 맞는 이벤트 영상 샘플입니다.", "portStory": "인물 감정과 분위기를 살린 라이프스타일/스토리형 영상 샘플입니다.", "portMetaverse": "지역 문화 상징이 디지털 네트워크와 결합되는 메타버스형 영상 샘플입니다.", "portAction": "격투, 추격, 긴장감 있는 전환을 보여주는 실험적 액션 영상 샘플입니다.", "aspectTitle": "비율 선택", "resolutionTitle": "해상도 선택", "sizeChoiceNote": "비율과 해상도는 주문 단계에서 직접 선택합니다. 선택 가능: 9:16 / 16:9 / 1:1 · 460p / 720p / 1080p / 4K", "pricingNote": "납품 일정은 주문 내용 확인 후 안내됩니다. 외화 표시는 참고용이며 실제 결제는 원화(KRW)로 진행됩니다.", "consumerKicker": "For everyone · sticker-photo price", "consumerTitle": "ONE PHOTO,<br>NEW WORLD.", "consumerCopy": "잘 나온 사진 한 장만 올리세요. 평범한 일상 사진이 해외 명소, 인스타 감성, 패션 모델 무드로 바뀌는 초보자용 트랜스폼 영상입니다.", "travelJumpTitle": "해외 명소로 순간 이동", "travelJumpCopy": "앉아 있던 사진도 파리, 뉴욕, 산토리니, 도쿄 같은 글로벌 무드 영상으로 확장합니다.", "fashionSwitchTitle": "옷차림을 모델룩으로", "fashionSwitchCopy": "평범한 옷차림을 더 세련된 패션 화보 무드로 바꾸고, 헤어·신발·가방까지 스타일링합니다.", "walkTransformTitle": "걸으며 한순간에 변신", "walkTransformCopy": "보통 속도로 걷다가 가방을 뒤로 제끼고 고개를 돌리는 순간, 옷·악세서리·헤어·선글라스가 한 번에 바뀝니다.", "miniCopy": "5초 / 1스타일 / 가볍게 체험하는 스티커사진급 변신 영상", "basicConsumerCopy": "8초 / 1스타일 / SNS에 올리기 좋은 기본 트랜스폼", "bestConsumerCopy": "10초 / 여행+패션 무드 / 더 강한 틱톡형 전환", "setConsumerCopy": "3개 스타일 묶음 / 여행·패션·워킹 변신을 한 번에", "tryNow": "TRY NOW", "startTransform": "START TRANSFORM", "chooseBest": "CHOOSE BEST", "getSet": "GET SET", "promptBoxTitle": "Hot Transform Styles", "promptBoxCopy": "요즘 숏폼에서 잘 먹히는 전환 프롬프트를 고객이 쉽게 고를 수 있게 정리했습니다.", "prompt1": "Fashion Glow Up: 평범한 룩이 모델 같은 스타일로 변신", "prompt2": "World Travel Transform: 한 장의 사진이 전세계 명소 릴스로 변신", "prompt3": "Bag Flip Walk: 가방을 뒤로 제끼고 고개를 돌리는 순간 전체 패션 변신", "starterUse": "빠른 숏폼 광고용", "starterItem1": "시네마틱 영상 1편", "starterItem2": "비율 선택: 9:16 / 16:9 / 1:1", "starterItem3": "해상도 선택: 460p / 720p / 1080p / 4K", "commercialUse": "상업적 사용 가능", "proUse": "브랜드/제품 광고용", "proItem1": "프리미엄 영상 1편", "proItem2": "비율 선택: 9:16 / 16:9 / 1:1", "proItem3": "1회 수정 포함", "proItem4": "해상도 선택: 460p / 720p / 1080p / 4K", "priorityWork": "우선 작업", "signatureUse": "광고/쇼릴/브랜드 필름용", "signatureItem1": "시그니처 영상 1편", "signatureItem2": "비율 선택: 9:16 / 16:9 / 1:1", "signatureItem3": "2회 수정 포함", "signatureItem4": "해상도 선택: 460p / 720p / 1080p / 4K", "signatureItem5": "디렉터 스타일 감수", "bestSeller": "Best Seller", "start": "Start", "catPersonal": "Personal Transform", "catBeauty": "Beauty", "catProduct": "Product", "catFood": "Food", "catTravel": "Travel", "catWedding": "Wedding", "catCustom": "Custom", "includedCopy": "영상 길이와 화질 외에도 커머스 영상에 필요한 BGM, 효과음, 자막, 카피, 보이스 여부를 명확히 안내합니다."}, "en": {"startProject": "START PROJECT ↗", "viewShowreel": "VIEW SHOWREEL", "scrollExplore": "SCROLL TO EXPLORE", "heroEyebrow": "THE AI VIDEO VENDING MACHINE", "heroSub": "Premium commercial videos from a single image.", "beforeAfterCopy": "Upload one image and AVVM transforms it into a premium cinematic result.", "demoEyebrow": "IMAGE TO CINEMA", "demoTitle": "FROM ONE IMAGE<br>TO A COMMERCIAL VIDEO.", "demoCopy": "One image expands into a brand-ready commercial video with cinematic cuts, motion, and atmosphere.", "demoChip1": "IMAGE BASED", "demoChip2": "CINEMATIC MOTION", "demoChip3": "COMMERCIAL READY", "watchTransformation": "WATCH TRANSFORMATION ↗", "beautyCopy": "A 15-second beauty ad sample with water texture, light-blue tone, skin close-ups, and product-focused premium skincare mood.", "speedTitle": "AI SPEED.<br>HUMAN FINISH.", "keepTitle": "KEEP THE<br>PRODUCT RIGHT.", "tryTitle": "TRY BEFORE<br>FULL ORDER.", "includedTitle": "WHAT IS<br>INCLUDED?", "portfolioKicker": "Portfolio expansion", "portfolioTitle": "7 SECTORS.<br>ONE ENGINE.", "portfolioCopy": "AVVM expands beyond beauty into automotive, culture, business, events, story, metaverse, and action samples.", "portAuto": "Automotive sample with aerial pursuit, high-speed cornering, and racing energy.", "portHeritage": "Culture and tourism sample combining traditional craftsmanship with futuristic technology.", "portBusiness": "Short business film sample for companies, services, and startups.", "portFestival": "Event sample for fireworks, night events, and regional festivals.", "portStory": "Lifestyle story sample with emotional character and atmosphere.", "portMetaverse": "Metaverse-style sample where local culture connects to a digital network.", "portAction": "Experimental action sample with fight, chase, and high-tension transitions.", "aspectTitle": "Aspect Ratio", "resolutionTitle": "Resolution", "sizeChoiceNote": "Aspect ratio and resolution are selected during order: 9:16 / 16:9 / 1:1 · 460p / 720p / 1080p / 4K", "pricingNote": "Delivery schedule is confirmed after project review. Foreign currency values are estimates only; final payment is processed in KRW.", "consumerKicker": "For everyone · sticker-photo price", "consumerTitle": "ONE PHOTO,<br>NEW WORLD.", "consumerCopy": "Upload one great photo. AVVM turns an ordinary image into a beginner-friendly transformation video with travel, Instagram, and fashion model vibes.", "travelJumpTitle": "Jump to global places", "travelJumpCopy": "Even a seated everyday photo can become a Paris, New York, Santorini, or Tokyo-style travel reel.", "fashionSwitchTitle": "From casual to model look", "fashionSwitchCopy": "Upgrade everyday clothing into a stylish editorial look, including hair, shoes, bag, and accessories.", "walkTransformTitle": "Transform while walking", "walkTransformCopy": "Walk naturally, flip the bag back, turn the head, and the outfit, accessories, hair, and sunglasses change instantly.", "miniCopy": "5s / 1 style / sticker-photo priced trial transform", "basicConsumerCopy": "8s / 1 style / easy SNS-ready transform", "bestConsumerCopy": "10s / travel + fashion mood / stronger TikTok transition", "setConsumerCopy": "3-style set / travel, fashion, and walking transform together", "tryNow": "TRY NOW", "startTransform": "START TRANSFORM", "chooseBest": "CHOOSE BEST", "getSet": "GET SET", "promptBoxTitle": "Hot Transform Styles", "promptBoxCopy": "Easy-to-choose short-form transformation styles inspired by current social video formats.", "prompt1": "Fashion Glow Up: ordinary outfit becomes model-style fashion", "prompt2": "World Travel Transform: one photo becomes a global destination reel", "prompt3": "Bag Flip Walk: flip the bag, turn the head, and the entire look transforms", "starterUse": "For quick short-form ads", "starterItem1": "cinematic video", "starterItem2": "Aspect ratio: choose 9:16 / 16:9 / 1:1", "starterItem3": "Resolution: choose 460p / 720p / 1080p / 4K", "commercialUse": "Commercial use included", "proUse": "For brand and product ads", "proItem1": "premium video", "proItem2": "Aspect ratio: choose 9:16 / 16:9 / 1:1", "proItem3": "1 revision included", "proItem4": "Resolution: choose 460p / 720p / 1080p / 4K", "priorityWork": "Priority production", "signatureUse": "For commercials, showreels and brand films", "signatureItem1": "signature video", "signatureItem2": "Aspect ratio: choose 9:16 / 16:9 / 1:1", "signatureItem3": "2 revisions included", "signatureItem4": "Resolution: choose 460p / 720p / 1080p / 4K", "signatureItem5": "Director-style review", "bestSeller": "Best Seller", "start": "Start", "catPersonal": "Personal Transform", "catBeauty": "Beauty", "catProduct": "Product", "catFood": "Food", "catTravel": "Travel", "catWedding": "Wedding", "catCustom": "Custom", "includedCopy": "Beyond duration and resolution, AVVM clearly shows BGM, SFX, captions, copywriting, voiceover, and revisions."}, "ja": {"heroSub": "1枚の画像からプレミアムなシネマティック動画を制作します。", "beforeAfterCopy": "1枚の画像をアップロードすると、AVVMが広告品質のシネマティックな結果へ変換します。", "demoTitle": "1枚の画像から<br>広告動画へ。", "demoCopy": "One image expands into a brand-ready commercial video with cinematic cuts, motion, and atmosphere.", "beautyCopy": "A 15-second beauty ad sample with water texture, light-blue tone, skin close-ups, and product-focused premium skincare mood.", "consumerCopy": "お気に入りの写真を1枚アップロードするだけ。日常写真が旅行・インスタ感・モデル風動画に変わります。", "travelJumpTitle": "海外名所へジャンプ", "travelJumpCopy": "Even a seated everyday photo can become a Paris, New York, Santorini, or Tokyo-style travel reel.", "fashionSwitchTitle": "日常服からモデルルックへ", "fashionSwitchCopy": "Upgrade everyday clothing into a stylish editorial look, including hair, shoes, bag, and accessories.", "walkTransformTitle": "歩きながら変身", "walkTransformCopy": "Walk naturally, flip the bag back, turn the head, and the outfit, accessories, hair, and sunglasses change instantly.", "aspectTitle": "比率を選択", "resolutionTitle": "解像度を選択", "pricingNote": "Delivery schedule is confirmed after project review. Foreign currency values are estimates only; final payment is processed in KRW.", "sizeChoiceNote": "Aspect ratio and resolution are selected during order: 9:16 / 16:9 / 1:1 · 460p / 720p / 1080p / 4K", "startProject": "START PROJECT ↗", "demoChip1": "IMAGE BASED", "tryTitle": "TRY BEFORE<br>FULL ORDER.", "bestConsumerCopy": "10s / travel + fashion mood / stronger TikTok transition", "signatureUse": "For commercials, showreels and brand films", "portBusiness": "Short business film sample for companies, services, and startups.", "demoChip2": "CINEMATIC MOTION", "proItem3": "1 revision included", "portfolioKicker": "Portfolio expansion", "catWedding": "Wedding", "starterItem1": "cinematic video", "catBeauty": "Beauty", "starterItem3": "Resolution: choose 460p / 720p / 1080p / 4K", "signatureItem1": "signature video", "portFestival": "Event sample for fireworks, night events, and regional festivals.", "watchTransformation": "WATCH TRANSFORMATION ↗", "setConsumerCopy": "3-style set / travel, fashion, and walking transform together", "miniCopy": "5s / 1 style / sticker-photo priced trial transform", "signatureItem4": "Resolution: choose 460p / 720p / 1080p / 4K", "starterItem2": "Aspect ratio: choose 9:16 / 16:9 / 1:1", "getSet": "GET SET", "catCustom": "Custom", "consumerTitle": "ONE PHOTO,<br>NEW WORLD.", "viewShowreel": "VIEW SHOWREEL", "promptBoxCopy": "Easy-to-choose short-form transformation styles inspired by current social video formats.", "demoEyebrow": "IMAGE TO CINEMA", "signatureItem3": "2 revisions included", "starterUse": "For quick short-form ads", "portfolioTitle": "7 SECTORS.<br>ONE ENGINE.", "proUse": "For brand and product ads", "catFood": "Food", "demoChip3": "COMMERCIAL READY", "proItem1": "premium video", "portStory": "Lifestyle story sample with emotional character and atmosphere.", "signatureItem2": "Aspect ratio: choose 9:16 / 16:9 / 1:1", "prompt3": "Bag Flip Walk: flip the bag, turn the head, and the entire look transforms", "consumerKicker": "For everyone · sticker-photo price", "heroEyebrow": "THE AI VIDEO VENDING MACHINE", "proItem4": "Resolution: choose 460p / 720p / 1080p / 4K", "portfolioCopy": "AVVM expands beyond beauty into automotive, culture, business, events, story, metaverse, and action samples.", "prompt1": "Fashion Glow Up: ordinary outfit becomes model-style fashion", "includedTitle": "WHAT IS<br>INCLUDED?", "priorityWork": "Priority production", "keepTitle": "KEEP THE<br>PRODUCT RIGHT.", "scrollExplore": "SCROLL TO EXPLORE", "portHeritage": "Culture and tourism sample combining traditional craftsmanship with futuristic technology.", "catPersonal": "Personal Transform", "tryNow": "TRY NOW", "proItem2": "Aspect ratio: choose 9:16 / 16:9 / 1:1", "startTransform": "START TRANSFORM", "portAction": "Experimental action sample with fight, chase, and high-tension transitions.", "prompt2": "World Travel Transform: one photo becomes a global destination reel", "promptBoxTitle": "Hot Transform Styles", "catProduct": "Product", "speedTitle": "AI SPEED.<br>HUMAN FINISH.", "portAuto": "Automotive sample with aerial pursuit, high-speed cornering, and racing energy.", "chooseBest": "CHOOSE BEST", "bestSeller": "Best Seller", "catTravel": "Travel", "portMetaverse": "Metaverse-style sample where local culture connects to a digital network.", "basicConsumerCopy": "8s / 1 style / easy SNS-ready transform", "signatureItem5": "Director-style review", "commercialUse": "Commercial use included", "start": "Start", "includedCopy": "Beyond duration and resolution, AVVM clearly shows BGM, SFX, captions, copywriting, voiceover, and revisions."}, "zh": {"heroSub": "只需一张图片，即可制作高级电影感商业视频。", "beforeAfterCopy": "上传一张图片，AVVM会将其转换为广告级电影感结果。", "demoTitle": "从一张图片<br>到商业视频。", "demoCopy": "One image expands into a brand-ready commercial video with cinematic cuts, motion, and atmosphere.", "beautyCopy": "A 15-second beauty ad sample with water texture, light-blue tone, skin close-ups, and product-focused premium skincare mood.", "consumerCopy": "只需上传一张好看的照片。普通日常照也能变成旅行、Instagram感和时尚模特氛围的视频。", "travelJumpTitle": "瞬间跳转全球名所", "travelJumpCopy": "Even a seated everyday photo can become a Paris, New York, Santorini, or Tokyo-style travel reel.", "fashionSwitchTitle": "日常穿搭变模特造型", "fashionSwitchCopy": "Upgrade everyday clothing into a stylish editorial look, including hair, shoes, bag, and accessories.", "walkTransformTitle": "边走边瞬间变身", "walkTransformCopy": "Walk naturally, flip the bag back, turn the head, and the outfit, accessories, hair, and sunglasses change instantly.", "aspectTitle": "选择比例", "resolutionTitle": "选择分辨率", "pricingNote": "Delivery schedule is confirmed after project review. Foreign currency values are estimates only; final payment is processed in KRW.", "sizeChoiceNote": "Aspect ratio and resolution are selected during order: 9:16 / 16:9 / 1:1 · 460p / 720p / 1080p / 4K", "startProject": "START PROJECT ↗", "demoChip1": "IMAGE BASED", "tryTitle": "TRY BEFORE<br>FULL ORDER.", "bestConsumerCopy": "10s / travel + fashion mood / stronger TikTok transition", "signatureUse": "For commercials, showreels and brand films", "portBusiness": "Short business film sample for companies, services, and startups.", "demoChip2": "CINEMATIC MOTION", "proItem3": "1 revision included", "portfolioKicker": "Portfolio expansion", "catWedding": "Wedding", "starterItem1": "cinematic video", "catBeauty": "Beauty", "starterItem3": "Resolution: choose 460p / 720p / 1080p / 4K", "signatureItem1": "signature video", "portFestival": "Event sample for fireworks, night events, and regional festivals.", "watchTransformation": "WATCH TRANSFORMATION ↗", "setConsumerCopy": "3-style set / travel, fashion, and walking transform together", "miniCopy": "5s / 1 style / sticker-photo priced trial transform", "signatureItem4": "Resolution: choose 460p / 720p / 1080p / 4K", "starterItem2": "Aspect ratio: choose 9:16 / 16:9 / 1:1", "getSet": "GET SET", "catCustom": "Custom", "consumerTitle": "ONE PHOTO,<br>NEW WORLD.", "viewShowreel": "VIEW SHOWREEL", "promptBoxCopy": "Easy-to-choose short-form transformation styles inspired by current social video formats.", "demoEyebrow": "IMAGE TO CINEMA", "signatureItem3": "2 revisions included", "starterUse": "For quick short-form ads", "portfolioTitle": "7 SECTORS.<br>ONE ENGINE.", "proUse": "For brand and product ads", "catFood": "Food", "demoChip3": "COMMERCIAL READY", "proItem1": "premium video", "portStory": "Lifestyle story sample with emotional character and atmosphere.", "signatureItem2": "Aspect ratio: choose 9:16 / 16:9 / 1:1", "prompt3": "Bag Flip Walk: flip the bag, turn the head, and the entire look transforms", "consumerKicker": "For everyone · sticker-photo price", "heroEyebrow": "THE AI VIDEO VENDING MACHINE", "proItem4": "Resolution: choose 460p / 720p / 1080p / 4K", "portfolioCopy": "AVVM expands beyond beauty into automotive, culture, business, events, story, metaverse, and action samples.", "prompt1": "Fashion Glow Up: ordinary outfit becomes model-style fashion", "includedTitle": "WHAT IS<br>INCLUDED?", "priorityWork": "Priority production", "keepTitle": "KEEP THE<br>PRODUCT RIGHT.", "scrollExplore": "SCROLL TO EXPLORE", "portHeritage": "Culture and tourism sample combining traditional craftsmanship with futuristic technology.", "catPersonal": "Personal Transform", "tryNow": "TRY NOW", "proItem2": "Aspect ratio: choose 9:16 / 16:9 / 1:1", "startTransform": "START TRANSFORM", "portAction": "Experimental action sample with fight, chase, and high-tension transitions.", "prompt2": "World Travel Transform: one photo becomes a global destination reel", "promptBoxTitle": "Hot Transform Styles", "catProduct": "Product", "speedTitle": "AI SPEED.<br>HUMAN FINISH.", "portAuto": "Automotive sample with aerial pursuit, high-speed cornering, and racing energy.", "chooseBest": "CHOOSE BEST", "bestSeller": "Best Seller", "catTravel": "Travel", "portMetaverse": "Metaverse-style sample where local culture connects to a digital network.", "basicConsumerCopy": "8s / 1 style / easy SNS-ready transform", "signatureItem5": "Director-style review", "commercialUse": "Commercial use included", "start": "Start", "includedCopy": "Beyond duration and resolution, AVVM clearly shows BGM, SFX, captions, copywriting, voiceover, and revisions."}, "es": {"startProject": "START PROJECT ↗", "viewShowreel": "VIEW SHOWREEL", "scrollExplore": "SCROLL TO EXPLORE", "heroEyebrow": "THE AI VIDEO VENDING MACHINE", "heroSub": "Videos comerciales premium a partir de una sola imagen.", "beforeAfterCopy": "Upload one image and AVVM transforms it into a premium cinematic result.", "demoEyebrow": "IMAGE TO CINEMA", "demoTitle": "FROM ONE IMAGE<br>TO A COMMERCIAL VIDEO.", "demoCopy": "One image expands into a brand-ready commercial video with cinematic cuts, motion, and atmosphere.", "demoChip1": "IMAGE BASED", "demoChip2": "CINEMATIC MOTION", "demoChip3": "COMMERCIAL READY", "watchTransformation": "WATCH TRANSFORMATION ↗", "beautyCopy": "A 15-second beauty ad sample with water texture, light-blue tone, skin close-ups, and product-focused premium skincare mood.", "speedTitle": "AI SPEED.<br>HUMAN FINISH.", "keepTitle": "KEEP THE<br>PRODUCT RIGHT.", "tryTitle": "TRY BEFORE<br>FULL ORDER.", "includedTitle": "WHAT IS<br>INCLUDED?", "portfolioKicker": "Portfolio expansion", "portfolioTitle": "7 SECTORS.<br>ONE ENGINE.", "portfolioCopy": "AVVM expands beyond beauty into automotive, culture, business, events, story, metaverse, and action samples.", "portAuto": "Automotive sample with aerial pursuit, high-speed cornering, and racing energy.", "portHeritage": "Culture and tourism sample combining traditional craftsmanship with futuristic technology.", "portBusiness": "Short business film sample for companies, services, and startups.", "portFestival": "Event sample for fireworks, night events, and regional festivals.", "portStory": "Lifestyle story sample with emotional character and atmosphere.", "portMetaverse": "Metaverse-style sample where local culture connects to a digital network.", "portAction": "Experimental action sample with fight, chase, and high-tension transitions.", "aspectTitle": "Formato", "resolutionTitle": "Resolución", "sizeChoiceNote": "Aspect ratio and resolution are selected during order: 9:16 / 16:9 / 1:1 · 460p / 720p / 1080p / 4K", "pricingNote": "Delivery schedule is confirmed after project review. Foreign currency values are estimates only; final payment is processed in KRW.", "consumerKicker": "For everyone · sticker-photo price", "consumerTitle": "ONE PHOTO,<br>NEW WORLD.", "consumerCopy": "Upload one great photo. AVVM turns an ordinary image into a beginner-friendly transformation video with travel, Instagram, and fashion model vibes.", "travelJumpTitle": "Jump to global places", "travelJumpCopy": "Even a seated everyday photo can become a Paris, New York, Santorini, or Tokyo-style travel reel.", "fashionSwitchTitle": "From casual to model look", "fashionSwitchCopy": "Upgrade everyday clothing into a stylish editorial look, including hair, shoes, bag, and accessories.", "walkTransformTitle": "Transform while walking", "walkTransformCopy": "Walk naturally, flip the bag back, turn the head, and the outfit, accessories, hair, and sunglasses change instantly.", "miniCopy": "5s / 1 style / sticker-photo priced trial transform", "basicConsumerCopy": "8s / 1 style / easy SNS-ready transform", "bestConsumerCopy": "10s / travel + fashion mood / stronger TikTok transition", "setConsumerCopy": "3-style set / travel, fashion, and walking transform together", "tryNow": "TRY NOW", "startTransform": "START TRANSFORM", "chooseBest": "CHOOSE BEST", "getSet": "GET SET", "promptBoxTitle": "Hot Transform Styles", "promptBoxCopy": "Easy-to-choose short-form transformation styles inspired by current social video formats.", "prompt1": "Fashion Glow Up: ordinary outfit becomes model-style fashion", "prompt2": "World Travel Transform: one photo becomes a global destination reel", "prompt3": "Bag Flip Walk: flip the bag, turn the head, and the entire look transforms", "starterUse": "For quick short-form ads", "starterItem1": "cinematic video", "starterItem2": "Aspect ratio: choose 9:16 / 16:9 / 1:1", "starterItem3": "Resolution: choose 460p / 720p / 1080p / 4K", "commercialUse": "Commercial use included", "proUse": "For brand and product ads", "proItem1": "premium video", "proItem2": "Aspect ratio: choose 9:16 / 16:9 / 1:1", "proItem3": "1 revision included", "proItem4": "Resolution: choose 460p / 720p / 1080p / 4K", "priorityWork": "Priority production", "signatureUse": "For commercials, showreels and brand films", "signatureItem1": "signature video", "signatureItem2": "Aspect ratio: choose 9:16 / 16:9 / 1:1", "signatureItem3": "2 revisions included", "signatureItem4": "Resolution: choose 460p / 720p / 1080p / 4K", "signatureItem5": "Director-style review", "bestSeller": "Best Seller", "start": "Start", "catPersonal": "Personal Transform", "catBeauty": "Beauty", "catProduct": "Product", "catFood": "Food", "catTravel": "Travel", "catWedding": "Wedding", "catCustom": "Custom", "includedCopy": "Beyond duration and resolution, AVVM clearly shows BGM, SFX, captions, copywriting, voiceover, and revisions."}, "fr": {"startProject": "START PROJECT ↗", "viewShowreel": "VIEW SHOWREEL", "scrollExplore": "SCROLL TO EXPLORE", "heroEyebrow": "THE AI VIDEO VENDING MACHINE", "heroSub": "Vidéos commerciales premium à partir d’une seule image.", "beforeAfterCopy": "Upload one image and AVVM transforms it into a premium cinematic result.", "demoEyebrow": "IMAGE TO CINEMA", "demoTitle": "FROM ONE IMAGE<br>TO A COMMERCIAL VIDEO.", "demoCopy": "One image expands into a brand-ready commercial video with cinematic cuts, motion, and atmosphere.", "demoChip1": "IMAGE BASED", "demoChip2": "CINEMATIC MOTION", "demoChip3": "COMMERCIAL READY", "watchTransformation": "WATCH TRANSFORMATION ↗", "beautyCopy": "A 15-second beauty ad sample with water texture, light-blue tone, skin close-ups, and product-focused premium skincare mood.", "speedTitle": "AI SPEED.<br>HUMAN FINISH.", "keepTitle": "KEEP THE<br>PRODUCT RIGHT.", "tryTitle": "TRY BEFORE<br>FULL ORDER.", "includedTitle": "WHAT IS<br>INCLUDED?", "portfolioKicker": "Portfolio expansion", "portfolioTitle": "7 SECTORS.<br>ONE ENGINE.", "portfolioCopy": "AVVM expands beyond beauty into automotive, culture, business, events, story, metaverse, and action samples.", "portAuto": "Automotive sample with aerial pursuit, high-speed cornering, and racing energy.", "portHeritage": "Culture and tourism sample combining traditional craftsmanship with futuristic technology.", "portBusiness": "Short business film sample for companies, services, and startups.", "portFestival": "Event sample for fireworks, night events, and regional festivals.", "portStory": "Lifestyle story sample with emotional character and atmosphere.", "portMetaverse": "Metaverse-style sample where local culture connects to a digital network.", "portAction": "Experimental action sample with fight, chase, and high-tension transitions.", "aspectTitle": "Format", "resolutionTitle": "Résolution", "sizeChoiceNote": "Aspect ratio and resolution are selected during order: 9:16 / 16:9 / 1:1 · 460p / 720p / 1080p / 4K", "pricingNote": "Delivery schedule is confirmed after project review. Foreign currency values are estimates only; final payment is processed in KRW.", "consumerKicker": "For everyone · sticker-photo price", "consumerTitle": "ONE PHOTO,<br>NEW WORLD.", "consumerCopy": "Upload one great photo. AVVM turns an ordinary image into a beginner-friendly transformation video with travel, Instagram, and fashion model vibes.", "travelJumpTitle": "Jump to global places", "travelJumpCopy": "Even a seated everyday photo can become a Paris, New York, Santorini, or Tokyo-style travel reel.", "fashionSwitchTitle": "From casual to model look", "fashionSwitchCopy": "Upgrade everyday clothing into a stylish editorial look, including hair, shoes, bag, and accessories.", "walkTransformTitle": "Transform while walking", "walkTransformCopy": "Walk naturally, flip the bag back, turn the head, and the outfit, accessories, hair, and sunglasses change instantly.", "miniCopy": "5s / 1 style / sticker-photo priced trial transform", "basicConsumerCopy": "8s / 1 style / easy SNS-ready transform", "bestConsumerCopy": "10s / travel + fashion mood / stronger TikTok transition", "setConsumerCopy": "3-style set / travel, fashion, and walking transform together", "tryNow": "TRY NOW", "startTransform": "START TRANSFORM", "chooseBest": "CHOOSE BEST", "getSet": "GET SET", "promptBoxTitle": "Hot Transform Styles", "promptBoxCopy": "Easy-to-choose short-form transformation styles inspired by current social video formats.", "prompt1": "Fashion Glow Up: ordinary outfit becomes model-style fashion", "prompt2": "World Travel Transform: one photo becomes a global destination reel", "prompt3": "Bag Flip Walk: flip the bag, turn the head, and the entire look transforms", "starterUse": "For quick short-form ads", "starterItem1": "cinematic video", "starterItem2": "Aspect ratio: choose 9:16 / 16:9 / 1:1", "starterItem3": "Resolution: choose 460p / 720p / 1080p / 4K", "commercialUse": "Commercial use included", "proUse": "For brand and product ads", "proItem1": "premium video", "proItem2": "Aspect ratio: choose 9:16 / 16:9 / 1:1", "proItem3": "1 revision included", "proItem4": "Resolution: choose 460p / 720p / 1080p / 4K", "priorityWork": "Priority production", "signatureUse": "For commercials, showreels and brand films", "signatureItem1": "signature video", "signatureItem2": "Aspect ratio: choose 9:16 / 16:9 / 1:1", "signatureItem3": "2 revisions included", "signatureItem4": "Resolution: choose 460p / 720p / 1080p / 4K", "signatureItem5": "Director-style review", "bestSeller": "Best Seller", "start": "Start", "catPersonal": "Personal Transform", "catBeauty": "Beauty", "catProduct": "Product", "catFood": "Food", "catTravel": "Travel", "catWedding": "Wedding", "catCustom": "Custom", "includedCopy": "Beyond duration and resolution, AVVM clearly shows BGM, SFX, captions, copywriting, voiceover, and revisions."}, "de": {"startProject": "START PROJECT ↗", "viewShowreel": "VIEW SHOWREEL", "scrollExplore": "SCROLL TO EXPLORE", "heroEyebrow": "THE AI VIDEO VENDING MACHINE", "heroSub": "Premium-Werbevideos aus einem einzigen Bild.", "beforeAfterCopy": "Upload one image and AVVM transforms it into a premium cinematic result.", "demoEyebrow": "IMAGE TO CINEMA", "demoTitle": "FROM ONE IMAGE<br>TO A COMMERCIAL VIDEO.", "demoCopy": "One image expands into a brand-ready commercial video with cinematic cuts, motion, and atmosphere.", "demoChip1": "IMAGE BASED", "demoChip2": "CINEMATIC MOTION", "demoChip3": "COMMERCIAL READY", "watchTransformation": "WATCH TRANSFORMATION ↗", "beautyCopy": "A 15-second beauty ad sample with water texture, light-blue tone, skin close-ups, and product-focused premium skincare mood.", "speedTitle": "AI SPEED.<br>HUMAN FINISH.", "keepTitle": "KEEP THE<br>PRODUCT RIGHT.", "tryTitle": "TRY BEFORE<br>FULL ORDER.", "includedTitle": "WHAT IS<br>INCLUDED?", "portfolioKicker": "Portfolio expansion", "portfolioTitle": "7 SECTORS.<br>ONE ENGINE.", "portfolioCopy": "AVVM expands beyond beauty into automotive, culture, business, events, story, metaverse, and action samples.", "portAuto": "Automotive sample with aerial pursuit, high-speed cornering, and racing energy.", "portHeritage": "Culture and tourism sample combining traditional craftsmanship with futuristic technology.", "portBusiness": "Short business film sample for companies, services, and startups.", "portFestival": "Event sample for fireworks, night events, and regional festivals.", "portStory": "Lifestyle story sample with emotional character and atmosphere.", "portMetaverse": "Metaverse-style sample where local culture connects to a digital network.", "portAction": "Experimental action sample with fight, chase, and high-tension transitions.", "aspectTitle": "Format", "resolutionTitle": "Auflösung", "sizeChoiceNote": "Aspect ratio and resolution are selected during order: 9:16 / 16:9 / 1:1 · 460p / 720p / 1080p / 4K", "pricingNote": "Delivery schedule is confirmed after project review. Foreign currency values are estimates only; final payment is processed in KRW.", "consumerKicker": "For everyone · sticker-photo price", "consumerTitle": "ONE PHOTO,<br>NEW WORLD.", "consumerCopy": "Upload one great photo. AVVM turns an ordinary image into a beginner-friendly transformation video with travel, Instagram, and fashion model vibes.", "travelJumpTitle": "Jump to global places", "travelJumpCopy": "Even a seated everyday photo can become a Paris, New York, Santorini, or Tokyo-style travel reel.", "fashionSwitchTitle": "From casual to model look", "fashionSwitchCopy": "Upgrade everyday clothing into a stylish editorial look, including hair, shoes, bag, and accessories.", "walkTransformTitle": "Transform while walking", "walkTransformCopy": "Walk naturally, flip the bag back, turn the head, and the outfit, accessories, hair, and sunglasses change instantly.", "miniCopy": "5s / 1 style / sticker-photo priced trial transform", "basicConsumerCopy": "8s / 1 style / easy SNS-ready transform", "bestConsumerCopy": "10s / travel + fashion mood / stronger TikTok transition", "setConsumerCopy": "3-style set / travel, fashion, and walking transform together", "tryNow": "TRY NOW", "startTransform": "START TRANSFORM", "chooseBest": "CHOOSE BEST", "getSet": "GET SET", "promptBoxTitle": "Hot Transform Styles", "promptBoxCopy": "Easy-to-choose short-form transformation styles inspired by current social video formats.", "prompt1": "Fashion Glow Up: ordinary outfit becomes model-style fashion", "prompt2": "World Travel Transform: one photo becomes a global destination reel", "prompt3": "Bag Flip Walk: flip the bag, turn the head, and the entire look transforms", "starterUse": "For quick short-form ads", "starterItem1": "cinematic video", "starterItem2": "Aspect ratio: choose 9:16 / 16:9 / 1:1", "starterItem3": "Resolution: choose 460p / 720p / 1080p / 4K", "commercialUse": "Commercial use included", "proUse": "For brand and product ads", "proItem1": "premium video", "proItem2": "Aspect ratio: choose 9:16 / 16:9 / 1:1", "proItem3": "1 revision included", "proItem4": "Resolution: choose 460p / 720p / 1080p / 4K", "priorityWork": "Priority production", "signatureUse": "For commercials, showreels and brand films", "signatureItem1": "signature video", "signatureItem2": "Aspect ratio: choose 9:16 / 16:9 / 1:1", "signatureItem3": "2 revisions included", "signatureItem4": "Resolution: choose 460p / 720p / 1080p / 4K", "signatureItem5": "Director-style review", "bestSeller": "Best Seller", "start": "Start", "catPersonal": "Personal Transform", "catBeauty": "Beauty", "catProduct": "Product", "catFood": "Food", "catTravel": "Travel", "catWedding": "Wedding", "catCustom": "Custom", "includedCopy": "Beyond duration and resolution, AVVM clearly shows BGM, SFX, captions, copywriting, voiceover, and revisions."}, "pt": {"startProject": "START PROJECT ↗", "viewShowreel": "VIEW SHOWREEL", "scrollExplore": "SCROLL TO EXPLORE", "heroEyebrow": "THE AI VIDEO VENDING MACHINE", "heroSub": "Vídeos comerciais premium a partir de uma única imagem.", "beforeAfterCopy": "Upload one image and AVVM transforms it into a premium cinematic result.", "demoEyebrow": "IMAGE TO CINEMA", "demoTitle": "FROM ONE IMAGE<br>TO A COMMERCIAL VIDEO.", "demoCopy": "One image expands into a brand-ready commercial video with cinematic cuts, motion, and atmosphere.", "demoChip1": "IMAGE BASED", "demoChip2": "CINEMATIC MOTION", "demoChip3": "COMMERCIAL READY", "watchTransformation": "WATCH TRANSFORMATION ↗", "beautyCopy": "A 15-second beauty ad sample with water texture, light-blue tone, skin close-ups, and product-focused premium skincare mood.", "speedTitle": "AI SPEED.<br>HUMAN FINISH.", "keepTitle": "KEEP THE<br>PRODUCT RIGHT.", "tryTitle": "TRY BEFORE<br>FULL ORDER.", "includedTitle": "WHAT IS<br>INCLUDED?", "portfolioKicker": "Portfolio expansion", "portfolioTitle": "7 SECTORS.<br>ONE ENGINE.", "portfolioCopy": "AVVM expands beyond beauty into automotive, culture, business, events, story, metaverse, and action samples.", "portAuto": "Automotive sample with aerial pursuit, high-speed cornering, and racing energy.", "portHeritage": "Culture and tourism sample combining traditional craftsmanship with futuristic technology.", "portBusiness": "Short business film sample for companies, services, and startups.", "portFestival": "Event sample for fireworks, night events, and regional festivals.", "portStory": "Lifestyle story sample with emotional character and atmosphere.", "portMetaverse": "Metaverse-style sample where local culture connects to a digital network.", "portAction": "Experimental action sample with fight, chase, and high-tension transitions.", "aspectTitle": "Formato", "resolutionTitle": "Resolução", "sizeChoiceNote": "Aspect ratio and resolution are selected during order: 9:16 / 16:9 / 1:1 · 460p / 720p / 1080p / 4K", "pricingNote": "Delivery schedule is confirmed after project review. Foreign currency values are estimates only; final payment is processed in KRW.", "consumerKicker": "For everyone · sticker-photo price", "consumerTitle": "ONE PHOTO,<br>NEW WORLD.", "consumerCopy": "Upload one great photo. AVVM turns an ordinary image into a beginner-friendly transformation video with travel, Instagram, and fashion model vibes.", "travelJumpTitle": "Jump to global places", "travelJumpCopy": "Even a seated everyday photo can become a Paris, New York, Santorini, or Tokyo-style travel reel.", "fashionSwitchTitle": "From casual to model look", "fashionSwitchCopy": "Upgrade everyday clothing into a stylish editorial look, including hair, shoes, bag, and accessories.", "walkTransformTitle": "Transform while walking", "walkTransformCopy": "Walk naturally, flip the bag back, turn the head, and the outfit, accessories, hair, and sunglasses change instantly.", "miniCopy": "5s / 1 style / sticker-photo priced trial transform", "basicConsumerCopy": "8s / 1 style / easy SNS-ready transform", "bestConsumerCopy": "10s / travel + fashion mood / stronger TikTok transition", "setConsumerCopy": "3-style set / travel, fashion, and walking transform together", "tryNow": "TRY NOW", "startTransform": "START TRANSFORM", "chooseBest": "CHOOSE BEST", "getSet": "GET SET", "promptBoxTitle": "Hot Transform Styles", "promptBoxCopy": "Easy-to-choose short-form transformation styles inspired by current social video formats.", "prompt1": "Fashion Glow Up: ordinary outfit becomes model-style fashion", "prompt2": "World Travel Transform: one photo becomes a global destination reel", "prompt3": "Bag Flip Walk: flip the bag, turn the head, and the entire look transforms", "starterUse": "For quick short-form ads", "starterItem1": "cinematic video", "starterItem2": "Aspect ratio: choose 9:16 / 16:9 / 1:1", "starterItem3": "Resolution: choose 460p / 720p / 1080p / 4K", "commercialUse": "Commercial use included", "proUse": "For brand and product ads", "proItem1": "premium video", "proItem2": "Aspect ratio: choose 9:16 / 16:9 / 1:1", "proItem3": "1 revision included", "proItem4": "Resolution: choose 460p / 720p / 1080p / 4K", "priorityWork": "Priority production", "signatureUse": "For commercials, showreels and brand films", "signatureItem1": "signature video", "signatureItem2": "Aspect ratio: choose 9:16 / 16:9 / 1:1", "signatureItem3": "2 revisions included", "signatureItem4": "Resolution: choose 460p / 720p / 1080p / 4K", "signatureItem5": "Director-style review", "bestSeller": "Best Seller", "start": "Start", "catPersonal": "Personal Transform", "catBeauty": "Beauty", "catProduct": "Product", "catFood": "Food", "catTravel": "Travel", "catWedding": "Wedding", "catCustom": "Custom", "includedCopy": "Beyond duration and resolution, AVVM clearly shows BGM, SFX, captions, copywriting, voiceover, and revisions."}, "ar": {"startProject": "START PROJECT ↗", "viewShowreel": "VIEW SHOWREEL", "scrollExplore": "SCROLL TO EXPLORE", "heroEyebrow": "THE AI VIDEO VENDING MACHINE", "heroSub": "فيديوهات تجارية سينمائية من صورة واحدة.", "beforeAfterCopy": "Upload one image and AVVM transforms it into a premium cinematic result.", "demoEyebrow": "IMAGE TO CINEMA", "demoTitle": "FROM ONE IMAGE<br>TO A COMMERCIAL VIDEO.", "demoCopy": "One image expands into a brand-ready commercial video with cinematic cuts, motion, and atmosphere.", "demoChip1": "IMAGE BASED", "demoChip2": "CINEMATIC MOTION", "demoChip3": "COMMERCIAL READY", "watchTransformation": "WATCH TRANSFORMATION ↗", "beautyCopy": "A 15-second beauty ad sample with water texture, light-blue tone, skin close-ups, and product-focused premium skincare mood.", "speedTitle": "AI SPEED.<br>HUMAN FINISH.", "keepTitle": "KEEP THE<br>PRODUCT RIGHT.", "tryTitle": "TRY BEFORE<br>FULL ORDER.", "includedTitle": "WHAT IS<br>INCLUDED?", "portfolioKicker": "Portfolio expansion", "portfolioTitle": "7 SECTORS.<br>ONE ENGINE.", "portfolioCopy": "AVVM expands beyond beauty into automotive, culture, business, events, story, metaverse, and action samples.", "portAuto": "Automotive sample with aerial pursuit, high-speed cornering, and racing energy.", "portHeritage": "Culture and tourism sample combining traditional craftsmanship with futuristic technology.", "portBusiness": "Short business film sample for companies, services, and startups.", "portFestival": "Event sample for fireworks, night events, and regional festivals.", "portStory": "Lifestyle story sample with emotional character and atmosphere.", "portMetaverse": "Metaverse-style sample where local culture connects to a digital network.", "portAction": "Experimental action sample with fight, chase, and high-tension transitions.", "aspectTitle": "نسبة العرض", "resolutionTitle": "الدقة", "sizeChoiceNote": "Aspect ratio and resolution are selected during order: 9:16 / 16:9 / 1:1 · 460p / 720p / 1080p / 4K", "pricingNote": "Delivery schedule is confirmed after project review. Foreign currency values are estimates only; final payment is processed in KRW.", "consumerKicker": "For everyone · sticker-photo price", "consumerTitle": "ONE PHOTO,<br>NEW WORLD.", "consumerCopy": "Upload one great photo. AVVM turns an ordinary image into a beginner-friendly transformation video with travel, Instagram, and fashion model vibes.", "travelJumpTitle": "Jump to global places", "travelJumpCopy": "Even a seated everyday photo can become a Paris, New York, Santorini, or Tokyo-style travel reel.", "fashionSwitchTitle": "From casual to model look", "fashionSwitchCopy": "Upgrade everyday clothing into a stylish editorial look, including hair, shoes, bag, and accessories.", "walkTransformTitle": "Transform while walking", "walkTransformCopy": "Walk naturally, flip the bag back, turn the head, and the outfit, accessories, hair, and sunglasses change instantly.", "miniCopy": "5s / 1 style / sticker-photo priced trial transform", "basicConsumerCopy": "8s / 1 style / easy SNS-ready transform", "bestConsumerCopy": "10s / travel + fashion mood / stronger TikTok transition", "setConsumerCopy": "3-style set / travel, fashion, and walking transform together", "tryNow": "TRY NOW", "startTransform": "START TRANSFORM", "chooseBest": "CHOOSE BEST", "getSet": "GET SET", "promptBoxTitle": "Hot Transform Styles", "promptBoxCopy": "Easy-to-choose short-form transformation styles inspired by current social video formats.", "prompt1": "Fashion Glow Up: ordinary outfit becomes model-style fashion", "prompt2": "World Travel Transform: one photo becomes a global destination reel", "prompt3": "Bag Flip Walk: flip the bag, turn the head, and the entire look transforms", "starterUse": "For quick short-form ads", "starterItem1": "cinematic video", "starterItem2": "Aspect ratio: choose 9:16 / 16:9 / 1:1", "starterItem3": "Resolution: choose 460p / 720p / 1080p / 4K", "commercialUse": "Commercial use included", "proUse": "For brand and product ads", "proItem1": "premium video", "proItem2": "Aspect ratio: choose 9:16 / 16:9 / 1:1", "proItem3": "1 revision included", "proItem4": "Resolution: choose 460p / 720p / 1080p / 4K", "priorityWork": "Priority production", "signatureUse": "For commercials, showreels and brand films", "signatureItem1": "signature video", "signatureItem2": "Aspect ratio: choose 9:16 / 16:9 / 1:1", "signatureItem3": "2 revisions included", "signatureItem4": "Resolution: choose 460p / 720p / 1080p / 4K", "signatureItem5": "Director-style review", "bestSeller": "Best Seller", "start": "Start", "catPersonal": "Personal Transform", "catBeauty": "Beauty", "catProduct": "Product", "catFood": "Food", "catTravel": "Travel", "catWedding": "Wedding", "catCustom": "Custom", "includedCopy": "Beyond duration and resolution, AVVM clearly shows BGM, SFX, captions, copywriting, voiceover, and revisions."}};
-  const AUTO={"ko": {"autoKo1": "AI가 초안을 만들고, 전문가가 상업용 품질로 보정합니다.", "autoKo2": "상품 형태, 로고, 라벨 왜곡을 줄이기 위한 검수 포함.", "autoKo3": "외화는 참고 환산, 실제 결제는 원화(KRW) 기준.", "autoKo4": "avvm.studio 도메인과 사업자 정보 영역 준비.", "autoKo5": "AVVM은 “버튼을 누르자마자 무작위 결과가 나오는 자동툴”이 아닙니다. AI가 빠르게 영상 초안을 만들고, 사람이 상품성·브랜드감·시각적 오류를 확인해 주문 내용 확인 후 상업용 결과물로 납품하는 초고속 AI 제작 스튜디오입니다.", "autoKo6": "주문 방식은 자판기처럼 쉽고 빠르게. 결과물은 전문가 검수 후 납품합니다.", "autoKo7": "AI 렌더링, 스타일 보정, 상품/로고 일관성 체크를 포함한 기본 납품 기준입니다.", "autoKo8": "AI 결과는 이미지 품질과 스타일에 따라 달라질 수 있으며, 상업용 사용 전 최종 확인을 권장합니다.", "autoKo9": "AI 영상에서 가장 큰 불안은 상품 로고, 라벨, 패키지 형태가 무너지는 문제입니다. AVVM은 제품 중심 광고에 맞게 상품 형태, 색감, 브랜드 인상, 라벨 가독성을 우선 검수합니다.", "autoKo10": "라벨·로고가 심하게 왜곡되면 재생성 또는 대체 컷으로 보정합니다.", "autoKo11": "화장품 병, 패키지, 음식, 제품 실루엣이 원본과 다르게 보이지 않도록 확인합니다.", "autoKo12": "예쁜 AI 영상보다 “팔리는 상품 영상”에 필요한 선명도와 신뢰감을 우선합니다.", "autoKo13": "추후에는 자신의 상품 이미지를 올리면 저화질 워터마크 프리뷰를 빠르게 확인하고, 마음에 들 때 본 제작으로 이어지는 체험 공간을 제공할 예정입니다.", "autoKo14": "MVP 단계에서는 샘플 쇼릴과 주문 상담 기반으로 시작하고, 다음 단계에서는 무료 프리뷰 기능을 추가해 결제 전 확신을 높입니다.", "autoKo15": "영상 길이와 화질 외에도 커머스 영상에 필요한 BGM, 효과음, 자막, 카피, 보이스 여부를 명확히 안내합니다.", "autoKo16": "9:16 / 16:9 / 1:1 선택", "autoKo17": "9:16 / 16:9 / 1:1 선택", "autoKo18": "9:16 / 16:9 / 1:1 선택", "autoKo19": "460p / 720p / 1080p / 4K 선택", "autoKo20": "460p / 720p / 1080p / 4K 선택", "autoKo21": "460p / 720p / 1080p / 4K 선택", "autoKo22": "10초", "autoKo23": "10초", "autoKo24": "15초", "autoKo25": "15초", "autoKo26": "30초", "autoKo27": "30초", "autoKo28": "브랜드: AVVM.studio · 서비스 제공: 라라랜드맘 / AVVM", "autoKo29": "사업자등록번호: 347-37-01807 · 통신판매업 신고번호: 제2026-경기파주-2862호", "autoKo30": "주문 흐름이 정상 작동합니다. 실제 결제 연결 전까지는 주문 초안이 브라우저에 저장되고, 주문 파일을 내려받을 수 있습니다.", "autoFinal1": "완성 알림을 카톡/문자로 받고, 링크에서 바로 확인하겠습니다.", "autoFinal2": "완성되면 카톡/문자로 알려드리고, 링크에서 바로 확인할 수 있습니다.", "autoFinal3": "주문 링크 열기", "autoFinal4": "접수됨", "autoFinal5": "제작 대기", "autoFinal6": "검수 중", "autoFinal7": "완성"}, "en": {"autoKo1": "AI creates the draft; a specialist polishes it for commercial quality.", "autoKo2": "Review included to reduce product, logo, and label distortion.", "autoKo3": "Foreign currency is an estimate; final payment is based on KRW.", "autoKo4": "avvm.studio domain and business information area are prepared.", "autoKo5": "AVVM is not a random instant generator. AI creates a draft quickly, and a human reviews product value, brand mood, and visual errors before delivering a commercial-ready result after project review.", "autoKo6": "Ordering is simple and fast like a vending machine. Results are delivered after expert review.", "autoKo7": "The basic workflow includes AI rendering, style polishing, and product/logo consistency checks.", "autoKo8": "AI results may vary by image quality and style. Please review before commercial use.", "autoKo9": "The biggest concern in AI video is distortion of logos, labels, or packaging. AVVM prioritizes product shape, color, brand impression, and label readability.", "autoKo10": "If labels or logos are heavily distorted, we regenerate or replace the shot.", "autoKo11": "We check that bottles, packages, food, and product silhouettes do not drift too far from the original.", "autoKo12": "We prioritize clarity and trust for product videos that sell, not just pretty AI visuals.", "autoKo13": "Later, customers will be able to upload a product image and preview a low-resolution watermarked version before full production.", "autoKo14": "At the MVP stage, we start with sample reels and order consultation; a free preview feature will come next.", "autoKo15": "Beyond duration and resolution, we clearly show BGM, SFX, captions, copy, voiceover, and revision options.", "autoKo16": "Choose 9:16 / 16:9 / 1:1", "autoKo17": "Choose 9:16 / 16:9 / 1:1", "autoKo18": "Choose 9:16 / 16:9 / 1:1", "autoKo19": "Choose 460p / 720p / 1080p / 4K", "autoKo20": "Choose 460p / 720p / 1080p / 4K", "autoKo21": "Choose 460p / 720p / 1080p / 4K", "autoKo22": "Content translated in this section.", "autoKo23": "Content translated in this section.", "autoKo24": "Content translated in this section.", "autoKo25": "Content translated in this section.", "autoKo26": "Content translated in this section.", "autoKo27": "Content translated in this section.", "autoKo28": "Brand: AVVM.studio · Service Provider: Lalalandmom / AVVM", "autoKo29": "Business Registration No.: 347-37-01807 · Mail-order Business Registration: 제2026-경기파주-2862호", "autoKo30": "The order flow is working. Until real payment is connected, the order draft is saved in the browser and can be downloaded as a file.", "autoFinal1": "Content translated.", "autoFinal2": "Content translated.", "autoFinal3": "Content translated.", "autoFinal4": "Content translated.", "autoFinal5": "Content translated.", "autoFinal6": "Content translated.", "autoFinal7": "Content translated."}, "ja": {"autoKo1": "AI creates the draft; a specialist polishes it for commercial quality.", "autoKo2": "Review included to reduce product, logo, and label distortion.", "autoKo3": "Foreign currency is an estimate; final payment is based on KRW.", "autoKo4": "avvm.studio domain and business information area are prepared.", "autoKo5": "AVVM is not a random instant generator. AI creates a draft quickly, and a human reviews product value, brand mood, and visual errors before delivering a commercial-ready result after project review.", "autoKo6": "Ordering is simple and fast like a vending machine. Results are delivered after expert review.", "autoKo7": "The basic workflow includes AI rendering, style polishing, and product/logo consistency checks.", "autoKo8": "AI results may vary by image quality and style. Please review before commercial use.", "autoKo9": "The biggest concern in AI video is distortion of logos, labels, or packaging. AVVM prioritizes product shape, color, brand impression, and label readability.", "autoKo10": "If labels or logos are heavily distorted, we regenerate or replace the shot.", "autoKo11": "We check that bottles, packages, food, and product silhouettes do not drift too far from the original.", "autoKo12": "We prioritize clarity and trust for product videos that sell, not just pretty AI visuals.", "autoKo13": "Later, customers will be able to upload a product image and preview a low-resolution watermarked version before full production.", "autoKo14": "At the MVP stage, we start with sample reels and order consultation; a free preview feature will come next.", "autoKo15": "Beyond duration and resolution, we clearly show BGM, SFX, captions, copy, voiceover, and revision options.", "autoKo16": "Choose 9:16 / 16:9 / 1:1", "autoKo17": "Choose 9:16 / 16:9 / 1:1", "autoKo18": "Choose 9:16 / 16:9 / 1:1", "autoKo19": "Choose 460p / 720p / 1080p / 4K", "autoKo20": "Choose 460p / 720p / 1080p / 4K", "autoKo21": "Choose 460p / 720p / 1080p / 4K", "autoKo22": "Content translated in this section.", "autoKo23": "Content translated in this section.", "autoKo24": "Content translated in this section.", "autoKo25": "Content translated in this section.", "autoKo26": "Content translated in this section.", "autoKo27": "Content translated in this section.", "autoKo28": "Brand: AVVM.studio · Service Provider: Lalalandmom / AVVM", "autoKo29": "Business Registration No.: 347-37-01807 · Mail-order Business Registration: 제2026-경기파주-2862호", "autoKo30": "The order flow is working. Until real payment is connected, the order draft is saved in the browser and can be downloaded as a file.", "autoFinal1": "Content translated.", "autoFinal2": "Content translated.", "autoFinal3": "Content translated.", "autoFinal4": "Content translated.", "autoFinal5": "Content translated.", "autoFinal6": "Content translated.", "autoFinal7": "Content translated."}, "zh": {"autoKo1": "AI creates the draft; a specialist polishes it for commercial quality.", "autoKo2": "Review included to reduce product, logo, and label distortion.", "autoKo3": "Foreign currency is an estimate; final payment is based on KRW.", "autoKo4": "avvm.studio domain and business information area are prepared.", "autoKo5": "AVVM is not a random instant generator. AI creates a draft quickly, and a human reviews product value, brand mood, and visual errors before delivering a commercial-ready result after project review.", "autoKo6": "Ordering is simple and fast like a vending machine. Results are delivered after expert review.", "autoKo7": "The basic workflow includes AI rendering, style polishing, and product/logo consistency checks.", "autoKo8": "AI results may vary by image quality and style. Please review before commercial use.", "autoKo9": "The biggest concern in AI video is distortion of logos, labels, or packaging. AVVM prioritizes product shape, color, brand impression, and label readability.", "autoKo10": "If labels or logos are heavily distorted, we regenerate or replace the shot.", "autoKo11": "We check that bottles, packages, food, and product silhouettes do not drift too far from the original.", "autoKo12": "We prioritize clarity and trust for product videos that sell, not just pretty AI visuals.", "autoKo13": "Later, customers will be able to upload a product image and preview a low-resolution watermarked version before full production.", "autoKo14": "At the MVP stage, we start with sample reels and order consultation; a free preview feature will come next.", "autoKo15": "Beyond duration and resolution, we clearly show BGM, SFX, captions, copy, voiceover, and revision options.", "autoKo16": "Choose 9:16 / 16:9 / 1:1", "autoKo17": "Choose 9:16 / 16:9 / 1:1", "autoKo18": "Choose 9:16 / 16:9 / 1:1", "autoKo19": "Choose 460p / 720p / 1080p / 4K", "autoKo20": "Choose 460p / 720p / 1080p / 4K", "autoKo21": "Choose 460p / 720p / 1080p / 4K", "autoKo22": "Content translated in this section.", "autoKo23": "Content translated in this section.", "autoKo24": "Content translated in this section.", "autoKo25": "Content translated in this section.", "autoKo26": "Content translated in this section.", "autoKo27": "Content translated in this section.", "autoKo28": "Brand: AVVM.studio · Service Provider: Lalalandmom / AVVM", "autoKo29": "Business Registration No.: 347-37-01807 · Mail-order Business Registration: 제2026-경기파주-2862호", "autoKo30": "The order flow is working. Until real payment is connected, the order draft is saved in the browser and can be downloaded as a file.", "autoFinal1": "Content translated.", "autoFinal2": "Content translated.", "autoFinal3": "Content translated.", "autoFinal4": "Content translated.", "autoFinal5": "Content translated.", "autoFinal6": "Content translated.", "autoFinal7": "Content translated."}, "es": {"autoKo1": "AI creates the draft; a specialist polishes it for commercial quality.", "autoKo2": "Review included to reduce product, logo, and label distortion.", "autoKo3": "Foreign currency is an estimate; final payment is based on KRW.", "autoKo4": "avvm.studio domain and business information area are prepared.", "autoKo5": "AVVM is not a random instant generator. AI creates a draft quickly, and a human reviews product value, brand mood, and visual errors before delivering a commercial-ready result after project review.", "autoKo6": "Ordering is simple and fast like a vending machine. Results are delivered after expert review.", "autoKo7": "The basic workflow includes AI rendering, style polishing, and product/logo consistency checks.", "autoKo8": "AI results may vary by image quality and style. Please review before commercial use.", "autoKo9": "The biggest concern in AI video is distortion of logos, labels, or packaging. AVVM prioritizes product shape, color, brand impression, and label readability.", "autoKo10": "If labels or logos are heavily distorted, we regenerate or replace the shot.", "autoKo11": "We check that bottles, packages, food, and product silhouettes do not drift too far from the original.", "autoKo12": "We prioritize clarity and trust for product videos that sell, not just pretty AI visuals.", "autoKo13": "Later, customers will be able to upload a product image and preview a low-resolution watermarked version before full production.", "autoKo14": "At the MVP stage, we start with sample reels and order consultation; a free preview feature will come next.", "autoKo15": "Beyond duration and resolution, we clearly show BGM, SFX, captions, copy, voiceover, and revision options.", "autoKo16": "Choose 9:16 / 16:9 / 1:1", "autoKo17": "Choose 9:16 / 16:9 / 1:1", "autoKo18": "Choose 9:16 / 16:9 / 1:1", "autoKo19": "Choose 460p / 720p / 1080p / 4K", "autoKo20": "Choose 460p / 720p / 1080p / 4K", "autoKo21": "Choose 460p / 720p / 1080p / 4K", "autoKo22": "Content translated in this section.", "autoKo23": "Content translated in this section.", "autoKo24": "Content translated in this section.", "autoKo25": "Content translated in this section.", "autoKo26": "Content translated in this section.", "autoKo27": "Content translated in this section.", "autoKo28": "Brand: AVVM.studio · Service Provider: Lalalandmom / AVVM", "autoKo29": "Business Registration No.: 347-37-01807 · Mail-order Business Registration: 제2026-경기파주-2862호", "autoKo30": "The order flow is working. Until real payment is connected, the order draft is saved in the browser and can be downloaded as a file.", "autoFinal1": "Content translated.", "autoFinal2": "Content translated.", "autoFinal3": "Content translated.", "autoFinal4": "Content translated.", "autoFinal5": "Content translated.", "autoFinal6": "Content translated.", "autoFinal7": "Content translated."}, "fr": {"autoKo1": "AI creates the draft; a specialist polishes it for commercial quality.", "autoKo2": "Review included to reduce product, logo, and label distortion.", "autoKo3": "Foreign currency is an estimate; final payment is based on KRW.", "autoKo4": "avvm.studio domain and business information area are prepared.", "autoKo5": "AVVM is not a random instant generator. AI creates a draft quickly, and a human reviews product value, brand mood, and visual errors before delivering a commercial-ready result after project review.", "autoKo6": "Ordering is simple and fast like a vending machine. Results are delivered after expert review.", "autoKo7": "The basic workflow includes AI rendering, style polishing, and product/logo consistency checks.", "autoKo8": "AI results may vary by image quality and style. Please review before commercial use.", "autoKo9": "The biggest concern in AI video is distortion of logos, labels, or packaging. AVVM prioritizes product shape, color, brand impression, and label readability.", "autoKo10": "If labels or logos are heavily distorted, we regenerate or replace the shot.", "autoKo11": "We check that bottles, packages, food, and product silhouettes do not drift too far from the original.", "autoKo12": "We prioritize clarity and trust for product videos that sell, not just pretty AI visuals.", "autoKo13": "Later, customers will be able to upload a product image and preview a low-resolution watermarked version before full production.", "autoKo14": "At the MVP stage, we start with sample reels and order consultation; a free preview feature will come next.", "autoKo15": "Beyond duration and resolution, we clearly show BGM, SFX, captions, copy, voiceover, and revision options.", "autoKo16": "Choose 9:16 / 16:9 / 1:1", "autoKo17": "Choose 9:16 / 16:9 / 1:1", "autoKo18": "Choose 9:16 / 16:9 / 1:1", "autoKo19": "Choose 460p / 720p / 1080p / 4K", "autoKo20": "Choose 460p / 720p / 1080p / 4K", "autoKo21": "Choose 460p / 720p / 1080p / 4K", "autoKo22": "Content translated in this section.", "autoKo23": "Content translated in this section.", "autoKo24": "Content translated in this section.", "autoKo25": "Content translated in this section.", "autoKo26": "Content translated in this section.", "autoKo27": "Content translated in this section.", "autoKo28": "Brand: AVVM.studio · Service Provider: Lalalandmom / AVVM", "autoKo29": "Business Registration No.: 347-37-01807 · Mail-order Business Registration: 제2026-경기파주-2862호", "autoKo30": "The order flow is working. Until real payment is connected, the order draft is saved in the browser and can be downloaded as a file.", "autoFinal1": "Content translated.", "autoFinal2": "Content translated.", "autoFinal3": "Content translated.", "autoFinal4": "Content translated.", "autoFinal5": "Content translated.", "autoFinal6": "Content translated.", "autoFinal7": "Content translated."}, "de": {"autoKo1": "AI creates the draft; a specialist polishes it for commercial quality.", "autoKo2": "Review included to reduce product, logo, and label distortion.", "autoKo3": "Foreign currency is an estimate; final payment is based on KRW.", "autoKo4": "avvm.studio domain and business information area are prepared.", "autoKo5": "AVVM is not a random instant generator. AI creates a draft quickly, and a human reviews product value, brand mood, and visual errors before delivering a commercial-ready result after project review.", "autoKo6": "Ordering is simple and fast like a vending machine. Results are delivered after expert review.", "autoKo7": "The basic workflow includes AI rendering, style polishing, and product/logo consistency checks.", "autoKo8": "AI results may vary by image quality and style. Please review before commercial use.", "autoKo9": "The biggest concern in AI video is distortion of logos, labels, or packaging. AVVM prioritizes product shape, color, brand impression, and label readability.", "autoKo10": "If labels or logos are heavily distorted, we regenerate or replace the shot.", "autoKo11": "We check that bottles, packages, food, and product silhouettes do not drift too far from the original.", "autoKo12": "We prioritize clarity and trust for product videos that sell, not just pretty AI visuals.", "autoKo13": "Later, customers will be able to upload a product image and preview a low-resolution watermarked version before full production.", "autoKo14": "At the MVP stage, we start with sample reels and order consultation; a free preview feature will come next.", "autoKo15": "Beyond duration and resolution, we clearly show BGM, SFX, captions, copy, voiceover, and revision options.", "autoKo16": "Choose 9:16 / 16:9 / 1:1", "autoKo17": "Choose 9:16 / 16:9 / 1:1", "autoKo18": "Choose 9:16 / 16:9 / 1:1", "autoKo19": "Choose 460p / 720p / 1080p / 4K", "autoKo20": "Choose 460p / 720p / 1080p / 4K", "autoKo21": "Choose 460p / 720p / 1080p / 4K", "autoKo22": "Content translated in this section.", "autoKo23": "Content translated in this section.", "autoKo24": "Content translated in this section.", "autoKo25": "Content translated in this section.", "autoKo26": "Content translated in this section.", "autoKo27": "Content translated in this section.", "autoKo28": "Brand: AVVM.studio · Service Provider: Lalalandmom / AVVM", "autoKo29": "Business Registration No.: 347-37-01807 · Mail-order Business Registration: 제2026-경기파주-2862호", "autoKo30": "The order flow is working. Until real payment is connected, the order draft is saved in the browser and can be downloaded as a file.", "autoFinal1": "Content translated.", "autoFinal2": "Content translated.", "autoFinal3": "Content translated.", "autoFinal4": "Content translated.", "autoFinal5": "Content translated.", "autoFinal6": "Content translated.", "autoFinal7": "Content translated."}, "pt": {"autoKo1": "AI creates the draft; a specialist polishes it for commercial quality.", "autoKo2": "Review included to reduce product, logo, and label distortion.", "autoKo3": "Foreign currency is an estimate; final payment is based on KRW.", "autoKo4": "avvm.studio domain and business information area are prepared.", "autoKo5": "AVVM is not a random instant generator. AI creates a draft quickly, and a human reviews product value, brand mood, and visual errors before delivering a commercial-ready result after project review.", "autoKo6": "Ordering is simple and fast like a vending machine. Results are delivered after expert review.", "autoKo7": "The basic workflow includes AI rendering, style polishing, and product/logo consistency checks.", "autoKo8": "AI results may vary by image quality and style. Please review before commercial use.", "autoKo9": "The biggest concern in AI video is distortion of logos, labels, or packaging. AVVM prioritizes product shape, color, brand impression, and label readability.", "autoKo10": "If labels or logos are heavily distorted, we regenerate or replace the shot.", "autoKo11": "We check that bottles, packages, food, and product silhouettes do not drift too far from the original.", "autoKo12": "We prioritize clarity and trust for product videos that sell, not just pretty AI visuals.", "autoKo13": "Later, customers will be able to upload a product image and preview a low-resolution watermarked version before full production.", "autoKo14": "At the MVP stage, we start with sample reels and order consultation; a free preview feature will come next.", "autoKo15": "Beyond duration and resolution, we clearly show BGM, SFX, captions, copy, voiceover, and revision options.", "autoKo16": "Choose 9:16 / 16:9 / 1:1", "autoKo17": "Choose 9:16 / 16:9 / 1:1", "autoKo18": "Choose 9:16 / 16:9 / 1:1", "autoKo19": "Choose 460p / 720p / 1080p / 4K", "autoKo20": "Choose 460p / 720p / 1080p / 4K", "autoKo21": "Choose 460p / 720p / 1080p / 4K", "autoKo22": "Content translated in this section.", "autoKo23": "Content translated in this section.", "autoKo24": "Content translated in this section.", "autoKo25": "Content translated in this section.", "autoKo26": "Content translated in this section.", "autoKo27": "Content translated in this section.", "autoKo28": "Brand: AVVM.studio · Service Provider: Lalalandmom / AVVM", "autoKo29": "Business Registration No.: 347-37-01807 · Mail-order Business Registration: 제2026-경기파주-2862호", "autoKo30": "The order flow is working. Until real payment is connected, the order draft is saved in the browser and can be downloaded as a file.", "autoFinal1": "Content translated.", "autoFinal2": "Content translated.", "autoFinal3": "Content translated.", "autoFinal4": "Content translated.", "autoFinal5": "Content translated.", "autoFinal6": "Content translated.", "autoFinal7": "Content translated."}, "ar": {"autoKo1": "AI creates the draft; a specialist polishes it for commercial quality.", "autoKo2": "Review included to reduce product, logo, and label distortion.", "autoKo3": "Foreign currency is an estimate; final payment is based on KRW.", "autoKo4": "avvm.studio domain and business information area are prepared.", "autoKo5": "AVVM is not a random instant generator. AI creates a draft quickly, and a human reviews product value, brand mood, and visual errors before delivering a commercial-ready result after project review.", "autoKo6": "Ordering is simple and fast like a vending machine. Results are delivered after expert review.", "autoKo7": "The basic workflow includes AI rendering, style polishing, and product/logo consistency checks.", "autoKo8": "AI results may vary by image quality and style. Please review before commercial use.", "autoKo9": "The biggest concern in AI video is distortion of logos, labels, or packaging. AVVM prioritizes product shape, color, brand impression, and label readability.", "autoKo10": "If labels or logos are heavily distorted, we regenerate or replace the shot.", "autoKo11": "We check that bottles, packages, food, and product silhouettes do not drift too far from the original.", "autoKo12": "We prioritize clarity and trust for product videos that sell, not just pretty AI visuals.", "autoKo13": "Later, customers will be able to upload a product image and preview a low-resolution watermarked version before full production.", "autoKo14": "At the MVP stage, we start with sample reels and order consultation; a free preview feature will come next.", "autoKo15": "Beyond duration and resolution, we clearly show BGM, SFX, captions, copy, voiceover, and revision options.", "autoKo16": "Choose 9:16 / 16:9 / 1:1", "autoKo17": "Choose 9:16 / 16:9 / 1:1", "autoKo18": "Choose 9:16 / 16:9 / 1:1", "autoKo19": "Choose 460p / 720p / 1080p / 4K", "autoKo20": "Choose 460p / 720p / 1080p / 4K", "autoKo21": "Choose 460p / 720p / 1080p / 4K", "autoKo22": "Content translated in this section.", "autoKo23": "Content translated in this section.", "autoKo24": "Content translated in this section.", "autoKo25": "Content translated in this section.", "autoKo26": "Content translated in this section.", "autoKo27": "Content translated in this section.", "autoKo28": "Brand: AVVM.studio · Service Provider: Lalalandmom / AVVM", "autoKo29": "Business Registration No.: 347-37-01807 · Mail-order Business Registration: 제2026-경기파주-2862호", "autoKo30": "The order flow is working. Until real payment is connected, the order draft is saved in the browser and can be downloaded as a file.", "autoFinal1": "Content translated.", "autoFinal2": "Content translated.", "autoFinal3": "Content translated.", "autoFinal4": "Content translated.", "autoFinal5": "Content translated.", "autoFinal6": "Content translated.", "autoFinal7": "Content translated."}};
+  const AUTO={"ko": {"autoKo1": "AI가 초안을 만들고, 전문가가 상업용 품질로 보정합니다.", "autoKo2": "상품 형태, 로고, 라벨 왜곡을 줄이기 위한 검수 포함.", "autoKo3": "외화는 참고 환산, 실제 결제는 원화(KRW) 기준.", "autoKo4": "avvm.studio 도메인과 사업자 정보 영역 준비.", "autoKo5": "AVVM은 “버튼을 누르자마자 무작위 결과가 나오는 자동툴”이 아닙니다. AI가 빠르게 영상 초안을 만들고, 사람이 상품성·브랜드감·시각적 오류를 확인해 주문 내용 확인 후 상업용 결과물로 납품하는 초고속 AI 제작 스튜디오입니다.", "autoKo6": "주문 방식은 자판기처럼 쉽고 빠르게. 결과물은 전문가 검수 후 납품합니다.", "autoKo7": "AI 렌더링, 스타일 보정, 상품/로고 일관성 체크를 포함한 기본 납품 기준입니다.", "autoKo8": "AI 결과는 이미지 품질과 스타일에 따라 달라질 수 있으며, 상업용 사용 전 최종 확인을 권장합니다.", "autoKo9": "AI 영상에서 가장 큰 불안은 상품 로고, 라벨, 패키지 형태가 무너지는 문제입니다. AVVM은 제품 중심 광고에 맞게 상품 형태, 색감, 브랜드 인상, 라벨 가독성을 우선 검수합니다.", "autoKo10": "라벨·로고가 심하게 왜곡되면 재생성 또는 대체 컷으로 보정합니다.", "autoKo11": "화장품 병, 패키지, 음식, 제품 실루엣이 원본과 다르게 보이지 않도록 확인합니다.", "autoKo12": "예쁜 AI 영상보다 “팔리는 상품 영상”에 필요한 선명도와 신뢰감을 우선합니다.", "autoKo13": "추후에는 자신의 상품 이미지를 올리면 저화질 워터마크 프리뷰를 빠르게 확인하고, 마음에 들 때 본 제작으로 이어지는 체험 공간을 제공할 예정입니다.", "autoKo14": "MVP 단계에서는 샘플 쇼릴과 주문 상담 기반으로 시작하고, 다음 단계에서는 무료 프리뷰 기능을 추가해 결제 전 확신을 높입니다.", "autoKo15": "영상 길이와 화질 외에도 커머스 영상에 필요한 BGM, 효과음, 자막, 카피, 보이스 여부를 명확히 안내합니다.", "autoKo16": "9:16 / 16:9 / 1:1 선택", "autoKo17": "9:16 / 16:9 / 1:1 선택", "autoKo18": "9:16 / 16:9 / 1:1 선택", "autoKo19": "460p / 720p / 1080p / 4K 선택", "autoKo20": "460p / 720p / 1080p / 4K 선택", "autoKo21": "460p / 720p / 1080p / 4K 선택", "autoKo22": "10초", "autoKo23": "10초", "autoKo24": "15초", "autoKo25": "15초", "autoKo26": "30초", "autoKo27": "30초", "autoKo28": "브랜드: AVVM.studio · 서비스 제공: 라라랜드맘 / AVVM", "autoKo29": "사업자등록번호: 347-37-01807 · 통신판매업 신고번호: 제2026-경기파주-2862호", "autoKo30": "주문 흐름이 정상 작동합니다. 실제 결제 연결 전까지는 주문 초안이 브라우저에 저장되고, 주문 파일을 내려받을 수 있습니다.", "autoFinal1": "완성 알림을 카톡/문자로 받고, 링크에서 바로 확인하겠습니다.", "autoFinal2": "완성되면 카톡/문자로 알려드리고, 링크에서 바로 확인할 수 있습니다.", "autoFinal3": "주문 링크 열기", "autoFinal4": "접수됨", "autoFinal5": "제작 대기", "autoFinal6": "검수 중", "autoFinal7": "완성"}, "en": {"autoKo1": "AI creates the draft; a specialist polishes it for commercial quality.", "autoKo2": "Review included to reduce product, logo, and label distortion.", "autoKo3": "Foreign currency is an estimate; final payment is based on KRW.", "autoKo4": "avvm.studio domain and business information area are prepared.", "autoKo5": "AVVM is not a random instant generator. AI creates a draft quickly, and a human reviews product value, brand mood, and visual errors before delivering a commercial-ready result after project review.", "autoKo6": "Ordering is simple and fast like a vending machine. Results are delivered after expert review.", "autoKo7": "The basic workflow includes AI rendering, style polishing, and product/logo consistency checks.", "autoKo8": "AI results may vary by image quality and style. Please review before commercial use.", "autoKo9": "The biggest concern in AI video is distortion of logos, labels, or packaging. AVVM prioritizes product shape, color, brand impression, and label readability.", "autoKo10": "If labels or logos are heavily distorted, we regenerate or replace the shot.", "autoKo11": "We check that bottles, packages, food, and product silhouettes do not drift too far from the original.", "autoKo12": "We prioritize clarity and trust for product videos that sell, not just pretty AI visuals.", "autoKo13": "Later, customers will be able to upload a product image and preview a low-resolution watermarked version before full production.", "autoKo14": "At the MVP stage, we start with sample reels and order consultation; a free preview feature will come next.", "autoKo15": "Beyond duration and resolution, we clearly show BGM, SFX, captions, copy, voiceover, and revision options.", "autoKo16": "Choose 9:16 / 16:9 / 1:1", "autoKo17": "Choose 9:16 / 16:9 / 1:1", "autoKo18": "Choose 9:16 / 16:9 / 1:1", "autoKo19": "Choose 460p / 720p / 1080p / 4K", "autoKo20": "Choose 460p / 720p / 1080p / 4K", "autoKo21": "Choose 460p / 720p / 1080p / 4K", "autoKo22": "Content translated in this section.", "autoKo23": "Content translated in this section.", "autoKo24": "Content translated in this section.", "autoKo25": "Content translated in this section.", "autoKo26": "Content translated in this section.", "autoKo27": "Content translated in this section.", "autoKo28": "Brand: AVVM.studio · Service Provider: 라라랜드맘 / AVVM", "autoKo29": "Business Registration No.: 347-37-01807 · Mail-order Business Registration: 제2026-경기파주-2862호", "autoKo30": "The order flow is working. Until real payment is connected, the order draft is saved in the browser and can be downloaded as a file.", "autoFinal1": "Content translated.", "autoFinal2": "Content translated.", "autoFinal3": "Content translated.", "autoFinal4": "Content translated.", "autoFinal5": "Content translated.", "autoFinal6": "Content translated.", "autoFinal7": "Content translated."}, "ja": {"autoKo1": "AI creates the draft; a specialist polishes it for commercial quality.", "autoKo2": "Review included to reduce product, logo, and label distortion.", "autoKo3": "Foreign currency is an estimate; final payment is based on KRW.", "autoKo4": "avvm.studio domain and business information area are prepared.", "autoKo5": "AVVM is not a random instant generator. AI creates a draft quickly, and a human reviews product value, brand mood, and visual errors before delivering a commercial-ready result after project review.", "autoKo6": "Ordering is simple and fast like a vending machine. Results are delivered after expert review.", "autoKo7": "The basic workflow includes AI rendering, style polishing, and product/logo consistency checks.", "autoKo8": "AI results may vary by image quality and style. Please review before commercial use.", "autoKo9": "The biggest concern in AI video is distortion of logos, labels, or packaging. AVVM prioritizes product shape, color, brand impression, and label readability.", "autoKo10": "If labels or logos are heavily distorted, we regenerate or replace the shot.", "autoKo11": "We check that bottles, packages, food, and product silhouettes do not drift too far from the original.", "autoKo12": "We prioritize clarity and trust for product videos that sell, not just pretty AI visuals.", "autoKo13": "Later, customers will be able to upload a product image and preview a low-resolution watermarked version before full production.", "autoKo14": "At the MVP stage, we start with sample reels and order consultation; a free preview feature will come next.", "autoKo15": "Beyond duration and resolution, we clearly show BGM, SFX, captions, copy, voiceover, and revision options.", "autoKo16": "Choose 9:16 / 16:9 / 1:1", "autoKo17": "Choose 9:16 / 16:9 / 1:1", "autoKo18": "Choose 9:16 / 16:9 / 1:1", "autoKo19": "Choose 460p / 720p / 1080p / 4K", "autoKo20": "Choose 460p / 720p / 1080p / 4K", "autoKo21": "Choose 460p / 720p / 1080p / 4K", "autoKo22": "Content translated in this section.", "autoKo23": "Content translated in this section.", "autoKo24": "Content translated in this section.", "autoKo25": "Content translated in this section.", "autoKo26": "Content translated in this section.", "autoKo27": "Content translated in this section.", "autoKo28": "Brand: AVVM.studio · Service Provider: 라라랜드맘 / AVVM", "autoKo29": "Business Registration No.: 347-37-01807 · Mail-order Business Registration: 제2026-경기파주-2862호", "autoKo30": "The order flow is working. Until real payment is connected, the order draft is saved in the browser and can be downloaded as a file.", "autoFinal1": "Content translated.", "autoFinal2": "Content translated.", "autoFinal3": "Content translated.", "autoFinal4": "Content translated.", "autoFinal5": "Content translated.", "autoFinal6": "Content translated.", "autoFinal7": "Content translated."}, "zh": {"autoKo1": "AI creates the draft; a specialist polishes it for commercial quality.", "autoKo2": "Review included to reduce product, logo, and label distortion.", "autoKo3": "Foreign currency is an estimate; final payment is based on KRW.", "autoKo4": "avvm.studio domain and business information area are prepared.", "autoKo5": "AVVM is not a random instant generator. AI creates a draft quickly, and a human reviews product value, brand mood, and visual errors before delivering a commercial-ready result after project review.", "autoKo6": "Ordering is simple and fast like a vending machine. Results are delivered after expert review.", "autoKo7": "The basic workflow includes AI rendering, style polishing, and product/logo consistency checks.", "autoKo8": "AI results may vary by image quality and style. Please review before commercial use.", "autoKo9": "The biggest concern in AI video is distortion of logos, labels, or packaging. AVVM prioritizes product shape, color, brand impression, and label readability.", "autoKo10": "If labels or logos are heavily distorted, we regenerate or replace the shot.", "autoKo11": "We check that bottles, packages, food, and product silhouettes do not drift too far from the original.", "autoKo12": "We prioritize clarity and trust for product videos that sell, not just pretty AI visuals.", "autoKo13": "Later, customers will be able to upload a product image and preview a low-resolution watermarked version before full production.", "autoKo14": "At the MVP stage, we start with sample reels and order consultation; a free preview feature will come next.", "autoKo15": "Beyond duration and resolution, we clearly show BGM, SFX, captions, copy, voiceover, and revision options.", "autoKo16": "Choose 9:16 / 16:9 / 1:1", "autoKo17": "Choose 9:16 / 16:9 / 1:1", "autoKo18": "Choose 9:16 / 16:9 / 1:1", "autoKo19": "Choose 460p / 720p / 1080p / 4K", "autoKo20": "Choose 460p / 720p / 1080p / 4K", "autoKo21": "Choose 460p / 720p / 1080p / 4K", "autoKo22": "Content translated in this section.", "autoKo23": "Content translated in this section.", "autoKo24": "Content translated in this section.", "autoKo25": "Content translated in this section.", "autoKo26": "Content translated in this section.", "autoKo27": "Content translated in this section.", "autoKo28": "Brand: AVVM.studio · Service Provider: 라라랜드맘 / AVVM", "autoKo29": "Business Registration No.: 347-37-01807 · Mail-order Business Registration: 제2026-경기파주-2862호", "autoKo30": "The order flow is working. Until real payment is connected, the order draft is saved in the browser and can be downloaded as a file.", "autoFinal1": "Content translated.", "autoFinal2": "Content translated.", "autoFinal3": "Content translated.", "autoFinal4": "Content translated.", "autoFinal5": "Content translated.", "autoFinal6": "Content translated.", "autoFinal7": "Content translated."}, "es": {"autoKo1": "AI creates the draft; a specialist polishes it for commercial quality.", "autoKo2": "Review included to reduce product, logo, and label distortion.", "autoKo3": "Foreign currency is an estimate; final payment is based on KRW.", "autoKo4": "avvm.studio domain and business information area are prepared.", "autoKo5": "AVVM is not a random instant generator. AI creates a draft quickly, and a human reviews product value, brand mood, and visual errors before delivering a commercial-ready result after project review.", "autoKo6": "Ordering is simple and fast like a vending machine. Results are delivered after expert review.", "autoKo7": "The basic workflow includes AI rendering, style polishing, and product/logo consistency checks.", "autoKo8": "AI results may vary by image quality and style. Please review before commercial use.", "autoKo9": "The biggest concern in AI video is distortion of logos, labels, or packaging. AVVM prioritizes product shape, color, brand impression, and label readability.", "autoKo10": "If labels or logos are heavily distorted, we regenerate or replace the shot.", "autoKo11": "We check that bottles, packages, food, and product silhouettes do not drift too far from the original.", "autoKo12": "We prioritize clarity and trust for product videos that sell, not just pretty AI visuals.", "autoKo13": "Later, customers will be able to upload a product image and preview a low-resolution watermarked version before full production.", "autoKo14": "At the MVP stage, we start with sample reels and order consultation; a free preview feature will come next.", "autoKo15": "Beyond duration and resolution, we clearly show BGM, SFX, captions, copy, voiceover, and revision options.", "autoKo16": "Choose 9:16 / 16:9 / 1:1", "autoKo17": "Choose 9:16 / 16:9 / 1:1", "autoKo18": "Choose 9:16 / 16:9 / 1:1", "autoKo19": "Choose 460p / 720p / 1080p / 4K", "autoKo20": "Choose 460p / 720p / 1080p / 4K", "autoKo21": "Choose 460p / 720p / 1080p / 4K", "autoKo22": "Content translated in this section.", "autoKo23": "Content translated in this section.", "autoKo24": "Content translated in this section.", "autoKo25": "Content translated in this section.", "autoKo26": "Content translated in this section.", "autoKo27": "Content translated in this section.", "autoKo28": "Brand: AVVM.studio · Service Provider: 라라랜드맘 / AVVM", "autoKo29": "Business Registration No.: 347-37-01807 · Mail-order Business Registration: 제2026-경기파주-2862호", "autoKo30": "The order flow is working. Until real payment is connected, the order draft is saved in the browser and can be downloaded as a file.", "autoFinal1": "Content translated.", "autoFinal2": "Content translated.", "autoFinal3": "Content translated.", "autoFinal4": "Content translated.", "autoFinal5": "Content translated.", "autoFinal6": "Content translated.", "autoFinal7": "Content translated."}, "fr": {"autoKo1": "AI creates the draft; a specialist polishes it for commercial quality.", "autoKo2": "Review included to reduce product, logo, and label distortion.", "autoKo3": "Foreign currency is an estimate; final payment is based on KRW.", "autoKo4": "avvm.studio domain and business information area are prepared.", "autoKo5": "AVVM is not a random instant generator. AI creates a draft quickly, and a human reviews product value, brand mood, and visual errors before delivering a commercial-ready result after project review.", "autoKo6": "Ordering is simple and fast like a vending machine. Results are delivered after expert review.", "autoKo7": "The basic workflow includes AI rendering, style polishing, and product/logo consistency checks.", "autoKo8": "AI results may vary by image quality and style. Please review before commercial use.", "autoKo9": "The biggest concern in AI video is distortion of logos, labels, or packaging. AVVM prioritizes product shape, color, brand impression, and label readability.", "autoKo10": "If labels or logos are heavily distorted, we regenerate or replace the shot.", "autoKo11": "We check that bottles, packages, food, and product silhouettes do not drift too far from the original.", "autoKo12": "We prioritize clarity and trust for product videos that sell, not just pretty AI visuals.", "autoKo13": "Later, customers will be able to upload a product image and preview a low-resolution watermarked version before full production.", "autoKo14": "At the MVP stage, we start with sample reels and order consultation; a free preview feature will come next.", "autoKo15": "Beyond duration and resolution, we clearly show BGM, SFX, captions, copy, voiceover, and revision options.", "autoKo16": "Choose 9:16 / 16:9 / 1:1", "autoKo17": "Choose 9:16 / 16:9 / 1:1", "autoKo18": "Choose 9:16 / 16:9 / 1:1", "autoKo19": "Choose 460p / 720p / 1080p / 4K", "autoKo20": "Choose 460p / 720p / 1080p / 4K", "autoKo21": "Choose 460p / 720p / 1080p / 4K", "autoKo22": "Content translated in this section.", "autoKo23": "Content translated in this section.", "autoKo24": "Content translated in this section.", "autoKo25": "Content translated in this section.", "autoKo26": "Content translated in this section.", "autoKo27": "Content translated in this section.", "autoKo28": "Brand: AVVM.studio · Service Provider: 라라랜드맘 / AVVM", "autoKo29": "Business Registration No.: 347-37-01807 · Mail-order Business Registration: 제2026-경기파주-2862호", "autoKo30": "The order flow is working. Until real payment is connected, the order draft is saved in the browser and can be downloaded as a file.", "autoFinal1": "Content translated.", "autoFinal2": "Content translated.", "autoFinal3": "Content translated.", "autoFinal4": "Content translated.", "autoFinal5": "Content translated.", "autoFinal6": "Content translated.", "autoFinal7": "Content translated."}, "de": {"autoKo1": "AI creates the draft; a specialist polishes it for commercial quality.", "autoKo2": "Review included to reduce product, logo, and label distortion.", "autoKo3": "Foreign currency is an estimate; final payment is based on KRW.", "autoKo4": "avvm.studio domain and business information area are prepared.", "autoKo5": "AVVM is not a random instant generator. AI creates a draft quickly, and a human reviews product value, brand mood, and visual errors before delivering a commercial-ready result after project review.", "autoKo6": "Ordering is simple and fast like a vending machine. Results are delivered after expert review.", "autoKo7": "The basic workflow includes AI rendering, style polishing, and product/logo consistency checks.", "autoKo8": "AI results may vary by image quality and style. Please review before commercial use.", "autoKo9": "The biggest concern in AI video is distortion of logos, labels, or packaging. AVVM prioritizes product shape, color, brand impression, and label readability.", "autoKo10": "If labels or logos are heavily distorted, we regenerate or replace the shot.", "autoKo11": "We check that bottles, packages, food, and product silhouettes do not drift too far from the original.", "autoKo12": "We prioritize clarity and trust for product videos that sell, not just pretty AI visuals.", "autoKo13": "Later, customers will be able to upload a product image and preview a low-resolution watermarked version before full production.", "autoKo14": "At the MVP stage, we start with sample reels and order consultation; a free preview feature will come next.", "autoKo15": "Beyond duration and resolution, we clearly show BGM, SFX, captions, copy, voiceover, and revision options.", "autoKo16": "Choose 9:16 / 16:9 / 1:1", "autoKo17": "Choose 9:16 / 16:9 / 1:1", "autoKo18": "Choose 9:16 / 16:9 / 1:1", "autoKo19": "Choose 460p / 720p / 1080p / 4K", "autoKo20": "Choose 460p / 720p / 1080p / 4K", "autoKo21": "Choose 460p / 720p / 1080p / 4K", "autoKo22": "Content translated in this section.", "autoKo23": "Content translated in this section.", "autoKo24": "Content translated in this section.", "autoKo25": "Content translated in this section.", "autoKo26": "Content translated in this section.", "autoKo27": "Content translated in this section.", "autoKo28": "Brand: AVVM.studio · Service Provider: 라라랜드맘 / AVVM", "autoKo29": "Business Registration No.: 347-37-01807 · Mail-order Business Registration: 제2026-경기파주-2862호", "autoKo30": "The order flow is working. Until real payment is connected, the order draft is saved in the browser and can be downloaded as a file.", "autoFinal1": "Content translated.", "autoFinal2": "Content translated.", "autoFinal3": "Content translated.", "autoFinal4": "Content translated.", "autoFinal5": "Content translated.", "autoFinal6": "Content translated.", "autoFinal7": "Content translated."}, "pt": {"autoKo1": "AI creates the draft; a specialist polishes it for commercial quality.", "autoKo2": "Review included to reduce product, logo, and label distortion.", "autoKo3": "Foreign currency is an estimate; final payment is based on KRW.", "autoKo4": "avvm.studio domain and business information area are prepared.", "autoKo5": "AVVM is not a random instant generator. AI creates a draft quickly, and a human reviews product value, brand mood, and visual errors before delivering a commercial-ready result after project review.", "autoKo6": "Ordering is simple and fast like a vending machine. Results are delivered after expert review.", "autoKo7": "The basic workflow includes AI rendering, style polishing, and product/logo consistency checks.", "autoKo8": "AI results may vary by image quality and style. Please review before commercial use.", "autoKo9": "The biggest concern in AI video is distortion of logos, labels, or packaging. AVVM prioritizes product shape, color, brand impression, and label readability.", "autoKo10": "If labels or logos are heavily distorted, we regenerate or replace the shot.", "autoKo11": "We check that bottles, packages, food, and product silhouettes do not drift too far from the original.", "autoKo12": "We prioritize clarity and trust for product videos that sell, not just pretty AI visuals.", "autoKo13": "Later, customers will be able to upload a product image and preview a low-resolution watermarked version before full production.", "autoKo14": "At the MVP stage, we start with sample reels and order consultation; a free preview feature will come next.", "autoKo15": "Beyond duration and resolution, we clearly show BGM, SFX, captions, copy, voiceover, and revision options.", "autoKo16": "Choose 9:16 / 16:9 / 1:1", "autoKo17": "Choose 9:16 / 16:9 / 1:1", "autoKo18": "Choose 9:16 / 16:9 / 1:1", "autoKo19": "Choose 460p / 720p / 1080p / 4K", "autoKo20": "Choose 460p / 720p / 1080p / 4K", "autoKo21": "Choose 460p / 720p / 1080p / 4K", "autoKo22": "Content translated in this section.", "autoKo23": "Content translated in this section.", "autoKo24": "Content translated in this section.", "autoKo25": "Content translated in this section.", "autoKo26": "Content translated in this section.", "autoKo27": "Content translated in this section.", "autoKo28": "Brand: AVVM.studio · Service Provider: 라라랜드맘 / AVVM", "autoKo29": "Business Registration No.: 347-37-01807 · Mail-order Business Registration: 제2026-경기파주-2862호", "autoKo30": "The order flow is working. Until real payment is connected, the order draft is saved in the browser and can be downloaded as a file.", "autoFinal1": "Content translated.", "autoFinal2": "Content translated.", "autoFinal3": "Content translated.", "autoFinal4": "Content translated.", "autoFinal5": "Content translated.", "autoFinal6": "Content translated.", "autoFinal7": "Content translated."}, "ar": {"autoKo1": "AI creates the draft; a specialist polishes it for commercial quality.", "autoKo2": "Review included to reduce product, logo, and label distortion.", "autoKo3": "Foreign currency is an estimate; final payment is based on KRW.", "autoKo4": "avvm.studio domain and business information area are prepared.", "autoKo5": "AVVM is not a random instant generator. AI creates a draft quickly, and a human reviews product value, brand mood, and visual errors before delivering a commercial-ready result after project review.", "autoKo6": "Ordering is simple and fast like a vending machine. Results are delivered after expert review.", "autoKo7": "The basic workflow includes AI rendering, style polishing, and product/logo consistency checks.", "autoKo8": "AI results may vary by image quality and style. Please review before commercial use.", "autoKo9": "The biggest concern in AI video is distortion of logos, labels, or packaging. AVVM prioritizes product shape, color, brand impression, and label readability.", "autoKo10": "If labels or logos are heavily distorted, we regenerate or replace the shot.", "autoKo11": "We check that bottles, packages, food, and product silhouettes do not drift too far from the original.", "autoKo12": "We prioritize clarity and trust for product videos that sell, not just pretty AI visuals.", "autoKo13": "Later, customers will be able to upload a product image and preview a low-resolution watermarked version before full production.", "autoKo14": "At the MVP stage, we start with sample reels and order consultation; a free preview feature will come next.", "autoKo15": "Beyond duration and resolution, we clearly show BGM, SFX, captions, copy, voiceover, and revision options.", "autoKo16": "Choose 9:16 / 16:9 / 1:1", "autoKo17": "Choose 9:16 / 16:9 / 1:1", "autoKo18": "Choose 9:16 / 16:9 / 1:1", "autoKo19": "Choose 460p / 720p / 1080p / 4K", "autoKo20": "Choose 460p / 720p / 1080p / 4K", "autoKo21": "Choose 460p / 720p / 1080p / 4K", "autoKo22": "Content translated in this section.", "autoKo23": "Content translated in this section.", "autoKo24": "Content translated in this section.", "autoKo25": "Content translated in this section.", "autoKo26": "Content translated in this section.", "autoKo27": "Content translated in this section.", "autoKo28": "Brand: AVVM.studio · Service Provider: 라라랜드맘 / AVVM", "autoKo29": "Business Registration No.: 347-37-01807 · Mail-order Business Registration: 제2026-경기파주-2862호", "autoKo30": "The order flow is working. Until real payment is connected, the order draft is saved in the browser and can be downloaded as a file.", "autoFinal1": "Content translated.", "autoFinal2": "Content translated.", "autoFinal3": "Content translated.", "autoFinal4": "Content translated.", "autoFinal5": "Content translated.", "autoFinal6": "Content translated.", "autoFinal7": "Content translated."}};
   const HELP={"ko": {"help1": "프로젝트 시작: 이미지 업로드와 주문 정보를 입력합니다.", "help2": "사진을 올리고 원하는 스타일을 선택하면 주문 흐름이 시작됩니다.", "help3": "AVVM 샘플 영상을 크게 확인합니다.", "help4": "왼쪽은 입력 이미지, 오른쪽은 시네마틱 결과 예시입니다.", "help5": "사진을 올리고 원하는 스타일을 선택하면 주문 흐름이 시작됩니다.", "help6": "즉시 완성형 자동툴이 아니라, AI 초안 생성 후 사람이 품질을 확인하는 제작 서비스입니다.", "help7": "제품 로고와 형태가 무너지는 AI 특유의 오류를 줄이기 위해 최종 검수 과정을 둡니다.", "help8": "외화 표시는 참고용이며 실제 결제와 환불 기준은 원화입니다.", "help9": "정식 도메인과 사업자 정보 공개로 결제 신뢰도를 높입니다.", "help10": "사진 한 장이 영화 장면으로 변환되는 데모를 재생합니다.", "help11": "입력 이미지가 영화 장면으로 변환되는 대표 데모입니다.", "help12": "액션 변환 샘플을 크게 봅니다.", "help13": "뷰티/스킨케어 광고 샘플 영상을 재생합니다.", "help14": "15초 뷰티 광고 샘플입니다. 물결, 제품, 피부 클로즈업 흐름을 확인하세요.", "help15": "뷰티 샘플 영상을 크게 봅니다.", "help16": "자판기라는 이름은 주문이 쉽다는 뜻입니다. 결과물은 검수 후 전달됩니다.", "help17": "AI가 만든 결과에서 어색한 손, 글자 깨짐, 상품 왜곡 같은 문제를 확인합니다.", "help18": "고객이 올린 이미지를 기반으로 하지만, AI 특성상 100% 동일 복제는 보장하지 않습니다.", "help19": "정식 자동 프리뷰 기능은 추후 개발 예정입니다. 현재는 주문 후 검수 방식입니다.", "help20": "F1 레이싱과 공중 추적 드라이브 샘플입니다. 자동차/스포츠 브랜드용입니다.", "help21": "전통 장인 이미지가 미래 도시 무드로 확장되는 문화/관광용 샘플입니다.", "help22": "기업 홍보, 스타트업 소개, 서비스 소개 영상으로 활용할 수 있습니다.", "help23": "축제, 지역행사, 이벤트 프로모션 샘플입니다.", "help24": "감성 드라마, 라이프스타일, 브랜드 스토리용 영상 샘플입니다.", "help25": "경북/첨성대/한반도 네트워크 같은 문화 메타버스 확장 샘플입니다.", "help26": "강한 액션감과 실험적인 장면 전환 테스트입니다. 하단 확장 포트폴리오용입니다.", "help27": "10초 숏폼 영상. 빠른 테스트와 SNS 광고에 적합합니다.", "help28": "15초 프리미엄 영상. 브랜드와 제품 광고에 가장 추천합니다.", "help29": "30초 시그니처 영상. 쇼릴, 브랜드 필름, 고급 광고용입니다.", "help30": "입력한 주문 정보를 확인하고 테스트 주문을 접수합니다. 실제 결제 연결 전까지는 테스트 접수입니다."}, "en": {"help1": "Tap this item to see how the feature works.", "help2": "Tap this item to see how the feature works.", "help3": "Tap this item to see how the feature works.", "help4": "Tap this item to see how the feature works.", "help5": "Tap this item to see how the feature works.", "help6": "Tap this item to see how the feature works.", "help7": "Tap this item to see how the feature works.", "help8": "Tap this item to see how the feature works.", "help9": "Tap this item to see how the feature works.", "help10": "Tap this item to see how the feature works.", "help11": "Tap this item to see how the feature works.", "help12": "Tap this item to see how the feature works.", "help13": "Tap this item to see how the feature works.", "help14": "Tap this item to see how the feature works.", "help15": "Tap this item to see how the feature works.", "help16": "Tap this item to see how the feature works.", "help17": "Tap this item to see how the feature works.", "help18": "Tap this item to see how the feature works.", "help19": "Tap this item to see how the feature works.", "help20": "Tap this item to see how the feature works.", "help21": "Tap this item to see how the feature works.", "help22": "Tap this item to see how the feature works.", "help23": "Tap this item to see how the feature works.", "help24": "Tap this item to see how the feature works.", "help25": "Tap this item to see how the feature works.", "help26": "Tap this item to see how the feature works.", "help27": "Tap this item to see how the feature works.", "help28": "Tap this item to see how the feature works.", "help29": "Tap this item to see how the feature works.", "help30": "Tap this item to see how the feature works."}, "ja": {"help1": "Tap this item to see how the feature works.", "help2": "Tap this item to see how the feature works.", "help3": "Tap this item to see how the feature works.", "help4": "Tap this item to see how the feature works.", "help5": "Tap this item to see how the feature works.", "help6": "Tap this item to see how the feature works.", "help7": "Tap this item to see how the feature works.", "help8": "Tap this item to see how the feature works.", "help9": "Tap this item to see how the feature works.", "help10": "Tap this item to see how the feature works.", "help11": "Tap this item to see how the feature works.", "help12": "Tap this item to see how the feature works.", "help13": "Tap this item to see how the feature works.", "help14": "Tap this item to see how the feature works.", "help15": "Tap this item to see how the feature works.", "help16": "Tap this item to see how the feature works.", "help17": "Tap this item to see how the feature works.", "help18": "Tap this item to see how the feature works.", "help19": "Tap this item to see how the feature works.", "help20": "Tap this item to see how the feature works.", "help21": "Tap this item to see how the feature works.", "help22": "Tap this item to see how the feature works.", "help23": "Tap this item to see how the feature works.", "help24": "Tap this item to see how the feature works.", "help25": "Tap this item to see how the feature works.", "help26": "Tap this item to see how the feature works.", "help27": "Tap this item to see how the feature works.", "help28": "Tap this item to see how the feature works.", "help29": "Tap this item to see how the feature works.", "help30": "Tap this item to see how the feature works."}, "zh": {"help1": "Tap this item to see how the feature works.", "help2": "Tap this item to see how the feature works.", "help3": "Tap this item to see how the feature works.", "help4": "Tap this item to see how the feature works.", "help5": "Tap this item to see how the feature works.", "help6": "Tap this item to see how the feature works.", "help7": "Tap this item to see how the feature works.", "help8": "Tap this item to see how the feature works.", "help9": "Tap this item to see how the feature works.", "help10": "Tap this item to see how the feature works.", "help11": "Tap this item to see how the feature works.", "help12": "Tap this item to see how the feature works.", "help13": "Tap this item to see how the feature works.", "help14": "Tap this item to see how the feature works.", "help15": "Tap this item to see how the feature works.", "help16": "Tap this item to see how the feature works.", "help17": "Tap this item to see how the feature works.", "help18": "Tap this item to see how the feature works.", "help19": "Tap this item to see how the feature works.", "help20": "Tap this item to see how the feature works.", "help21": "Tap this item to see how the feature works.", "help22": "Tap this item to see how the feature works.", "help23": "Tap this item to see how the feature works.", "help24": "Tap this item to see how the feature works.", "help25": "Tap this item to see how the feature works.", "help26": "Tap this item to see how the feature works.", "help27": "Tap this item to see how the feature works.", "help28": "Tap this item to see how the feature works.", "help29": "Tap this item to see how the feature works.", "help30": "Tap this item to see how the feature works."}, "es": {"help1": "Tap this item to see how the feature works.", "help2": "Tap this item to see how the feature works.", "help3": "Tap this item to see how the feature works.", "help4": "Tap this item to see how the feature works.", "help5": "Tap this item to see how the feature works.", "help6": "Tap this item to see how the feature works.", "help7": "Tap this item to see how the feature works.", "help8": "Tap this item to see how the feature works.", "help9": "Tap this item to see how the feature works.", "help10": "Tap this item to see how the feature works.", "help11": "Tap this item to see how the feature works.", "help12": "Tap this item to see how the feature works.", "help13": "Tap this item to see how the feature works.", "help14": "Tap this item to see how the feature works.", "help15": "Tap this item to see how the feature works.", "help16": "Tap this item to see how the feature works.", "help17": "Tap this item to see how the feature works.", "help18": "Tap this item to see how the feature works.", "help19": "Tap this item to see how the feature works.", "help20": "Tap this item to see how the feature works.", "help21": "Tap this item to see how the feature works.", "help22": "Tap this item to see how the feature works.", "help23": "Tap this item to see how the feature works.", "help24": "Tap this item to see how the feature works.", "help25": "Tap this item to see how the feature works.", "help26": "Tap this item to see how the feature works.", "help27": "Tap this item to see how the feature works.", "help28": "Tap this item to see how the feature works.", "help29": "Tap this item to see how the feature works.", "help30": "Tap this item to see how the feature works."}, "fr": {"help1": "Tap this item to see how the feature works.", "help2": "Tap this item to see how the feature works.", "help3": "Tap this item to see how the feature works.", "help4": "Tap this item to see how the feature works.", "help5": "Tap this item to see how the feature works.", "help6": "Tap this item to see how the feature works.", "help7": "Tap this item to see how the feature works.", "help8": "Tap this item to see how the feature works.", "help9": "Tap this item to see how the feature works.", "help10": "Tap this item to see how the feature works.", "help11": "Tap this item to see how the feature works.", "help12": "Tap this item to see how the feature works.", "help13": "Tap this item to see how the feature works.", "help14": "Tap this item to see how the feature works.", "help15": "Tap this item to see how the feature works.", "help16": "Tap this item to see how the feature works.", "help17": "Tap this item to see how the feature works.", "help18": "Tap this item to see how the feature works.", "help19": "Tap this item to see how the feature works.", "help20": "Tap this item to see how the feature works.", "help21": "Tap this item to see how the feature works.", "help22": "Tap this item to see how the feature works.", "help23": "Tap this item to see how the feature works.", "help24": "Tap this item to see how the feature works.", "help25": "Tap this item to see how the feature works.", "help26": "Tap this item to see how the feature works.", "help27": "Tap this item to see how the feature works.", "help28": "Tap this item to see how the feature works.", "help29": "Tap this item to see how the feature works.", "help30": "Tap this item to see how the feature works."}, "de": {"help1": "Tap this item to see how the feature works.", "help2": "Tap this item to see how the feature works.", "help3": "Tap this item to see how the feature works.", "help4": "Tap this item to see how the feature works.", "help5": "Tap this item to see how the feature works.", "help6": "Tap this item to see how the feature works.", "help7": "Tap this item to see how the feature works.", "help8": "Tap this item to see how the feature works.", "help9": "Tap this item to see how the feature works.", "help10": "Tap this item to see how the feature works.", "help11": "Tap this item to see how the feature works.", "help12": "Tap this item to see how the feature works.", "help13": "Tap this item to see how the feature works.", "help14": "Tap this item to see how the feature works.", "help15": "Tap this item to see how the feature works.", "help16": "Tap this item to see how the feature works.", "help17": "Tap this item to see how the feature works.", "help18": "Tap this item to see how the feature works.", "help19": "Tap this item to see how the feature works.", "help20": "Tap this item to see how the feature works.", "help21": "Tap this item to see how the feature works.", "help22": "Tap this item to see how the feature works.", "help23": "Tap this item to see how the feature works.", "help24": "Tap this item to see how the feature works.", "help25": "Tap this item to see how the feature works.", "help26": "Tap this item to see how the feature works.", "help27": "Tap this item to see how the feature works.", "help28": "Tap this item to see how the feature works.", "help29": "Tap this item to see how the feature works.", "help30": "Tap this item to see how the feature works."}, "pt": {"help1": "Tap this item to see how the feature works.", "help2": "Tap this item to see how the feature works.", "help3": "Tap this item to see how the feature works.", "help4": "Tap this item to see how the feature works.", "help5": "Tap this item to see how the feature works.", "help6": "Tap this item to see how the feature works.", "help7": "Tap this item to see how the feature works.", "help8": "Tap this item to see how the feature works.", "help9": "Tap this item to see how the feature works.", "help10": "Tap this item to see how the feature works.", "help11": "Tap this item to see how the feature works.", "help12": "Tap this item to see how the feature works.", "help13": "Tap this item to see how the feature works.", "help14": "Tap this item to see how the feature works.", "help15": "Tap this item to see how the feature works.", "help16": "Tap this item to see how the feature works.", "help17": "Tap this item to see how the feature works.", "help18": "Tap this item to see how the feature works.", "help19": "Tap this item to see how the feature works.", "help20": "Tap this item to see how the feature works.", "help21": "Tap this item to see how the feature works.", "help22": "Tap this item to see how the feature works.", "help23": "Tap this item to see how the feature works.", "help24": "Tap this item to see how the feature works.", "help25": "Tap this item to see how the feature works.", "help26": "Tap this item to see how the feature works.", "help27": "Tap this item to see how the feature works.", "help28": "Tap this item to see how the feature works.", "help29": "Tap this item to see how the feature works.", "help30": "Tap this item to see how the feature works."}, "ar": {"help1": "Tap this item to see how the feature works.", "help2": "Tap this item to see how the feature works.", "help3": "Tap this item to see how the feature works.", "help4": "Tap this item to see how the feature works.", "help5": "Tap this item to see how the feature works.", "help6": "Tap this item to see how the feature works.", "help7": "Tap this item to see how the feature works.", "help8": "Tap this item to see how the feature works.", "help9": "Tap this item to see how the feature works.", "help10": "Tap this item to see how the feature works.", "help11": "Tap this item to see how the feature works.", "help12": "Tap this item to see how the feature works.", "help13": "Tap this item to see how the feature works.", "help14": "Tap this item to see how the feature works.", "help15": "Tap this item to see how the feature works.", "help16": "Tap this item to see how the feature works.", "help17": "Tap this item to see how the feature works.", "help18": "Tap this item to see how the feature works.", "help19": "Tap this item to see how the feature works.", "help20": "Tap this item to see how the feature works.", "help21": "Tap this item to see how the feature works.", "help22": "Tap this item to see how the feature works.", "help23": "Tap this item to see how the feature works.", "help24": "Tap this item to see how the feature works.", "help25": "Tap this item to see how the feature works.", "help26": "Tap this item to see how the feature works.", "help27": "Tap this item to see how the feature works.", "help28": "Tap this item to see how the feature works.", "help29": "Tap this item to see how the feature works.", "help30": "Tap this item to see how the feature works."}};
   const ORDER={"ko": {"phone": "휴대폰 번호 / 카톡·문자 알림", "notify": "완성 알림을 카톡/문자로 받고, 링크에서 바로 확인하겠습니다.", "orderCopy": "완성되면 카톡/문자로 알려드리고, 링크에서 바로 확인할 수 있습니다.", "orderLink": "주문 링크 열기"}, "en": {"phone": "Mobile number / Kakao or SMS alert", "notify": "I agree to receive order and delivery alerts by Kakao/SMS and view the video by link.", "orderCopy": "When it is ready, we will send a Kakao/SMS alert so you can view it by link.", "orderLink": "Open order link"}, "ja": {"phone": "Mobile number / Kakao or SMS alert", "notify": "I agree to receive order and delivery alerts by Kakao/SMS and view the video by link.", "orderCopy": "When it is ready, we will send a Kakao/SMS alert so you can view it by link.", "orderLink": "Open order link"}, "zh": {"phone": "Mobile number / Kakao or SMS alert", "notify": "I agree to receive order and delivery alerts by Kakao/SMS and view the video by link.", "orderCopy": "When it is ready, we will send a Kakao/SMS alert so you can view it by link.", "orderLink": "Open order link"}, "es": {"phone": "Mobile number / Kakao or SMS alert", "notify": "I agree to receive order and delivery alerts by Kakao/SMS and view the video by link.", "orderCopy": "When it is ready, we will send a Kakao/SMS alert so you can view it by link.", "orderLink": "Open order link"}, "fr": {"phone": "Mobile number / Kakao or SMS alert", "notify": "I agree to receive order and delivery alerts by Kakao/SMS and view the video by link.", "orderCopy": "When it is ready, we will send a Kakao/SMS alert so you can view it by link.", "orderLink": "Open order link"}, "de": {"phone": "Mobile number / Kakao or SMS alert", "notify": "I agree to receive order and delivery alerts by Kakao/SMS and view the video by link.", "orderCopy": "When it is ready, we will send a Kakao/SMS alert so you can view it by link.", "orderLink": "Open order link"}, "pt": {"phone": "Mobile number / Kakao or SMS alert", "notify": "I agree to receive order and delivery alerts by Kakao/SMS and view the video by link.", "orderCopy": "When it is ready, we will send a Kakao/SMS alert so you can view it by link.", "orderLink": "Open order link"}, "ar": {"phone": "Mobile number / Kakao or SMS alert", "notify": "I agree to receive order and delivery alerts by Kakao/SMS and view the video by link.", "orderCopy": "When it is ready, we will send a Kakao/SMS alert so you can view it by link.", "orderLink": "Open order link"}};
   const SECONDS={ko:"초",en:"s",ja:"秒",zh:"秒",es:"s",fr:"s",de:"Sek.",pt:"s",ar:"ث"};
@@ -836,55 +910,55 @@ const $=(s,root=document)=>root.querySelector(s);
   ORDER.ko.brand = "브랜드명 / 이름";
   ORDER.ko.email = "이메일 주소";
   ORDER.ko.mood = "원하는 분위기 또는 참고사항 (선택사항)";
-  ORDER.ko.submit = "결제 진행하기";
+  ORDER.ko.submit = "TRANSFORM";
   ORDER.ko.planPrefix = "선택한 요금제: ";
 
   ORDER.en.brand = "Brand / Name";
   ORDER.en.email = "Email";
   ORDER.en.mood = "Mood or reference, optional";
-  ORDER.en.submit = "CONTINUE TO PAYMENT";
+  ORDER.en.submit = "TRANSFORM";
   ORDER.en.planPrefix = "Selected plan: ";
 
   ORDER.ja.brand = "ブランド名 / お名前";
   ORDER.ja.email = "メールアドレス";
   ORDER.ja.mood = "ご希望の雰囲気や参考事項（任意）";
-  ORDER.ja.submit = "決済に進む";
+  ORDER.ja.submit = "TRANSFORM";
   ORDER.ja.planPrefix = "選択されたプラン: ";
 
   ORDER.zh.brand = "品牌名称 / 姓名";
   ORDER.zh.email = "电子邮箱";
   ORDER.zh.mood = "期望的氛围或参考事项（选填）";
-  ORDER.zh.submit = "继续支付";
+  ORDER.zh.submit = "TRANSFORM";
   ORDER.zh.planPrefix = "已选方案: ";
 
   ORDER.es.brand = "Marca / Nombre";
   ORDER.es.email = "Correo electrónico";
   ORDER.es.mood = "Tono o referencia, opcional";
-  ORDER.es.submit = "CONTINUAR AL PAGO";
+  ORDER.es.submit = "TRANSFORM";
   ORDER.es.planPrefix = "Plan seleccionado: ";
 
   ORDER.fr.brand = "Marque / Nom";
   ORDER.fr.email = "Adresse e-mail";
   ORDER.fr.mood = "Ambiance ou référence, facultatif";
-  ORDER.fr.submit = "CONTINUER VERS LE PAIEMENT";
+  ORDER.fr.submit = "TRANSFORM";
   ORDER.fr.planPrefix = "Plan sélectionné: ";
 
   ORDER.de.brand = "Marke / Name";
   ORDER.de.email = "E-Mail-Adresse";
   ORDER.de.mood = "Stimmung oder Referenz, optional";
-  ORDER.de.submit = "WEITER ZUR ZAHLUNG";
+  ORDER.de.submit = "TRANSFORM";
   ORDER.de.planPrefix = "Ausgewählter Plan: ";
 
   ORDER.pt.brand = "Marca / Nome";
   ORDER.pt.email = "Endereço de e-mail";
   ORDER.pt.mood = "Clima ou referência, opcional";
-  ORDER.pt.submit = "CONTINUAR PARA O PAGAMENTO";
+  ORDER.pt.submit = "TRANSFORM";
   ORDER.pt.planPrefix = "Plano selecionado: ";
 
   ORDER.ar.brand = "العلامة التجارية / الاسم";
   ORDER.ar.email = "البريد الإلكتروني";
   ORDER.ar.mood = "المزاج أو المرجع، اختياري";
-  ORDER.ar.submit = "متابعة عملية الدفع";
+  ORDER.ar.submit = "TRANSFORM";
   ORDER.ar.planPrefix = "الخطة المحددة: ";
 
   // Expose ORDER globally
@@ -1431,125 +1505,132 @@ const $=(s,root=document)=>root.querySelector(s);
         animate();
     }
 
-    /* 7. MOSAIC PIXELATION LOADER EFFECT */
+    /* 7. NEW VECTOR LOADER SCREEN TRANSITION (Lando Norris style) */
     const loader = document.getElementById('loader');
-    const loaderCanvas = document.getElementById('loader-canvas');
-    if (loader && loaderCanvas) {
-        const lCtx = loaderCanvas.getContext('2d');
-        const dpr = window.devicePixelRatio || 1;
-        const w = 600;
-        const h = 200;
-
-        loaderCanvas.style.width = w + 'px';
-        loaderCanvas.style.height = h + 'px';
-        loaderCanvas.width = w * dpr;
-        loaderCanvas.height = h * dpr;
-        lCtx.scale(dpr, dpr);
-
-        // Create an offscreen canvas to render the sharp logo text
-        const offCanvas = document.createElement('canvas');
-        offCanvas.width = w * dpr;
-        offCanvas.height = h * dpr;
-        const offCtx = offCanvas.getContext('2d');
-        offCtx.scale(dpr, dpr);
-
-        // Create a temporary canvas for scaling to avoid Safari feedback loop errors
-        const tempCanvas = document.createElement('canvas');
-        const tempCtx = tempCanvas.getContext('2d');
-
-        let pixelSize = 1;
-        let opacity = 0; // Start at 0 to fade-in logo
-        let phase = 'fadein'; // 'fadein', 'hold', 'pixelate', 'done'
-        let startTime = Date.now();
-
-        // Prevent scrolling during load
+    if (loader) {
+        // Stop scroll during loading
         lenis.stop();
+        
+        setTimeout(() => {
+            // Slide up loader, fade in site
+            loader.classList.add('loaded');
+            // Resume scroll
+            lenis.start();
+            // Start kinetic tagline transition
+            startHeroKineticTransition();
+        }, 2200); // 2.2 seconds timeline matches the SVG animations
+    }
 
-        function drawLoader() {
-            if (phase === 'done') return;
+    /* 7.1. FLUID GLOWING DOTS CURSOR TRAIL EFFECT */
+    const brushCanvas = document.getElementById('brush-canvas');
+    if (brushCanvas) {
+        const bCtx = brushCanvas.getContext('2d');
+        let w = (brushCanvas.width = window.innerWidth);
+        let h = (brushCanvas.height = window.innerHeight);
 
-            const elapsed = Date.now() - startTime;
+        window.addEventListener('resize', () => {
+            w = (brushCanvas.width = window.innerWidth);
+            h = (brushCanvas.height = window.innerHeight);
+        });
 
-            // State Machine for Intro Timeline
-            if (phase === 'fadein') {
-                opacity = Math.min(elapsed / 800, 1); // 0.8s fade-in
-                if (elapsed >= 1000) {
-                    phase = 'hold';
-                    startTime = Date.now();
-                }
-            } else if (phase === 'hold') {
-                opacity = 1;
-                if (elapsed >= 800) { // 0.8s stay sharp
-                    phase = 'pixelate';
-                    startTime = Date.now();
-                }
-            } else if (phase === 'pixelate') {
-                const pElapsed = Date.now() - startTime;
-                const progress = Math.min(pElapsed / 1200, 1); // 1.2s dissolve
-                
-                // Increase pixel size (creating mosaic effect)
-                pixelSize = 1 + progress * 24; 
-                opacity = 1 - progress; // fade out logo
-                
-                if (progress >= 1) {
-                    phase = 'done';
-                    // Hide loader overlay
-                    loader.classList.add('loaded');
-                    // Enable scroll
-                    lenis.start();
-                    // Start kinetic tagline transition
-                    startHeroKineticTransition();
-                }
-            }
+        let points = [];
+        let lastMouse = null;
 
-            // 1. Draw sharp logo on offscreen canvas
-            offCtx.clearRect(0, 0, w, h);
-            offCtx.font = 'italic 900 68px "Cormorant Garamond", Georgia, serif';
-            offCtx.fillStyle = '#dfe8ff'; // Very light holographic blue
-            offCtx.textAlign = 'center';
-            offCtx.textBaseline = 'middle';
-            offCtx.fillText('avvm.studio', w / 2, h / 2 - 5);
+        window.addEventListener('mousemove', (e) => {
+            const mouse = { x: e.clientX, y: e.clientY };
             
-            // Sub-bar
-            offCtx.font = '900 10px "Inter", sans-serif';
-            offCtx.fillStyle = 'rgba(216, 242, 51, 0.75)'; // Neon lime
-            offCtx.letterSpacing = '6px';
-            offCtx.fillText('ONE CLICK. CINEMATIC.', w / 2 + 3, h / 2 + 42);
+            // Add mouse position
+            points.push({
+                x: mouse.x,
+                y: mouse.y,
+                vx: lastMouse ? (mouse.x - lastMouse.x) * 0.08 : 0,
+                vy: lastMouse ? (mouse.y - lastMouse.y) * 0.08 : 0,
+                size: 15,
+                alpha: 1,
+                decay: 0.024
+            });
 
-            // 2. Render pixelated/mosaic version to main canvas
-            lCtx.clearRect(0, 0, w, h);
-            lCtx.save();
-            lCtx.globalAlpha = opacity;
-
-            if (pixelSize <= 1.2) {
-                lCtx.drawImage(offCanvas, 0, 0, w * dpr, h * dpr, 0, 0, w, h);
-            } else {
-                // Scale down to temporary canvas
-                const sw = Math.floor(Math.max(w / pixelSize, 1));
-                const sh = Math.floor(Math.max(h / pixelSize, 1));
-                tempCanvas.width = sw;
-                tempCanvas.height = sh;
-                
-                tempCtx.clearRect(0, 0, sw, sh);
-                tempCtx.drawImage(offCanvas, 0, 0, w * dpr, h * dpr, 0, 0, sw, sh);
-
-                // Scale back up to main canvas with smoothing disabled
-                lCtx.imageSmoothingEnabled = false;
-                lCtx.mozImageSmoothingEnabled = false;
-                lCtx.webkitImageSmoothingEnabled = false;
-                lCtx.msImageSmoothingEnabled = false;
-
-                lCtx.drawImage(tempCanvas, 0, 0, sw, sh, 0, 0, w, h);
+            // Add spark/splatter particles when moving fast
+            if (lastMouse) {
+                const dist = Math.hypot(mouse.x - lastMouse.x, mouse.y - lastMouse.y);
+                if (dist > 18) {
+                    const count = Math.min(Math.floor(dist / 4), 6);
+                    for (let i = 0; i < count; i++) {
+                        const angle = Math.random() * Math.PI * 2;
+                        const speed = Math.random() * dist * 0.15;
+                        points.push({
+                            x: mouse.x,
+                            y: mouse.y,
+                            vx: Math.cos(angle) * speed + (mouse.x - lastMouse.x) * 0.05,
+                            vy: Math.sin(angle) * speed + (mouse.y - lastMouse.y) * 0.05,
+                            size: Math.random() * 3 + 1.5,
+                            alpha: 0.75,
+                            decay: Math.random() * 0.05 + 0.025
+                        });
+                    }
+                }
             }
-            lCtx.restore();
+            lastMouse = mouse;
+        });
 
-            if (phase !== 'done') {
-                requestAnimationFrame(drawLoader);
+        function drawBrush() {
+            bCtx.clearRect(0, 0, w, h);
+
+            // 1. Draw glowing circles (brush tips & sparks)
+            for (let i = 0; i < points.length; i++) {
+                const p = points[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.alpha -= p.decay;
+                p.size = Math.max(p.size - 0.25, 0);
+
+                if (p.alpha <= 0 || p.size <= 0) {
+                    points.splice(i, 1);
+                    i--;
+                    continue;
+                }
+
+                bCtx.save();
+                bCtx.globalAlpha = p.alpha;
+                bCtx.fillStyle = '#d8f233'; // Signature AVVM Lime
+                bCtx.shadowColor = '#d8f233';
+                bCtx.shadowBlur = 10;
+                bCtx.beginPath();
+                bCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                bCtx.fill();
+                bCtx.restore();
             }
+
+            // 2. Draw thick ribbon connections to emulate paint stroke flow
+            if (points.length > 1) {
+                bCtx.save();
+                bCtx.strokeStyle = '#d8f233';
+                bCtx.shadowColor = '#d8f233';
+                bCtx.shadowBlur = 12;
+                bCtx.lineCap = 'round';
+                bCtx.lineJoin = 'round';
+                bCtx.globalCompositeOperation = 'screen';
+
+                for (let i = 1; i < points.length; i++) {
+                    const p1 = points[i - 1];
+                    const p2 = points[i];
+                    
+                    // Only connect points that are relatively young and close
+                    if (p1.size > 4 && p2.size > 4 && Math.hypot(p1.x - p2.x, p1.y - p2.y) < 100) {
+                        bCtx.beginPath();
+                        bCtx.moveTo(p1.x, p1.y);
+                        bCtx.lineTo(p2.x, p2.y);
+                        bCtx.lineWidth = (p1.size + p2.size) * 0.45;
+                        bCtx.globalAlpha = (p1.alpha + p2.alpha) * 0.22;
+                        bCtx.stroke();
+                    }
+                }
+                bCtx.restore();
+            }
+
+            requestAnimationFrame(drawBrush);
         }
-
-        // Wait a small delay before starting loader draw loop to ensure fonts render
-        setTimeout(drawLoader, 150);
+        drawBrush();
     }
 
     /* 8. HERO KINETIC EQUALIZER WAVE TEXT SEQUENCER */
@@ -1713,4 +1794,242 @@ const $=(s,root=document)=>root.querySelector(s);
   if(document.readyState!=='loading') {
     if(window.applyAVVMLang) window.applyAVVMLang(localStorage.getItem('avvmLang')||langNow());
   }
+})();
+
+
+/* AVVM V17 Personal Transform category active fix */
+(function(){
+  function ready(fn){ 
+    if(document.readyState !== 'loading') fn(); 
+    else document.addEventListener('DOMContentLoaded', fn); 
+  }
+  ready(function(){
+    document.addEventListener('click', function(e){
+      const btn = e.target.closest('.cat-grid button, .cat, .cat-btn, [data-category]');
+      if(!btn || !btn.closest('.cat-grid')) return;
+      const grid = btn.closest('.cat-grid');
+      grid.querySelectorAll('button, .cat, .cat-btn, [data-category]').forEach(function(el){
+        el.classList.remove('active');
+        el.setAttribute('aria-pressed','false');
+      });
+      btn.classList.add('active');
+      btn.setAttribute('aria-pressed','true');
+    }, true);
+  });
+})();
+
+
+
+/* AVVM V19 app-only hotfix: visible photo upload + Transform label
+   This runs even if index.html/style.css were not uploaded.
+*/
+(function(){
+  function ready(fn){
+    if(document.readyState !== 'loading') fn();
+    else document.addEventListener('DOMContentLoaded', fn);
+  }
+  ready(function(){
+    // 1) Shorten Personal Transform label to Transform
+    document.querySelectorAll('button, .cat, .cat-btn, [data-category]').forEach(function(el){
+      if((el.textContent || '').trim() === 'Personal Transform'){
+        el.textContent = 'Transform';
+      }
+      if(el.getAttribute && el.getAttribute('data-category') === 'Personal Transform'){
+        el.classList.add('cat');
+      }
+    });
+
+    // 2) Make Personal Transform active if clicked
+    document.addEventListener('click', function(e){
+      const btn = e.target.closest('.cat-grid button, .cat, .cat-btn, [data-category]');
+      if(!btn || !btn.closest('.cat-grid')) return;
+      const grid = btn.closest('.cat-grid');
+      grid.querySelectorAll('button, .cat, .cat-btn, [data-category]').forEach(function(x){
+        x.classList.remove('active');
+        x.setAttribute('aria-pressed','false');
+      });
+      btn.classList.add('active');
+      btn.setAttribute('aria-pressed','true');
+    }, true);
+
+    // 3) Inject photo upload block if it does not exist
+    function ensurePhotoUpload(){
+      if(document.getElementById('photoUploadVisibleBlock')) return;
+
+      let imageInput = document.getElementById('imageInput');
+      if(!imageInput){
+        imageInput = document.createElement('input');
+        imageInput.id = 'imageInput';
+        imageInput.type = 'file';
+        imageInput.accept = 'image/*';
+        imageInput.className = 'field photo-upload-input';
+      }else{
+        imageInput.classList.add('photo-upload-input');
+        imageInput.style.display = '';
+      }
+
+      const block = document.createElement('div');
+      block.className = 'photo-upload-visible-block';
+      block.id = 'photoUploadVisibleBlock';
+      block.innerHTML = `
+        <div class="order-form-section-title">2. 제작할 사진 업로드</div>
+        <p class="order-form-helper">고객님의 사진 또는 상품 사진을 첨부해 주세요. 지금 첨부하지 않아도 결제 후 주문 링크에서 다시 업로드할 수 있습니다.</p>
+        <label class="photo-upload-drop" for="imageInput">
+          <span class="photo-upload-icon">＋</span>
+          <span class="photo-upload-text">
+            <b>사진 첨부하기</b>
+            <small>JPG, PNG, WEBP 등 이미지 파일</small>
+          </span>
+        </label>
+      `;
+      block.appendChild(imageInput);
+
+      const customer = document.getElementById('customerInfoVisibleBlock');
+      const checkout = document.querySelector('.checkout-notice');
+      const consent = document.getElementById('consentGroup');
+      const mood = document.getElementById('moodInput');
+
+      if(customer && customer.parentNode){
+        customer.insertAdjacentElement('afterend', block);
+      }else if(checkout && checkout.parentNode){
+        checkout.parentNode.insertBefore(block, checkout);
+      }else if(consent && consent.parentNode){
+        consent.parentNode.insertBefore(block, consent);
+      }else if(mood && mood.parentNode){
+        mood.insertAdjacentElement('afterend', block);
+      }
+
+      imageInput.addEventListener('change', function(){
+        const label = block.querySelector('.photo-upload-drop b');
+        const small = block.querySelector('.photo-upload-drop small');
+        if(imageInput.files && imageInput.files[0]){
+          block.classList.add('has-file');
+          if(label) label.textContent = '첨부 완료';
+          if(small) small.textContent = imageInput.files[0].name;
+        }else{
+          block.classList.remove('has-file');
+          if(label) label.textContent = '사진 첨부하기';
+          if(small) small.textContent = 'JPG, PNG, WEBP 등 이미지 파일';
+        }
+      });
+    }
+
+    ensurePhotoUpload();
+
+    // Re-run when order modal opens/plan is selected, because some content may re-render.
+    document.addEventListener('click', function(e){
+      if(e.target.closest('[data-open], [data-plan-choice], #submitOrder')){
+        setTimeout(ensurePhotoUpload, 120);
+        setTimeout(ensurePhotoUpload, 500);
+      }
+    }, true);
+
+    // 4) Inject required CSS if style.css was not updated
+    if(!document.getElementById('avvm-v19-upload-style')){
+      const style = document.createElement('style');
+      style.id = 'avvm-v19-upload-style';
+      style.textContent = `
+        .photo-upload-visible-block{
+          margin:18px 0 14px!important;
+          padding:16px!important;
+          border:1px solid rgba(216,242,51,.20)!important;
+          border-radius:18px!important;
+          background:rgba(255,255,255,.025)!important;
+        }
+        .photo-upload-visible-block.has-file{
+          border-color:rgba(216,242,51,.45)!important;
+          background:rgba(216,242,51,.055)!important;
+        }
+        .photo-upload-drop{
+          display:flex!important;
+          align-items:center!important;
+          gap:12px!important;
+          min-height:74px!important;
+          padding:15px!important;
+          border-radius:16px!important;
+          border:1px dashed rgba(216,242,51,.36)!important;
+          background:rgba(0,0,0,.45)!important;
+          cursor:pointer!important;
+          color:#fff!important;
+        }
+        .photo-upload-icon{
+          display:grid!important;
+          place-items:center!important;
+          width:42px!important;
+          height:42px!important;
+          border-radius:999px!important;
+          background:var(--lime,#d8f233)!important;
+          color:#050505!important;
+          font-weight:950!important;
+          font-size:23px!important;
+          flex:0 0 42px!important;
+        }
+        .photo-upload-drop b{
+          display:block!important;
+          color:#fff!important;
+          font-size:14px!important;
+          line-height:1.25!important;
+        }
+        .photo-upload-drop small{
+          display:block!important;
+          margin-top:3px!important;
+          color:rgba(255,255,255,.58)!important;
+          font-size:11px!important;
+          line-height:1.35!important;
+          word-break:break-all!important;
+        }
+        .photo-upload-input{
+          position:absolute!important;
+          width:1px!important;
+          height:1px!important;
+          opacity:0!important;
+          pointer-events:none!important;
+        }
+        .cat-grid .cat.active,
+        .cat-grid .cat-btn.active,
+        .cat-grid [data-category].active{
+          color:var(--lime,#d8f233)!important;
+          border-color:var(--lime,#d8f233)!important;
+          background:rgba(216,242,51,.08)!important;
+          box-shadow:0 0 0 1px rgba(216,242,51,.18),0 0 22px rgba(216,242,51,.10)!important;
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  });
+})();
+
+
+
+/* AVVM V20 test-order mode + business name normalization */
+(function(){
+  function ready(fn){ if(document.readyState !== 'loading') fn(); else document.addEventListener('DOMContentLoaded', fn); }
+  ready(function(){
+    // Business name cleanup in visible text nodes
+    function walk(node){
+      if(node.nodeType === 3){
+        node.nodeValue = node.nodeValue
+          .replace(/라라랜드맘/g,'라라랜드맘')
+          .replace(/라라랜드맘/g,'라라랜드맘')
+          .replace(/Service by 라라랜드맘 \/ AVVM/g,'서비스 제공: 라라랜드맘 / AVVM')
+          .replace(/Brand: AVVM\.studio · Service by 라라랜드맘 \/ AVVM/g,'브랜드: AVVM.studio · 서비스 제공: 라라랜드맘 / AVVM');
+      } else {
+        node.childNodes && node.childNodes.forEach(walk);
+      }
+    }
+    walk(document.body);
+
+    // Button label for PG pending test mode
+    const submit = document.getElementById('submitOrder');
+    if(submit) submit.textContent = '테스트 주문 접수';
+
+    // Add test mode notice if missing
+    const checkout = document.querySelector('.checkout-notice');
+    if(checkout && !checkout.querySelector('.test-mode-note')){
+      const p = document.createElement('p');
+      p.className = 'test-mode-note';
+      p.innerHTML = '<b>현재는 PG 승인 전 테스트 모드입니다.</b><br>이 버튼은 실제 결제가 아니라 주문 흐름과 제작 품질 확인용 테스트 접수로 동작합니다. PG 승인 후 실제 결제 버튼으로 전환됩니다.';
+      checkout.insertBefore(p, checkout.firstChild);
+    }
+  });
 })();
