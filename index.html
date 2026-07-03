@@ -1,2948 +1,631 @@
 <!DOCTYPE html>
+
 <html lang="ko">
-<head><style>
-@font-face {
-  font-family: "Optimistic";
-  font-style: normal;
-  font-weight: 400 600;
-  font-display: swap;
-  src: url("/fonts/OptimisticAI_VF_Optimized.woff2") format("woff2");
-}
-@font-face {
-  font-family: "Optimistic Mono";
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("/fonts/OptimisticMono_W_TextRegular.woff2") format("woff2");
-}
-:where(html) {
-  font-family: "Optimistic", system-ui, sans-serif;
-}
-:where(code, pre, kbd, samp) {
-  font-family: "Optimistic Mono", ui-monospace, monospace;
-}
-</style>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>AVVM.studio — One Click. Cinematic Results.</title>
-<meta name="description" content="The AI Video Vending Machine. 사진 한 장으로 시네마틱 광고영상을 48시간 안에.">
-<!-- Inter 폰트 -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<!-- 포트원 (아임포트) SDK -->
-<script src="https://cdn.iamport.kr/v1/iamport.js"></script>
-<!-- EmailJS SDK -->
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-<style>
-/* ════════════════════════════════
-   TOKENS — 럭셔리 블랙 + 샴페인 골드
-════════════════════════════════ */
-:root {
-  --ink:    #060606;
-  --ink2:   #0c0c0c;
-  --ink3:   #111111;
-  --ink4:   #181818;
-  --ink5:   #202020;
-  --fg:     #ffffff;
-  --fg2:    #aaaaaa;
-  --sub:    #555555;
-  --line:   rgba(255,255,255,0.06);
-  --gold:   #E2F227;
-  --gold2:  #EEFF44;
-  --gold3:  #C8D800;
-  --goldglow: rgba(226,242,39,0.15);
-  --white:  #ffffff;
-  --green:  #E2F227;
-  --red:    #ff4455;
-}
-
-/* ════ 리셋 + 기반 ════ */
-*, *::before, *::after { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
-html { scroll-behavior:smooth; font-size:16px; }
-body {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background: var(--ink);
-  color: var(--fg);
-  overflow-x: hidden;
-  -webkit-font-smoothing: antialiased;
-}
-::selection { background: var(--gold); color: #060606; }
-::-webkit-scrollbar { width: 3px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--ink5); border-radius: 2px; }
-
-/* ════ 공통 레이아웃 ════ */
-.container  { max-width: 1100px; margin: 0 auto; padding: 0 32px; }
-.container-sm { max-width: 640px; margin: 0 auto; padding: 0 32px; }
-
-/* ════════════════════════════════
-   NOISE TEXTURE — 4K 시네마 센서
-════════════════════════════════ */
-body::before {
-  content: '';
-  position: fixed; inset: 0; z-index: 1000; pointer-events: none;
-  opacity: 0.028;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size: 180px 180px;
-}
-
-/* ════════════════════════════════
-   TYPOGRAPHY SYSTEM
-════════════════════════════════ */
-.t-eyebrow {
-  font-size: 10px; font-weight: 700; letter-spacing: .16em;
-  text-transform: uppercase; color: var(--sub);
-}
-.t-display {
-  font-size: clamp(52px, 9vw, 104px);
-  font-weight: 900;
-  line-height: .92;
-  letter-spacing: -.04em;
-}
-.t-h2 {
-  font-size: clamp(30px, 4.5vw, 52px);
-  font-weight: 800;
-  line-height: 1.05;
-  letter-spacing: -.03em;
-}
-.t-body { font-size: 16px; line-height: 1.7; color: var(--fg2); font-weight: 400; }
-.t-small { font-size: 13px; line-height: 1.6; color: var(--sub); }
-.gold-text {
-  background: linear-gradient(135deg, #C8D800 0%, #E2F227 40%, #EEFF44 70%, #E2F227 100%);
-  background-size: 200% auto;
-  -webkit-background-clip: text; background-clip: text; color: transparent;
-  animation: gold-shift 5s linear infinite;
-}
-@keyframes gold-shift { to { background-position: 200% center; } }
-
-/* ════════════════════════════════
-   BUTTONS — 빛의 흐름 효과
-════════════════════════════════ */
-.btn-primary {
-  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  background: #ffffff;
-  color: #060606; font-size: 14px; font-weight: 700;
-  padding: 15px 28px; border-radius: 12px; border: none; cursor: pointer;
-  font-family: inherit; letter-spacing: -.01em; text-decoration: none;
-  transition: transform .2s cubic-bezier(.16,1,.3,1), box-shadow .2s;
-  box-shadow: 0 0 0 rgba(255,255,255,0);
-}
-.btn-primary:hover {
-  transform: scale(1.03) translateY(-1px);
-  box-shadow: 0 8px 32px rgba(255,255,255,0.12), 0 0 0 1px rgba(255,255,255,0.08);
-}
-.btn-primary:active { transform: scale(.98); }
-
-.btn-ghost {
-  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  background: transparent; color: var(--fg2); font-size: 14px; font-weight: 600;
-  padding: 15px 28px; border-radius: 12px;
-  border: 1px solid rgba(255,255,255,0.1); cursor: pointer;
-  font-family: inherit; letter-spacing: -.01em; text-decoration: none;
-  transition: transform .2s cubic-bezier(.16,1,.3,1), border-color .2s, color .2s;
-}
-.btn-ghost:hover {
-  transform: scale(1.02) translateY(-1px);
-  border-color: rgba(255,255,255,0.2); color: var(--fg);
-}
-.btn-ghost:active { transform: scale(.98); }
-
-.btn-gold {
-  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  background: linear-gradient(105deg, var(--gold3), var(--gold), var(--gold2), var(--gold));
-  background-size: 300% auto;
-  color: #060606; font-size: 14px; font-weight: 800;
-  padding: 15px 28px; border-radius: 12px; border: none; cursor: pointer;
-  font-family: inherit; letter-spacing: -.01em;
-  transition: transform .2s cubic-bezier(.16,1,.3,1), box-shadow .2s, background-position .4s;
-  box-shadow: 0 4px 20px rgba(226,242,39,0.35);
-}
-.btn-gold:hover {
-  transform: scale(1.03) translateY(-1px);
-  box-shadow: 0 8px 36px rgba(226,242,39,0.4);
-  background-position: right center;
-}
-.btn-gold:active { transform: scale(.98); }
-.btn-sm { padding: 9px 18px; font-size: 12px; border-radius: 9px; }
-
-/* ════════════════════════════════
-   NAV — 투명 오버레이 (hero 위에 float)
-════════════════════════════════ */
-nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 500;
-  height: 64px;
-  background: transparent;
-  transition: background .3s;
-}
-nav.scrolled {
-  background: rgba(6,6,6,0.85);
-  backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(255,255,255,0.05);
-}
-.nav-inner {
-  max-width: 100%; padding: 0 20px;
-  height: 100%; display: flex; align-items: center; justify-content: space-between;
-  gap: 8px;
-}
-.nav-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; cursor: pointer; flex-shrink: 0; }
-
-/* ──── SVG 로고 심볼 ──── */
-.logo-symbol { width: 28px; height: 28px; flex-shrink: 0; }
-.logo-symbol svg { width: 100%; height: 100%; }
-.logo-wordmark {
-  font-size: 14px; font-weight: 800; letter-spacing: -.02em; color: #fff;
-  white-space: nowrap; /* 줄바꿈 방지 */
-}
-.logo-wordmark em { color: var(--gold); font-style: normal; }
-
-/* AV/M 레이어드 로고 */
-.avvm-logo-text {
-  display: inline-flex; align-items: baseline;
-  font-weight: 800; letter-spacing: -.03em; line-height: 1;
-}
-.avvm-av { color: #fff; }
-.avvm-v-wrap {
-  position: relative;
-  display: inline-block;
-  width: .82em;
-}
-.avvm-v1 { color: #fff; position: relative; z-index: 2; }
-.avvm-v2 {
-  color: rgba(255,255,255,.48);
-  position: absolute;
-  left: .20em;
-  top: 0;
-  z-index: 1;
-}
-.avvm-dot { color: #fff; font-style: normal; }
-.avvm-studio { color: var(--gold); font-style: normal; }
-
-/* 햄버거 메뉴 (blink ai 스타일) */
-.nav-hamburger {
-  display: flex; flex-direction: column; gap: 5px; cursor: pointer;
-  background: none; border: none; padding: 4px;
-}
-.nav-hamburger span {
-  display: block; width: 24px; height: 1.5px;
-  background: rgba(255,255,255,.8); border-radius: 1px;
-  transition: transform .25s, opacity .25s;
-}
-
-.nav-links { display: flex; gap: 28px; }
-.nav-links a {
-  font-size: 11px; font-weight: 600; color: rgba(255,255,255,.5); text-decoration: none;
-  cursor: pointer; transition: color .2s; letter-spacing: .06em; text-transform: uppercase;
-}
-.nav-links a:hover { color: #fff; }
-@media(max-width:900px) { .nav-links { display: none; } }
-
-/* 모바일 btn-sm 축소 */
-@media(max-width:480px) {
-  .btn-sm { padding: 7px 12px; font-size: 11px; }
-  .nav-hamburger { display: none; }
-}
-
-.nav-cta-wrap { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
-.nav-status {
-  font-size: 10px; font-weight: 700;
-  background: rgba(226,242,39,0.1);
-  color: var(--gold); border: 1px solid rgba(226,242,39,0.2);
-  padding: 4px 9px; border-radius: 999px; letter-spacing: .04em;
-  white-space: nowrap;
-}
-/* 모바일에서 v5.1 배지 숨김 */
-@media(max-width:480px) { .nav-status { display: none; } }
-
-/* ════════════════════════════════
-   HERO — FULLSCREEN CINEMATIC
-════════════════════════════════ */
-.hero-fs {
-  position: relative; width: 100%; height: 100dvh;
-  min-height: 700px; overflow: hidden;
-}
-.hero-bg-video {
-  position: absolute; inset: 0;
-  width: 100%; height: 100%;
-  object-fit: cover; z-index: 0;
-}
-/* 4-포인트 그라디언트 오버레이 */
-.hero-fs-overlay {
-  position: absolute; inset: 0; z-index: 1; pointer-events: none;
-  background:
-    linear-gradient(to bottom,
-      rgba(6,6,6,.6) 0%,
-      rgba(6,6,6,.15) 30%,
-      rgba(6,6,6,.10) 55%,
-      rgba(6,6,6,.72) 100%
-    );
-}
-/* 전체 내부 레이아웃 */
-.hero-fs-inner {
-  position: absolute; inset: 0; z-index: 2;
-  display: flex; flex-direction: column;
-  justify-content: space-between;
-  padding: 72px 40px 36px;
-  box-sizing: border-box;
-}
-@media(max-width:600px) { .hero-fs-inner { padding: 80px 22px 28px; } }
-
-/* ── 행1: 로고 + 우측 메타 ── */
-.hero-row-top {
-  display: flex; align-items: flex-start; justify-content: space-between;
-  gap: 20px;
-}
-.hero-logo-block {}
-.hero-logo-name {
-  font-size: clamp(22px, 3vw, 30px); font-weight: 900;
-  letter-spacing: -.03em; color: #fff; line-height: 1;
-}
-.hero-logo-name em { color: var(--gold); font-style: normal; }
-.hero-logo-block { display: inline-flex; flex-direction: column; align-items: stretch; }
-.hero-logo-name { white-space: nowrap; }
-.hero-logo-sub {
-  font-size: 6.5px; color: rgba(255,255,255,.55);
-  margin-top: 3px; letter-spacing: .28em;
-  text-transform: uppercase; white-space: nowrap;
-  font-weight: 500;
-}
-.hero-meta-block { text-align: right; }
-.hero-meta-line {
-  font-size: 10px; font-weight: 700; letter-spacing: .1em;
-  color: rgba(255,255,255,.45); line-height: 2;
-}
-/* 프로그레스 바 (blink ai 스타일) */
-.hero-progress-bar {
-  display: flex; gap: 4px; margin-top: 6px; justify-content: flex-end;
-}
-.hpb-seg {
-  height: 2px; border-radius: 1px;
-  background: rgba(255,255,255,.2);
-  flex: 1; max-width: 28px;
-  transition: background .3s;
-}
-.hpb-seg.active { background: var(--gold); }
-
-/* ── 행2: 메인 헤드라인 ── */
-.hero-row-mid {
-  display: flex; flex-direction: column;
-  justify-content: flex-end; padding-bottom: 28px;
-}
-.hero-headline {
-  font-size: clamp(56px, 9.5vw, 128px);
-  font-weight: 900; line-height: .92;
-  letter-spacing: -.05em; color: rgba(255,255,255,.88);
-  margin: 0;
-}
-.hero-headline .dot { color: var(--gold); }
-/* 우측 서브카피 */
-.hero-sub-right {
-  align-self: flex-end;
-  text-align: right; margin-top: 24px;
-}
-.hero-sub-right p {
-  font-size: clamp(14px, 1.6vw, 18px);
-  color: rgba(255,255,255,.65); line-height: 1.7; margin: 0;
-}
-.hero-view-works {
-  display: inline-flex; align-items: center; gap: 10px;
-  margin-top: 16px;
-  font-size: 11px; font-weight: 800; letter-spacing: .14em;
-  color: var(--gold); background: none; border: none;
-  cursor: pointer; font-family: inherit; padding: 0;
-  transition: gap .2s;
-}
-.hero-view-works:hover { gap: 16px; }
-
-/* 하단 행 */
-.hero-row-bottom {
-  display: flex; align-items: flex-end; justify-content: space-between;
-  padding-bottom: 0; gap: 12px; flex-wrap: wrap;
-}
-/* SCROLL HINT */
-.scroll-hint-bar {
-  display: flex; align-items: center; gap: 12px;
-  margin-top: 12px;
-}
-.scroll-line { width: 34px; height: 1.5px; background: var(--gold); border-radius: 1px; }
-.scroll-txt {
-  font-size: 9px; font-weight: 700; letter-spacing: .14em;
-  color: rgba(255,255,255,.35); text-transform: uppercase;
-}
-/* WATCH 버튼 — 왼쪽 이미지 기준 */
-.watch-btn {
-  display: inline-flex; align-items: center; gap: 14px;
-  background: #111111;
-  border: none;
-  border-radius: 999px; padding: 8px 24px 8px 8px;
-  cursor: pointer; text-decoration: none;
-  transition: background .2s;
-  width: fit-content;
-}
-.watch-btn:hover { background: #1a1a1a; }
-.watch-play {
-  width: 38px; height: 38px; border-radius: 50%;
-  background: var(--gold);
-  flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 12px; color: #060606; font-weight: 900;
-  transition: transform .18s, box-shadow .18s;
-}
-.watch-btn:hover .watch-play {
-  transform: scale(1.06);
-  box-shadow: 0 0 18px rgba(226,242,39,.5);
-}
-.watch-label {
-  font-size: 10px; font-weight: 800; letter-spacing: .12em;
-  color: var(--gold);
-  display: flex; align-items: center; gap: 5px;
-  margin-bottom: 3px;
-}
-.watch-label::before { content: '▶'; font-size: 7px; color: var(--gold); }
-.watch-title { font-size: 14px; font-weight: 800; color: #fff; letter-spacing: -.01em; }
-
-/* NOW PLAYING */
-.now-playing-block { text-align: right; }
-.np-tag {
-  display: flex; align-items: center; gap: 6px; justify-content: flex-end;
-  font-size: 9px; font-weight: 800; letter-spacing: .1em; color: var(--gold);
-  margin-bottom: 4px;
-}
-.np-dot {
-  width: 5px; height: 5px; border-radius: 50%;
-  background: var(--gold); animation: p 2s ease-in-out infinite;
-}
-.np-title { font-size: clamp(14px, 2vw, 18px); font-weight: 800; color: #fff; letter-spacing: -.01em; }
-.np-brand { font-size: 10px; color: rgba(255,255,255,.4); margin-top: 2px; letter-spacing: .04em; }
-
-/* SCROLL HINT */
-.scroll-hint-bar {
-  width: 100%; display: flex; align-items: center; gap: 12px;
-  padding-bottom: 8px; order: 10;
-}
-.scroll-line { width: 36px; height: 1.5px; background: var(--gold); border-radius: 1px; }
-.scroll-txt {
-  font-size: 9px; font-weight: 700; letter-spacing: .14em;
-  color: rgba(255,255,255,.35); text-transform: uppercase;
-}
-
-/* 미세 그리드 (옵션) */
-.hero-grid {
-  position: absolute; inset: 0; pointer-events: none; z-index: 1;
-  background-image:
-    linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.018) 1px, transparent 1px);
-  background-size: 80px 80px;
-  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 20%, transparent 100%);
-}
-
-/* 레이어드 헤드라인 — share your imagination 스타일 */
-.hero-headline-back {
-  color: rgba(255,255,255,.38);
-  margin-bottom: -.12em; /* 아래 줄과 겹치게 */
-  position: relative; z-index: 1;
-}
-.hero-headline-front {
-  color: rgba(255,255,255,.92);
-  position: relative; z-index: 2;
-}
-.hero-headline-front .dot { color: var(--gold); }
-.hero-headline-back .dot  { color: rgba(226,242,39,.4); }
-
-/* 구버전 레거시 숨김 */
-.hero-atmosphere, .hero-layout, .vm-outer { display: none !important; }
-.flow-steps, .hero-btns, .proof-row { display: none; }
-
-
-.vending-machine {
-  background: linear-gradient(150deg, var(--ink3) 0%, var(--ink2) 100%);
-  border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 24px; overflow: hidden;
-  box-shadow:
-    0 60px 100px rgba(0,0,0,0.7),
-    0 0 0 1px rgba(226,242,39,0.04),
-    inset 0 1px 0 rgba(255,255,255,0.06);
-}
-.vm-screen {
-  height: 196px; background: var(--ink); position: relative;
-  overflow: hidden; display: flex; align-items: center; justify-content: center;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
-}
-.vm-scanline {
-  position: absolute; left: 0; right: 0; height: 1px;
-  background: linear-gradient(90deg, transparent, var(--gold), transparent);
-  animation: scan 3s ease-in-out infinite; opacity: 0;
-}
-@keyframes scan { 0%{top:0;opacity:0}5%{opacity:.5}95%{opacity:.5}100%{top:100%;opacity:0} }
-.vm-frames { display: flex; gap: 10px; padding: 0 20px; }
-.vm-frame {
-  width: 58px; height: 82px; border-radius: 8px; flex-shrink: 0;
-  background: var(--ink3); border: 1px solid rgba(255,255,255,0.06);
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  font-size: 18px; cursor: pointer; transition: all .2s cubic-bezier(.16,1,.3,1);
-  position: relative; overflow: hidden;
-}
-.vm-frame::before {
-  content: ''; position: absolute; inset: 0;
-  background: linear-gradient(135deg, rgba(226,242,39,0.08), transparent);
-  opacity: 0; transition: opacity .2s;
-}
-.vm-frame:hover { border-color: rgba(226,242,39,.3); transform: scale(1.05); }
-.vm-frame:hover::before { opacity: 1; }
-.vm-frame.active { border-color: rgba(226,242,39,.5); background: rgba(226,242,39,.05); }
-.vm-frame-lbl { font-size: 7px; color: var(--sub); margin-top: 4px; font-weight: 700; letter-spacing: .06em; }
-.vm-render-overlay {
-  position: absolute; inset: 0; background: var(--ink);
-  display: none; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
-  z-index: 5;
-}
-.vm-render-overlay.on { display: flex; }
-.vm-render-lbl { font-size: 9px; font-weight: 700; color: var(--gold); letter-spacing: .12em; }
-.vm-render-track { width: 130px; height: 1.5px; background: rgba(255,255,255,0.06); border-radius: 1px; overflow: hidden; }
-.vm-render-fill { height: 100%; background: linear-gradient(90deg, var(--gold3), var(--gold2)); width: 0; border-radius: 1px; }
-.vm-render-step { font-size: 9px; color: var(--sub); min-height: 13px; text-align: center; }
-
-.vm-body { padding: 16px 18px 20px; }
-.vm-keys { display: grid; grid-template-columns: repeat(4,1fr); gap: 6px; margin-bottom: 12px; }
-.vm-key {
-  aspect-ratio: 1; border-radius: 8px;
-  background: var(--ink2); border: 1px solid rgba(255,255,255,0.05);
-  display: flex; align-items: center; justify-content: center; font-size: 16px;
-  cursor: pointer; transition: all .18s cubic-bezier(.16,1,.3,1);
-}
-.vm-key:hover { background: var(--ink4); border-color: rgba(226,242,39,.2); transform: scale(1.08); }
-.vm-key.active { border-color: rgba(226,242,39,.4); background: rgba(226,242,39,.04); }
-.vm-eject {
-  width: 100%; background: linear-gradient(105deg, var(--gold3), var(--gold), var(--gold2));
-  color: #060606; font-size: 13px; font-weight: 800; padding: 12px;
-  border-radius: 10px; border: none; cursor: pointer; font-family: inherit;
-  letter-spacing: .02em; transition: all .2s cubic-bezier(.16,1,.3,1);
-  box-shadow: 0 4px 16px rgba(226,242,39,.25);
-}
-.vm-eject:hover { transform: scale(1.02); box-shadow: 0 6px 24px rgba(226,242,39,.4); }
-.vm-eject:active { transform: scale(.98); }
-.vm-caption {
-  font-size: 10px; color: var(--sub); text-align: center;
-  margin-top: 12px; min-height: 14px; transition: color .3s;
-}
-
-/* ════════════════════════════════
-   SECTIONS — 넓은 여백
-════════════════════════════════ */
-.section { padding: 150px 0; background: var(--ink); }
-.section-alt { background: var(--ink2); border-top: 1px solid rgba(255,255,255,0.04); border-bottom: 1px solid rgba(255,255,255,0.04); }
-.section-hd { margin-bottom: 60px; }
-.section-hd .eyebrow { margin-bottom: 16px; }
-
-/* ════════════════════════════════
-   HOW IT WORKS
-════════════════════════════════ */
-.steps-grid {
-  display: grid; grid-template-columns: repeat(3,1fr);
-  gap: 1px; background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.04);
-  border-radius: 20px; overflow: hidden;
-}
-@media(max-width:680px) { .steps-grid { grid-template-columns: 1fr; } }
-.step-cell {
-  background: var(--ink2); padding: 44px 36px;
-  position: relative; overflow: hidden; transition: background .25s;
-}
-.step-cell:hover { background: var(--ink3); }
-.step-cell::after {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
-  background: linear-gradient(90deg, transparent, var(--gold), transparent);
-  opacity: 0; transition: opacity .3s;
-}
-.step-cell:hover::after { opacity: .6; }
-.step-num {
-  font-size: 80px; font-weight: 700; line-height: 1; letter-spacing: -.04em;
-  color: transparent; -webkit-text-stroke: 1px rgba(255,255,255,0.06);
-  margin-bottom: 20px; display: block;
-}
-.step-ico { font-size: 26px; margin-bottom: 14px; }
-.step-ttl { font-size: 17px; font-weight: 700; margin-bottom: 10px; letter-spacing: -.02em; }
-.step-dsc { font-size: 13px; color: var(--sub); line-height: 1.65; }
-
-/* ════════════════════════════════
-   UPLOAD GUIDE
-════════════════════════════════ */
-.guide-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 48px; }
-@media(max-width:600px) { .guide-grid { grid-template-columns: 1fr; } }
-.guide-card {
-  border-radius: 18px; padding: 28px;
-  background: var(--ink3);
-}
-.guide-card.good {
-  background: #0e1a0f;
-  border: 1px solid rgba(226,242,39,0.15);
-}
-.guide-card.bad {
-  background: #1a0d0e;
-  border: 1px solid rgba(255,68,85,0.15);
-}
-.guide-badge {
-  display: inline-flex; align-items: center; gap: 5px;
-  font-size: 10px; font-weight: 700; letter-spacing: .06em;
-  padding: 4px 11px; border-radius: 999px; margin-bottom: 18px;
-}
-.guide-badge.good { background: rgba(226,242,39,.12); color: var(--green); }
-.guide-badge.bad { background: rgba(255,68,85,.12); color: var(--red); }
-.guide-vis {
-  height: 110px; border-radius: 10px; margin-bottom: 18px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 42px; position: relative; overflow: hidden;
-}
-.guide-vis.g { background: linear-gradient(135deg, #0a1a0c, #0e2012); }
-.guide-vis.b { background: linear-gradient(135deg, #1a0a0c, #200e10); }
-.guide-items { display: flex; flex-direction: column; gap: 8px; }
-.guide-item {
-  font-size: 13px; color: rgba(255,255,255,.65);
-  display: flex; align-items: center; gap: 9px; line-height: 1.5;
-}
-.guide-item::before { content:''; width:4px; height:4px; border-radius:50%; flex-shrink:0; }
-.guide-item.ok::before { background: var(--green); }
-.guide-item.ng::before { background: var(--red); }
-
-/* ════════════════════════════════
-   PRESET STORE
-════════════════════════════════ */
-.store-cats {
-  display: flex; gap: 7px; margin-bottom: 36px;
-  overflow-x: auto; padding-bottom: 2px;
-}
-.store-cat {
-  padding: 7px 15px; border-radius: 999px; font-size: 11px; font-weight: 700;
-  border: 1px solid rgba(255,255,255,0.07); background: transparent;
-  color: var(--sub); cursor: pointer; white-space: nowrap; font-family: inherit;
-  transition: all .18s; flex-shrink: 0; letter-spacing: .03em;
-}
-.store-cat.on { border-color: rgba(226,242,39,.4); color: var(--gold); background: rgba(226,242,39,.06); }
-.presets-grid {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 14px;
-}
-.preset-card {
-  background: linear-gradient(150deg, var(--ink3) 0%, var(--ink2) 100%);
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 18px; overflow: hidden; cursor: pointer;
-  transition: border-color .2s, transform .2s cubic-bezier(.16,1,.3,1), box-shadow .2s;
-  position: relative;
-}
-.preset-card:hover {
-  border-color: rgba(255,255,255,0.12);
-  transform: translateY(-3px);
-  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-}
-.preset-card.playing { border-color: rgba(226,242,39,.4); }
-.preset-player {
-  height: 156px; background: var(--ink); position: relative; overflow: hidden;
-  display: flex; align-items: center; justify-content: center;
-}
-.preset-player-bg { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 56px; opacity: .08; }
-.preset-play-ui {
-  display: flex; flex-direction: column; align-items: center; gap: 8px; z-index: 2;
-  transition: opacity .2s;
-}
-.play-btn {
-  width: 42px; height: 42px; border-radius: 50%;
-  background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 14px; transition: all .18s;
-}
-.preset-card:hover .play-btn {
-  background: rgba(226,242,39,.15); border-color: rgba(226,242,39,.4);
-}
-.play-hint { font-size: 10px; color: var(--sub); font-weight: 600; letter-spacing: .04em; }
-.preset-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: none; }
-.preset-prog { position: absolute; bottom: 0; left: 0; right: 0; height: 1.5px; background: rgba(255,255,255,0.06); }
-.preset-prog-fill { height: 100%; background: var(--gold); width: 0; }
-.preset-playing .preset-prog-fill { animation: prog-anim 3s linear forwards; }
-@keyframes prog-anim { to { width: 100%; } }
-
-.badge-hot { position: absolute; top: 12px; left: 12px; font-size: 9px; font-weight: 800; letter-spacing: .06em; background: rgba(255,68,85,.2); color: var(--red); border: 1px solid rgba(255,68,85,.25); padding: 3px 9px; border-radius: 999px; }
-.badge-new { position: absolute; top: 12px; left: 12px; font-size: 9px; font-weight: 800; letter-spacing: .06em; background: rgba(91,140,245,.2); color: #7aa8f8; border: 1px solid rgba(91,140,245,.25); padding: 3px 9px; border-radius: 999px; }
-
-.preset-info { padding: 18px 16px; }
-.pi-row { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
-.pi-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
-.pi-name { font-size: 14px; font-weight: 700; letter-spacing: -.02em; margin-bottom: 2px; }
-.pi-ref { font-size: 10px; color: var(--gold); font-weight: 700; letter-spacing: .04em; }
-.pi-desc { font-size: 12px; color: var(--sub); line-height: 1.55; margin-bottom: 12px; }
-.pi-foot { display: flex; align-items: center; justify-content: space-between; }
-.pi-uses { font-size: 10px; color: var(--sub); }
-.pi-trend { font-size: 10px; color: var(--green); font-weight: 700; }
-
-/* ════════════════════════════════
-   TIERS
-════════════════════════════════ */
-.countdown-strip {
-  background: linear-gradient(105deg, rgba(226,242,39,.07), rgba(226,242,39,.03));
-  border: 1px solid rgba(226,242,39,.15); border-radius: 14px;
-  padding: 14px 20px; margin-bottom: 40px;
-  display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
-}
-.cd-left { }
-.cd-label { font-size: 11px; font-weight: 700; color: var(--gold); margin-bottom: 3px; letter-spacing: .04em; }
-.cd-msg { font-size: 11px; color: var(--sub); }
-.cd-timer { display: flex; align-items: baseline; gap: 4px; }
-.cd-unit { text-align: center; min-width: 44px; }
-.cd-n { font-size: 28px; font-weight: 700; letter-spacing: -.03em; color: var(--fg); font-variant-numeric: tabular-nums; }
-.cd-l { font-size: 8px; color: var(--sub); letter-spacing: .08em; display: block; margin-top: 1px; }
-.cd-colon { font-size: 22px; font-weight: 700; color: rgba(255,255,255,.15); padding-bottom: 8px; }
-
-.tiers-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
-@media(max-width:760px) { .tiers-row { grid-template-columns: 1fr; max-width: 360px; } }
-.tier-card {
-  background: linear-gradient(150deg, var(--ink3) 0%, var(--ink2) 100%);
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 20px; padding: 30px 26px; position: relative; overflow: hidden;
-  transition: border-color .2s, transform .2s cubic-bezier(.16,1,.3,1);
-}
-.tier-card:hover { border-color: rgba(255,255,255,.1); transform: translateY(-2px); }
-.tier-card.featured { border-color: rgba(226,242,39,.25); }
-.tier-card.featured::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
-  background: linear-gradient(90deg, transparent, var(--gold), transparent);
-}
-.tier-badge { position: absolute; top: 20px; right: 20px; font-size: 9px; font-weight: 800; background: var(--gold); color: #060606; padding: 3px 9px; border-radius: 999px; letter-spacing: .04em; }
-.tier-ico { font-size: 24px; margin-bottom: 16px; }
-.tier-name { font-size: 9px; font-weight: 700; letter-spacing: .14em; color: var(--sub); margin-bottom: 10px; }
-.tier-price { font-size: 36px; font-weight: 700; letter-spacing: -.03em; margin-bottom: 2px; }
-.tier-price small { font-size: 14px; color: var(--sub); font-weight: 400; }
-.tier-period { font-size: 11px; color: var(--sub); margin-bottom: 20px; }
-.tier-divider { height: 1px; background: rgba(255,255,255,.05); margin-bottom: 20px; }
-.tier-items { display: flex; flex-direction: column; gap: 9px; }
-.ti { display: flex; align-items: flex-start; gap: 10px; font-size: 12px; color: var(--sub); line-height: 1.5; }
-.ti-check { width: 14px; height: 14px; border-radius: 3px; background: rgba(226,242,39,.1); display: flex; align-items: center; justify-content: center; font-size: 8px; color: var(--gold); flex-shrink: 0; margin-top: 1px; }
-.tier-cta { width: 100%; margin-top: 24px; }
-
-/* 라이선스 강조 배너 */
-.tier-highlight {
-  background: rgba(226,242,39,.08);
-  border: 1px solid rgba(226,242,39,.2);
-  border-radius: 8px; padding: 8px 12px;
-  font-size: 11px; font-weight: 700;
-  color: var(--gold); margin-bottom: 14px;
-  letter-spacing: -.01em;
-}
-/* 업종 태그 */
-.ti-tag {
-  display: block; font-size: 10px;
-  color: var(--gold); margin-top: 2px;
-  letter-spacing: .02em;
-}
-/* STUDIO 안내 문구 */
-.studio-note {
-  text-align: center; font-size: 10px;
-  color: var(--sub); margin-top: 10px;
-  letter-spacing: .02em;
-}
-/* STUDIO 의뢰 타임라인 */
-.studio-card { border-color: rgba(226,242,39,.15); }
-.studio-flow { display: flex; flex-direction: column; gap: 0; margin: 16px 0; }
-.sf-step { display: flex; align-items: flex-start; gap: 12px; }
-.sf-dot {
-  width: 24px; height: 24px; border-radius: 50%;
-  background: rgba(226,242,39,.1); border: 1px solid rgba(226,242,39,.3);
-  color: var(--gold); font-size: 8px; font-weight: 800;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0; letter-spacing: -.02em;
-}
-.sf-line {
-  width: 1px; height: 16px; background: rgba(226,242,39,.15);
-  margin-left: 11px;
-}
-.sf-title { font-size: 12px; font-weight: 700; margin-bottom: 1px; }
-.sf-desc { font-size: 10px; color: var(--sub); }
-.sf-info { padding-top: 2px; }
-
-/* 라이선스 배너 */
-.license-banner {
-  margin-top: 28px;
-  background: rgba(255,255,255,.02); border: 1px solid rgba(255,255,255,.06);
-  border-radius: 14px; padding: 18px 20px;
-  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
-}
-.lb-icon { font-size: 26px; }
-.lb-body { flex: 1; }
-.lb-title { font-size: 13px; font-weight: 700; margin-bottom: 3px; letter-spacing: -.01em; }
-.lb-sub { font-size: 11px; color: var(--sub); line-height: 1.5; }
-.lb-action {
-  font-size: 10px; font-weight: 700; color: var(--green); letter-spacing: .04em;
-  background: rgba(226,242,39,.07); border: 1px solid rgba(226,242,39,.15);
-  padding: 7px 13px; border-radius: 8px; cursor: pointer; white-space: nowrap;
-  transition: background .18s; flex-shrink: 0;
-}
-.lb-action:hover { background: rgba(226,242,39,.14); }
-
-/* ════════════════════════════════
-   ANALYTICS
-════════════════════════════════ */
-.analytics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 48px; }
-@media(max-width:640px) { .analytics-grid { grid-template-columns: 1fr; } }
-.a-card {
-  background: linear-gradient(150deg, var(--ink3), var(--ink2));
-  border: 1px solid rgba(255,255,255,.05);
-  border-radius: 18px; padding: 24px;
-}
-.a-card-title { font-size: 9px; font-weight: 700; letter-spacing: .1em; color: var(--sub); margin-bottom: 18px; }
-.bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 9px; }
-.bar-lbl { font-size: 11px; font-weight: 600; min-width: 124px; flex-shrink: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.bar-track { flex: 1; height: 4px; background: rgba(255,255,255,.05); border-radius: 2px; overflow: hidden; }
-.bar-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg, var(--gold3), var(--gold2)); transition: width 1.2s cubic-bezier(.16,1,.3,1); }
-.bar-val { font-size: 10px; font-weight: 700; color: var(--gold); min-width: 38px; text-align: right; }
-.kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.kpi-box { background: var(--ink3); border-radius: 12px; padding: 16px; }
-.kpi-n { font-size: 26px; font-weight: 700; letter-spacing: -.03em; margin-bottom: 2px; }
-.kpi-l { font-size: 9px; color: var(--sub); letter-spacing: .06em; }
-.kpi-t { font-size: 10px; font-weight: 700; margin-top: 6px; }
-.up { color: var(--green); }
-.live-feed { display: flex; flex-direction: column; gap: 7px; max-height: 200px; overflow-y: auto; }
-.lf-item { display: flex; align-items: center; gap: 10px; padding: 9px 11px; background: var(--ink3); border-radius: 9px; font-size: 11px; }
-.lf-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
-.lf-brand { font-weight: 700; flex: 1; }
-.lf-style { color: var(--sub); }
-.lf-time { color: var(--sub); font-size: 10px; flex-shrink: 0; }
-
-/* ════════════════════════════════
-   VISION / ROADMAP
-════════════════════════════════ */
-.vision-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.04); border-radius: 20px; overflow: hidden; margin-top: 48px; }
-@media(max-width:680px) { .vision-grid { grid-template-columns: 1fr; } }
-.vision-cell { background: var(--ink2); padding: 32px 28px; transition: background .2s; }
-.vision-cell:hover { background: var(--ink3); }
-.vision-phase { font-size: 9px; font-weight: 700; letter-spacing: .12em; color: var(--gold); margin-bottom: 12px; }
-.vision-title { font-size: 17px; font-weight: 700; letter-spacing: -.02em; margin-bottom: 14px; }
-.vision-items { display: flex; flex-direction: column; gap: 8px; }
-.vi { font-size: 12px; color: var(--sub); display: flex; align-items: center; gap: 8px; }
-.vi::before { content: ''; width: 3px; height: 3px; border-radius: 50%; background: rgba(255,255,255,.15); flex-shrink: 0; }
-.vi.live::before { background: var(--gold); }
-
-/* ════════════════════════════════
-   CTA SECTION
-════════════════════════════════ */
-#cta { padding: 160px 0; }
-.cta-inner { text-align: center; max-width: 540px; margin: 0 auto; }
-.cta-h { font-size: clamp(34px, 5.5vw, 60px); font-weight: 700; letter-spacing: -.04em; line-height: 1.02; margin-bottom: 18px; }
-.cta-sub { font-size: 17px; color: var(--fg2); line-height: 1.65; margin-bottom: 36px; }
-.cta-btns { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-
-/* ════════════════════════════════
-   FOOTER
-════════════════════════════════ */
-footer { background: var(--ink2); border-top: 1px solid rgba(255,255,255,.04); padding: 48px 0; }
-.footer-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; flex-wrap: wrap; }
-.f-brand { font-size: 14px; font-weight: 700; letter-spacing: -.01em; }
-.f-brand em { color: var(--gold); font-style: normal; }
-.f-tagline { font-size: 10px; color: var(--sub); margin-top: 4px; letter-spacing: .04em; }
-.f-version { font-size: 9px; color: rgba(255,255,255,.12); margin-top: 8px; letter-spacing: .06em; font-weight: 700; }
-.f-legal { font-size: 10px; color: var(--sub); line-height: 2; text-align: right; }
-@media(max-width:580px) { .f-legal { text-align: left; } }
-
-/* ════════════════════════════════
-   MODAL — 글래스모피즘
-════════════════════════════════ */
-.modal-bg {
-  position: fixed; inset: 0; z-index: 800;
-  background: rgba(0,0,0,.75); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
-  display: flex; align-items: center; justify-content: center; padding: 20px;
-  opacity: 0; pointer-events: none; transition: opacity .22s;
-}
-.modal-bg.on { opacity: 1; pointer-events: all; }
-.modal-box {
-  background: linear-gradient(150deg, #181818, #111111);
-  border: 1px solid rgba(255,255,255,.08);
-  border-radius: 20px; padding: 32px; width: 100%; max-width: 420px;
-  box-shadow: 0 40px 80px rgba(0,0,0,.8);
-  transform: scale(.95) translateY(10px); transition: transform .25s cubic-bezier(.16,1,.3,1);
-}
-.modal-bg.on .modal-box { transform: scale(1) translateY(0); }
-.modal-close { float: right; background: none; border: none; color: var(--sub); font-size: 16px; cursor: pointer; padding: 3px 6px; transition: color .15s; }
-.modal-close:hover { color: var(--fg); }
-
-/* 인증서 */
-.cert-card {
-  background: linear-gradient(135deg, rgba(226,242,39,.07), rgba(226,242,39,.02));
-  border: 1px solid rgba(226,242,39,.2); border-radius: 14px;
-  padding: 24px; text-align: center; margin: 20px 0;
-}
-.cert-seal { font-size: 32px; margin-bottom: 10px; }
-.cert-title { font-size: 12px; font-weight: 800; color: var(--gold); letter-spacing: .1em; margin-bottom: 4px; }
-.cert-sub { font-size: 10px; color: var(--sub); }
-.cert-line { height: 1px; background: linear-gradient(90deg,transparent,rgba(226,242,39,.3),transparent); margin: 14px 0; }
-.cert-meta { display: flex; justify-content: space-around; }
-.cm-item .cm-k { font-size: 9px; color: var(--sub); letter-spacing: .04em; }
-.cm-item .cm-v { font-size: 11px; font-weight: 700; color: var(--gold); margin-top: 2px; }
-
-/* ════════════════════════════════
-   TOAST
-════════════════════════════════ */
-.toast {
-  position: fixed; bottom: 28px; left: 50%;
-  transform: translateX(-50%) translateY(8px);
-  background: rgba(0,0,0,.95); border: 1px solid rgba(226,242,39,.3);
-  color: var(--green); padding: 10px 20px; border-radius: 999px;
-  font-size: 12px; font-weight: 700; letter-spacing: .02em;
-  opacity: 0; transition: all .25s cubic-bezier(.16,1,.3,1);
-  pointer-events: none; white-space: nowrap; z-index: 900;
-  backdrop-filter: blur(10px);
-}
-.toast.on { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-/* ════════════════════════════════
-   PORTFOLIO
-════════════════════════════════ */
-.portfolio-grid {
-  display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-top: 48px;
-}
-@media(max-width:860px) { .portfolio-grid { grid-template-columns: repeat(2,1fr); } }
-@media(max-width:520px) { .portfolio-grid { grid-template-columns: 1fr; } }
-.pf-card {
-  background: linear-gradient(150deg, var(--ink3), var(--ink2));
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 16px; overflow: hidden;
-  transition: transform .2s cubic-bezier(.16,1,.3,1), border-color .2s, box-shadow .2s;
-}
-.pf-card:hover {
-  transform: translateY(-4px);
-  border-color: rgba(226,242,39,.2);
-  box-shadow: 0 24px 60px rgba(0,0,0,.5);
-}
-.pf-thumb {
-  height: 140px; position: relative;
-  display: flex; align-items: center; justify-content: center;
-  overflow: hidden;
-}
-.pf-ico { font-size: 48px; opacity: .25; }
-.pf-scanline {
-  position: absolute; left: 0; right: 0; height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(226,242,39,.6), transparent);
-  animation: scan 4s ease-in-out infinite; opacity: 0;
-}
-.pf-badge {
-  position: absolute; bottom: 10px; left: 10px;
-  font-size: 9px; font-weight: 800; letter-spacing: .06em;
-  background: rgba(226,242,39,.15); color: var(--gold);
-  border: 1px solid rgba(226,242,39,.25);
-  padding: 3px 9px; border-radius: 999px;
-}
-.pf-info { padding: 16px; }
-.pf-brand { font-size: 14px; font-weight: 700; margin-bottom: 4px; letter-spacing: -.01em; }
-.pf-meta { font-size: 10px; color: var(--sub); margin-bottom: 8px; letter-spacing: .02em; }
-.pf-stars { font-size: 11px; color: var(--gold); }
-.pf-review { font-size: 10px; color: var(--sub); font-weight: 400; font-style: italic; }
-
-/* ════════════════════════════════
-   FAQ
-════════════════════════════════ */
-.faq-list { max-width: 720px; display: flex; flex-direction: column; gap: 0; }
-.faq-item {
-  border-bottom: 1px solid rgba(255,255,255,.05);
-}
-.faq-item:first-child { border-top: 1px solid rgba(255,255,255,.05); }
-.faq-q {
-  width: 100%; display: flex; align-items: center; justify-content: space-between;
-  background: none; border: none; color: #ffffff; font-family: inherit;
-  font-size: 15px; font-weight: 600; padding: 22px 4px;
-  cursor: pointer; text-align: left; letter-spacing: -.01em;
-  transition: color .18s; gap: 16px;
-}
-.faq-q:hover { color: var(--gold); }
-.faq-arrow {
-  font-size: 20px; color: rgba(255,255,255,.4); flex-shrink: 0;
-  transition: transform .25s cubic-bezier(.16,1,.3,1), color .18s;
-  line-height: 1;
-}
-.faq-item.open .faq-arrow { transform: rotate(45deg); color: var(--gold); }
-.faq-a {
-  font-size: 13px; color: rgba(255,255,255,.6); line-height: 1.75;
-  max-height: 0; overflow: hidden;
-  transition: max-height .35s cubic-bezier(.16,1,.3,1), padding .25s;
-  padding: 0 4px;
-}
-.faq-item.open .faq-a { max-height: 200px; padding: 0 4px 22px; }
-
-/* ════════════════════════════════
-   CONTACT / ORDER
-════════════════════════════════ */
-.order-card {
-  background: linear-gradient(150deg, var(--ink3), var(--ink2));
-  border: 1px solid rgba(255,255,255,.07);
-  border-radius: 24px; padding: 32px; margin-top: 48px;
-}
-.order-plan-row {
-  display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 28px;
-}
-.order-plan-opt {
-  border: 1px solid rgba(255,255,255,.07); border-radius: 14px;
-  padding: 18px 14px; cursor: pointer; text-align: center;
-  transition: border-color .2s, background .2s;
-  position: relative; background: var(--ink3);
-}
-.order-plan-opt:hover { border-color: rgba(226,242,39,.3); }
-.order-plan-opt.active {
-  border-color: rgba(226,242,39,.5);
-  background: rgba(226,242,39,.06);
-}
-.op-badge {
-  position: absolute; top: -8px; left: 50%; transform: translateX(-50%);
-  font-size: 8px; font-weight: 800; background: var(--gold); color: #060606;
-  padding: 2px 8px; border-radius: 999px; letter-spacing: .04em; white-space: nowrap;
-}
-.op-name { font-size: 9px; font-weight: 800; letter-spacing: .12em; color: var(--sub); margin-bottom: 6px; }
-.op-price { font-size: 15px; font-weight: 700; letter-spacing: -.02em; margin-bottom: 4px; }
-.op-desc { font-size: 10px; color: var(--sub); }
-.order-fields { display: flex; flex-direction: column; gap: 16px; margin-bottom: 22px; }
-.of-group { display: flex; flex-direction: column; gap: 6px; }
-.of-label { font-size: 11px; font-weight: 700; color: var(--sub); letter-spacing: .04em; }
-.of-input {
-  background: var(--ink); border: 1px solid rgba(255,255,255,.08);
-  border-radius: 10px; padding: 12px 14px;
-  color: var(--fg); font-family: inherit; font-size: 14px;
-  transition: border-color .18s, box-shadow .18s; outline: none; width: 100%;
-}
-.of-input:focus { border-color: rgba(226,242,39,.4); box-shadow: 0 0 0 3px rgba(226,242,39,.06); }
-.of-input::placeholder { color: var(--sub); }
-.of-select { appearance: none; cursor: pointer; }
-.of-textarea { min-height: 90px; resize: vertical; line-height: 1.6; }
-
-/* ════════════════════════════════
-   SCROLL ANIMATIONS
-════════════════════════════════ */
-.appear {
-  opacity: 0; transform: translateY(30px);
-  transition: opacity .9s cubic-bezier(.16,1,.3,1), transform .9s cubic-bezier(.16,1,.3,1);
-}
-.appear.visible { opacity: 1; transform: none; }
-.appear-d1 { transition-delay: .08s; }
-.appear-d2 { transition-delay: .16s; }
-.appear-d3 { transition-delay: .24s; }
-/* ════════════════════════════════
-   HERO VIDEO — 세로형 폰 프레임 (구버전 스타일, 미사용)
-════════════════════════════════ */
-.hero-video-wrap {
-  position: relative;
-  display: flex; justify-content: center; align-items: center;
-}
-.phone-frame {
-  position: relative;
-  width: 260px; height: 540px;
-  background: linear-gradient(160deg, #1a1a1a 0%, #0a0a0a 100%);
-  border-radius: 44px;
-  border: 1.5px solid rgba(255,255,255,.12);
-  box-shadow:
-    0 0 0 1px rgba(0,0,0,.8),
-    0 60px 120px rgba(0,0,0,.8),
-    0 0 60px rgba(226,242,39,.06),
-    inset 0 1px 0 rgba(255,255,255,.08);
-  overflow: visible;
-}
-.phone-notch {
-  position: absolute; top: 14px; left: 50%; transform: translateX(-50%);
-  width: 80px; height: 8px;
-  background: #0a0a0a; border-radius: 999px;
-  z-index: 10;
-  box-shadow: 0 0 0 1.5px rgba(255,255,255,.06);
-}
-.phone-screen {
-  position: absolute; inset: 6px;
-  border-radius: 38px; overflow: hidden;
-  background: #000;
-}
-/* 사이드 버튼 */
-.phone-btn-r {
-  position: absolute; right: -3px;
-  width: 3px; border-radius: 0 2px 2px 0;
-  background: #1c1c1c;
-}
-.phone-btn-r.t1 { top: 110px; height: 36px; }
-.phone-btn-r.t2 { top: 160px; height: 36px; }
-.phone-btn-l {
-  position: absolute; left: -3px; top: 130px;
-  width: 3px; height: 56px;
-  border-radius: 2px 0 0 2px; background: #1c1c1c;
-}
-/* 영상 위 그라디언트 오버레이 */
-.phone-overlay {
-  position: absolute; inset: 0; pointer-events: none;
-  background:
-    linear-gradient(to bottom, rgba(0,0,0,.35) 0%, transparent 25%, transparent 65%, rgba(0,0,0,.6) 100%);
-}
-/* LIVE 배지 */
-.phone-badge {
-  position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
-  display: flex; align-items: center; gap: 6px;
-  background: rgba(6,6,6,.75); backdrop-filter: blur(10px);
-  border: 1px solid rgba(226,242,39,.25);
-  padding: 6px 14px; border-radius: 999px;
-  font-size: 9px; font-weight: 800; letter-spacing: .08em; color: var(--gold);
-  white-space: nowrap; z-index: 5;
-}
-.phone-badge-dot {
-  width: 5px; height: 5px; border-radius: 50%;
-  background: var(--gold); animation: p 2s ease-in-out infinite;
-}
-/* 플로팅 태그 */
-.vid-tag {
-  position: absolute;
-  background: rgba(6,6,6,.85); backdrop-filter: blur(12px);
-  border: 1px solid rgba(255,255,255,.1);
-  border-radius: 10px; padding: 8px 13px;
-  font-size: 11px; font-weight: 700; color: var(--fg);
-  white-space: nowrap; letter-spacing: -.01em;
-}
-.tag-tl { top: 60px; left: -36px; }
-.tag-br { bottom: 80px; right: -36px; }
-/* 배경 글로우 */
-.vid-glow {
-  position: absolute; inset: -40px; z-index: -1; pointer-events: none;
-  background: radial-gradient(ellipse 300px 500px at 50% 50%, rgba(226,242,39,.07), transparent 70%);
-}
-/* vm-outer 모바일 숨김 유지 */
-@media(max-width:980px) { .vm-outer { display: none; } }
-
-/* ════════════════════════════════
-   PAYMENT SYSTEM
-════════════════════════════════ */
-/* 결제 모달 */
-.pay-modal-bg {
-  position: fixed; inset: 0; z-index: 900;
-  background: rgba(0,0,0,.85); backdrop-filter: blur(8px);
-  display: flex; align-items: center; justify-content: center; padding: 20px;
-  opacity: 0; pointer-events: none; transition: opacity .25s;
-}
-.pay-modal-bg.on { opacity: 1; pointer-events: all; }
-.pay-modal {
-  background: linear-gradient(150deg, #141414, #0e0e0e);
-  border: 1px solid rgba(255,255,255,.09);
-  border-radius: 24px; width: 100%; max-width: 480px;
-  box-shadow: 0 48px 96px rgba(0,0,0,.9);
-  transform: scale(.95) translateY(12px);
-  transition: transform .28s cubic-bezier(.16,1,.3,1);
-  overflow: hidden;
-}
-.pay-modal-bg.on .pay-modal { transform: scale(1) translateY(0); }
-
-/* 헤더 */
-.pay-modal-head {
-  padding: 24px 28px 20px;
-  border-bottom: 1px solid rgba(255,255,255,.06);
-  display: flex; align-items: center; justify-content: space-between;
-}
-.pay-modal-title { font-size: 16px; font-weight: 800; letter-spacing: -.02em; }
-.pay-modal-close {
-  background: none; border: none; color: var(--sub);
-  font-size: 18px; cursor: pointer; padding: 4px 8px;
-  transition: color .15s; line-height: 1;
-}
-.pay-modal-close:hover { color: var(--fg); }
-
-/* 상품 요약 */
-.pay-summary {
-  margin: 20px 28px;
-  background: rgba(255,255,255,.03);
-  border: 1px solid rgba(255,255,255,.06);
-  border-radius: 14px; padding: 18px 20px;
-  display: flex; align-items: center; justify-content: space-between;
-}
-.pay-plan-info { display: flex; flex-direction: column; gap: 3px; }
-.pay-plan-name { font-size: 15px; font-weight: 800; letter-spacing: -.01em; }
-.pay-plan-desc { font-size: 11px; color: var(--sub); }
-.pay-plan-price {
-  font-size: 22px; font-weight: 800; letter-spacing: -.03em;
-  color: var(--gold);
-}
-
-/* 구매자 정보 */
-.pay-fields { padding: 0 28px; display: flex; flex-direction: column; gap: 12px; }
-.pay-field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.pay-label { font-size: 10px; font-weight: 700; color: var(--sub); letter-spacing: .04em; margin-bottom: 5px; }
-.pay-input {
-  width: 100%; background: rgba(255,255,255,.04);
-  border: 1px solid rgba(255,255,255,.08);
-  border-radius: 10px; padding: 11px 13px;
-  color: var(--fg); font-family: inherit; font-size: 13px;
-  outline: none; transition: border-color .18s, box-shadow .18s;
-}
-.pay-input:focus {
-  border-color: rgba(226,242,39,.4);
-  box-shadow: 0 0 0 3px rgba(226,242,39,.06);
-}
-.pay-input::placeholder { color: var(--sub); }
-
-/* PG 선택 */
-.pay-pg-section { padding: 16px 28px 0; }
-.pay-pg-label { font-size: 10px; font-weight: 700; color: var(--sub); letter-spacing: .04em; margin-bottom: 10px; }
-.pay-pg-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
-.pay-pg-opt {
-  border: 1px solid rgba(255,255,255,.08);
-  border-radius: 11px; padding: 12px 8px;
-  cursor: pointer; text-align: center; background: rgba(255,255,255,.02);
-  transition: border-color .18s, background .18s;
-}
-.pay-pg-opt:hover { border-color: rgba(226,242,39,.3); }
-.pay-pg-opt.active {
-  border-color: rgba(226,242,39,.6);
-  background: rgba(226,242,39,.06);
-}
-.pay-pg-ico { font-size: 20px; margin-bottom: 5px; }
-.pay-pg-name { font-size: 9px; font-weight: 700; color: var(--sub); letter-spacing: .04em; }
-.pay-pg-opt.active .pay-pg-name { color: var(--gold); }
-
-/* 옵션 선택 버튼 */
-.pay-opt-row {
-  display: flex; gap: 6px; flex-wrap: wrap;
-}
-.pay-opt {
-  flex: 1; min-width: 44px;
-  border: 1px solid rgba(255,255,255,.08);
-  border-radius: 9px; padding: 8px 6px;
-  cursor: pointer; text-align: center;
-  background: rgba(255,255,255,.03);
-  font-size: 11px; font-weight: 700; color: var(--fg2);
-  transition: border-color .18s, background .18s, color .18s;
-  line-height: 1.4;
-}
-.pay-opt:hover { border-color: rgba(226,242,39,.3); }
-.pay-opt.active {
-  border-color: rgba(226,242,39,.6);
-  background: rgba(226,242,39,.08);
-  color: var(--gold);
-}
-
-/* 약관 */
-.pay-terms {
-  margin: 16px 28px 0;
-  font-size: 10px; color: var(--sub); line-height: 1.7;
-}
-.pay-terms a { color: var(--gold); text-decoration: none; }
-.pay-terms label { display: flex; align-items: flex-start; gap: 8px; cursor: pointer; }
-.pay-terms input[type=checkbox] { margin-top: 2px; accent-color: var(--gold); flex-shrink: 0; }
-
-/* 결제 버튼 */
-.pay-btn-wrap { padding: 20px 28px 28px; }
-.pay-btn {
-  width: 100%; padding: 16px;
-  background: linear-gradient(105deg, var(--gold3), var(--gold), var(--gold2));
-  background-size: 200% auto;
-  color: #060606; font-size: 15px; font-weight: 900;
-  border: none; border-radius: 14px; cursor: pointer;
-  font-family: inherit; letter-spacing: -.01em;
-  transition: transform .2s cubic-bezier(.16,1,.3,1), box-shadow .2s, background-position .4s;
-  box-shadow: 0 4px 24px rgba(226,242,39,.3);
-}
-.pay-btn:hover {
-  transform: scale(1.02) translateY(-1px);
-  box-shadow: 0 8px 36px rgba(226,242,39,.45);
-  background-position: right center;
-}
-.pay-btn:disabled {
-  opacity: .5; cursor: not-allowed; transform: none;
-  box-shadow: none;
-}
-
-/* 결제 처리 중 오버레이 */
-.pay-processing {
-  position: absolute; inset: 0;
-  background: rgba(6,6,6,.95);
-  display: none; flex-direction: column;
-  align-items: center; justify-content: center; gap: 16px;
-  border-radius: 24px; z-index: 10;
-}
-.pay-processing.on { display: flex; }
-.pay-spinner {
-  width: 44px; height: 44px; border-radius: 50%;
-  border: 3px solid rgba(226,242,39,.15);
-  border-top-color: var(--gold);
-  animation: spin .9s linear infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-.pay-proc-txt { font-size: 13px; font-weight: 700; color: var(--sub); letter-spacing: .04em; }
-
-/* 결제 완료 화면 */
-.pay-success {
-  position: absolute; inset: 0;
-  background: #060606;
-  display: none; flex-direction: column;
-  align-items: center; justify-content: center; gap: 14px;
-  border-radius: 24px; z-index: 10; padding: 36px;
-  text-align: center;
-}
-.pay-success.on { display: flex; }
-.pay-success-ico { font-size: 52px; }
-.pay-success-title { font-size: 20px; font-weight: 800; letter-spacing: -.02em; }
-.pay-success-sub { font-size: 13px; color: var(--sub); line-height: 1.7; }
-.pay-success-order {
-  background: rgba(226,242,39,.06); border: 1px solid rgba(226,242,39,.2);
-  border-radius: 10px; padding: 12px 20px;
-  font-size: 11px; font-weight: 700; color: var(--gold); letter-spacing: .06em;
-}
-
-/* 티어 버튼 결제 트리거 */
-.tier-cta-pay {
-  width: 100%; margin-top: 24px;
-}
-
-/* ════════════════════════════════
-   LANGUAGE SELECTOR
-════════════════════════════════ */
-.lang-selector { position: relative; }
-.lang-btn {
-  display: flex; align-items: center; gap: 6px;
-  background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
-  border-radius: 8px; padding: 6px 10px;
-  color: rgba(255,255,255,.7); font-family: inherit;
-  font-size: 11px; font-weight: 700; letter-spacing: .04em;
-  cursor: pointer; transition: all .18s; white-space: nowrap;
-}
-.lang-btn:hover { background: rgba(255,255,255,.1); color: #fff; }
-.lang-btn svg { width: 13px; height: 13px; flex-shrink: 0; }
-.lang-arrow { font-size: 8px; opacity: .5; transition: transform .2s; }
-.lang-selector.open .lang-arrow { transform: rotate(180deg); }
-
-.lang-dropdown {
-  position: absolute; top: calc(100% + 8px); right: 0;
-  background: #111; border: 1px solid rgba(255,255,255,.1);
-  border-radius: 12px; padding: 6px;
-  min-width: 160px; z-index: 600;
-  box-shadow: 0 20px 48px rgba(0,0,0,.7);
-  opacity: 0; pointer-events: none;
-  transform: translateY(-6px) scale(.97);
-  transition: all .2s cubic-bezier(.16,1,.3,1);
-}
-.lang-selector.open .lang-dropdown {
-  opacity: 1; pointer-events: all;
-  transform: translateY(0) scale(1);
-}
-.lang-opt {
-  display: flex; align-items: center; gap: 10px;
-  padding: 8px 10px; border-radius: 8px;
-  cursor: pointer; transition: background .15s;
-  font-size: 12px; color: rgba(255,255,255,.65);
-  font-family: inherit; font-weight: 500;
-}
-.lang-opt:hover { background: rgba(255,255,255,.07); color: #fff; }
-.lang-opt.active { color: var(--gold); font-weight: 700; }
-.lang-opt.active::after { content: '✓'; margin-left: auto; font-size: 10px; }
-.lang-flag { font-size: 15px; line-height: 1; }
-
-/* RTL 지원 (아랍어) */
-[dir="rtl"] { direction: rtl; }
-[dir="rtl"] .lang-dropdown { right: auto; left: 0; }
-</style>
-<body>
-
-<!-- ════ NAV ════ -->
-<nav id="mainNav">
-  <div class="nav-inner">
-    <a class="nav-logo" href="#hero">
-      <div class="logo-symbol">
-        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect width="32" height="32" rx="8" fill="#E2F227" fill-opacity="0.08"/>
-          <rect x="4"  y="4"  width="3" height="3" rx=".8" fill="#E2F227" opacity=".5"/>
-          <rect x="9"  y="4"  width="3" height="3" rx=".8" fill="#E2F227" opacity=".35"/>
-          <rect x="20" y="4"  width="3" height="3" rx=".8" fill="#E2F227" opacity=".35"/>
-          <rect x="25" y="4"  width="3" height="3" rx=".8" fill="#E2F227" opacity=".5"/>
-          <rect x="4"  y="25" width="3" height="3" rx=".8" fill="#E2F227" opacity=".5"/>
-          <rect x="9"  y="25" width="3" height="3" rx=".8" fill="#E2F227" opacity=".35"/>
-          <rect x="20" y="25" width="3" height="3" rx=".8" fill="#E2F227" opacity=".35"/>
-          <rect x="25" y="25" width="3" height="3" rx=".8" fill="#E2F227" opacity=".5"/>
-          <rect x="3" y="9"  width="26" height="1.5" rx=".75" fill="#E2F227" opacity=".15"/>
-          <rect x="3" y="21.5" width="26" height="1.5" rx=".75" fill="#E2F227" opacity=".15"/>
-          <path d="M12 11.5 L22 16 L12 20.5 Z" fill="#E2F227"/>
-          <rect x="15.5" y="11.5" width="1.2" height="9" rx=".6" fill="#060606" opacity=".6"/>
-        </svg>
-      </div>
-      <span class="logo-wordmark"><span class="avvm-logo-text"><span class="avvm-av">A</span><span class="avvm-v-wrap"><span class="avvm-v1">V</span><span class="avvm-v2">V</span></span><span class="avvm-dot">M</span></span><em>.studio</em></span>
-    </a>
-    <div class="nav-links">
-      <a onclick="sc('how')">How it works</a>
-      <a onclick="sc('store')">Preset Store</a>
-      <a onclick="sc('tiers')">Plans</a>
-      <a onclick="sc('portfolio')">Portfolio</a>
-      <a onclick="sc('faq')">FAQ</a>
-    </div>
-    <div class="nav-cta-wrap">
-      <span class="nav-status">v5.1</span>
-
-      <!-- 언어 선택기 -->
-      <div class="lang-selector" id="langSelector">
-        <button class="lang-btn" onclick="toggleLang()" aria-label="언어 선택">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-          </svg>
-          <span id="langCurrent">KO</span>
-          <span class="lang-arrow">▾</span>
-        </button>
-        <div class="lang-dropdown" id="langDropdown">
-          <div class="lang-opt active" onclick="setLang('ko')" data-lang="ko"><span class="lang-flag">🇰🇷</span>한국어</div>
-          <div class="lang-opt" onclick="setLang('en')" data-lang="en"><span class="lang-flag">🇺🇸</span>English</div>
-          <div class="lang-opt" onclick="setLang('ja')" data-lang="ja"><span class="lang-flag">🇯🇵</span>日本語</div>
-          <div class="lang-opt" onclick="setLang('zh')" data-lang="zh"><span class="lang-flag">🇨🇳</span>中文</div>
-          <div class="lang-opt" onclick="setLang('es')" data-lang="es"><span class="lang-flag">🇪🇸</span>Español</div>
-          <div class="lang-opt" onclick="setLang('fr')" data-lang="fr"><span class="lang-flag">🇫🇷</span>Français</div>
-          <div class="lang-opt" onclick="setLang('de')" data-lang="de"><span class="lang-flag">🇩🇪</span>Deutsch</div>
-          <div class="lang-opt" onclick="setLang('pt')" data-lang="pt"><span class="lang-flag">🇧🇷</span>Português</div>
-          <div class="lang-opt" onclick="setLang('ar')" data-lang="ar"><span class="lang-flag">🇸🇦</span>العربية</div>
-        </div>
-      </div>
-
-      <button class="btn-gold btn-sm" id="navCtaBtn" onclick="openPayModal('LITE','15초 영상 1편 · One Click','79000','79,000원')">영상 뽑기 →</button>
-      <button class="nav-hamburger" aria-label="메뉴">
-        <span></span><span></span>
-      </button>
-    </div>
-  </div>
-</nav>
-
-<!-- ════ HERO — FULLSCREEN CINEMATIC ════ -->
-<section id="hero" class="hero-fs">
-
-  <!-- 배경 동영상 -->
-  <video id="heroVideo" class="hero-bg-video"
-    autoplay muted playsinline
-    preload="auto"
-    style="background:#060606;"
-  >
-  </video>
-
-  <!-- 오버레이 + 그리드 -->
-  <div class="hero-fs-overlay"></div>
-  <div class="hero-grid"></div>
-
-  <!-- 3행 레이아웃 -->
-  <div class="hero-fs-inner">
-
-    <!-- 행1: 로고 블록 + 우측 메타 -->
-    <div class="hero-row-top appear">
-      <div class="hero-logo-block">
-        <div class="hero-logo-name"><span class="avvm-logo-text" style="font-size:clamp(22px,3vw,30px)"><span class="avvm-av">A</span><span class="avvm-v-wrap"><span class="avvm-v1">V</span><span class="avvm-v2">V</span></span><span class="avvm-dot">M</span></span><em style="color:var(--gold);font-style:normal">.studio</em></div>
-        <div class="hero-logo-sub">AIVIDEO VENDINGMACHINE</div>
-      </div>
-      <div class="hero-meta-block">
-        <div class="hero-meta-line">SHOWREEL · 2026</div>
-        <div class="hero-meta-line"><span id="pn">1,247</span> ORDERS · 4.9★ RATING</div>
-        <div class="hero-progress-bar">
-          <div class="hpb-seg active"></div>
-          <div class="hpb-seg"></div>
-          <div class="hpb-seg"></div>
-          <div class="hpb-seg"></div>
-          <div class="hpb-seg"></div>
-          <div class="hpb-seg"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 행2: 메인 헤드라인 + 우측 서브카피 -->
-    <div class="hero-row-mid appear appear-d1">
-      <div>
-        <h1 class="hero-headline hero-headline-back">Cinematic</h1>
-        <h1 class="hero-headline hero-headline-front">One Click<span class="dot">.</span></h1>
-      </div>
-      <div class="hero-sub-right">
-        <p id="heroSub1">브랜드의 상상을</p>
-        <p id="heroSub2">AI 영상</p>
-        <p id="heroSub3">제작으로 현실에.</p>
-        <button class="hero-view-works" id="heroViewWorks" onclick="sc('store')">VIEW WORKS &nbsp;→</button>
-      </div>
-    </div>
-
-    <!-- 행3: 하단 바 -->
-    <div class="hero-row-bottom appear appear-d2">
-
-      <!-- 좌측: WATCH + SCROLL -->
-      <div style="display:flex;flex-direction:column;gap:14px">
-        <div class="watch-btn" onclick="toggleHeroVideo()">
-          <div class="watch-play" id="watchPlayBtn">▶</div>
-          <div class="watch-text">
-            <div class="watch-label">WATCH</div>
-            <div class="watch-title" id="heroWatchTitle">Latest Work</div>
-          </div>
-        </div>
-        <div class="scroll-hint-bar">
-          <div class="scroll-line"></div>
-          <span class="scroll-txt" id="heroScrollExplore">SCROLL TO EXPLORE</span>
-        </div>
-      </div>
-
-      <!-- 우측: NOW PLAYING -->
-      <div class="now-playing-block">
-        <div class="np-tag"><span class="np-dot"></span><span id="heroNowPlaying">NOW PLAYING</span></div>
-        <div class="np-title">AI CINEMATIC SAMPLE</div>
-        <div class="np-brand">AVVM.STUDIO</div>
-      </div>
-
-    </div>
-
-  </div>
-</section>
-
-<!-- ════ HOW IT WORKS ════ -->
-<section id="how" class="section section-alt">
-  <div class="container">
-    <div class="section-hd appear">
-      <div class="t-eyebrow eyebrow" style="margin-bottom:14px">How it works</div>
-      <h2 class="t-h2" id="howTitle">자판기처럼<br>간단합니다</h2>
-      <p class="t-body" id="howSub" style="margin-top:14px;max-width:440px">프롬프트 없음. 편집 지식 없음.<br>버튼 몇 번이면 광고영상이 완성됩니다.</p>
-    </div>
-    <div class="steps-grid appear appear-d1">
-      <div class="step-cell">
-        <span class="step-num">01</span>
-        <div class="step-ico">📸</div>
-        <div class="step-ttl" id="step1Title">사진 업로드</div>
-        <div class="step-dsc" id="step1Desc">JPG, PNG 어떤 형식이든 가능합니다. AI가 제품을 인식하고 최적 스타일을 자동 분석합니다.</div>
-      </div>
-      <div class="step-cell">
-        <span class="step-num">02</span>
-        <div class="step-ico">🎨</div>
-        <div class="step-ttl" id="step2Title">스타일 선택</div>
-        <div class="step-dsc" id="step2Desc">Preset Store에서 Apple·Dior·Netflix 스타일을 선택하거나 AI 추천을 받으세요.</div>
-      </div>
-      <div class="step-cell">
-        <span class="step-num">03</span>
-        <div class="step-ico">🎬</div>
-        <div class="step-ttl" id="step3Title">48시간 납품</div>
-        <div class="step-dsc" id="step3Desc">결제 즉시 접수됩니다. 9:16 / 1:1 / 16:9 세 비율과 상업 라이선스 인증서가 자동 발송됩니다.</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ════ UPLOAD GUIDE ════ -->
-<section id="guide" class="section" style="background:var(--ink);">
-  <div class="container">
-    <div class="section-hd appear">
-      <div class="t-eyebrow eyebrow" style="margin-bottom:14px">Upload Guide</div>
-      <h2 class="t-h2">이런 사진이<br>최고의 결과를 냅니다</h2>
-      <p class="t-body" style="margin-top:14px;max-width:440px">사진 품질이 결과물의 80%를 결정합니다.</p>
-    </div>
-    <div class="guide-grid appear appear-d1">
-      <div class="guide-card good">
-        <div class="guide-badge good">✓ GOOD EXAMPLE</div>
-        <div class="guide-vis g"><span>💄</span></div>
-        <div class="guide-items">
-          <div class="guide-item ok">제품이 화면 중앙, 충분한 여백</div>
-          <div class="guide-item ok">자연광 또는 소프트박스 조명</div>
-          <div class="guide-item ok">단색 또는 단순한 배경</div>
-          <div class="guide-item ok">1:1 또는 4:5 비율</div>
-          <div class="guide-item ok">1000px 이상 해상도</div>
-        </div>
-      </div>
-      <div class="guide-card bad">
-        <div class="guide-badge bad">✗ AVOID</div>
-        <div class="guide-vis b"><span style="opacity:.4">🚫</span></div>
-        <div class="guide-items">
-          <div class="guide-item ng">어두운 환경의 흐릿한 사진</div>
-          <div class="guide-item ng">복잡한 배경 또는 인물 포함</div>
-          <div class="guide-item ng">제품이 프레임 끝에 잘림</div>
-          <div class="guide-item ng">강한 그림자나 역광</div>
-          <div class="guide-item ng">500px 미만 저해상도</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ════ PRESET STORE ════ -->
-<section id="store" class="section section-alt">
-  <div class="container">
-    <div class="section-hd appear">
-      <div class="t-eyebrow eyebrow" style="margin-bottom:14px">Preset Store</div>
-      <h2 class="t-h2">검증된 스타일<br>클릭하면 바로 재생</h2>
-      <p class="t-body" style="margin-top:14px;max-width:440px">Apple, Dior, Netflix — 세계적 브랜드의 영상 문법을 프리셋으로. 클릭하면 3초 샘플이 재생됩니다.</p>
-    </div>
-    <div class="store-cats appear" id="storeCats"></div>
-    <div class="presets-grid appear appear-d1" id="presetsGrid"></div>
-  </div>
-</section>
-
-<!-- ════ TIERS ════ -->
-<section id="tiers" class="section" style="background:var(--ink);">
-  <div class="container">
-    <div class="section-hd appear">
-      <div class="t-eyebrow eyebrow" style="margin-bottom:14px">Plans</div>
-      <h2 class="t-h2" id="plansTitle">필요한 만큼만<br>선택하세요</h2>
-    </div>
-    <div class="countdown-strip appear">
-      <div class="cd-left">
-        <div class="cd-label">⚡ STUDIO 마감 카운트다운</div>
-        <div class="cd-msg">오늘 자정 전 STUDIO 의뢰 시 48시간 납품 100% 보장</div>
-      </div>
-      <div class="cd-timer">
-        <div class="cd-unit"><div class="cd-n" id="cdH">--</div><span class="cd-l">HRS</span></div>
-        <div class="cd-colon">:</div>
-        <div class="cd-unit"><div class="cd-n" id="cdM">--</div><span class="cd-l">MIN</span></div>
-        <div class="cd-colon">:</div>
-        <div class="cd-unit"><div class="cd-n" id="cdS">--</div><span class="cd-l">SEC</span></div>
-      </div>
-    </div>
-    <div class="tiers-row appear appear-d1">
-
-      <!-- LITE -->
-      <div class="tier-card">
-        <div class="tier-ico">🚀</div>
-        <div class="tier-name">LITE</div>
-        <div class="tier-price">79,000<small>원</small></div>
-        <div class="tier-period">스타터 팩 · 클릭 한 번</div>
-        <div class="tier-divider"></div>
-        <!-- 라이선스를 최상단 강조 포인트로 -->
-        <div class="tier-highlight">🏅 상업 라이선스 인증서 자동 발급</div>
-        <div class="tier-items">
-          <div class="ti"><span class="ti-check">✓</span>15초 영상 1편</div>
-          <div class="ti"><span class="ti-check">✓</span>9:16 / 1:1 / 16:9 3종 동시 납품</div>
-          <div class="ti"><span class="ti-check">✓</span>AI 스타일 자동 추천</div>
-          <div class="ti"><span class="ti-check">✓</span>1회 수정</div>
-        </div>
-        <button class="btn-ghost tier-cta btn-sm" onclick="openPayModal('LITE','15초 영상 1편 · 스타터 팩','79000','79,000원')">시작하기</button>
-      </div>
-
-      <!-- PRO -->
-      <div class="tier-card featured">
-        <div class="tier-badge">POPULAR</div>
-        <div class="tier-ico">⚡</div>
-        <div class="tier-name">PRO</div>
-        <div class="tier-price">199,000<small>원</small></div>
-        <div class="tier-period">업종 맞춤 · 내 브랜드답게</div>
-        <div class="tier-divider"></div>
-        <div class="tier-items">
-          <div class="ti"><span class="ti-check">✓</span>15초 3종 편집본</div>
-          <div class="ti"><span class="ti-check">✓</span>자막 + BGM 포함</div>
-          <!-- 업종별 특화 구체화 -->
-          <div class="ti"><span class="ti-check">✓</span>업종별 맞춤 패키지
-            <span class="ti-tag">카페 · 의류 · 식당 · 클리닉</span>
-          </div>
-          <div class="ti"><span class="ti-check">✓</span>노션 수정 요청 폼 제공</div>
-          <div class="ti"><span class="ti-check">✓</span>라이선스 인증서 자동 발급</div>
-          <div class="ti"><span class="ti-check">✓</span>2회 수정 (표준 운영 프로세스)</div>
-        </div>
-        <button class="btn-gold tier-cta btn-sm" onclick="openPayModal('PRO','15초 3종 편집본 · 업종 맞춤','199000','199,000원')">시작하기</button>
-      </div>
-
-      <!-- STUDIO -->
-      <div class="tier-card studio-card">
-        <div class="tier-ico">🎬</div>
-        <div class="tier-name">STUDIO</div>
-        <div class="tier-price">590,000<small>원</small></div>
-        <div class="tier-period">브랜드 의뢰 · 전담 PD</div>
-        <div class="tier-divider"></div>
-        <!-- 의뢰 프로세스 타임라인 -->
-        <div class="studio-flow">
-          <div class="sf-step">
-            <div class="sf-dot">01</div>
-            <div class="sf-info">
-              <div class="sf-title">무료 상담 신청</div>
-              <div class="sf-desc">브랜드 레퍼런스 + 목표 공유</div>
-            </div>
-          </div>
-          <div class="sf-line"></div>
-          <div class="sf-step">
-            <div class="sf-dot">02</div>
-            <div class="sf-info">
-              <div class="sf-title">견적 확정 + 계약</div>
-              <div class="sf-desc">예산·납기·범위 조율 후 결제</div>
-            </div>
-          </div>
-          <div class="sf-line"></div>
-          <div class="sf-step">
-            <div class="sf-dot">03</div>
-            <div class="sf-info">
-              <div class="sf-title">전담 PD 제작</div>
-              <div class="sf-desc">48시간 내 1차 시안 공유</div>
-            </div>
-          </div>
-          <div class="sf-line"></div>
-          <div class="sf-step">
-            <div class="sf-dot">04</div>
-            <div class="sf-info">
-              <div class="sf-title">수정 + 최종 납품</div>
-              <div class="sf-desc">소스 파일 + 라이선스 패키지</div>
-            </div>
-          </div>
-        </div>
-        <div class="tier-divider"></div>
-        <div class="tier-items">
-          <div class="ti"><span class="ti-check">✓</span>30초 완전 맞춤 제작</div>
-          <div class="ti"><span class="ti-check">✓</span>브랜드 가이드라인 100% 반영</div>
-          <div class="ti"><span class="ti-check">✓</span>9:16 / 1:1 / 16:9 전 포맷</div>
-          <div class="ti"><span class="ti-check">✓</span>소스 파일 + 라이선스 패키지</div>
-          <div class="ti"><span class="ti-check">✓</span>노션 프로젝트 포털 전용</div>
-          <div class="ti"><span class="ti-check">✓</span>무제한 수정 (범위 내)</div>
-        </div>
-        <button class="btn-gold tier-cta btn-sm" onclick="sc('contact')" style="margin-top:20px">📋 무료 상담 신청하기</button>
-        <div class="studio-note">상담 후 예산 확정 → 결제 진행<br>분쟁 없는 투명한 프로세스</div>
-      </div>
-
-    </div>
-    <div class="license-banner appear appear-d2">
-      <div class="lb-icon">🏅</div>
-      <div class="lb-body">
-        <div class="lb-title">상업 라이선스 인증서 자동 발급</div>
-        <div class="lb-sub">결제 완료 즉시 이메일로 영상 + AVVM 상업용 사용 허가 인증서(PDF)가 자동 첨부 발송됩니다.</div>
-      </div>
-      <div class="lb-action" onclick="openCert()">인증서 미리보기 →</div>
-    </div>
-  </div>
-</section>
-
-<!-- ════ ANALYTICS ════ -->
-<section id="analytics" class="section section-alt">
-  <div class="container">
-    <div class="section-hd appear">
-      <div class="t-eyebrow eyebrow" style="margin-bottom:14px">Preset Analytics</div>
-      <h2 class="t-h2">지금 가장 많이<br>선택되는 스타일</h2>
-      <p class="t-body" style="margin-top:14px;max-width:440px">실시간 클릭 데이터 기반으로 인기 프리셋이 자동으로 메인에 노출됩니다.</p>
-    </div>
-    <div class="analytics-grid">
-      <div class="a-card appear">
-        <div class="a-card-title">PRESET CLICK RATE — THIS WEEK</div>
-        <div id="clickChart"></div>
-      </div>
-      <div class="a-card appear appear-d1">
-        <div class="a-card-title">PLATFORM KPIs</div>
-        <div class="kpi-grid" id="kpiGrid"></div>
-      </div>
-      <div class="a-card appear appear-d2" style="grid-column:span 2">
-        <div class="a-card-title" style="display:flex;justify-content:space-between">
-          <span>LIVE ORDER FEED</span>
-          <span style="color:var(--green);font-size:9px;font-weight:800;letter-spacing:.08em">● LIVE</span>
-        </div>
-        <div class="live-feed" id="liveFeed"></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ════ VISION ════ -->
-<section class="section" style="background:var(--ink);">
-  <div class="container">
-    <div class="section-hd appear">
-      <div class="t-eyebrow eyebrow" style="margin-bottom:14px">Vision</div>
-      <h2 class="t-h2">영상 자판기에서<br>크리에이티브 OS로</h2>
-      <p class="t-body" style="margin-top:14px;max-width:460px">AVVM은 단순 영상 생성 도구가 아닙니다. 브랜드 콘텐츠를 자동 생산하는 AI 운영체제를 만들고 있습니다.</p>
-    </div>
-    <div class="vision-grid appear appear-d1">
-      <div class="vision-cell">
-        <div class="vision-phase">NOW · PHASE 1</div>
-        <div class="vision-title">AI Video Vending</div>
-        <div class="vision-items">
-          <div class="vi live">Lite 자판기</div>
-          <div class="vi live">Pro 조합 엔진</div>
-          <div class="vi live">Studio 의뢰</div>
-          <div class="vi live">Preset Store</div>
-          <div class="vi live">AI 스타일 추천</div>
-        </div>
-      </div>
-      <div class="vision-cell">
-        <div class="vision-phase">NEXT · PHASE 2</div>
-        <div class="vision-title">AI Creative Suite</div>
-        <div class="vision-items">
-          <div class="vi">AI Image Generator</div>
-          <div class="vi">AI Voice / 성우</div>
-          <div class="vi">AI Avatar 모델</div>
-          <div class="vi">AI Ads Optimizer</div>
-          <div class="vi">AI Shorts Auto</div>
-        </div>
-      </div>
-      <div class="vision-cell">
-        <div class="vision-phase">FUTURE · PHASE 3</div>
-        <div class="vision-title">AI Brand OS</div>
-        <div class="vision-items">
-          <div class="vi">Brand Identity AI</div>
-          <div class="vi">AI Commerce 연동</div>
-          <div class="vi">Enterprise API</div>
-          <div class="vi">Franchise Portal</div>
-          <div class="vi">Global Marketplace</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ════ PORTFOLIO ════ -->
-<section id="portfolio" class="section section-alt">
-  <div class="container">
-    <div class="section-hd appear">
-      <div class="t-eyebrow eyebrow" style="margin-bottom:14px">Portfolio</div>
-      <h2 class="t-h2">실제 납품된<br>영상들입니다</h2>
-      <p class="t-body" style="margin-top:14px;max-width:440px">사진 한 장에서 시작된 브랜드 영상. 아래는 AVVM이 실제로 납품한 결과물 스타일 샘플입니다.</p>
-    </div>
-    <div class="portfolio-grid appear appear-d1">
-      <!-- 카드 1 -->
-      <div class="pf-card">
-        <div class="pf-thumb" style="background:linear-gradient(135deg,#150e04,#1c1204)">
-          <span class="pf-ico">👑</span>
-          <div class="pf-scanline"></div>
-          <div class="pf-badge">Dior Luxury</div>
-        </div>
-        <div class="pf-info">
-          <div class="pf-brand">라라랜드 스킨케어</div>
-          <div class="pf-meta">뷰티 · 15초 · 9:16/1:1/16:9</div>
-          <div class="pf-stars">★★★★★ <span class="pf-review">"첫 영상에 반했어요. 납품도 정확히 48시간 내"</span></div>
-        </div>
-      </div>
-      <!-- 카드 2 -->
-      <div class="pf-card">
-        <div class="pf-thumb" style="background:linear-gradient(135deg,#04100a,#06160c)">
-          <span class="pf-ico">📱</span>
-          <div class="pf-scanline"></div>
-          <div class="pf-badge">TikTok Viral</div>
-        </div>
-        <div class="pf-info">
-          <div class="pf-brand">핏플로우 피트니스</div>
-          <div class="pf-meta">헬스 · 15초 · 릴스 최적화</div>
-          <div class="pf-stars">★★★★★ <span class="pf-review">"릴스 조회수 12만. 가성비 최고"</span></div>
-        </div>
-      </div>
-      <!-- 카드 3 -->
-      <div class="pf-card">
-        <div class="pf-thumb" style="background:linear-gradient(135deg,#100804,#180a04)">
-          <span class="pf-ico">🍽️</span>
-          <div class="pf-scanline"></div>
-          <div class="pf-badge">Food Porn</div>
-        </div>
-        <div class="pf-info">
-          <div class="pf-brand">모모카페 신촌점</div>
-          <div class="pf-meta">음식 · 15초 · 인스타그램</div>
-          <div class="pf-stars">★★★★★ <span class="pf-review">"음식 사진 한 장만 드렸는데 영상이 나왔어요"</span></div>
-        </div>
-      </div>
-      <!-- 카드 4 -->
-      <div class="pf-card">
-        <div class="pf-thumb" style="background:linear-gradient(135deg,#080c14,#0a0e18)">
-          <span class="pf-ico">🏥</span>
-          <div class="pf-scanline"></div>
-          <div class="pf-badge">Clinical Trust</div>
-        </div>
-        <div class="pf-info">
-          <div class="pf-brand">H클리닉 강남</div>
-          <div class="pf-meta">의료 · 15초 · 유튜브 광고</div>
-          <div class="pf-stars">★★★★☆ <span class="pf-review">"전문적이고 신뢰감 있는 결과물"</span></div>
-        </div>
-      </div>
-      <!-- 카드 5 -->
-      <div class="pf-card">
-        <div class="pf-thumb" style="background:linear-gradient(135deg,#100c04,#160e04)">
-          <span class="pf-ico">🏠</span>
-          <div class="pf-scanline"></div>
-          <div class="pf-badge">Real Estate</div>
-        </div>
-        <div class="pf-info">
-          <div class="pf-brand">다산부동산</div>
-          <div class="pf-meta">부동산 · 30초 · STUDIO 플랜</div>
-          <div class="pf-stars">★★★★★ <span class="pf-review">"드론 느낌 영상을 사진으로 만들다니"</span></div>
-        </div>
-      </div>
-      <!-- 카드 6 -->
-      <div class="pf-card">
-        <div class="pf-thumb" style="background:linear-gradient(135deg,#08080f,#0c0e18)">
-          <span class="pf-ico">🍎</span>
-          <div class="pf-scanline"></div>
-          <div class="pf-badge">Apple Keynote</div>
-        </div>
-        <div class="pf-info">
-          <div class="pf-brand">써밋 피트니스 앱</div>
-          <div class="pf-meta">테크 · 15초 · 앱스토어 광고</div>
-          <div class="pf-stars">★★★★★ <span class="pf-review">"앱 광고 전환율 2배 상승"</span></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ════ FAQ ════ -->
-<section id="faq" class="section" style="background:var(--ink);">
-  <div class="container">
-    <div class="section-hd appear">
-      <div class="t-eyebrow eyebrow" style="margin-bottom:14px">FAQ</div>
-      <h2 class="t-h2">자주 묻는<br>질문들</h2>
-    </div>
-    <div class="faq-list appear appear-d1">
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggleFaq(this)">
-          <span>사진을 어떻게 전달하나요?</span>
-          <span class="faq-arrow">+</span>
-        </button>
-        <div class="faq-a">결제 완료 후 자동 발송되는 이메일에 구글 폼 링크가 포함되어 있습니다. 폼에서 사진 업로드 + 브랜드명 + 추가 요청사항을 입력하면 접수 완료됩니다. 별도 앱 설치는 필요 없습니다.</div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggleFaq(this)">
-          <span>어떤 사진이어도 괜찮나요?</span>
-          <span class="faq-arrow">+</span>
-        </button>
-        <div class="faq-a">JPG, PNG, WEBP 모두 가능합니다. 단색 배경에 제품이 명확히 보이는 사진이 최고 결과를 냅니다. Upload Guide 섹션의 예시를 참고하시면 더욱 좋은 결과를 얻을 수 있습니다. 흐리거나 어두운 사진은 결과물 품질이 저하될 수 있습니다.</div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggleFaq(this)">
-          <span>48시간 안에 정말 납품되나요?</span>
-          <span class="faq-arrow">+</span>
-        </button>
-        <div class="faq-a">네, 오늘 자정 전 결제 + 사진 접수가 완료된 주문은 48시간 내 납품을 100% 보장합니다. 혹시 납기가 지연될 경우 즉시 연락 드리며, 환불 또는 할인 처리해 드립니다. 현재 평균 납품 시간은 32시간입니다.</div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggleFaq(this)">
-          <span>수정은 몇 번까지 가능한가요?</span>
-          <span class="faq-arrow">+</span>
-        </button>
-        <div class="faq-a">Lite 플랜은 1회, Pro 플랜은 2회 경미 수정이 포함됩니다 (텍스트, 색감 조정 등). Studio 플랜은 협의 후 무제한 수정이 가능합니다. 수정 요청은 노션 폼을 통해 접수됩니다.</div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggleFaq(this)">
-          <span>상업 광고에 바로 사용할 수 있나요?</span>
-          <span class="faq-arrow">+</span>
-        </button>
-        <div class="faq-a">네, 모든 플랜에 상업용 영구 라이선스 인증서(PDF)가 자동 발급됩니다. SNS 광고, 유튜브 광고, 상세페이지, 오프라인 디지털 사이니지 등 모든 상업적 목적에 사용 가능합니다. 인증서에 사용 범위가 명시됩니다.</div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggleFaq(this)">
-          <span>환불 정책은 어떻게 되나요?</span>
-          <span class="faq-arrow">+</span>
-        </button>
-        <div class="faq-a">작업 시작 전(사진 미접수 상태)에는 100% 환불이 가능합니다. 작업 진행 중에는 환불이 어려우나 대신 1회 추가 수정 또는 다음 주문 20% 할인 쿠폰을 제공합니다. 납품 후 중대한 결함이 있을 경우 전액 환불 처리합니다.</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ════ CONTACT / ORDER ════ -->
-<section id="contact" class="section section-alt">
-  <div class="container-sm">
-    <div class="section-hd appear" style="text-align:center">
-      <div class="t-eyebrow eyebrow" style="margin-bottom:14px">Quick Order</div>
-      <h2 class="t-h2">지금 바로<br>시작하세요</h2>
-      <p class="t-body" style="margin-top:14px">결제 전에 먼저 문의하고 싶으신가요?<br>아래에서 플랜을 선택하고 연락 주세요.</p>
-    </div>
-    <div class="order-card appear appear-d1">
-      <div class="order-plan-row">
-        <div class="order-plan-opt active" id="op-lite" onclick="selectPlan('lite',this)">
-          <div class="op-name">LITE</div>
-          <div class="op-price">79,000원</div>
-          <div class="op-desc">15초 · 1편</div>
-        </div>
-        <div class="order-plan-opt" id="op-pro" onclick="selectPlan('pro',this)">
-          <div class="op-badge">POPULAR</div>
-          <div class="op-name">PRO</div>
-          <div class="op-price">199,000원</div>
-          <div class="op-desc">15초 · 3편집본</div>
-        </div>
-        <div class="order-plan-opt" id="op-studio" onclick="selectPlan('studio',this)">
-          <div class="op-name">STUDIO</div>
-          <div class="op-price">390,000원~</div>
-          <div class="op-desc">맞춤 제작</div>
-        </div>
-      </div>
-      <div class="order-fields">
-        <div class="of-group">
-          <label class="of-label">브랜드명 / 상호</label>
-          <input class="of-input" type="text" placeholder="예: 라라랜드 스킨케어" id="inp-brand">
-        </div>
-        <div class="of-group">
-          <label class="of-label">연락처 (Instagram DM / 이메일)</label>
-          <input class="of-input" type="text" placeholder="예: @username 또는 email@example.com" id="inp-contact">
-        </div>
-        <div class="of-group">
-          <label class="of-label">원하는 스타일 (선택사항)</label>
-          <select class="of-input of-select" id="inp-style">
-            <option value="">AI 자동 추천</option>
-            <option>👑 Dior Luxury</option>
-            <option>🍎 Apple Keynote</option>
-            <option>📱 TikTok Viral</option>
-            <option>🎬 Netflix Doc</option>
-            <option>🌸 Japanese Minimal</option>
-            <option>📦 Muji Minimal</option>
-            <option>🍽️ Food Porn</option>
-            <option>🚗 BMW Cinematic</option>
-            <option>🏠 Real Estate</option>
-            <option>🏥 Clinical Trust</option>
-            <option>💪 Fitness Motivation</option>
-          </select>
-        </div>
-        <div class="of-group">
-          <label class="of-label">추가 요청사항 (선택사항)</label>
-          <textarea class="of-input of-textarea" placeholder="예: 배경음악 없이, 텍스트는 영어로, 브랜드 컬러는 금색 계열로..." id="inp-msg"></textarea>
-        </div>
-      </div>
-      <button class="btn-gold" style="width:100%;font-size:15px;padding:16px" onclick="submitOrder()">🚀 주문 접수하기</button>
-      <p class="t-small" style="text-align:center;margin-top:14px">또는 Instagram DM으로 바로 문의: <a href="https://instagram.com/lalalandmamjp" target="_blank" style="color:var(--gold);text-decoration:none;font-weight:700">@lalalandmamjp</a></p>
-    </div>
-  </div>
-</section>
-
-<!-- ════ CTA ════ -->
-<section id="cta" class="section section-alt">
-  <div class="container">
-    <div class="cta-inner appear">
-      <div class="hero-eyebrow" style="display:inline-flex;margin-bottom:20px">
-        <span class="pulse"></span>
-        <span class="t-eyebrow">AVVM.studio</span>
-      </div>
-      <h2 class="cta-h" id="ctaTitle">지금 첫 영상을<br><span style="color:#E2F227;font-weight:800;">뽑아보세요</span></h2>
-      <p class="cta-sub" id="ctaSub">Push Once. Create Forever.<br>첫 영상 79,000원 · LITE 즉시 제작 · 라이선스 자동 발급</p>
-      <div class="cta-btns">
-        <button class="btn-gold" id="ctaBtn" style="font-size:15px;padding:16px 30px">🚀 영상 뽑기 시작</button>
-        <button class="btn-ghost" style="font-size:15px;padding:16px 30px" onclick="sc('store')">Preset Store →</button>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- FOOTER -->
-<footer>
-  <div class="container">
-    <div class="footer-row">
-      <div>
-        <div class="f-brand"><span class="avvm-logo-text" style="font-size:14px"><span class="avvm-av">A</span><span class="avvm-v-wrap"><span class="avvm-v1">V</span><span class="avvm-v2">V</span></span><span class="avvm-dot">M</span></span><em>.studio</em></div>
-        <div class="f-tagline">THE AI VIDEO VENDING MACHINE</div>
-        <div class="f-version">ONE CLICK. CINEMATIC RESULTS. · V5.1</div>
-      </div>
-      <div class="f-legal">
-        영상자판기 / 대표 윤동국<br>
-        전자상거래소매업 · 도서매매업<br>
-        통신판매업신고: 2026062635524154-001<br>
-        경기도 파주시 처리중<br>
-        문의: lalalandmamjp@instagram
-      </div>
-    </div>
-  </div>
-</footer>
-
-<!-- 라이선스 모달 -->
-<div class="modal-bg" id="certModal" onclick="closeCert(event)">
-  <div class="modal-box">
-    <button class="modal-close" onclick="closeCert()">✕</button>
-    <div class="t-eyebrow" style="margin-bottom:10px">License Automation</div>
-    <h3 style="font-size:18px;font-weight:700;letter-spacing:-.02em;margin-bottom:5px">상업용 사용 허가 인증서</h3>
-    <p class="t-small" style="margin-bottom:0">결제 완료 즉시 PDF로 이메일 자동 발송됩니다.</p>
-    <div class="cert-card">
-      <div class="cert-seal">🏅</div>
-      <div class="cert-title">COMMERCIAL LICENSE CERTIFICATE</div>
-      <div class="cert-sub">AVVM.studio — AI Video Vending Machine</div>
-      <div class="cert-line"></div>
-      <div class="cert-meta">
-        <div class="cm-item"><div class="cm-k">라이선스 유형</div><div class="cm-v">Commercial Perpetual</div></div>
-        <div class="cm-item"><div class="cm-k">사용 범위</div><div class="cm-v">SNS · 광고 · 상세페이지</div></div>
-        <div class="cm-item"><div class="cm-k">유효 기간</div><div class="cm-v">영구 무제한</div></div>
-      </div>
-      <div class="cert-line"></div>
-      <div style="font-size:9px;color:var(--sub);letter-spacing:.04em">ISSUED BY AVVM.STUDIO · AUTO-GENERATED ON PAYMENT</div>
-    </div>
-    <button class="btn-gold btn-sm" style="width:100%" onclick="closeCert()">확인했습니다</button>
-  </div>
-</div>
-
-<div class="toast" id="toast"></div>
-
-<!-- ════ 결제 모달 ════ -->
-<div class="pay-modal-bg" id="payModal">
-  <div class="pay-modal" style="position:relative">
-
-    <!-- 결제 처리 중 -->
-    <div class="pay-processing" id="payProcessing">
-      <div class="pay-spinner"></div>
-      <div class="pay-proc-txt" id="payProcTxt">결제 처리 중...</div>
-    </div>
-
-    <!-- 결제 완료 -->
-    <div class="pay-success" id="paySuccess">
-      <div class="pay-success-ico">🎬</div>
-      <div class="pay-success-title">결제 완료!</div>
-      <div class="pay-success-sub" id="paySuccessSub">
-        주문이 접수되었습니다.<br>
-        입력하신 이메일로 확인서와<br>라이선스 인증서가 발송됩니다.
-      </div>
-      <div class="pay-success-order" id="payOrderId">ORDER #AVVM-000000</div>
-      <button class="btn-ghost btn-sm" style="margin-top:8px" onclick="closePayModal()">닫기</button>
-    </div>
-
-    <!-- 헤더 -->
-    <div class="pay-modal-head">
-      <div class="pay-modal-title">🎬 결제하기</div>
-      <button class="pay-modal-close" onclick="closePayModal()">✕</button>
-    </div>
-
-    <!-- 상품 요약 -->
-    <div class="pay-summary">
-      <div class="pay-plan-info">
-        <div class="pay-plan-name" id="payPlanName">LITE</div>
-        <div class="pay-plan-desc" id="payPlanDesc">15초 영상 1편 · One Click</div>
-      </div>
-      <div class="pay-plan-price" id="payPlanPrice">79,000원</div>
-    </div>
-
-    <!-- 구매자 정보 -->
-    <div class="pay-fields">
-      <div>
-        <div class="pay-label">이름</div>
-        <input class="pay-input" id="pi-name" type="text" placeholder="홍길동">
-      </div>
-      <div class="pay-field-row">
-        <div>
-          <div class="pay-label">이메일 (영수증 + 라이선스 발송)</div>
-          <input class="pay-input" id="pi-email" type="email" placeholder="email@example.com">
-        </div>
-        <div>
-          <div class="pay-label">연락처</div>
-          <input class="pay-input" id="pi-phone" type="tel" placeholder="010-0000-0000">
-        </div>
-      </div>
-      <div>
-        <div class="pay-label">브랜드명 / 상호</div>
-        <input class="pay-input" id="pi-brand" type="text" placeholder="예: 라라랜드 스킨케어">
-      </div>
-      <div>
-        <div class="pay-label">원하는 스타일 (선택)</div>
-        <select class="pay-input" id="pi-style">
-          <option value="">AI 자동 추천</option>
-          <option>👑 Dior Luxury</option>
-          <option>🍎 Apple Keynote</option>
-          <option>📱 TikTok Viral</option>
-          <option>🎬 Netflix Doc</option>
-          <option>🌸 Japanese Minimal</option>
-          <option>📦 Muji Minimal</option>
-          <option>🍽️ Food Porn</option>
-          <option>🚗 BMW Cinematic</option>
-          <option>🏠 Real Estate</option>
-          <option>🏥 Clinical Trust</option>
-          <option>💪 Fitness Motivation</option>
-        </select>
-      </div>
-      <!-- 영상 길이 -->
-      <div>
-        <div class="pay-label">영상 길이</div>
-        <div class="pay-opt-row" id="pi-duration">
-          <div class="pay-opt active" onclick="selectOpt(this,'pi-duration')">⚡ 5초</div>
-          <div class="pay-opt" onclick="selectOpt(this,'pi-duration')">🎬 10초</div>
-          <div class="pay-opt" onclick="selectOpt(this,'pi-duration')">🎥 15초</div>
-        </div>
-      </div>
-      <!-- 비율 선택 -->
-      <div>
-        <div class="pay-label">영상 비율</div>
-        <div class="pay-opt-row" id="pi-ratio">
-          <div class="pay-opt active" onclick="selectOpt(this,'pi-ratio')">9:16<br><small style="font-size:9px;color:var(--sub)">릴스</small></div>
-          <div class="pay-opt" onclick="selectOpt(this,'pi-ratio')">16:9<br><small style="font-size:9px;color:var(--sub)">유튜브</small></div>
-          <div class="pay-opt" onclick="selectOpt(this,'pi-ratio')">1:1<br><small style="font-size:9px;color:var(--sub)">피드</small></div>
-          <div class="pay-opt" onclick="selectOpt(this,'pi-ratio')">3:4<br><small style="font-size:9px;color:var(--sub)">세로</small></div>
-          <div class="pay-opt" onclick="selectOpt(this,'pi-ratio')">21:9<br><small style="font-size:9px;color:var(--sub)">시네마</small></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- PG 선택 -->
-    <div class="pay-pg-section">
-      <div class="pay-pg-label">결제 수단 선택</div>
-      <div class="pay-pg-row">
-        <div class="pay-pg-opt active" onclick="selectPG(this,'tosspayments')" id="pg-toss">
-          <div class="pay-pg-ico">💳</div>
-          <div class="pay-pg-name">토스페이먼츠</div>
-        </div>
-        <div class="pay-pg-opt" onclick="selectPG(this,'kakaopay')" id="pg-kakao">
-          <div class="pay-pg-ico">💛</div>
-          <div class="pay-pg-name">카카오페이</div>
-        </div>
-        <div class="pay-pg-opt" onclick="selectPG(this,'naverpay')" id="pg-naver">
-          <div class="pay-pg-ico">🟢</div>
-          <div class="pay-pg-name">네이버페이</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 약관 -->
-    <div class="pay-terms">
-      <label>
-        <input type="checkbox" id="pi-agree">
-        <span><a href="#" onclick="return false">이용약관</a> 및 <a href="#" onclick="return false">개인정보처리방침</a>에 동의합니다. 결제 완료 후 48시간(STUDIO 기준) 내 영상이 납품됩니다.</span>
-      </label>
-    </div>
-
-    <!-- 결제 버튼 -->
-    <div class="pay-btn-wrap">
-      <button class="pay-btn" id="payBtn" onclick="startPayment()">
-        🔐 지금 결제하기
-      </button>
-    </div>
-
-  </div>
-</div>
-
+<head>
 <script>
-/* ════ 프리셋 데이터 ════ */
-const P=[
-  {id:'apple',ico:'🍎',n:'Apple Keynote',ref:'Apple 발표 스타일',cat:'tech',d:'극도로 절제된 공간, 단 하나의 제품, 침묵 같은 여백.',col:'#5b8cf5',clicks:1240,trend:'+18%',hot:false,isNew:false,sc:['#08080f','#0c0e18','#06060c'],st:'Ultra-minimal. One subject. Silence.'},
-  {id:'dior',ico:'👑',n:'Dior Luxury',ref:'하이엔드 럭셔리',cat:'beauty',d:'대리석, 금빛 빛, 슬로우모션. 가격표 없이도 럭셔리.',col:'#E2F227',clicks:987,trend:'+12%',hot:true,isNew:false,sc:['#150e04','#1c1204','#120a02'],st:'Gold. Marble. Slow motion.'},
-  {id:'netflix',ico:'🎬',n:'Netflix Doc',ref:'넷플릭스 다큐',cat:'lifestyle',d:'긴장감 클로즈업, 자연광, 인터뷰 감성.',col:'#ff4455',clicks:756,trend:'+7%',hot:false,isNew:false,sc:['#0a0408','#120608','#0e0406'],st:'Raw. Authentic. Documentary.'},
-  {id:'bmw',ico:'🚗',n:'BMW Cinematic',ref:'프리미엄 자동차',cat:'auto',d:'야간 도로, 반짝이는 라이트 트레일.',col:'#6a8af8',clicks:634,trend:'+5%',hot:false,isNew:false,sc:['#04060e','#060a16','#04060c'],st:'Night. Light trails. Speed.'},
-  {id:'a24',ico:'🎭',n:'A24 Film',ref:'A24 영화 감성',cat:'lifestyle',d:'35mm 필름 그레인, 서정적인 흔들림.',col:'#a8a070',clicks:589,trend:'+22%',hot:false,isNew:false,sc:['#100e08','#16120a','#0e0c06'],st:'Film grain. Emotion. Poetry.'},
-  {id:'muji',ico:'📦',n:'Muji Minimal',ref:'무지 미니멀리즘',cat:'lifestyle',d:'베이지, 린넨, 여백.',col:'#c8b898',clicks:812,trend:'+9%',hot:false,isNew:false,sc:['#141008','#1a1609','#120e06'],st:'Beige. Linen. Nothing extra.'},
-  {id:'tiktok',ico:'📱',n:'TikTok Viral',ref:'틱톡 바이럴',cat:'social',d:'빠른 편집, 즉각적인 훅. 첫 1초에 모든 것.',col:'#E2F227',clicks:1580,trend:'+34%',hot:true,isNew:false,sc:['#04100a','#06160c','#040e08'],st:'Fast. Loud. Viral.'},
-  {id:'japan',ico:'🌸',n:'Japanese Minimal',ref:'일본 광고 미학',cat:'beauty',d:'섬세함, 여백, 계절감.',col:'#f8a8b8',clicks:923,trend:'+15%',hot:false,isNew:false,sc:['#160c10','#1e1014','#120a0e'],st:'Delicate. Seasonal. Quiet.'},
-  {id:'foodporn',ico:'🍽️',n:'Food Porn',ref:'푸드 바이럴',cat:'food',d:'슬로우모션 소스 포어링, 스팀 클로즈업.',col:'#e0a060',clicks:1102,trend:'+28%',hot:true,isNew:false,sc:['#100804','#180a04','#140606'],st:'Steam. Pour. Close-up.'},
-  {id:'clinic',ico:'🏥',n:'Clinical Trust',ref:'의료·피부과',cat:'health',d:'화이트 스튜디오, 전문가 인터뷰, 신뢰.',col:'#88c8f8',clicks:445,trend:'+3%',hot:false,isNew:true,sc:['#080c14','#0a0e18','#060a12'],st:'White. Clean. Credible.'},
-  {id:'realestate',ico:'🏠',n:'Real Estate',ref:'프리미엄 부동산',cat:'property',d:'드론 에어리얼, 골든아워.',col:'#c8b060',clicks:378,trend:'+8%',hot:false,isNew:false,sc:['#100c04','#160e04','#0e0a02'],st:'Aerial. Golden hour. Space.'},
-  {id:'fitness',ico:'💪',n:'Fitness Motivation',ref:'운동 동기부여',cat:'health',d:'빠른 몽타주, 드라마틱 에너지.',col:'#f86868',clicks:667,trend:'+19%',hot:false,isNew:true,sc:['#100404','#160606','#120404'],st:'Fast. Sweat. Inspire.'},
-];
-
-const CATS=['전체','beauty','tech','food','lifestyle','social','health','auto','property'];
-const CAT_KO={전체:'전체',beauty:'뷰티',tech:'테크',food:'음식',lifestyle:'라이프',social:'소셜',health:'헬스',auto:'자동차',property:'부동산'};
-
-let clicks={};
-P.forEach(p=>{ clicks[p.id]=p.clicks+Math.floor(Math.random()*60); });
-let storeCat='전체', playingId=null, playTimer=null;
-
-/* ════ Store 렌더 ════ */
-function renderStore(){
-  document.getElementById('storeCats').innerHTML=
-    CATS.map(c=>`<button class="store-cat ${storeCat===c?'on':''}" onclick="setCat('${c}')">${CAT_KO[c]||c}</button>`).join('');
-  const list=(storeCat==='전체'?P:P.filter(p=>p.cat===storeCat))
-    .slice().sort((a,b)=>(clicks[b.id]||0)-(clicks[a.id]||0));
-  document.getElementById('presetsGrid').innerHTML=list.map(p=>`
-    <div class="preset-card${p.id===playingId?' playing':''}" id="pc-${p.id}" onclick="playPreset('${p.id}')">
-      ${p.hot?`<div class="badge-hot">🔥 HOT</div>`:''}
-      ${p.isNew?`<div class="badge-new">NEW</div>`:''}
-      <div class="preset-player">
-        <div class="preset-player-bg">${p.ico}</div>
-        <div class="preset-play-ui" id="pui-${p.id}">
-          <div class="play-btn">▶</div>
-          <div class="play-hint">SAMPLE · 3SEC</div>
-        </div>
-        <canvas id="pcanv-${p.id}" class="preset-canvas" width="320" height="156"></canvas>
-        <div class="preset-prog"><div class="preset-prog-fill" id="ppf-${p.id}"></div></div>
-      </div>
-      <div class="preset-info">
-        <div class="pi-row">
-          <div class="pi-icon">${p.ico}</div>
-          <div><div class="pi-name">${p.n}</div><div class="pi-ref">${p.ref}</div></div>
-        </div>
-        <div class="pi-desc">${p.d}</div>
-        <div class="pi-foot">
-          <div class="pi-uses">↑ ${(clicks[p.id]||p.clicks).toLocaleString()} clicks</div>
-          <div class="pi-trend">${p.trend} this week</div>
-        </div>
-      </div>
-    </div>`).join('');
-}
-function setCat(c){ storeCat=c; renderStore(); }
-
-/* 캔버스 샘플 영상 */
-function playPreset(id){
-  clicks[id]=(clicks[id]||0)+1;
-  updateChart();
-  if(playingId===id){stopPreset();return;}
-  if(playingId) stopPreset();
-  playingId=id;
-  const p=P.find(x=>x.id===id);
-  const card=document.getElementById('pc-'+id);
-  const canvas=document.getElementById('pcanv-'+id);
-  const ui=document.getElementById('pui-'+id);
-  const pf=document.getElementById('ppf-'+id);
-  if(card) card.classList.add('playing');
-  if(canvas){ canvas.style.display='block'; }
-  if(ui) ui.style.opacity='0';
-  if(pf){ pf.style.animation='none'; pf.style.width='0'; setTimeout(()=>{ if(pf) pf.style.animation='prog-anim 3s linear forwards'; },10); }
-  const ctx=canvas.getContext('2d');
-  let f=0;
-  function draw(){
-    const t=f/150;
-    const ci=Math.floor(t*p.sc.length)%p.sc.length;
-    ctx.fillStyle=p.sc[ci]; ctx.fillRect(0,0,320,156);
-    // 스캔라인
-    const sy=(f*2.5)%156;
-    const g=ctx.createLinearGradient(0,sy-10,0,sy+10);
-    g.addColorStop(0,'transparent'); g.addColorStop(.5,p.col+'35'); g.addColorStop(1,'transparent');
-    ctx.fillStyle=g; ctx.fillRect(0,sy-10,320,20);
-    // 파티클
-    for(let i=0;i<4;i++){
-      const px=(Math.sin(f*.04+i*1.8)*100)+160;
-      const py=(Math.cos(f*.03+i*1.4)*42)+78;
-      const r=Math.sin(f*.06+i)*.8*3+3;
-      ctx.beginPath(); ctx.arc(px,py,r,0,Math.PI*2);
-      ctx.fillStyle=p.col+'50'; ctx.fill();
-    }
-    // 텍스트
-    ctx.font='600 9px "Helvetica Neue",sans-serif';
-    ctx.fillStyle=p.col; ctx.textAlign='center';
-    ctx.globalAlpha=.55+Math.sin(f*.05)*.25;
-    ctx.fillText(p.st,160,144);
-    ctx.font='700 15px "Helvetica Neue",sans-serif';
-    ctx.fillStyle='rgba(240,235,224,.85)';
-    ctx.globalAlpha=1;
-    ctx.fillText(p.n,160,76);
-    f++;
-    if(f<150) playTimer=requestAnimationFrame(draw); else stopPreset();
-  }
-  draw();
-  setTimeout(()=>{ if(playingId===id) stopPreset(); },3300);
-}
-function stopPreset(){
-  if(playTimer){ cancelAnimationFrame(playTimer); playTimer=null; }
-  if(!playingId) return;
-  const id=playingId; playingId=null;
-  const card=document.getElementById('pc-'+id);
-  const canvas=document.getElementById('pcanv-'+id);
-  const ui=document.getElementById('pui-'+id);
-  const pf=document.getElementById('ppf-'+id);
-  if(card) card.classList.remove('playing');
-  if(canvas) canvas.style.display='none';
-  if(ui) ui.style.opacity='1';
-  if(pf){ pf.style.animation='none'; pf.style.width='0'; }
-}
-
-/* ════ 자판기 ════ */
-const vmMap={'👑':'Dior Luxury','🍎':'Apple Keynote','🎭':'A24 Film','🌸':'Japanese Minimal','📱':'TikTok Viral','📦':'Muji Minimal','🏠':'Real Estate','🚗':'BMW Cinematic'};
-let vmSel='👑';
-const vmSteps=['Analyzing product image…','Matching style preset…','Composing scene blocks…','Applying color grade…','Rendering 4K frames…','Encoding output…','Ready for delivery ✓'];
-function vmKey(el,ico){
-  document.querySelectorAll('.vm-key').forEach(k=>k.classList.remove('active'));
-  el.classList.add('active'); vmSel=ico;
-}
-function vmPick(el,name){
-  document.querySelectorAll('.vm-frame').forEach(f=>f.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('vmCaption').textContent=name+' 선택됨';
-}
-function vmDispense(){
-  const ol=document.getElementById('vmRenderOverlay');
-  const fill=document.getElementById('vmRfill');
-  const lbl=document.getElementById('vmRlbl');
-  const step=document.getElementById('vmRstep');
-  const cap=document.getElementById('vmCaption');
-  ol.classList.add('on'); fill.style.width='0'; fill.style.transition='none';
-  let si=0,pct=0;
-  const iv=setInterval(()=>{
-    pct+=100/vmSteps.length;
-    fill.style.transition='width .25s ease';
-    fill.style.width=Math.min(pct,100)+'%';
-    if(si<vmSteps.length){ lbl.textContent=vmSteps[si].split('…')[0].toUpperCase(); step.textContent=vmSteps[si]; si++; }
-    if(pct>=100){
-      clearInterval(iv);
-      setTimeout(()=>{
-        ol.classList.remove('on'); fill.style.width='0';
-        cap.textContent='✓ '+( vmMap[vmSel]||'Style' )+' — 주문 접수됨'; cap.style.color='var(--gold)';
-        toast('영상 주문이 접수되었습니다 ✓');
-        setTimeout(()=>{ cap.style.color=''; cap.textContent='스타일을 선택하고 영상을 뽑아보세요'; },4500);
-      },300);
-    }
-  },280);
-}
-
-/* ════ Analytics ════ */
-const KPIs=[{n:'1,247',l:'TOTAL ORDERS',t:'+34 today',up:true},{n:'79%',l:'LITE CVR',t:'+3.2%p',up:true},{n:'4.9★',l:'AVG RATING',t:'±0',up:null},{n:'48h',l:'AVG DELIVERY',t:'On target',up:true}];
-const FEED=[{b:'라라랜드 스킨케어',s:'Dior Luxury',t:'방금 전',c:'var(--gold)'},{b:'써밋 피트니스',s:'Fitness Motivation',t:'2분 전',c:'var(--green)'},{b:'모모카페 신촌점',s:'Food Porn',t:'5분 전',c:'var(--red)'},{b:'H클리닉 강남',s:'Clinical Trust',t:'11분 전',c:'#88c8f8'},{b:'다산부동산',s:'Real Estate',t:'18분 전',c:'var(--gold)'},{b:'핏플로우',s:'TikTok Viral',t:'24분 전',c:'var(--green)'}];
-function renderAnalytics(){
-  const sorted=[...P].sort((a,b)=>(clicks[b.id]||0)-(clicks[a.id]||0)).slice(0,6);
-  const max=clicks[sorted[0].id]||1;
-  document.getElementById('clickChart').innerHTML=sorted.map(p=>`
-    <div class="bar-row">
-      <div class="bar-lbl">${p.ico} ${p.n}</div>
-      <div class="bar-track"><div class="bar-fill" style="width:${Math.round(clicks[p.id]/max*100)}%"></div></div>
-      <div class="bar-val">${(clicks[p.id]||0).toLocaleString()}</div>
-    </div>`).join('');
-  document.getElementById('kpiGrid').innerHTML=KPIs.map(k=>`
-    <div class="kpi-box">
-      <div class="kpi-n">${k.n}</div>
-      <div class="kpi-l">${k.l}</div>
-      <div class="kpi-t ${k.up===true?'up':k.up===false?'dn':''}">${k.t}</div>
-    </div>`).join('');
-  document.getElementById('liveFeed').innerHTML=FEED.map(f=>`
-    <div class="lf-item">
-      <div class="lf-dot" style="background:${f.c}"></div>
-      <div class="lf-brand">${f.b}</div>
-      <div class="lf-style">${f.s}</div>
-      <div class="lf-time">${f.t}</div>
-    </div>`).join('');
-}
-function updateChart(){
-  const sorted=[...P].sort((a,b)=>(clicks[b.id]||0)-(clicks[a.id]||0)).slice(0,6);
-  const max=clicks[sorted[0].id]||1;
-  document.querySelectorAll('.bar-fill').forEach((el,i)=>{ if(sorted[i]) el.style.width=Math.round(clicks[sorted[i].id]/max*100)+'%'; });
-  document.querySelectorAll('.bar-val').forEach((el,i)=>{ if(sorted[i]) el.textContent=(clicks[sorted[i].id]||0).toLocaleString(); });
-}
-
-/* ════ FAQ ════ */
-function toggleFaq(btn){
-  const item=btn.parentElement;
-  const isOpen=item.classList.contains('open');
-  document.querySelectorAll('.faq-item.open').forEach(i=>i.classList.remove('open'));
-  if(!isOpen) item.classList.add('open');
-}
-
-/* ════ 주문 플랜 선택 ════ */
-let selPlan='lite';
-function selectPlan(p,el){
-  selPlan=p;
-  document.querySelectorAll('.order-plan-opt').forEach(o=>o.classList.remove('active'));
-  el.classList.add('active');
-}
-
-/* ════ 주문 접수 ════ */
-function submitOrder(){
-  const brand=document.getElementById('inp-brand').value.trim();
-  const contact=document.getElementById('inp-contact').value.trim();
-  if(!brand){ toast('브랜드명을 입력해주세요'); return; }
-  if(!contact){ toast('연락처를 입력해주세요'); return; }
-  const style=document.getElementById('inp-style').value||'AI 자동 추천';
-  const msg=document.getElementById('inp-msg').value.trim();
-  const planLabels={lite:'LITE (79,000원)',pro:'PRO (199,000원)',studio:'STUDIO (390,000원~)'};
-  toast(`✓ ${brand} 주문 접수 완료! Instagram DM으로 연락드립니다`);
-  // 실제 배포 시 여기에 폼 제출 / 이메일 API 연동
-  setTimeout(()=>{
-    document.getElementById('inp-brand').value='';
-    document.getElementById('inp-contact').value='';
-    document.getElementById('inp-msg').value='';
-  },600);
-}
-
-/* ════ 카운트다운 ════ */
-function updateCountdown(){
-  const now=new Date();
-  const midnight=new Date(now); midnight.setHours(23,59,59,999);
-  const d=midnight-now;
-  document.getElementById('cdH').textContent=String(Math.floor(d/3600000)).padStart(2,'0');
-  document.getElementById('cdM').textContent=String(Math.floor((d%3600000)/60000)).padStart(2,'0');
-  document.getElementById('cdS').textContent=String(Math.floor((d%60000)/1000)).padStart(2,'0');
-}
-setInterval(updateCountdown,1000); updateCountdown();
-
-/* ════ 라이선스 모달 ════ */
-function openCert(){ document.getElementById('certModal').classList.add('on'); }
-function closeCert(e){ if(!e||e.target===document.getElementById('certModal')) document.getElementById('certModal').classList.remove('on'); }
-
-/* ════ 토스트 ════ */
-function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('on'); setTimeout(()=>t.classList.remove('on'),2500); }
-
-/* ════ 스크롤 ════ */
-function sc(id){ document.getElementById(id)?.scrollIntoView({behavior:'smooth',block:'start'}); }
-
-/* ════ 진입 애니메이션 ════ */
-const io=new IntersectionObserver(entries=>{
-  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
-},{threshold:.08});
-document.querySelectorAll('.appear').forEach(el=>io.observe(el));
-
-/* ════ 카운터 ════ */
-const io2=new IntersectionObserver(entries=>{
-  if(entries[0].isIntersecting){
-    const el=document.getElementById('pn'); let n=0;
-    const iv=setInterval(()=>{ n=Math.min(n+17,1247); el.textContent=n.toLocaleString(); if(n>=1247) clearInterval(iv); },16);
-    io2.disconnect();
-  }
-},{threshold:.5});
-io2.observe(document.getElementById('pn'));
-
-/* ════════════════════════════════
-   ⚙️  API 키 설정 — 여기에 입력하세요
-════════════════════════════════ */
-const CONFIG = {
-  // 포트원 (아임포트) 가맹점 식별코드
-  // portone.io 가입 후 관리자 → 상점 정보에서 확인
-  IMP_CODE: 'imp00000000', // ← 여기에 실제 코드 입력
-
-  // EmailJS 설정
-  // emailjs.com 가입 후 발급
-  EMAILJS_SERVICE_ID:  'service_xxxxxxx',  // ← 입력
-  EMAILJS_TEMPLATE_ID: 'template_xxxxxxx', // ← 입력
-  EMAILJS_PUBLIC_KEY:  'xxxxxxxxxxxxxxx',  // ← 입력
-
-  // 관리자 알림 이메일 (주문 들어오면 받을 이메일)
-  ADMIN_EMAIL: 'lalalandmamjp@gmail.com',  // ← 입력
-};
-
-/* ════ 결제 모달 상태 ════ */
-let payData = { plan:'', desc:'', amount:0, priceLabel:'', pg:'tosspayments' };
-
-function openPayModal(plan, desc, amount, priceLabel) {
-  payData = { plan, desc, amount: parseInt(amount), priceLabel, pg:'tosspayments' };
-  document.getElementById('payPlanName').textContent  = plan;
-  document.getElementById('payPlanDesc').textContent  = desc;
-  document.getElementById('payPlanPrice').textContent = priceLabel;
-  document.getElementById('paySuccess').classList.remove('on');
-  document.getElementById('payProcessing').classList.remove('on');
-  document.getElementById('payModal').classList.add('on');
-  document.body.style.overflow = 'hidden';
-}
-
-function closePayModal() {
-  document.getElementById('payModal').classList.remove('on');
-  document.body.style.overflow = '';
-}
-
-// 배경 클릭 시 닫기
-document.getElementById('payModal').addEventListener('click', function(e) {
-  if (e.target === this) closePayModal();
+window.addEventListener('error', function(e) {
+    const div = document.createElement('div');
+    div.style.position = 'fixed';
+    div.style.top = '0';
+    div.style.left = '0';
+    div.style.width = '100%';
+    div.style.backgroundColor = 'red';
+    div.style.color = 'white';
+    div.style.zIndex = '999999';
+    div.style.padding = '10px';
+    div.style.fontSize = '12px';
+    div.style.fontFamily = 'monospace';
+    div.style.whiteSpace = 'pre-wrap';
+    div.innerText = 'JS Error: ' + e.message + '\nFile: ' + e.filename + '\nLine: ' + e.lineno + ':' + e.colno;
+    document.body.appendChild(div);
 });
-
-function selectPG(el, pg) {
-  document.querySelectorAll('.pay-pg-opt').forEach(o => o.classList.remove('active'));
-  el.classList.add('active');
-  payData.pg = pg;
-}
-
-/* ════ 결제 실행 ════ */
-function startPayment() {
-  const name    = document.getElementById('pi-name').value.trim();
-  const email   = document.getElementById('pi-email').value.trim();
-  const phone   = document.getElementById('pi-phone').value.trim();
-  const brand   = document.getElementById('pi-brand').value.trim();
-  const style   = document.getElementById('pi-style').value || 'AI 자동 추천';
-  const agreed  = document.getElementById('pi-agree').checked;
-
-  if (!name)   { toast('이름을 입력해주세요'); return; }
-  if (!email || !email.includes('@')) { toast('올바른 이메일을 입력해주세요'); return; }
-  if (!phone)  { toast('연락처를 입력해주세요'); return; }
-  if (!brand)  { toast('브랜드명을 입력해주세요'); return; }
-  if (!agreed) { toast('이용약관에 동의해주세요'); return; }
-
-  // 포트원 SDK 로드 확인
-  if (typeof IMP === 'undefined') {
-    // 테스트 모드 — SDK 없을 때 시뮬레이션
-    simulatePayment({ name, email, phone, brand, style });
-    return;
-  }
-
-  IMP.init(CONFIG.IMP_CODE);
-  const orderId = 'AVVM-' + Date.now();
-
-  document.getElementById('payProcessing').classList.add('on');
-  document.getElementById('payProcTxt').textContent = '결제창 연결 중...';
-
-  const pgMap = {
-    tosspayments: 'tosspayments',
-    kakaopay:     'kakaopay',
-    naverpay:     'naverpay',
-  };
-
-  IMP.request_pay({
-    pg:           pgMap[payData.pg],
-    pay_method:   payData.pg === 'kakaopay' ? 'kakaopay' : 'card',
-    merchant_uid: orderId,
-    name:         `AVVM.studio ${payData.plan} — ${payData.desc}`,
-    amount:       payData.amount,
-    buyer_name:   name,
-    buyer_email:  email,
-    buyer_tel:    phone,
-  }, function(rsp) {
-    if (rsp.success) {
-      document.getElementById('payProcTxt').textContent = '이메일 발송 중...';
-      sendEmailJS({ name, email, phone, brand, style, orderId, plan: payData.plan, price: payData.priceLabel });
-    } else {
-      document.getElementById('payProcessing').classList.remove('on');
-      toast('결제가 취소되었습니다');
-    }
-  });
-}
-
-/* ════ 테스트 시뮬레이션 (SDK 없을 때) ════ */
-function simulatePayment({ name, email, phone, brand, style }) {
-  const orderId = 'AVVM-' + Date.now();
-  document.getElementById('payProcessing').classList.add('on');
-  let step = 0;
-  const steps = ['결제창 연결 중...','카드 정보 확인 중...','승인 처리 중...','이메일 발송 중...'];
-  const iv = setInterval(() => {
-    if (step < steps.length) {
-      document.getElementById('payProcTxt').textContent = steps[step++];
-    } else {
-      clearInterval(iv);
-      sendEmailJS({ name, email, phone, brand, style, orderId, plan: payData.plan, price: payData.priceLabel });
-    }
-  }, 700);
-}
-
-/* ════ EmailJS 발송 ════ */
-function sendEmailJS({ name, email, phone, brand, style, orderId, plan, price }) {
-  // EmailJS SDK 확인
-  if (typeof emailjs === 'undefined') {
-    // SDK 없으면 완료 화면만 표시
-    showPaySuccess(orderId, email);
-    return;
-  }
-
-  emailjs.init(CONFIG.EMAILJS_PUBLIC_KEY);
-
-  const templateParams = {
-    to_email:    email,
-    to_name:     name,
-    order_id:    orderId,
-    plan_name:   plan,
-    plan_price:  price,
-    brand_name:  brand,
-    style_pick:  style,
-    phone:       phone,
-    admin_email: CONFIG.ADMIN_EMAIL,
-  };
-
-  emailjs.send(CONFIG.EMAILJS_SERVICE_ID, CONFIG.EMAILJS_TEMPLATE_ID, templateParams)
-    .then(() => { showPaySuccess(orderId, email); })
-    .catch(() => { showPaySuccess(orderId, email); }); // 이메일 실패해도 완료 처리
-}
-
-/* ════ 결제 완료 화면 ════ */
-function showPaySuccess(orderId, email) {
-  document.getElementById('payProcessing').classList.remove('on');
-  document.getElementById('payOrderId').textContent = 'ORDER #' + orderId;
-  document.getElementById('paySuccessSub').innerHTML =
-    `주문이 접수되었습니다.<br><strong style="color:var(--gold)">${email}</strong>로<br>확인서와 라이선스 인증서가 발송됩니다.`;
-  document.getElementById('paySuccess').classList.add('on');
-  toast('✓ 결제 완료! 이메일을 확인해주세요');
-
-  // fal.ai 영상 생성 시작
-  triggerVideoGeneration(orderId);
-}
-
-/* ════ fal.ai 영상 생성 트리거 ════ */
-async function triggerVideoGeneration(orderId) {
-  const brand  = document.getElementById('pi-brand')?.value || '';
-  const style  = document.getElementById('pi-style')?.value || 'AI 자동 추천';
-  const plan   = payData.plan;
-
-  // 길이 + 비율 선택값 읽기
-  const durEl   = document.querySelector('#pi-duration .pay-opt.active');
-  const ratioEl = document.querySelector('#pi-ratio .pay-opt.active');
-  const duration    = durEl   ? durEl.textContent.replace(/[^0-9]/g,'')  : '5';
-  const aspectRatio = ratioEl ? ratioEl.textContent.split('\n')[0].trim() : '9:16';
-
-  console.log(`[AVVM] 주문 접수 완료 — ${orderId} / ${brand} / ${style} / ${plan} / ${duration}초 / ${aspectRatio}`);
-
-  // 이미지 URL은 구글폼으로 수집 후 자동 처리
-  // 현재는 주문 접수 로그만 기록, 이미지 접수 후 수동 트리거
-  try {
-    const res = await fetch('/api/generate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        imageUrl:    '', // 구글폼 이미지 URL 연동 후 자동 입력
-        style:       style.replace(/^[^\s]+\s/,''), // 이모지 제거
-        brand:       brand,
-        orderId:     orderId,
-        duration:    duration,
-        aspectRatio: aspectRatio,
-      }),
-    });
-    const data = await res.json();
-    if (data.requestId) {
-      console.log(`[AVVM] 영상 생성 시작 — requestId: ${data.requestId}`);
-      pollVideoStatus(data.requestId, orderId);
-    }
-  } catch(e) {
-    console.log(`[AVVM] 영상 생성 대기 중 (이미지 미수신) — ${orderId}`);
-  }
-}
-
-/* ════ 영상 생성 완료 폴링 ════ */
-async function pollVideoStatus(requestId, orderId) {
-  const iv = setInterval(async () => {
-    try {
-      const res  = await fetch(`/api/status?requestId=${requestId}`);
-      const data = await res.json();
-      if (data.status === 'COMPLETED' && data.videoUrl) {
-        clearInterval(iv);
-        toast(`🎬 ${orderId} 영상 생성 완료!`);
-        console.log('영상 URL:', data.videoUrl);
-        // EmailJS로 영상 URL 고객에게 발송
-        sendVideoLink(orderId, data.videoUrl);
-      }
-    } catch(e) { clearInterval(iv); }
-  }, 10000); // 10초마다 확인
-}
-
-/* ════ 옵션 선택 (길이/비율) ════ */
-function selectOpt(el, groupId) {
-  document.querySelectorAll('#' + groupId + ' .pay-opt').forEach(o => o.classList.remove('active'));
-  el.classList.add('active');
-}
-
-/* ════════════════════════════════
-   ⚡ 영상 성능 최적화
-   배포 시 .MOV → .webm / .mp4 변환 권장
-   ffmpeg -i input.MOV -c:v libvpx-vp9 -b:v 1M output.webm
-   ffmpeg -i input.MOV -c:v libx264 -crf 28 -preset fast output.mp4
-════════════════════════════════ */
-const PLAYLIST = [
-  '/videos/video1.mp4',
-  '/videos/video2.mp4',
-  '/videos/video3.mp4',
-];
-let playIdx = 0;
-const heroVid = document.getElementById('heroVideo');
-
-function loadAndPlay(idx) {
-  heroVid.src = PLAYLIST[idx];
-  heroVid.load();
-  heroVid.play().catch(() => {});
-  updateProgressBar(idx);
-}
-
-/* DOM 준비 후 즉시 로드 */
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => loadAndPlay(0));
-} else {
-  loadAndPlay(0);
-}
-
-/* 영상 끝나면 다음으로 */
-heroVid.addEventListener('ended', function() {
-  playIdx = (playIdx + 1) % PLAYLIST.length;
-  loadAndPlay(playIdx);
-});
-
-/* 프로그레스 바 */
-function updateProgressBar(idx) {
-  document.querySelectorAll('.hpb-seg').forEach((seg, i) => {
-    seg.classList.toggle('active', i <= idx);
-  });
-}
-
-function toggleHeroVideo() {
-  const btn = document.getElementById('watchPlayBtn');
-  if (heroVid.paused) { heroVid.play(); btn.textContent = '▶'; }
-  else { heroVid.pause(); btn.textContent = '⏸'; }
-}
-
-/* ════════════════════════════════
-   🌐 다국어 번역 시스템
-════════════════════════════════ */
-const LANGS = {
-  ko: {
-    code:'KO', dir:'ltr',
-    navCta:'영상 뽑기 →',
-    heroSub1:'브랜드의 상상을', heroSub2:'AI 영상', heroSub3:'제작으로 현실에.',
-    viewWorks:'VIEW WORKS →',
-    watchTitle:'Latest Work',
-    nowPlaying:'NOW PLAYING',
-    scrollExplore:'SCROLL TO EXPLORE',
-    howTitle:'자판기처럼\n간단합니다',
-    howSub:'프롬프트 없음. 편집 지식 없음.\n버튼 몇 번이면 광고영상이 완성됩니다.',
-    step1:'사진 업로드', step2:'스타일 선택', step3:'48시간 납품',
-    step1d:'JPG, PNG 어떤 형식이든 가능합니다. AI가 제품을 인식하고 최적 스타일을 자동 분석합니다.',
-    step2d:'Preset Store에서 Apple·Dior·Netflix 스타일을 선택하거나 AI 추천을 받으세요.',
-    step3d:'결제 즉시 접수됩니다. 9:16 / 1:1 / 16:9 세 비율과 상업 라이선스 인증서가 자동 발송됩니다.',
-    plansTitle:'필요한 만큼만\n선택하세요',
-    ctaTitle:'지금 첫 영상을\n뽑아보세요',
-    ctaSub:'Push Once. Create Forever.\n첫 영상 79,000원 · LITE 즉시 제작 · 라이선스 자동 발급',
-    ctaBtn:'🚀 영상 뽑기 시작',
-  },
-  en: {
-    code:'EN', dir:'ltr',
-    navCta:'Get Video →',
-    heroSub1:'Bring your brand', heroSub2:'imagination to life', heroSub3:'with AI video.',
-    viewWorks:'VIEW WORKS →',
-    watchTitle:'Latest Work',
-    nowPlaying:'NOW PLAYING',
-    scrollExplore:'SCROLL TO EXPLORE',
-    howTitle:'Simple as a\nvending machine',
-    howSub:'No prompts. No editing skills.\nA few clicks and your ad video is done.',
-    step1:'Upload Photo', step2:'Choose Style', step3:'48h Delivery',
-    step1d:'JPG or PNG — any format works. AI recognizes your product and auto-selects the best style.',
-    step2d:'Pick from Apple, Dior, Netflix styles in the Preset Store or let AI recommend.',
-    step3d:'Order confirmed instantly. Delivered in 3 ratios with a commercial license certificate.',
-    plansTitle:'Choose only\nwhat you need',
-    ctaTitle:'Get your first\nvideo now',
-    ctaSub:'Push Once. Create Forever.\nFrom ₩79,000 · Instant LITE · License included',
-    ctaBtn:'🚀 Start Now',
-  },
-  ja: {
-    code:'JA', dir:'ltr',
-    navCta:'動画を作る →',
-    heroSub1:'ブランドの想像を', heroSub2:'AI映像', heroSub3:'制作で現実に。',
-    viewWorks:'作品を見る →',
-    watchTitle:'最新作品',
-    nowPlaying:'再生中',
-    scrollExplore:'スクロールして探索',
-    howTitle:'自動販売機のように\n簡単です',
-    howSub:'プロンプト不要。編集知識不要。\nボタン数回で広告動画が完成します。',
-    step1:'写真アップロード', step2:'スタイル選択', step3:'48h納品',
-    step1d:'JPG・PNG形式対応。AIが商品を認識し最適スタイルを自動分析します。',
-    step2d:'Preset StoreでApple・Dior・Netflixスタイルを選択、またはAIがおすすめします。',
-    step3d:'決済後即受付。9:16/1:1/16:9の3比率と商用ライセンス証明書を自動送付。',
-    plansTitle:'必要な分だけ\n選んでください',
-    ctaTitle:'今すぐ最初の\n動画を作りましょう',
-    ctaSub:'Push Once. Create Forever.\n₩79,000から · 即時制作 · ライセンス自動発行',
-    ctaBtn:'🚀 今すぐ始める',
-  },
-  zh: {
-    code:'ZH', dir:'ltr',
-    navCta:'制作视频 →',
-    heroSub1:'将品牌想象', heroSub2:'AI视频', heroSub3:'制作成现实。',
-    viewWorks:'查看作品 →',
-    watchTitle:'最新作品',
-    nowPlaying:'正在播放',
-    scrollExplore:'向下滚动探索',
-    howTitle:'像自动贩卖机\n一样简单',
-    howSub:'无需提示词，无需剪辑知识。\n几次点击，广告视频即刻完成。',
-    step1:'上传照片', step2:'选择风格', step3:'48小时交付',
-    step1d:'支持JPG、PNG格式。AI识别产品并自动分析最佳风格。',
-    step2d:'在Preset Store选择Apple、Dior、Netflix风格，或获取AI推荐。',
-    step3d:'支付后立即受理，自动发送3种比例视频和商业授权证书。',
-    plansTitle:'按需选择\n适合您的方案',
-    ctaTitle:'立即制作\n您的第一个视频',
-    ctaSub:'Push Once. Create Forever.\n从₩79,000起 · 即时制作 · 自动授权',
-    ctaBtn:'🚀 立即开始',
-  },
-  es: {
-    code:'ES', dir:'ltr',
-    navCta:'Crear video →',
-    heroSub1:'Convierte la imaginación', heroSub2:'de tu marca en', heroSub3:'video con IA.',
-    viewWorks:'VER TRABAJOS →',
-    watchTitle:'Último trabajo',
-    nowPlaying:'REPRODUCIENDO',
-    scrollExplore:'DESPLÁZATE PARA EXPLORAR',
-    howTitle:'Tan simple como\nuna máquina expendedora',
-    howSub:'Sin prompts. Sin edición.\nUnos clics y tu video publicitario está listo.',
-    step1:'Subir foto', step2:'Elegir estilo', step3:'Entrega 48h',
-    step1d:'JPG o PNG, cualquier formato. La IA reconoce tu producto y selecciona el mejor estilo.',
-    step2d:'Elige estilos Apple, Dior o Netflix en el Preset Store o deja que la IA recomiende.',
-    step3d:'Pedido confirmado al instante. Entregado en 3 proporciones con licencia comercial.',
-    plansTitle:'Elige solo\nlo que necesitas',
-    ctaTitle:'Obtén tu primer\nvideo ahora',
-    ctaSub:'Push Once. Create Forever.\nDesde ₩79,000 · Instantáneo · Licencia incluida',
-    ctaBtn:'🚀 Empezar ahora',
-  },
-  fr: {
-    code:'FR', dir:'ltr',
-    navCta:'Créer une vidéo →',
-    heroSub1:"Donnez vie à l'imagination", heroSub2:'de votre marque avec', heroSub3:'la vidéo IA.',
-    viewWorks:'VOIR LES TRAVAUX →',
-    watchTitle:'Dernier travail',
-    nowPlaying:'EN LECTURE',
-    scrollExplore:'DÉFILER POUR EXPLORER',
-    howTitle:'Simple comme\nun distributeur automatique',
-    howSub:'Pas de prompts. Pas de montage.\nQuelques clics et votre vidéo publicitaire est prête.',
-    step1:'Télécharger photo', step2:'Choisir le style', step3:'Livraison 48h',
-    step1d:'JPG ou PNG, tout format fonctionne. L\'IA reconnaît votre produit et sélectionne le meilleur style.',
-    step2d:'Choisissez les styles Apple, Dior, Netflix dans le Preset Store ou laissez l\'IA recommander.',
-    step3d:'Commande confirmée instantanément. Livrée en 3 ratios avec certificat de licence commerciale.',
-    plansTitle:'Choisissez seulement\nce dont vous avez besoin',
-    ctaTitle:'Obtenez votre première\nvidéo maintenant',
-    ctaSub:'Push Once. Create Forever.\nÀ partir de ₩79,000 · Instantané · Licence incluse',
-    ctaBtn:'🚀 Commencer maintenant',
-  },
-  de: {
-    code:'DE', dir:'ltr',
-    navCta:'Video erstellen →',
-    heroSub1:'Verwandeln Sie Ihre', heroSub2:'Markenideen in', heroSub3:'AI-Videos.',
-    viewWorks:'ARBEITEN ANSEHEN →',
-    watchTitle:'Neueste Arbeit',
-    nowPlaying:'JETZT LÄUFT',
-    scrollExplore:'SCROLLEN ZUM ERKUNDEN',
-    howTitle:'So einfach wie\nein Automat',
-    howSub:'Keine Prompts. Kein Schnitt.\nWenige Klicks und Ihr Werbevideo ist fertig.',
-    step1:'Foto hochladen', step2:'Stil wählen', step3:'48h Lieferung',
-    step1d:'JPG oder PNG, jedes Format. KI erkennt Ihr Produkt und wählt den besten Stil.',
-    step2d:'Wählen Sie Apple-, Dior- oder Netflix-Stile im Preset Store oder lassen Sie KI empfehlen.',
-    step3d:'Bestellung sofort bestätigt. Geliefert in 3 Formaten mit kommerziellem Lizenzzertifikat.',
-    plansTitle:'Wählen Sie nur\nwas Sie brauchen',
-    ctaTitle:'Holen Sie sich jetzt\nIhr erstes Video',
-    ctaSub:'Push Once. Create Forever.\nAb ₩79,000 · Sofort · Lizenz inklusive',
-    ctaBtn:'🚀 Jetzt starten',
-  },
-  pt: {
-    code:'PT', dir:'ltr',
-    navCta:'Criar vídeo →',
-    heroSub1:'Transforme a imaginação', heroSub2:'da sua marca em', heroSub3:'vídeo com IA.',
-    viewWorks:'VER TRABALHOS →',
-    watchTitle:'Último trabalho',
-    nowPlaying:'REPRODUZINDO',
-    scrollExplore:'ROLE PARA EXPLORAR',
-    howTitle:'Simples como\numa máquina de venda',
-    howSub:'Sem prompts. Sem edição.\nPoucos cliques e seu vídeo publicitário está pronto.',
-    step1:'Enviar foto', step2:'Escolher estilo', step3:'Entrega 48h',
-    step1d:'JPG ou PNG, qualquer formato. IA reconhece seu produto e seleciona o melhor estilo.',
-    step2d:'Escolha estilos Apple, Dior, Netflix no Preset Store ou deixe a IA recomendar.',
-    step3d:'Pedido confirmado instantaneamente. Entregue em 3 proporções com licença comercial.',
-    plansTitle:'Escolha apenas\no que você precisa',
-    ctaTitle:'Obtenha seu primeiro\nvídeo agora',
-    ctaSub:'Push Once. Create Forever.\nA partir de ₩79,000 · Instantâneo · Licença incluída',
-    ctaBtn:'🚀 Começar agora',
-  },
-  ar: {
-    code:'AR', dir:'rtl',
-    navCta:'← إنشاء فيديو',
-    heroSub1:'حوّل خيال علامتك', heroSub2:'التجارية إلى', heroSub3:'فيديو بالذكاء الاصطناعي.',
-    viewWorks:'← عرض الأعمال',
-    watchTitle:'أحدث عمل',
-    nowPlaying:'يُشغَّل الآن',
-    scrollExplore:'اسحب للاستكشاف',
-    howTitle:'بسيط مثل\nآلة البيع',
-    howSub:'لا حاجة لنصوص توجيهية أو مهارات تحرير.\nبضع نقرات وإعلانك الفيديو جاهز.',
-    step1:'رفع الصورة', step2:'اختيار الأسلوب', step3:'تسليم 48 ساعة',
-    step1d:'JPG أو PNG، أي صيغة. يتعرف الذكاء الاصطناعي على منتجك ويختار أفضل أسلوب.',
-    step2d:'اختر أساليب Apple أو Dior أو Netflix من متجر Preset أو دع الذكاء الاصطناعي يوصي.',
-    step3d:'تأكيد الطلب فوراً. يُسلَّم بـ3 نسب مع شهادة ترخيص تجاري.',
-    plansTitle:'اختر فقط\nما تحتاجه',
-    ctaTitle:'احصل على فيديوك\nالأول الآن',
-    ctaSub:'Push Once. Create Forever.\nمن ₩79,000 · فوري · الترخيص مشمول',
-    ctaBtn:'🚀 ابدأ الآن',
-  },
-};
-
-let currentLang = 'ko';
-
-function toggleLang() {
-  document.getElementById('langSelector').classList.toggle('open');
-}
-// 외부 클릭 시 닫기
-document.addEventListener('click', function(e) {
-  if (!e.target.closest('#langSelector')) {
-    document.getElementById('langSelector').classList.remove('open');
-  }
-});
-
-function setLang(lang) {
-  currentLang = lang;
-  const t = LANGS[lang];
-
-  // 드롭다운 닫기
-  document.getElementById('langSelector').classList.remove('open');
-  document.getElementById('langCurrent').textContent = t.code;
-
-  // RTL 처리
-  document.documentElement.setAttribute('dir', t.dir);
-
-  // active 상태
-  document.querySelectorAll('.lang-opt').forEach(o => {
-    o.classList.toggle('active', o.dataset.lang === lang);
-  });
-
-  // nav CTA
-  const navCta = document.getElementById('navCtaBtn');
-  if (navCta) navCta.textContent = t.navCta;
-
-  // hero 서브카피
-  setText('heroSub1', t.heroSub1);
-  setText('heroSub2', t.heroSub2);
-  setText('heroSub3', t.heroSub3);
-  setText('heroViewWorks', t.viewWorks);
-  setText('heroWatchTitle', t.watchTitle);
-  setText('heroNowPlaying', t.nowPlaying);
-  setText('heroScrollExplore', t.scrollExplore);
-
-  // HOW
-  setHTML('howTitle', t.howTitle.replace('\n','<br>'));
-  setHTML('howSub', t.howSub.replace('\n','<br>'));
-  setText('step1Title', t.step1); setText('step1Desc', t.step1d);
-  setText('step2Title', t.step2); setText('step2Desc', t.step2d);
-  setText('step3Title', t.step3); setText('step3Desc', t.step3d);
-
-  // Plans
-  setHTML('plansTitle', t.plansTitle.replace('\n','<br>'));
-
-  // CTA
-  setHTML('ctaTitle', t.ctaTitle.replace('\n','<br>'));
-  setHTML('ctaSub', t.ctaSub.replace('\n','<br>'));
-  setText('ctaBtn', t.ctaBtn);
-}
-
-function setText(id, val) { const el=document.getElementById(id); if(el) el.textContent=val; }
-function setHTML(id, val) { const el=document.getElementById(id); if(el) el.innerHTML=val; }
-
-/* ════ 스크롤 nav ════ */
-window.addEventListener('scroll', function(){
-  const nav = document.getElementById('mainNav');
-  if(window.scrollY > 60) nav.classList.add('scrolled');
-  else nav.classList.remove('scrolled');
-});
-
-/* ════ 초기화 ════ */
-renderStore();
-renderAnalytics();
 </script>
-<script>(function(){var loc=location.href.replace(/#.*$/,"");var ATTR_NAMES=["data-product-id","data-productid","data-product_id","product-id","productid","product_id","data-source-entity-id","source-entity-id","source_entity_id","data-product","data-metadata","data-meta"];var DATASET_KEYS=["productId","productid","product_id","sourceEntityId","sourceentityid","source_entity_id","product","metadata","meta"];function readProductId(value){if(typeof value!=="string"||value.length===0)return null;if(/^[0-9]{6,}$/.test(value))return value;var match=value.match(/(?:product(?:_|-)?id|source(?:_|-)?entity(?:_|-)?id)["'=:\s]+([0-9]{6,})/i);return match?match[1]:null}function extractProductId(start){for(var node=start;node&&node!==document.body;node=node.parentElement){for(var i=0;i<ATTR_NAMES.length;i++){var attrValue=node.getAttribute&&node.getAttribute(ATTR_NAMES[i]);var attrProductId=readProductId(attrValue);if(attrProductId)return attrProductId}var dataset=node.dataset||null;if(dataset){for(var j=0;j<DATASET_KEYS.length;j++){var dataValue=dataset[DATASET_KEYS[j]];var dataProductId=readProductId(dataValue);if(dataProductId)return dataProductId}}}return null}document.addEventListener("click",function(e){var target=e.target instanceof Element?e.target:null;if(!target)return;var a=target.closest?target.closest("a[href]"):null;if(!a||!a.href||!/^https?:\/\//.test(a.href))return;if(a.href.replace(/#.*$/,"")===loc)return;var productId=extractProductId(target)||extractProductId(a);if(!productId)return;e.preventDefault();parent.postMessage({type:"ecto-artifact-link-click",productId:productId},"*")},true)})();</script></body>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" name="viewport"/>
+<meta content="#050505" name="theme-color"/>
+<title>AVVM.studio — ONE IMAGE. ONE CLICK. CINEMATIC RESULTS.</title><meta content="AVVM.studio creates cinematic AI-assisted commercial videos from a single image." name="description">
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=Inter:wght@400;500;600;700;800;900&amp;family=Cormorant+Garamond:ital,wght@1,700;1,900&amp;display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css?v=22">
+</meta><link rel="preload" as="video" href="https://avvmstudio25.vercel.app/videos/hero-original-then-loop.mp4?v=8" type="video/mp4">
+<!-- AVVM V10 Scroll Stable -->
+</head>
+<body>
+<!-- Mosaic loader screen -->
+<div id="loader">
+    <canvas id="loader-canvas"></canvas>
+</div>
+<!-- Custom Interactive Cursor -->
+<div id="custom-cursor" class="custom-cursor"></div>
+<div id="custom-cursor-follower" class="custom-cursor-follower"><span id="cursor-text"></span></div>
+
+<!-- WebGL-like Dynamic Spark Background -->
+<canvas id="flow-canvas"></canvas>
+
+<!-- SVG Displacement Map for Wave Distortion -->
+<svg class="svg-filters" style="position: absolute; width: 0; height: 0; pointer-events: none;">
+    <defs>
+        <filter id="liquid-wave">
+            <feTurbulence type="fractalNoise" baseFrequency="0.015" numOctaves="3" result="noise" seed="3" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="0" xChannelSelector="R" yChannelSelector="G" result="displacement" id="liquid-map-el" />
+        </filter>
+    </defs>
+</svg>
+
+<nav class="nav" id="nav">
+<div class="nav-inner">
+<a aria-label="AVVM home" class="avvm-logo-link logo" href="#hero"><img alt="AVVM" class="avvm-play-logo-img" src="https://avvmstudio25.vercel.app/assets/avvm-play-logo.png"/></a>
+<div class="links"><a href="#works">Works</a><a href="#process">How it works</a><a href="#pricing">Pricing</a><a href="#about">About</a><a href="#faq">FAQ</a></div>
+<div class="nav-cta nav-cta-native-lang">
+<div class="native-lang-box lang-with-icon" id="nativeLangBox"><video aria-hidden="true" autoplay="" class="lang-globe-icon" loop="" muted="" playsinline="" poster="https://avvmstudio25.vercel.app/assets/lang-globe-icon.jpg" src="https://avvmstudio25.vercel.app/assets/lang-globe-icon.mp4"></video>
+<label for="nativeLangSelect"></label>
+<select aria-label="Language" id="nativeLangSelect">
+<option value="ko">KO</option>
+<option value="en">EN</option>
+<option value="ja">JP</option>
+<option value="zh">CN</option>
+<option value="es">ES</option>
+<option value="fr">FR</option>
+<option value="de">DE</option>
+<option value="pt">PT</option>
+<option value="ar">AR</option>
+</select>
+</div>
+<button class="btn" data-open=""><span data-i18n="startProject">START PROJECT ↗</span></button>
+</div>
+</div>
+</nav>
+<header class="hero hero-v5" id="hero">
+<video autoplay="" class="hero-video" loop="" muted="" playsinline="" preload="auto" src="https://avvmstudio25.vercel.app/videos/hero-original-then-loop.mp4?v=8" poster="https://avvmstudio25.vercel.app/assets/hero-original-then-loop-poster.jpg"></video>
+<div class="hero-v5-overlay"></div>
+<!-- Background wave bars (equalizer) -->
+<div id="hero-wave-bars">
+    <div class="wave-bar"></div>
+    <div class="wave-bar"></div>
+    <div class="wave-bar"></div>
+    <div class="wave-bar"></div>
+    <div class="wave-bar"></div>
+    <div class="wave-bar"></div>
+    <div class="wave-bar"></div>
+    <div class="wave-bar"></div>
+    <div class="wave-bar"></div>
+    <div class="wave-bar"></div>
+    <div class="wave-bar"></div>
+    <div class="wave-bar"></div>
+</div>
+<div class="hero-v5-top">
+<div class="hero-brand-stack">
+  <a aria-label="AVVM home" class="avvm-logo-link hero-logo-float" href="#hero"><img alt="AVVM" class="avvm-play-logo-img" src="https://avvmstudio25.vercel.app/assets/avvm-play-logo.png"/></a>
+  <div class="hero-brand-tagline"><span data-i18n="heroEyebrow">THE AI VIDEO VENDING MACHINE</span></div>
+</div>
+
+<div class="hero-top-actions">
+<div class="native-lang-box hero-native-lang lang-with-icon" id="heroNativeLangBox"><video aria-hidden="true" autoplay="" class="lang-globe-icon" loop="" muted="" playsinline="" poster="https://avvmstudio25.vercel.app/assets/lang-globe-icon.jpg" src="https://avvmstudio25.vercel.app/assets/lang-globe-icon.mp4"></video>
+<label for="heroNativeLangSelect"></label>
+<select aria-label="Language" id="heroNativeLangSelect">
+<option value="ko">KO</option>
+<option value="en">EN</option>
+<option value="ja">JP</option>
+<option value="zh">CN</option>
+<option value="es">ES</option>
+<option value="fr">FR</option>
+<option value="de">DE</option>
+<option value="pt">PT</option>
+<option value="ar">AR</option>
+</select>
+</div>
+<button aria-label="Start project" class="hero-menu-dot has-help" data-help="프로젝트 시작: 이미지 업로드와 주문 정보를 입력합니다." data-help-key="help1" data-help-ko="프로젝트 시작: 이미지 업로드와 주문 정보를 입력합니다." data-open="">START</button></div>
+</div>
+<div class="hero-v5-content">
+
+<!-- Interactive Canvas Tagline Reveal -->
+<div id="hero-tagline-container">
+    <canvas id="hero-tagline-canvas"></canvas>
+</div>
+<p class="hero-v5-sub" id="heroSubText"><span data-i18n="heroSub">Premium commercial videos from a single image.</span></p>
+<div class="hero-v5-actions">
+<button class="btn btn-primary has-help" data-help="사진을 올리고 원하는 스타일을 선택하면 주문 흐름이 시작됩니다." data-help-key="help2" data-help-ko="사진을 올리고 원하는 스타일을 선택하면 주문 흐름이 시작됩니다." data-open=""><span data-i18n="startProject">START PROJECT ↗</span></button>
+<button class="play showreel-btn has-help" data-help="AVVM 샘플 영상을 크게 확인합니다." data-help-key="help3" data-help-ko="AVVM 샘플 영상을 크게 확인합니다." id="watchShowreel" type="button"><i>▶</i><span data-i18n="viewShowreel">VIEW SHOWREEL</span></button>
+</div>
+</div>
+<div class="hero-v5-bottom">
+<span class="mouse"></span>
+<span><span data-i18n="scrollExplore">SCROLL TO EXPLORE</span></span>
+</div>
+</header>
+<section class="ba-section" id="before-after">
+<div class="container">
+<div class="ba-shell">
+<div class="ba-header">
+<div class="ba-kicker">Before / After</div>
+<h2 class="ba-title">FROM STILL TO<br/>STUNNING.</h2>
+<p class="ba-copy"><span data-i18n="beforeAfterCopy">사진 한 장을 업로드하면, AVVM이 광고급 시네마틱 결과물로 전환합니다.</span></p>
+</div>
+<div class="ba-stage has-help" data-help="왼쪽은 입력 이미지, 오른쪽은 시네마틱 결과 예시입니다." data-help-key="help4" data-help-ko="왼쪽은 입력 이미지, 오른쪽은 시네마틱 결과 예시입니다.">
+<div class="ba-card">
+<div class="ba-media" style="background-image:url('https://avvmstudio25.vercel.app/assets/before-crop.png')"></div>
+<div class="ba-label">INPUT IMAGE</div>
+</div>
+<div class="ba-center">
+<div class="progress-shell"><div class="progress-bar"></div></div>
+<div class="ba-status">AI Transformation Process...<b>Complete</b></div>
+</div>
+<div class="ba-card">
+<div class="ba-media" style="background-image:url('https://avvmstudio25.vercel.app/assets/after-crop.png')"></div>
+<button aria-label="Play result preview" class="ba-play showreel-btn" type="button">▶</button>
+<div class="ba-label">CINEMATIC RESULT</div>
+</div>
+</div>
+<div class="ba-actions">
+<button class="btn btn-primary has-help" data-help="사진을 올리고 원하는 스타일을 선택하면 주문 흐름이 시작됩니다." data-help-key="help5" data-help-ko="사진을 올리고 원하는 스타일을 선택하면 주문 흐름이 시작됩니다." data-open=""><span data-i18n="startProject">START PROJECT ↗</span></button>
+<button class="play showreel-btn" type="button"><i>▶</i><span data-i18n="viewShowreel">VIEW SHOWREEL</span></button>
+</div>
+<div class="ba-note"><span data-i18n="heroSub">Premium commercial videos from a single image.</span></div>
+</div>
+</div>
+</section>
+<section aria-label="AVVM trust points" class="trust-strip">
+<div class="trust-item has-help" data-help="즉시 완성형 자동툴이 아니라, AI 초안 생성 후 사람이 품질을 확인하는 제작 서비스입니다." data-help-key="help6" data-help-ko="즉시 완성형 자동툴이 아니라, AI 초안 생성 후 사람이 품질을 확인하는 제작 서비스입니다.">
+<b>AI Draft + Human Polish</b><span><span data-i18n-auto="autoKo1">AI가 초안을 만들고, 전문가가 상업용 품질로 보정합니다.</span></span>
+</div>
+<div class="trust-item has-help" data-help="제품 로고와 형태가 무너지는 AI 특유의 오류를 줄이기 위해 최종 검수 과정을 둡니다." data-help-key="help7" data-help-ko="제품 로고와 형태가 무너지는 AI 특유의 오류를 줄이기 위해 최종 검수 과정을 둡니다.">
+<b>Product Consistency Check</b><span><span data-i18n-auto="autoKo2">상품 형태, 로고, 라벨 왜곡을 줄이기 위한 검수 포함.</span></span>
+</div>
+<div class="trust-item has-help" data-help="외화 표시는 참고용이며 실제 결제와 환불 기준은 원화입니다." data-help-key="help8" data-help-ko="외화 표시는 참고용이며 실제 결제와 환불 기준은 원화입니다.">
+<b>KRW Payment</b><span><span data-i18n-auto="autoKo3">외화는 참고 환산, 실제 결제는 원화(KRW) 기준.</span></span>
+</div>
+<div class="trust-item has-help" data-help="정식 도메인과 사업자 정보 공개로 결제 신뢰도를 높입니다." data-help-key="help9" data-help-ko="정식 도메인과 사업자 정보 공개로 결제 신뢰도를 높입니다.">
+<b>Launch Ready</b><span><span data-i18n-auto="autoKo4">avvm.studio 도메인과 사업자 정보 영역 준비.</span></span>
+</div>
+</section>
+<section class="demo-action" id="demo-action">
+<div class="container demo-grid">
+<div class="demo-text">
+<div class="demo-eyebrow" data-i18n="demoEyebrow">IMAGE TO CINEMA</div>
+<h2 class="demo-title" data-i18n="demoTitle">FROM ONE IMAGE<br/>TO A COMMERCIAL VIDEO.</h2>
+<p class="demo-copy" data-i18n="demoCopy"><span data-i18n="demoCopy">사진 한 장이 브랜드 광고 영상으로 확장되는 대표 데모입니다. 인물, 제품, 분위기 이미지를 기반으로 시네마틱한 컷과 움직임을 구성합니다.</span></p>
+<div class="demo-meta">
+<span class="demo-chip" data-i18n="demoChip1">IMAGE BASED</span>
+<span class="demo-chip" data-i18n="demoChip2">CINEMATIC MOTION</span>
+<span class="demo-chip" data-i18n="demoChip3">COMMERCIAL READY</span>
+</div>
+<div style="margin-top:30px">
+<button class="btn btn-primary show-demo-btn has-help" data-help="사진 한 장이 영화 장면으로 변환되는 데모를 재생합니다." data-help-key="help10" data-help-ko="사진 한 장이 영화 장면으로 변환되는 데모를 재생합니다." data-i18n="watchTransformation" type="button">WATCH TRANSFORMATION ↗</button>
+</div>
+</div>
+<div class="demo-card has-help" data-help="입력 이미지가 영화 장면으로 변환되는 대표 데모입니다." data-help-key="help11" data-help-ko="입력 이미지가 영화 장면으로 변환되는 대표 데모입니다.">
+<video autoplay="" loop="" muted="" playsinline="" preload="metadata" src="https://avvmstudio25.vercel.app/videos/demo-action.mp4?v=2"></video>
+<div class="demo-card-caption">
+<div>
+<b>Transformation Demo</b>
+<span>Portrait image becomes a cinematic action sequence.</span>
+</div>
+<button aria-label="Watch transformation" class="demo-play show-demo-btn has-help" data-help="액션 변환 샘플을 크게 봅니다." data-help-key="help12" data-help-ko="액션 변환 샘플을 크게 봅니다." type="button">▶</button>
+</div>
+</div>
+</div>
+</section>
+<section class="sample-work" id="sample-fancl">
+<div class="container sample-grid">
+<div class="sample-text">
+<div class="sample-eyebrow">Sample Work 02 · Beauty</div>
+<h2 class="sample-title">CLEAN<br/>WATER FILM.</h2>
+<p class="sample-copy"><span data-i18n="beautyCopy">FANCL 클렌징 오일 스타일의 15초 뷰티 광고 샘플입니다. 물결, 투명한 라이트 블루 톤, 피부 클로즈업, 제품 중심 컷을 조합한 프리미엄 스킨케어 무드입니다.</span></p>
+<div class="sample-tags">
+<span class="sample-tag">15s Beauty Ad</span>
+<span class="sample-tag">Water Texture</span>
+<span class="sample-tag">Clean Premium</span>
+<span class="sample-tag">Product Film</span>
+</div>
+<div style="margin-top:30px">
+<button class="btn btn-primary show-fancl-btn has-help" data-help="뷰티/스킨케어 광고 샘플 영상을 재생합니다." data-help-key="help13" data-help-ko="뷰티/스킨케어 광고 샘플 영상을 재생합니다." type="button">WATCH SAMPLE ↗</button>
+</div>
+<div class="sample-board">
+<img alt="FANCL cleansing oil storyboard sample" src="https://avvmstudio25.vercel.app/assets/sample-fancl-board.jpeg"/>
+</div>
+</div>
+<div class="sample-card has-help" data-help="15초 뷰티 광고 샘플입니다. 물결, 제품, 피부 클로즈업 흐름을 확인하세요." data-help-key="help14" data-help-ko="15초 뷰티 광고 샘플입니다. 물결, 제품, 피부 클로즈업 흐름을 확인하세요.">
+<video autoplay="" loop="" muted="" playsinline="" poster="https://avvmstudio25.vercel.app/assets/posters/videos_sample-fancl-cleansing.jpg" preload="metadata" src="https://avvmstudio25.vercel.app/videos/sample-fancl-cleansing.mp4"></video>
+<div class="sample-caption">
+<div>
+<b>Beauty Cleansing Oil</b>
+<span>Water, skin, product and clean premium mood.</span>
+</div>
+<button aria-label="Watch sample" class="sample-play show-fancl-btn has-help" data-help="뷰티 샘플 영상을 크게 봅니다." data-help-key="help15" data-help-ko="뷰티 샘플 영상을 크게 봅니다." type="button">▶</button>
+</div>
+</div>
+</div>
+</section>
+<section class="works" id="works">
+<div class="container">
+<div class="section-bar"><h2 class="section-label">OUR WORKS</h2><a class="view-all" href="#pricing">VIEW ALL WORKS ↗</a></div>
+<div class="works-strip" id="worksStrip">
+<button aria-label="Previous work" class="btn btn-round arrow left" id="workPrev" type="button">←</button><button aria-label="Next work" class="btn btn-round arrow right" id="workNext" type="button">→</button>
+<article class="work-card"><div class="bg w1"></div><span>Product</span></article><article class="work-card"><div class="bg w2"></div><span>Automotive</span></article><article class="work-card"><div class="bg w3"></div><span>Beauty</span></article><article class="work-card"><div class="bg w4"></div><span>Travel</span></article><article class="work-card"><div class="bg w5"></div><span>Wedding</span></article><article class="work-card"><div class="bg w6"></div><span>Pet</span></article>
+</div>
+<div class="dots"><i class="active"></i><i></i><i></i><i></i><i></i></div>
+</div>
+</section>
+<section class="process" id="process">
+<div class="container process-grid">
+<div class="process-intro"><div class="mini-eyebrow">AI VIDEO VENDING MACHINE</div><h2 class="process-title">AS EASY AS<br/>ONE CLICK</h2><p>Insert your image, choose the mood, and get a cinematic video. It’s that simple.</p><div style="margin-top:28px"><a class="btn" href="#pricing">HOW IT WORKS ↗</a></div></div>
+<div class="process-card"><div class="num">01</div><div class="ico"><svg viewbox="0 0 64 64"><path d="M15 8h25l9 9v39H15z"></path><path d="M40 8v10h10"></path><path d="m20 45 10-12 8 8 6-7 5 11"></path><circle cx="49" cy="49" r="10"></circle><path d="M49 44v10M44 49h10"></path></svg></div><h3>Insert Image</h3><p>Upload the image you want to bring to life.</p></div>
+<div class="process-card"><div class="num">02</div><div class="ico"><svg viewbox="0 0 64 64"><rect height="16" width="16" x="13" y="13"></rect><rect height="16" width="16" x="36" y="13"></rect><rect height="16" width="16" x="13" y="36"></rect><circle cx="44" cy="44" r="9"></circle></svg></div><h3>Choose Mood</h3><p>Select a mood and style that fits your story.</p></div>
+<div class="process-card"><div class="num">03</div><div class="ico"><svg viewbox="0 0 64 64"><circle cx="32" cy="32" r="22"></circle><text fill="currentColor" font-size="12" font-weight="800" stroke="none" text-anchor="middle" x="32" y="37">START</text></svg></div><h3>Press Start</h3><p>One click is all it takes. We handle the rest.</p></div>
+<div class="process-card"><div class="num">04</div><div class="ico"><svg viewbox="0 0 64 64"><rect height="38" rx="3" width="36" x="14" y="13"></rect><path d="m29 24 13 8-13 8z"></path><path d="M19 13v8M45 13v8M19 43v8M45 43v8"></path></svg></div><h3>Get Cinematic Film</h3><p>Your premium video is ready.</p></div>
+</div>
+</section>
+<section class="stats" id="about">
+<div class="container stats-grid"><div class="stat"><div class="stat-icon">☆</div><b>4.9 / 5</b><p>Average Customer Rating</p><div class="stars">★★★★★</div></div><div class="stat"><div class="stat-icon">◴</div><b>Delivery</b><p>Fast Delivery Time</p></div><div class="stat"><div class="stat-icon">▷</div><b>10K+</b><p>Videos Created</p></div><div class="stat"><div class="stat-icon">◎</div><b>120+</b><p>Countries Served</p></div></div>
+</section>
+<section class="clarity-section" id="how-it-works-real">
+<div class="clarity-grid">
+<div>
+<div class="clarity-kicker">Not instant automation. Better than that.</div>
+<h2 class="clarity-title"><span data-i18n="speedTitle">AI SPEED.<br/>HUMAN FINISH.</span></h2>
+<p class="clarity-copy"><span data-i18n-auto="autoKo5">AVVM은 “버튼을 누르자마자 무작위 결과가 나오는 자동툴”이 아닙니다. AI가 빠르게 영상 초안을 만들고, 사람이 상품성·브랜드감·시각적 오류를 확인해 주문 내용 확인 후 상업용 결과물로 납품하는 초고속 AI 제작 스튜디오입니다.</span></p>
+</div>
+<div class="clarity-cards">
+<div class="clarity-card has-help" data-help="자판기라는 이름은 주문이 쉽다는 뜻입니다. 결과물은 검수 후 전달됩니다." data-help-key="help16" data-help-ko="자판기라는 이름은 주문이 쉽다는 뜻입니다. 결과물은 검수 후 전달됩니다."><strong>Why “Vending Machine”?</strong><p><span data-i18n-auto="autoKo6">주문 방식은 자판기처럼 쉽고 빠르게. 결과물은 전문가 검수 후 납품합니다.</span></p></div>
+<div class="clarity-card has-help" data-help="AI가 만든 결과에서 어색한 손, 글자 깨짐, 상품 왜곡 같은 문제를 확인합니다." data-help-key="help17" data-help-ko="AI가 만든 결과에서 어색한 손, 글자 깨짐, 상품 왜곡 같은 문제를 확인합니다."><strong>Delivery Guide</strong><p><span data-i18n-auto="autoKo7">AI 렌더링, 스타일 보정, 상품/로고 일관성 체크를 포함한 기본 납품 기준입니다.</span></p></div>
+<div class="clarity-card has-help" data-help="고객이 올린 이미지를 기반으로 하지만, AI 특성상 100% 동일 복제는 보장하지 않습니다." data-help-key="help18" data-help-ko="고객이 올린 이미지를 기반으로 하지만, AI 특성상 100% 동일 복제는 보장하지 않습니다."><strong>Realistic Expectation</strong><p><span data-i18n-auto="autoKo8">AI 결과는 이미지 품질과 스타일에 따라 달라질 수 있으며, 상업용 사용 전 최종 확인을 권장합니다.</span></p></div>
+</div>
+</div>
+</section>
+<section class="clarity-section" id="product-consistency">
+<div class="clarity-grid">
+<div>
+<div class="clarity-kicker">Commerce owners care about this most</div>
+<h2 class="clarity-title"><span data-i18n="keepTitle">KEEP THE<br/>PRODUCT RIGHT.</span></h2>
+<p class="clarity-copy"><span data-i18n-auto="autoKo9">AI 영상에서 가장 큰 불안은 상품 로고, 라벨, 패키지 형태가 무너지는 문제입니다. AVVM은 제품 중심 광고에 맞게 상품 형태, 색감, 브랜드 인상, 라벨 가독성을 우선 검수합니다.</span></p>
+</div>
+<div class="clarity-cards">
+<div class="clarity-card"><strong>Logo &amp; Label Check</strong><p><span data-i18n-auto="autoKo10">라벨·로고가 심하게 왜곡되면 재생성 또는 대체 컷으로 보정합니다.</span></p></div>
+<div class="clarity-card"><strong>Shape Preservation</strong><p><span data-i18n-auto="autoKo11">화장품 병, 패키지, 음식, 제품 실루엣이 원본과 다르게 보이지 않도록 확인합니다.</span></p></div>
+<div class="clarity-card"><strong>Commerce First</strong><p><span data-i18n-auto="autoKo12">예쁜 AI 영상보다 “팔리는 상품 영상”에 필요한 선명도와 신뢰감을 우선합니다.</span></p></div>
+</div>
+</div>
+</section>
+<section class="clarity-section" id="preview-coming">
+<div class="clarity-grid">
+<div class="preview-box has-help" data-help="정식 자동 프리뷰 기능은 추후 개발 예정입니다. 현재는 주문 후 검수 방식입니다." data-help-key="help19" data-help-ko="정식 자동 프리뷰 기능은 추후 개발 예정입니다. 현재는 주문 후 검수 방식입니다.">
+<span class="preview-pill">Coming Soon</span>
+<div><h3>2–3 SEC<br/>WATERMARK PREVIEW</h3><p><span data-i18n-auto="autoKo13">추후에는 자신의 상품 이미지를 올리면 저화질 워터마크 프리뷰를 빠르게 확인하고, 마음에 들 때 본 제작으로 이어지는 체험 공간을 제공할 예정입니다.</span></p></div>
+</div>
+<div>
+<div class="clarity-kicker">Show before payment</div>
+<h2 class="clarity-title"><span data-i18n="tryTitle">TRY BEFORE<br/>FULL ORDER.</span></h2>
+<p class="clarity-copy"><span data-i18n-auto="autoKo14">MVP 단계에서는 샘플 쇼릴과 주문 상담 기반으로 시작하고, 다음 단계에서는 무료 프리뷰 기능을 추가해 결제 전 확신을 높입니다.</span></p>
+</div>
+</div>
+</section>
+<section class="portfolio-global" id="global-portfolio">
+<div class="portfolio-global-head">
+<div>
+<div class="clarity-kicker" data-i18n="portfolioKicker">Portfolio expansion</div>
+<h2 data-i18n="portfolioTitle"><span data-i18n="portfolioTitle">7 SECTORS.<br/>ONE ENGINE.</span></h2>
+</div>
+<p data-i18n="portfolioCopy">AVVM은 뷰티뿐 아니라 자동차, 문화, 기업, 축제, 스토리, 액션까지 다양한 산업군의 영상 샘플로 확장됩니다.</p>
+</div>
+<div class="portfolio-grid">
+<article class="portfolio-card has-help" data-help="F1 레이싱과 공중 추적 드라이브 샘플입니다. 자동차/스포츠 브랜드용입니다." data-help-key="help20" data-help-ko="F1 레이싱과 공중 추적 드라이브 샘플입니다. 자동차/스포츠 브랜드용입니다.">
+<video autoplay="" loop="" muted="" playsinline="" poster="https://avvmstudio25.vercel.app/assets/posters/videos_portfolio_f1-aerial-drive.jpg" preload="metadata" src="https://avvmstudio25.vercel.app/videos/portfolio/f1-aerial-drive.mp4"></video>
+<div class="portfolio-card-body"><small>AUTOMOTIVE</small><h3>F1 AERIAL DRIVE</h3><p data-i18n="portAuto"><span data-i18n="portAuto">공중 추적, 고속 코너링, 레이스 에너지를 보여주는 자동차 섹터 샘플입니다.</span></p></div>
+</article>
+<article class="portfolio-card has-help" data-help="전통 장인 이미지가 미래 도시 무드로 확장되는 문화/관광용 샘플입니다." data-help-key="help21" data-help-ko="전통 장인 이미지가 미래 도시 무드로 확장되는 문화/관광용 샘플입니다.">
+<video autoplay="" loop="" muted="" playsinline="" poster="https://avvmstudio25.vercel.app/assets/posters/videos_portfolio_heritage-future.jpg" preload="metadata" src="https://avvmstudio25.vercel.app/videos/portfolio/heritage-future.mp4"></video>
+<div class="portfolio-card-body"><small>CULTURE</small><h3>HERITAGE TO FUTURE</h3><p data-i18n="portHeritage"><span data-i18n="portHeritage">전통 장인성과 미래 기술 이미지를 결합한 문화/관광 영상 샘플입니다.</span></p></div>
+</article>
+<article class="portfolio-card has-help" data-help="기업 홍보, 스타트업 소개, 서비스 소개 영상으로 활용할 수 있습니다." data-help-key="help22" data-help-ko="기업 홍보, 스타트업 소개, 서비스 소개 영상으로 활용할 수 있습니다.">
+<video autoplay="" loop="" muted="" playsinline="" poster="https://avvmstudio25.vercel.app/assets/posters/videos_portfolio_business-corporate.jpg" preload="metadata" src="https://avvmstudio25.vercel.app/videos/portfolio/business-corporate.mp4"></video>
+<div class="portfolio-card-body"><small>BUSINESS</small><h3>CORPORATE FILM</h3><p data-i18n="portBusiness"><span data-i18n="portBusiness">기업, 서비스, 스타트업 소개에 맞는 짧은 비즈니스 영상 샘플입니다.</span></p></div>
+</article>
+<article class="portfolio-card has-help" data-help="축제, 지역행사, 이벤트 프로모션 샘플입니다." data-help-key="help23" data-help-ko="축제, 지역행사, 이벤트 프로모션 샘플입니다.">
+<video autoplay="" loop="" muted="" playsinline="" poster="https://avvmstudio25.vercel.app/assets/posters/videos_portfolio_festival-event.jpg" preload="metadata" src="https://avvmstudio25.vercel.app/videos/portfolio/festival-event.mp4"></video>
+<div class="portfolio-card-body"><small>EVENT</small><h3>FESTIVAL FILM</h3><p data-i18n="portFestival"><span data-i18n="portFestival">불꽃, 야간 행사, 지역 축제 홍보에 맞는 이벤트 영상 샘플입니다.</span></p></div>
+</article>
+<article class="portfolio-card has-help" data-help="감성 드라마, 라이프스타일, 브랜드 스토리용 영상 샘플입니다." data-help-key="help24" data-help-ko="감성 드라마, 라이프스타일, 브랜드 스토리용 영상 샘플입니다.">
+<video autoplay="" loop="" muted="" playsinline="" poster="https://avvmstudio25.vercel.app/assets/posters/videos_portfolio_story-lifestyle.jpg" preload="metadata" src="https://avvmstudio25.vercel.app/videos/portfolio/story-lifestyle.mp4"></video>
+<div class="portfolio-card-body"><small>STORY</small><h3>LIFESTYLE STORY</h3><p data-i18n="portStory"><span data-i18n="portStory">인물 감정과 분위기를 살린 라이프스타일/스토리형 영상 샘플입니다.</span></p></div>
+</article>
+<article class="portfolio-card has-help" data-help="경북/첨성대/한반도 네트워크 같은 문화 메타버스 확장 샘플입니다." data-help-key="help25" data-help-ko="경북/첨성대/한반도 네트워크 같은 문화 메타버스 확장 샘플입니다.">
+<video autoplay="" loop="" muted="" playsinline="" poster="https://avvmstudio25.vercel.app/assets/posters/videos_portfolio_culture-metaverse.jpg" preload="metadata" src="https://avvmstudio25.vercel.app/videos/portfolio/culture-metaverse.mp4"></video>
+<div class="portfolio-card-body"><small>METAVERSE</small><h3>CULTURE NETWORK</h3><p data-i18n="portMetaverse"><span data-i18n="portMetaverse">지역 문화 상징이 디지털 네트워크와 결합되는 메타버스형 영상 샘플입니다.</span></p></div>
+</article>
+<article class="portfolio-card has-help" data-help="강한 액션감과 실험적인 장면 전환 테스트입니다. 하단 확장 포트폴리오용입니다." data-help-key="help26" data-help-ko="강한 액션감과 실험적인 장면 전환 테스트입니다. 하단 확장 포트폴리오용입니다.">
+<video autoplay="" loop="" muted="" playsinline="" poster="https://avvmstudio25.vercel.app/assets/posters/videos_portfolio_experimental-action.jpg" preload="metadata" src="https://avvmstudio25.vercel.app/videos/portfolio/experimental-action.mp4"></video>
+<div class="portfolio-card-body"><small>ACTION</small><h3>EXPERIMENTAL ACTION</h3><p data-i18n="portAction"><span data-i18n="portAction">격투, 추격, 긴장감 있는 전환을 보여주는 실험적 액션 영상 샘플입니다.</span></p></div>
+</article>
+</div>
+</section>
+<section class="clarity-section" id="pricing-details">
+<div class="clarity-grid">
+<div>
+<div class="clarity-kicker">Pricing details</div>
+<h2 class="clarity-title"><span data-i18n="includedTitle">WHAT IS<br/>INCLUDED?</span></h2>
+<p class="clarity-copy"><span data-i18n-auto="autoKo15">영상 길이와 화질 외에도 커머스 영상에 필요한 BGM, 효과음, 자막, 카피, 보이스 여부를 명확히 안내합니다.</span></p>
+</div>
+<div>
+<table class="spec-table">
+<thead><tr><th>Feature</th><th>Starter</th><th>Pro</th><th>Signature</th></tr></thead>
+<tbody>
+<tr><td>Length</td><td>10s</td><td>15s</td><td>30s</td></tr>
+<tr><td>Commercial use</td><td class="spec-yes">Included</td><td class="spec-yes">Included</td><td class="spec-yes">Included</td></tr>
+<tr><td>BGM / SFX</td><td class="spec-option">Basic</td><td class="spec-yes">Included</td><td class="spec-yes">Premium</td></tr>
+<tr><td>Caption / Copy</td><td class="spec-option">Basic</td><td class="spec-yes">Included</td><td class="spec-yes">Included</td></tr>
+<tr><td>AI Voiceover</td><td>Option</td><td>Option</td><td class="spec-option">Consult</td></tr>
+<tr><td>Revision</td><td>None</td><td>1 round</td><td>2 rounds</td></tr>
+<tr><td>Aspect Ratio</td><td><span data-i18n-auto="autoKo16">9:16 / 16:9 / 1:1 선택</span></td><td><span data-i18n-auto="autoKo17">9:16 / 16:9 / 1:1 선택</span></td><td><span data-i18n-auto="autoKo18">9:16 / 16:9 / 1:1 선택</span></td></tr>
+<tr><td>Resolution</td><td><span data-i18n-auto="autoKo19">460p / 720p / 1080p / 4K 선택</span></td><td><span data-i18n-auto="autoKo20">460p / 720p / 1080p / 4K 선택</span></td><td><span data-i18n-auto="autoKo21">460p / 720p / 1080p / 4K 선택</span></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section class="consumer-sector" id="one-photo-new-world">
+<div class="consumer-wrap">
+<div class="consumer-head">
+<div>
+<div class="consumer-kicker" data-i18n="consumerKicker">For everyone · sticker-photo price</div>
+<h2 class="consumer-title" data-i18n="consumerTitle">ONE PHOTO,<br/>NEW WORLD.</h2>
+</div>
+<p class="consumer-copy" data-i18n="consumerCopy">잘 나온 사진 한 장만 올리세요. 평범한 일상 사진이 해외 명소, 인스타 감성, 패션 모델 무드로 바뀌는 초보자용 트랜스폼 영상입니다.</p>
+</div>
+<div class="consumer-mode-grid">
+<article class="consumer-mode-card"><div><small>01 · Travel Jump</small><h3 data-i18n="travelJumpTitle">해외 명소로 순간 이동</h3><p data-i18n="travelJumpCopy">앉아 있던 사진도 파리, 뉴욕, 산토리니, 도쿄 같은 글로벌 무드 영상으로 확장합니다.</p></div></article>
+<article class="consumer-mode-card"><div><small>02 · Fashion Switch</small><h3 data-i18n="fashionSwitchTitle">옷차림을 모델룩으로</h3><p data-i18n="fashionSwitchCopy">평범한 옷차림을 더 세련된 패션 화보 무드로 바꾸고, 헤어·신발·가방까지 스타일링합니다.</p></div></article>
+<article class="consumer-mode-card"><div><small>03 · Walk Transform</small><h3 data-i18n="walkTransformTitle">걸으며 한순간에 변신</h3><p data-i18n="walkTransformCopy">보통 속도로 걷다가 가방을 뒤로 제끼고 고개를 돌리는 순간, 옷·악세서리·헤어·선글라스가 한 번에 바뀝니다.</p></div></article>
+</div>
+<div class="consumer-price-grid">
+<article class="consumer-price-card"><span class="tag">TRY</span><h4>Mini</h4><div class="consumer-price">₩4,900</div><p data-i18n="miniCopy">5초 / 1스타일 / 가볍게 체험하는 스티커사진급 변신 영상</p><button data-i18n="tryNow" data-open="" data-plan="Mini Transform">TRY NOW</button></article>
+<article class="consumer-price-card featured"><span class="tag">BEST</span><h4>Basic</h4><div class="consumer-price">₩7,900</div><p data-i18n="basicConsumerCopy">8초 / 1스타일 / SNS에 올리기 좋은 기본 트랜스폼</p><button data-i18n="startTransform" data-open="" data-plan="Basic Transform">START TRANSFORM</button></article>
+<article class="consumer-price-card"><span class="tag">PLUS</span><h4>Best</h4><div class="consumer-price">₩12,900</div><p data-i18n="bestConsumerCopy">10초 / 여행+패션 무드 / 더 강한 틱톡형 전환</p><button data-i18n="chooseBest" data-open="" data-plan="Best Transform">CHOOSE BEST</button></article>
+<article class="consumer-price-card"><span class="tag">SET</span><h4>3 Style Set</h4><div class="consumer-price">₩19,900</div><p data-i18n="setConsumerCopy">3개 스타일 묶음 / 여행·패션·워킹 변신을 한 번에</p><button data-i18n="getSet" data-open="" data-plan="3 Style Set">GET SET</button></article>
+</div>
+<div class="consumer-prompt-box">
+<h3 data-i18n="promptBoxTitle">Hot Transform Styles</h3>
+<p class="consumer-copy" data-i18n="promptBoxCopy">요즘 숏폼에서 잘 먹히는 전환 프롬프트를 고객이 쉽게 고를 수 있게 정리했습니다.</p>
+<div class="consumer-prompt-list">
+<div class="consumer-prompt-pill" data-i18n="prompt1">Fashion Glow Up: 평범한 룩이 모델 같은 스타일로 변신</div>
+<div class="consumer-prompt-pill" data-i18n="prompt2">World Travel Transform: 한 장의 사진이 전세계 명소 릴스로 변신</div>
+<div class="consumer-prompt-pill" data-i18n="prompt3">Bag Flip Walk: 가방을 뒤로 제끼고 고개를 돌리는 순간 전체 패션 변신</div>
+</div>
+</div>
+</div>
+</section>
+<section class="pricing" id="pricing">
+<div class="container">
+<div class="section-bar"><h2 class="section-label">PRICING</h2><span class="view-all">KRW / USD / JPY READY</span></div>
+<div class="pricing-grid">
+<article class="price-card" data-krw="19900" data-plan="Starter" data-plan-card="" data-seconds="10">
+<h3>Starter</h3>
+<div class="price" data-krw="19900" data-money="">₩19,900</div>
+<p><span data-duration="" data-seconds="10"><span data-i18n-auto="autoKo22">10초</span></span> · <span data-i18n="starterUse">빠른 숏폼 광고용</span></p>
+<ul>
+<li><span data-duration="" data-seconds="10"><span data-i18n-auto="autoKo23">10초</span></span> <span data-i18n="starterItem1">시네마틱 영상 1편</span></li>
+<li data-i18n="starterItem2">비율 선택: 9:16 / 16:9 / 1:1</li>
+<li data-i18n="starterItem3">해상도 선택: 460p / 720p / 1080p / 4K</li>
+<li data-i18n="commercialUse">상업적 사용 가능</li>
+</ul>
+<button class="btn has-help" data-help="10초 숏폼 영상. 빠른 테스트와 SNS 광고에 적합합니다." data-help-key="help27" data-help-ko="10초 숏폼 영상. 빠른 테스트와 SNS 광고에 적합합니다." data-open="" data-plan="Starter"><span data-i18n="start">Start</span></button>
+</article>
+<article class="price-card featured" data-krw="39900" data-plan="Pro" data-plan-card="" data-seconds="15">
+<span class="badge" data-i18n="bestSeller">Best Seller</span>
+<h3>Pro</h3>
+<div class="price" data-krw="39900" data-money="">₩39,900</div>
+<p><span data-duration="" data-seconds="15"><span data-i18n-auto="autoKo24">15초</span></span> · <span data-i18n="proUse">브랜드/제품 광고용</span></p>
+<ul>
+<li><span data-duration="" data-seconds="15"><span data-i18n-auto="autoKo25">15초</span></span> <span data-i18n="proItem1">프리미엄 영상 1편</span></li>
+<li data-i18n="proItem2">비율 선택: 9:16 / 16:9 / 1:1</li>
+<li data-i18n="proItem3">1회 수정 포함</li>
+<li data-i18n="proItem4">해상도 선택: 460p / 720p / 1080p / 4K</li>
+<li data-i18n="priorityWork">우선 작업</li>
+</ul>
+<button class="btn btn-primary has-help" data-help="15초 프리미엄 영상. 브랜드와 제품 광고에 가장 추천합니다." data-help-key="help28" data-help-ko="15초 프리미엄 영상. 브랜드와 제품 광고에 가장 추천합니다." data-open="" data-plan="Pro"><span data-i18n="start">Start</span></button>
+</article>
+<article class="price-card" data-krw="79900" data-plan="Signature" data-plan-card="" data-seconds="30">
+<h3>Signature</h3>
+<div class="price" data-krw="79900" data-money="">₩79,900</div>
+<p><span data-duration="" data-seconds="30"><span data-i18n-auto="autoKo26">30초</span></span> · <span data-i18n="signatureUse">광고/쇼릴/브랜드 필름용</span></p>
+<ul>
+<li><span data-duration="" data-seconds="30"><span data-i18n-auto="autoKo27">30초</span></span> <span data-i18n="signatureItem1">시그니처 영상 1편</span></li>
+<li data-i18n="signatureItem2">비율 선택: 9:16 / 16:9 / 1:1</li>
+<li data-i18n="signatureItem3">2회 수정 포함</li>
+<li data-i18n="signatureItem4">해상도 선택: 460p / 720p / 1080p / 4K</li>
+<li data-i18n="signatureItem5">디렉터 스타일 감수</li>
+</ul>
+<button class="btn has-help" data-help="30초 시그니처 영상. 쇼릴, 브랜드 필름, 고급 광고용입니다." data-help-key="help29" data-help-ko="30초 시그니처 영상. 쇼릴, 브랜드 필름, 고급 광고용입니다." data-open="" data-plan="Signature"><span data-i18n="start">Start</span></button>
+</article>
+</div>
+<div class="pricing-choice-note" data-i18n="sizeChoiceNote">
+<span data-i18n="sizeChoiceNote">비율과 해상도는 주문 단계에서 직접 선택합니다. 선택 가능: 9:16 / 16:9 / 1:1 · 460p / 720p / 1080p / 4K</span>
+</div>
+<div class="pricing-note" data-i18n="pricingNote"><span data-i18n="pricingNote">납품 일정은 주문 내용 확인 후 안내됩니다. 외화 표시는 참고용이며 실제 결제는 원화(KRW)로 진행됩니다.</span></div>
+</div></section>
+<footer class="footer" id="faq"><div class="container footer-inner"><div style="display:flex;align-items:center;gap:20px"><div class="footer-logo footer-logo-img-wrap"><img alt="AVVM" class="footer-avvm-logo-img" src="https://avvmstudio25.vercel.app/assets/avvm-play-logo.png"/></div><span>The AI Video Vending Machine</span></div><div class="footer-links">
+<a href="#" data-legal="service">Service</a>
+<a href="#" data-legal="terms">Terms</a>
+<a href="#" data-legal="privacy">Privacy</a>
+<a href="#" data-legal="refund">Refund</a>
+<a href="#" data-legal="delivery">Delivery</a>
+<a href="#" data-legal="business">Business</a>
+</div><div>© 2026 AVVM.studio</div></div>
+<div class="business-info">
+<b>Business Information</b><br/><span data-i18n-auto="autoKo28">브랜드: AVVM.studio · 서비스 제공: 라라랜드맘 / AVVM</span><br/><span data-i18n-auto="autoKo29">사업자등록번호: 347-37-01807 · 통신판매업 신고번호: 제2026-경기파주-2862호</span><br/>
+    대표 연락처: 0505-007-5221 · Contact: airyoon72@naver.com · Domain: avvm.studio<br/>
+    본 서비스는 실물 배송이 없는 맞춤형 디지털 콘텐츠 제작 서비스입니다. Final payment is processed in Korean Won (KRW).<br/>
+    결제대행 및 개인정보 처리 위탁: 주식회사 코리아포트원(전자결제 서비스 제공, 결제 처리, 결제 결과 확인 및 정산 업무)<br/>
+    <a href="#" data-legal="pg">PG 심사 정보</a> · <a href="#" data-legal="service">서비스/상품 정보</a> · <a href="#" data-legal="delivery">디지털 제공 안내</a> · <a href="#" data-legal="terms">이용약관</a> · <a href="#" data-legal="privacy">개인정보처리방침</a> · <a href="#" data-legal="refund">환불정책</a>
+  </div>
+
+<div class="legal-visible-footer" id="legal-visible-footer">
+  <div class="legal-visible-footer-inner">
+    <b>AVVM.studio 사업자 정보</b><br>
+    상호: 라라랜드맘 · 서비스 제공: 라라랜드맘 / AVVM · 대표자: 윤동국<br>
+    사업자등록번호: 347-37-01807 · 통신판매업 신고번호: 제2026-경기파주-2862호<br>
+    대표 연락처: 0505-007-5221 · 이메일: airyoon72@naver.com · 도메인: avvm.studio<br>
+    본 서비스는 실물 배송이 없는 맞춤형 디지털 콘텐츠 제작 서비스입니다.<br>
+    결제대행 및 개인정보 처리 위탁: 주식회사 코리아포트원(전자결제 서비스 제공, 결제 처리, 결제 결과 확인 및 정산 업무)
+  </div>
+</div>
+
+</footer>
+<div class="modal" id="orderModal"><div class="modal-card" id="modalCard"><div class="modal-head"><div><div class="mini-eyebrow" data-i18n="modalEyebrow" style="margin-bottom:8px">START PROJECT</div><h2 data-i18n="modalTitle" style="font-family:Bebas Neue;font-size:48px;line-height:.92">INSERT IMAGE.<br/>PRESS START.</h2></div><button class="close" id="closeModal" type="button">×</button></div>
+<div class="plan-chooser" id="planChooser" aria-label="요금제 선택">
+  <div class="plan-chooser-head">
+    <div>
+      <div class="mini-eyebrow">CHOOSE YOUR START</div>
+      <h3>먼저 원하는 제작 유형을 선택하세요.</h3>
+      <p>스타트 버튼을 누른 뒤 바로 결제 정보가 아니라, 원하는 상품을 먼저 고르는 흐름입니다.</p>
+    </div>
+  </div>
+
+  <div class="plan-chooser-grid">
+    <section class="plan-choice-section">
+      <div class="plan-choice-kicker">개인 / SNS용</div>
+      <button type="button" class="plan-choice-card" data-plan-choice="Mini Transform">
+        <span class="plan-choice-tag">TRY</span>
+        <b>Mini Transform</b>
+        <strong>₩4,900</strong>
+        <small>5초 / 1스타일 / 가볍게 체험</small>
+      </button>
+      <button type="button" class="plan-choice-card recommended" data-plan-choice="Basic Transform">
+        <span class="plan-choice-tag">BEST</span>
+        <b>Basic Transform</b>
+        <strong>₩7,900</strong>
+        <small>8초 / SNS 업로드용 기본 변신</small>
+      </button>
+      <button type="button" class="plan-choice-card" data-plan-choice="Best Transform">
+        <span class="plan-choice-tag">PLUS</span>
+        <b>Best Transform</b>
+        <strong>₩12,900</strong>
+        <small>10초 / 여행+패션 무드</small>
+      </button>
+      <button type="button" class="plan-choice-card" data-plan-choice="3 Style Set">
+        <span class="plan-choice-tag">SET</span>
+        <b>3 Style Set</b>
+        <strong>₩19,900</strong>
+        <small>여행·패션·워킹 변신 묶음</small>
+      </button>
+    </section>
+
+    <section class="plan-choice-section">
+      <div class="plan-choice-kicker">비즈니스 / 광고용</div>
+      <button type="button" class="plan-choice-card" data-plan-choice="Starter">
+        <span class="plan-choice-tag">START</span>
+        <b>Starter</b>
+        <strong>₩19,900</strong>
+        <small>10초 / 빠른 숏폼 광고</small>
+      </button>
+      <button type="button" class="plan-choice-card recommended" data-plan-choice="Pro">
+        <span class="plan-choice-tag">RECOMMENDED</span>
+        <b>Pro</b>
+        <strong>₩39,900</strong>
+        <small>15초 / 브랜드·제품 광고 / 1회 수정</small>
+      </button>
+      <button type="button" class="plan-choice-card" data-plan-choice="Signature">
+        <span class="plan-choice-tag">PREMIUM</span>
+        <b>Signature</b>
+        <strong>₩79,900</strong>
+        <small>30초 / 쇼릴·브랜드 필름 / 2회 수정</small>
+      </button>
+      <button type="button" class="plan-choice-card" data-plan-choice="Custom">
+        <span class="plan-choice-tag">CUSTOM</span>
+        <b>Custom Project</b>
+        <strong>상담 견적</strong>
+        <small>공모전·영화제·대형 브랜드 영상</small>
+      </button>
+    </section>
+  </div>
+</div>
+
+<div class="form-body"><div class="order-summary" id="orderSummary">Selected plan: Pro · ₩39,900</div><input class="field" id="brandInput" placeholder="Brand / Name"/><input class="field" id="emailInput" placeholder="Email"/><input class="field" id="phoneInput" inputmode="tel" placeholder="휴대폰 번호 / Kakao or SMS"/><input accept="image/*" class="field" id="imageInput" type="file" style="display:none"/>
+<div class="upload-after-payment-note" id="uploadAfterPaymentNote">
+  <b>이미지 업로드는 결제 후 진행됩니다.</b>
+  <span>결제 완료 후 주문 링크에서 원본 이미지를 업로드할 수 있습니다.</span>
+</div>
+<div class="preview" id="imagePreview"><img alt="Uploaded preview" id="previewImg"/></div><div class="cat-grid"><button class="cat active" type="button"><span data-i18n="catBeauty">Beauty</span></button>
+<button class="cat-btn" data-category="Personal Transform" type="button"><span data-i18n="catPersonal">Personal Transform</span></button><button class="cat" type="button"><span data-i18n="catProduct">Product</span></button><button class="cat" type="button"><span data-i18n="catFood">Food</span></button><button class="cat" type="button"><span data-i18n="catTravel">Travel</span></button><button class="cat" type="button"><span data-i18n="catWedding">Wedding</span></button><button class="cat" type="button"><span data-i18n="catCustom">Custom</span></button></div><textarea class="field" id="moodInput" placeholder="Mood or reference, optional" rows="4"></textarea>
+<div class="checkout-notice">
+  <b>결제 전 확인</b>
+  <p>본 상품은 고객 이미지 기반 맞춤 제작 디지털 콘텐츠입니다. 제작 착수 후에는 단순 변심에 의한 취소·환불이 제한될 수 있습니다.</p>
+  <p>영상은 AI 기술을 활용하여 제작되며, 이미지 품질과 요청 스타일에 따라 결과가 달라질 수 있습니다.</p>
+</div>
+<div class="consent-group" id="consentGroup">
+  <label class="consent-row">
+    <input id="privacyConsent" type="checkbox">
+    <span><b>[필수] 개인정보 수집·이용 동의</b><br>주문 처리 및 결과 안내를 위해 이름, 휴대폰번호, 이메일, 업로드 이미지, 주문 정보를 수집·이용하는 데 동의합니다.</span>
+  </label>
+  <label class="consent-row">
+    <input id="notifyConsent" type="checkbox">
+    <span><b>[필수] 주문 진행 알림 수신 동의</b><br>주문 접수, 제작 진행, 완성 안내 등 거래 관련 정보를 카톡/문자/이메일로 받는 데 동의합니다.</span>
+  </label>
+  <label class="consent-row">
+    <input id="refundConsent" type="checkbox">
+    <span><b>[필수] 맞춤 제작 디지털 콘텐츠 및 환불 제한 동의</b><br>본 상품은 고객이 제공한 이미지와 요청사항을 바탕으로 제작되는 맞춤형 디지털 콘텐츠입니다. 제작 착수 후에는 단순 변심에 의한 취소·환불이 제한될 수 있음을 확인했습니다.</span>
+  </label>
+  <label class="consent-row optional">
+    <input id="marketingConsent" type="checkbox">
+    <span><b>[선택] 마케팅 수신 동의</b><br>이벤트, 할인, 신규 샘플 안내 등 마케팅 정보를 카톡/문자/이메일로 받겠습니다.</span>
+  </label>
+</div>
+<div class="order-option-group" id="aspectGroup">
+<div class="order-option-title" data-i18n="aspectTitle">Aspect Ratio</div>
+<div class="option-chips" data-option-group="aspect">
+<button class="option-chip active" data-value="9:16" type="button">9:16</button>
+<button class="option-chip" data-value="16:9" type="button">16:9</button>
+<button class="option-chip" data-value="1:1" type="button">1:1</button>
+</div>
+<input id="aspectRatio" name="aspectRatio" type="hidden" value="9:16"/>
+</div>
+<div class="order-option-group" id="resolutionGroup">
+<div class="order-option-title" data-i18n="resolutionTitle">Resolution</div>
+<div class="option-chips" data-option-group="resolution">
+<button class="option-chip active" data-value="460p" type="button">460p</button>
+<button class="option-chip" data-value="720p" type="button">720p</button>
+<button class="option-chip" data-value="1080p" type="button">1080p</button>
+<button class="option-chip" data-value="4K" type="button">4K</button>
+</div>
+<input id="resolution" name="resolution" type="hidden" value="460p"/>
+</div>
+<button class="btn btn-primary has-help" data-help="입력한 주문 정보를 확인하고 테스트 주문을 접수합니다. 실제 결제 연결 전까지는 테스트 접수입니다." data-help-key="help30" data-help-ko="입력한 주문 정보를 확인하고 테스트 주문을 접수합니다. 실제 결제 연결 전까지는 테스트 접수입니다." id="submitOrder" style="width:100%;margin-top:14px" type="button" disabled>CONTINUE TO PAYMENT</button></div><div class="success-panel"><div class="success-icon">✓</div><h3>PROJECT<br/>STARTED.</h3><p><span data-i18n-auto="autoKo30">주문 흐름이 정상 작동합니다. 실제 결제 연결 전까지는 주문 초안이 브라우저에 저장되고, 주문 파일을 내려받을 수 있습니다.</span></p><div class="order-id" id="successOrderId">ORDER #AVVM-DEMO</div><p class="order-link-copy" id="orderLinkCopy"><span data-i18n-auto="autoFinal2">완성되면 카톡/문자로 알려드리고, 링크에서 바로 확인할 수 있습니다.</span></p><a class="btn btn-primary order-view-link" href="#" id="viewOrderLink" rel="noopener" target="_blank"><span data-i18n-auto="autoFinal3">주문 링크 열기</span></a><div class="status-mini"><div class="status-row"><div class="status-step on"><span data-i18n-auto="autoFinal4">접수됨</span></div><div class="status-step on"><span data-i18n-auto="autoFinal5">제작 대기</span></div><div class="status-step"><span data-i18n-auto="autoFinal6">검수 중</span></div><div class="status-step"><span data-i18n-auto="autoFinal7">완성</span></div></div></div><div class="success-actions"><button class="btn btn-primary" id="downloadOrder" type="button">DOWNLOAD ORDER</button><button class="btn" id="resetOrder" type="button">CREATE ANOTHER</button></div></div></div></div>
+<div class="video-modal" id="showreelModal"><div class="video-box"><div class="video-head"><span>AVVM SHOWREEL</span><button class="close" id="closeShowreel" type="button">×</button></div><video controls="" id="showreelVideo" playsinline="" preload="metadata" src="https://avvmstudio25.vercel.app/videos/showreel.mp4?v=2"></video></div></div>
+<div class="toast" id="toast">Ready</div>
+
+
+
+
+
+
+
+<div aria-hidden="true" class="legal-modal" id="legalModal">
+<div class="legal-backdrop" id="legalBackdrop"></div>
+<article aria-labelledby="legalTitle" aria-modal="true" class="legal-panel" role="dialog">
+<button class="legal-close" id="legalClose" type="button">×</button>
+<div id="legalContent"></div>
+<div class="legal-disclaimer">
+        This legal notice is a business-use draft for AVVM.studio and should be reviewed by a legal professional before full commercial launch, especially for international payments, refunds, and privacy compliance.
+      </div>
+</article>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- CDNs: Lenis, GSAP, ScrollTrigger -->
+<script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.36/dist/lenis.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<script src="app.js?v=22"></script>
+</body>
 </html>
