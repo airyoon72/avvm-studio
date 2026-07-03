@@ -82,7 +82,11 @@ module.exports = async (req, res) => {
       });
     } catch (err) {
       console.error("Error initiating Fal generation:", err);
-      return res.status(500).json({ error: err.message || "Failed to start Fal.ai video generation" });
+      let errMsg = err.message || "Failed to start Fal.ai video generation";
+      if (errMsg.toLowerCase().includes("forbidden") || errMsg.toLowerCase().includes("unauthorized") || err.status === 403) {
+        errMsg = "Fal.ai API Key가 유효하지 않거나 승인이 거부되었습니다 (403 Forbidden). Vercel 환경 변수의 FAL_KEY 값과 권한을 확인해 주세요.";
+      }
+      return res.status(500).json({ error: errMsg });
     }
   }
 
