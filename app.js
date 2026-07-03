@@ -174,6 +174,51 @@ const $=(s,root=document)=>root.querySelector(s);
       if(!phone){toast('카톡/문자 알림용 휴대폰 번호를 입력해주세요'); focusCustomerField('#phoneInput','#phoneInput2'); return;}
       if(!privacyConsent || !notifyConsent || !refundConsent){toast('필수 동의 항목을 확인해주세요'); focusAndReveal('#consentGroup'); return;}
 
+      // 1. Switch to success screen immediately to show progress loader!
+      modalCard.classList.add('done');
+      const orderId=makeOrderId();
+      $('#successOrderId').textContent='ORDER #' + orderId;
+      toast('주문 접수 시작 ✓');
+
+      // Create initial progress container in the success panel
+      let progressDiv = document.getElementById('videoProgressContainer');
+      if (!progressDiv) {
+        progressDiv = document.createElement('div');
+        progressDiv.id = 'videoProgressContainer';
+        progressDiv.style.marginTop = '18px';
+        progressDiv.style.marginBottom = '18px';
+        progressDiv.style.padding = '18px';
+        progressDiv.style.borderRadius = '16px';
+        progressDiv.style.background = 'rgba(216,242,51,0.06)';
+        progressDiv.style.border = '1px dashed rgba(216,242,51,0.3)';
+        progressDiv.style.textAlign = 'center';
+        
+        const successPanel = document.querySelector('.success-panel');
+        if (successPanel) {
+          const viewLink = document.getElementById('viewOrderLink');
+          successPanel.insertBefore(progressDiv, viewLink);
+        }
+      }
+
+      progressDiv.innerHTML = `
+        <div style="font-size:12px; font-weight:800; color:var(--lime); margin-bottom:8px; text-transform:uppercase; letter-spacing:0.05em; display:flex; align-items:center; justify-content:center; gap:6px;">
+          <span class="spinner" style="display:inline-block; width:12px; height:12px; border:2px solid var(--lime); border-top-color:transparent; border-radius:50%; animation:spin 1s linear infinite;"></span>
+          서버 연결 및 이미지 업로드 중...
+        </div>
+        <div style="width:100%; height:6px; background:rgba(255,255,255,0.1); border-radius:999px; overflow:hidden; margin:10px 0;">
+          <div id="videoProgressBar" style="width:10%; height:100%; background:var(--lime); transition:width 0.4s ease; border-radius:999px;"></div>
+        </div>
+        <div id="videoProgressLabel" style="font-size:11px; color:rgba(255,255,255,0.6)">Fal.ai CDN으로 사진 데이터를 전송하고 있습니다.</div>
+      `;
+
+      // Inject spinner animation if missing
+      if (!document.getElementById('spinnerStyle')) {
+        const style = document.createElement('style');
+        style.id = 'spinnerStyle';
+        style.textContent = `@keyframes spin { to { transform: rotate(360deg); } }`;
+        document.head.appendChild(style);
+      }
+
       let imageData = '';
       const imgFile = $('#imageInput')?.files?.[0];
       if (imgFile) {
@@ -190,7 +235,6 @@ const $=(s,root=document)=>root.querySelector(s);
       }
 
       const token=(crypto && crypto.getRandomValues) ? Array.from(crypto.getRandomValues(new Uint8Array(16))).map(b=>b.toString(16).padStart(2,'0')).join('') : Math.random().toString(36).slice(2)+Date.now().toString(36);
-      const orderId=makeOrderId();
       const draft={
         orderId,
         token,
@@ -223,7 +267,11 @@ const $=(s,root=document)=>root.querySelector(s);
         notificationMethod:'kakao_or_sms',
         viewUrl: location.origin + '/order.html?t=' + token
       };
-      // Trigger Fal.ai Video Generation
+
+      // 2. Trigger Fal.ai Video Generation
+      let requestId = null;
+      let apiError = null;
+
       if (imageData) {
         try {
           const resGen = await fetch('/api/generate-video', {
@@ -237,12 +285,19 @@ const $=(s,root=document)=>root.querySelector(s);
           if (resGen.ok) {
             const dataGen = await resGen.json();
             if (dataGen.requestId) {
-              draft.requestId = dataGen.requestId;
+              requestId = dataGen.requestId;
+              draft.requestId = requestId;
               draft.status = 'processing';
               draft.statusKo = '영상 제작 중';
+            } else {
+              apiError = "서버리스 API로부터 잘못된 형식의 응답을 받았습니다.";
             }
+          } else {
+            const errData = await resGen.json().catch(() => ({}));
+            apiError = errData.error || `HTTP 에러 ${resGen.status}`;
           }
         } catch (err) {
+          apiError = err.message || "네트워크 요청이 실패했습니다.";
           console.error("Failed to start video generation API:", err);
         }
       }
@@ -251,6 +306,7 @@ const $=(s,root=document)=>root.querySelector(s);
         const res=await fetch('/api/order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(draft)});
         if(res.ok){ const data=await res.json(); if(data.orderId) draft.orderId=data.orderId; }
       }catch(e){}
+
       draft.viewUrl = location.origin + '/order.html?t=' + draft.token;
       lastOrder=draft;
       const orders=JSON.parse(localStorage.getItem('avvmOrders')||'[]').filter(o=>o.token!==draft.token);
@@ -263,13 +319,69 @@ const $=(s,root=document)=>root.querySelector(s);
       if(view){ view.href=draft.viewUrl; }
       const copy=$('#orderLinkCopy');
       if(copy){ copy.textContent='주문 링크가 생성되었습니다. 실제 운영에서는 결제 완료 후 이미지 업로드 링크가 열립니다.'; copy.dataset.customized='1'; }
-      modalCard.classList.add('done');
-      toast('Payment-ready order created ✓');
+      toast('주문 임시 접수 완료 ✓');
 
-      // Start Polling for AI Video
-      if (draft.requestId) {
-        startPolling(draft.requestId, draft.token);
+      // 3. Start Polling or Show Failure
+      if (requestId) {
+        startPolling(requestId, draft.token);
+      } else if (imageData && apiError) {
+        showDetailedFailure(apiError, draft.token, progressDiv);
+      } else {
+        progressDiv.innerHTML = `
+          <div style="font-size:12px; font-weight:800; color:var(--lime); margin-bottom:4px;">주문이 정상 접수되었습니다.</div>
+          <div style="font-size:11px; color:rgba(255,255,255,0.6)">실제 비디오 제작을 하려면 사진을 업로드해 주세요.</div>
+        `;
       }
+    }
+
+    function showDetailedFailure(errorMessage, token, container) {
+      container.innerHTML = `
+        <div style="font-size:12px; font-weight:800; color:#ff4d4d; margin-bottom:8px; text-transform:uppercase;">✗ 영상 제작 요청 실패 (Request Failed)</div>
+        <div style="font-size:11px; color:rgba(255,255,255,0.7); line-height:1.6; margin-bottom:12px; word-break:break-all;">
+          에러 내용: ${errorMessage}<br/>
+          <span style="color:rgba(255,255,255,0.45); font-size:10px;">(Vercel의 FAL_KEY 설정과 API 상태를 다시 확인해 주세요.)</span>
+        </div>
+        <button id="retryVideoBtn" class="btn btn-primary" style="margin-top:6px; padding:10px 18px; font-size:11px; background:#ff4d4d; border-color:#ff4d4d; color:#fff; cursor:pointer;">재시도 (Retry Generation)</button>
+      `;
+      
+      document.getElementById('retryVideoBtn')?.addEventListener('click', async () => {
+        container.innerHTML = `
+          <div style="font-size:12px; font-weight:800; color:var(--lime); margin-bottom:8px; display:flex; align-items:center; justify-content:center; gap:6px;">
+            <span class="spinner" style="display:inline-block; width:12px; height:12px; border:2px solid var(--lime); border-top-color:transparent; border-radius:50%; animation:spin 1s linear infinite;"></span>
+            영상을 다시 요청하는 중...
+          </div>
+        `;
+        const order = JSON.parse(localStorage.getItem('avvmOrder_' + token) || '{}');
+        if (order.imageData) {
+          try {
+            const resGen = await fetch('/api/generate-video', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                imageData: order.imageData,
+                prompt: `A beautiful cinematic video of brand ${order.brand}, style ${order.category}, mood ${order.mood}. High fashion, flowing movement, smooth panning shot, 8k resolution, photorealistic, masterpiece.`
+              })
+            });
+            if (resGen.ok) {
+              const dataGen = await resGen.json();
+              if (dataGen.requestId) {
+                order.requestId = dataGen.requestId;
+                order.status = 'processing';
+                order.statusKo = '영상 제작 중';
+                localStorage.setItem('avvmOrder_' + token, JSON.stringify(order));
+                startPolling(dataGen.requestId, token);
+              } else {
+                showDetailedFailure("응답 형식 오류가 발생했습니다.", token, container);
+              }
+            } else {
+              const errData = await resGen.json().catch(() => ({}));
+              showDetailedFailure(errData.error || `HTTP 에러 ${resGen.status}`, token, container);
+            }
+          } catch (err) {
+            showDetailedFailure(err.message || "네트워크 연결이 원활하지 않습니다.", token, container);
+          }
+        }
+      });
     }
 
     function showCompletedVideo(videoUrl, container) {
