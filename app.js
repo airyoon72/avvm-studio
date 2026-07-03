@@ -30,11 +30,30 @@ const $=(s,root=document)=>root.querySelector(s);
       const order=window.ORDER ? (window.ORDER[lang]||window.ORDER.ko) : {planPrefix:'Selected plan: '};
       if(summary) summary.textContent=`${order.planPrefix || 'Selected plan: '}${window.selectedPlan} · ${window.prices[window.selectedPlan]||window.prices.Pro}`;
     }
+    function scrollModalToTop(){
+      try{
+        modalCard.scrollTop=0;
+        modal.scrollTop=0;
+        const panel=modal.querySelector('.modal-card,.modal-content,.order-panel');
+        if(panel) panel.scrollTop=0;
+      }catch(e){}
+    }
+    function focusAndReveal(selector){
+      const el=$(selector);
+      if(!el) return;
+      try{
+        el.classList.add('field-attention');
+        setTimeout(()=>el.classList.remove('field-attention'),1800);
+        el.scrollIntoView({behavior:'smooth', block:'center'});
+        setTimeout(()=>{ try{ el.focus({preventScroll:true}); }catch(e){ el.focus(); } },260);
+      }catch(e){}
+    }
     function openPlanChooser(){
       modalCard.classList.remove('done');
       modalCard.classList.add('plan-choosing');
       modal.classList.add('on');
       document.body.style.overflow='hidden';
+      setTimeout(scrollModalToTop,0);
     }
     function openOrder(plan){
       if(!plan){
@@ -47,6 +66,10 @@ const $=(s,root=document)=>root.querySelector(s);
       setOrderSummary();
       modal.classList.add('on');
       document.body.style.overflow='hidden';
+      requestAnimationFrame(()=>{
+        scrollModalToTop();
+        setTimeout(()=>focusAndReveal('#brandInput'),120);
+      });
     }
     function closeOrder(){ modal.classList.remove('on'); modalCard.classList.remove('plan-choosing'); document.body.style.overflow=''; }
     $$('[data-open]').forEach(b=>b.addEventListener('click',()=>openOrder(b.dataset.plan)));
@@ -72,10 +95,10 @@ const $=(s,root=document)=>root.querySelector(s);
       const category=$('.cat.active')?.textContent || 'Custom';
       const mood=$('#moodInput').value.trim();
 
-      if(!brand){toast('Brand / Name을 입력해주세요'); return;}
-      if(email && !email.includes('@')){toast('이메일 형식을 확인해주세요'); return;}
-      if(!phone){toast('카톡/문자 알림용 휴대폰 번호를 입력해주세요'); return;}
-      if(!privacyConsent || !notifyConsent || !refundConsent){toast('필수 동의 항목을 확인해주세요'); return;}
+      if(!brand){toast('성함 / 브랜드명을 입력해주세요'); focusAndReveal('#brandInput'); return;}
+      if(email && !email.includes('@')){toast('이메일 형식을 확인해주세요'); focusAndReveal('#emailInput'); return;}
+      if(!phone){toast('카톡/문자 알림용 휴대폰 번호를 입력해주세요'); focusAndReveal('#phoneInput'); return;}
+      if(!privacyConsent || !notifyConsent || !refundConsent){toast('필수 동의 항목을 확인해주세요'); focusAndReveal('#consentGroup'); return;}
 
       const token=(crypto && crypto.getRandomValues) ? Array.from(crypto.getRandomValues(new Uint8Array(16))).map(b=>b.toString(16).padStart(2,'0')).join('') : Math.random().toString(36).slice(2)+Date.now().toString(36);
       const orderId=makeOrderId();
@@ -131,7 +154,7 @@ const $=(s,root=document)=>root.querySelector(s);
     }
     $('#submitOrder').addEventListener('click',createOrder);
     $('#downloadOrder').addEventListener('click',()=>{ if(!lastOrder){toast('저장된 주문이 없습니다'); return;} const blob=new Blob([JSON.stringify(lastOrder,null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=lastOrder.orderId+'.json'; a.click(); URL.revokeObjectURL(a.href); });
-    $('#resetOrder').addEventListener('click',()=>{ modalCard.classList.remove('done'); $('#brandInput').value=''; $('#emailInput').value=''; if($('#phoneInput')) $('#phoneInput').value=''; if($('#notifyConsent')) $('#notifyConsent').checked=true; $('#moodInput').value=''; $('#imageInput').value=''; $('#imagePreview').classList.remove('on'); if($('#viewOrderLink')) $('#viewOrderLink').href='#'; lastOrder=null; });
+    $('#resetOrder').addEventListener('click',()=>{ modalCard.classList.remove('done'); $('#brandInput').value=''; $('#emailInput').value=''; if($('#phoneInput')) $('#phoneInput').value=''; if($('#notifyConsent')) $('#notifyConsent').checked=true; $('#moodInput').value=''; $('#imageInput').value=''; $('#imagePreview').classList.remove('on'); if($('#viewOrderLink')) $('#viewOrderLink').href='#'; lastOrder=null; setTimeout(()=>focusAndReveal('#brandInput'),80); });
 
     const showreelModal=$('#showreelModal'); const showreelVideo=$('#showreelVideo');
     $('#watchShowreel').addEventListener('click',()=>{ showreelModal.classList.add('on'); document.body.style.overflow='hidden'; showreelVideo.play().catch(()=>{}); });

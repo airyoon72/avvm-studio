@@ -540,7 +540,16 @@ window.addEventListener('error', function(e) {
   </div>
 </div>
 
-<div class="form-body"><div class="order-summary" id="orderSummary">Selected plan: Pro · ₩39,900</div><input class="field" id="brandInput" placeholder="Brand / Name"/><input class="field" id="emailInput" placeholder="Email"/><input class="field" id="phoneInput" inputmode="tel" placeholder="휴대폰 번호 / Kakao or SMS"/><input accept="image/*" class="field" id="imageInput" type="file" style="display:none"/>
+<div class="form-body">
+<div class="order-form-section-title">1. 고객 정보 입력</div>
+<p class="order-form-helper">선택한 상품으로 진행하기 위해 성함/브랜드명, 이메일, 휴대폰 번호를 먼저 입력해 주세요.</p>
+<div class="order-summary" id="orderSummary">Selected plan: Pro · ₩39,900</div>
+<label class="order-input-label" for="brandInput">성함 / 브랜드명 <span>*</span></label>
+<input class="field" id="brandInput" placeholder="성함 또는 브랜드명을 입력하세요"/>
+<label class="order-input-label" for="emailInput">이메일</label>
+<input class="field" id="emailInput" placeholder="Email"/>
+<label class="order-input-label" for="phoneInput">휴대폰 번호 <span>*</span></label>
+<input class="field" id="phoneInput" inputmode="tel" placeholder="카톡/문자 알림용 휴대폰 번호"/><input accept="image/*" class="field" id="imageInput" type="file" style="display:none"/>
 <div class="upload-after-payment-note" id="uploadAfterPaymentNote">
   <b>이미지 업로드는 결제 후 진행됩니다.</b>
   <span>결제 완료 후 주문 링크에서 원본 이미지를 업로드할 수 있습니다.</span>
