@@ -1,3 +1,5 @@
+const MODEL_ID = "fal-ai/luma-dream-machine/image-to-video";
+
 module.exports = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
@@ -7,12 +9,12 @@ module.exports = async (req, res) => {
     return res.status(200).end();
   }
 
-  // 1. Ensure FAL_KEY is present
+  // 1. FAL_KEY 환경 변수 확인
   if (!process.env.FAL_KEY) {
     return res.status(500).json({ error: "FAL_KEY environment variable is not configured on Vercel." });
   }
 
-  // 2. Validate GET parameters immediately (support id, requestId, and request_id)
+  // 2. GET 파라미터 검증 (id, requestId, request_id 모두 지원)
   if (req.method === "GET") {
     const id = req.query.id || req.query.requestId || req.query.request_id;
     if (!id) {
@@ -20,7 +22,7 @@ module.exports = async (req, res) => {
     }
   }
 
-  // 3. Dynamic import of @fal-ai/client to bypass CommonJS ESM require crash
+  // 3. @fal-ai/client 동적 import (CommonJS/ESM 호환)
   let fal;
   try {
     const falModule = await import("@fal-ai/client");
@@ -34,23 +36,29 @@ module.exports = async (req, res) => {
   if (req.method === "GET") {
     const id = req.query.id || req.query.requestId || req.query.request_id;
     try {
-      let status = await fal.queue.status("fal-ai/luma-dream-machine/image-to-video", {
+      const status = await fal.queue.status(MODEL_ID, {
         requestId: id,
         logs: false
       });
 
-      // If status is COMPLETED, query queue.result to fetch the final video URL and append it to status.output
-      if (status.status === 'COMPLETED') {
+      // 수정 #3: queue.status()는 output을 포함하지 않음.
+      // COMPLETED일 때 queue.result()를 추가 호출해서
+      // 프론트엔드가 기대하는 output[0] 형태로 영상 URL을 반환.
+      if (status.status === "COMPLETED") {
         try {
-          const result = await fal.queue.result("fal-ai/luma-dream-machine/image-to-video", {
-            requestId: id
+          const result = await fal.queue.result(MODEL_ID, { requestId: id });
+          const videoUrl =
+            result?.data?.video?.url ||
+            result?.video?.url ||
+            null;
+          return res.status(200).json({
+            ...status,
+            status: "COMPLETED",
+            output: videoUrl ? [videoUrl] : []
           });
-          const videoUrl = result.video?.url || (result.data?.video?.url) || (result.data?.output?.[0]) || (result.data?.images?.[0]?.url);
-          if (videoUrl) {
-            status.output = [videoUrl];
-          }
-        } catch (resErr) {
-          console.error("Error retrieving queue result:", resErr);
+        } catch (resultErr) {
+          console.error("Error fetching result:", resultErr);
+          return res.status(200).json({ ...status, output: [] });
         }
       }
 
@@ -62,32 +70,34 @@ module.exports = async (req, res) => {
   }
 
   if (req.method === "POST") {
-    const { imageData, prompt } = req.body;
+    const { imageData, prompt } = req.body || {};
     if (!imageData) {
       return res.status(400).json({ error: "Missing imageData base64 string" });
     }
 
     try {
-      const matches = imageData.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+      const matches = imageData.match(/^data:([A-Za-z0-9.+\/-]+);base64,(.+)$/);
       if (!matches || matches.length !== 3) {
         return res.status(400).json({ error: "Invalid base64 imageData format." });
       }
-      
+
       const mimeType = matches[1];
       const base64Data = matches[2];
-      const buffer = Buffer.from(base64Data, 'base64');
+      const buffer = Buffer.from(base64Data, "base64");
 
-      // Wrap Buffer inside a Web API Blob for fal.storage.upload() compatibility in Vercel's Node 18+ runtime
+      // 수정 #1: fal.storage.upload()는 Blob/File 하나만 받음.
+      // Buffer + 옵션 객체를 넘기면 안 되므로 Blob으로 감싸서 전달.
       const blob = new Blob([buffer], { type: mimeType });
 
-      const uploadResult = await fal.storage.upload(blob);
-      const imageUrl = typeof uploadResult === 'string' ? uploadResult : (uploadResult.url || uploadResult.imageUrl);
-      
+      // 수정 #2: storage.upload()는 URL 문자열을 직접 반환함
+      // (객체의 .url 프로퍼티가 아님).
+      const imageUrl = await fal.storage.upload(blob);
+
       console.log("Image uploaded to Fal CDN successfully:", imageUrl);
 
       const submitPrompt = prompt || "Cinematic 3D camera pan, high fashion, smooth motion, high detail, masterpiece";
 
-      const queueResult = await fal.queue.submit("fal-ai/luma-dream-machine/image-to-video", {
+      const queueResult = await fal.queue.submit(MODEL_ID, {
         input: {
           image_url: imageUrl,
           prompt: submitPrompt
@@ -104,8 +114,13 @@ module.exports = async (req, res) => {
     } catch (err) {
       console.error("Error initiating Fal generation:", err);
       let errMsg = err.message || "Failed to start Fal.ai video generation";
-      if (errMsg.toLowerCase().includes("forbidden") || errMsg.toLowerCase().includes("unauthorized") || err.status === 403) {
-        errMsg = "Fal.ai API Key가 유효하지 않거나 승인이 거부되었습니다 (403 Forbidden). Vercel 환경 변수의 FAL_KEY 값과 권한을 확인해 주세요.";
+      if (err.body && err.body.detail) {
+        try {
+          errMsg += " | detail: " + JSON.stringify(err.body.detail);
+        } catch (_) {}
+      }
+      if (errMsg.toLowerCase().includes("forbidden") || errMsg.toLowerCase().includes("unauthorized") || err.status === 403 || err.status === 401) {
+        errMsg = "Fal.ai API Key가 유효하지 않거나 승인이 거부되었습니다 (401/403). Vercel 환경 변수의 FAL_KEY 값과 권한을 확인해 주세요.";
       }
       return res.status(500).json({ error: errMsg });
     }
