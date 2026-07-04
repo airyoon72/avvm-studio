@@ -157,7 +157,43 @@ const $=(s,root=document)=>root.querySelector(s);
       }
     });
     let lastOrder=null;
+    const apiBase = (location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.hostname.endsWith('.lhr.life')) 
+      ? 'https://avvm.studio' 
+      : '';
     function makeOrderId(){ return 'AVVM-' + new Date().toISOString().slice(0,10).replaceAll('-','') + '-' + Math.random().toString(36).slice(2,7).toUpperCase(); }
+    
+    function compressImage(file, maxW = 1024, maxH = 1024) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            let w = img.width;
+            let h = img.height;
+            if (w > maxW || h > maxH) {
+              if (w > h) {
+                h = Math.round((h * maxW) / w);
+                w = maxW;
+              } else {
+                w = Math.round((w * maxH) / h);
+                h = maxH;
+              }
+            }
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, w, h);
+            resolve(canvas.toDataURL('image/jpeg', 0.8));
+          };
+          img.onerror = reject;
+          img.src = e.target.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
     async function createOrder(){
       syncCustomerInputs(); const brand=getCustomerValue('#brandInput','#brandInput2');
       const email=getCustomerValue('#emailInput','#emailInput2');
@@ -223,14 +259,20 @@ const $=(s,root=document)=>root.querySelector(s);
       const imgFile = $('#imageInput')?.files?.[0];
       if (imgFile) {
         try {
-          imageData = await new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = reject;
-            reader.readAsDataURL(imgFile);
-          });
+          // Resize and compress image to a maximum of 1024px width/height and 0.8 quality
+          imageData = await compressImage(imgFile, 1024, 1024);
         } catch (e) {
-          console.error(e);
+          console.error("Compression failed, attempting raw reader:", e);
+          try {
+            imageData = await new Promise((resolve, reject) => {
+              const reader = new FileReader();
+              reader.onload = () => resolve(reader.result);
+              reader.onerror = reject;
+              reader.readAsDataURL(imgFile);
+            });
+          } catch (e2) {
+            console.error(e2);
+          }
         }
       }
 
@@ -268,20 +310,24 @@ const $=(s,root=document)=>root.querySelector(s);
         viewUrl: location.origin + '/order.html?t=' + token
       };
 
-      // 2. Trigger Fal.ai Video Generation
+      // 2. Trigger Fal.ai Video Generation with 15s Timeout
       let requestId = null;
       let apiError = null;
 
       if (imageData) {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 15000);
         try {
-          const resGen = await fetch('/api/generate-video', {
+          const resGen = await fetch(apiBase + '/api/generate-video', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               imageData,
               prompt: `A beautiful cinematic video of brand ${brand}, style ${category}, mood ${mood}. High fashion, flowing movement, smooth panning shot, 8k resolution, photorealistic, masterpiece.`
-            })
+            }),
+            signal: controller.signal
           });
+          clearTimeout(timeoutId);
           if (resGen.ok) {
             const dataGen = await resGen.json();
             if (dataGen.requestId) {
@@ -297,7 +343,12 @@ const $=(s,root=document)=>root.querySelector(s);
             apiError = errData.error || `HTTP 에러 ${resGen.status}`;
           }
         } catch (err) {
-          apiError = err.message || "네트워크 요청이 실패했습니다.";
+          clearTimeout(timeoutId);
+          if (err.name === 'AbortError') {
+            apiError = "서버 응답 제한 시간(15초)을 초과했습니다. Vercel 환경 변수의 FAL_KEY를 확인하고 배포 상태를 다시 점검해 주세요.";
+          } else {
+            apiError = err.message || "네트워크 요청이 실패했습니다.";
+          }
           console.error("Failed to start video generation API:", err);
         }
       }
@@ -354,7 +405,7 @@ const $=(s,root=document)=>root.querySelector(s);
         const order = JSON.parse(localStorage.getItem('avvmOrder_' + token) || '{}');
         if (order.imageData) {
           try {
-            const resGen = await fetch('/api/generate-video', {
+            const resGen = await fetch(apiBase + '/api/generate-video', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
@@ -403,7 +454,7 @@ const $=(s,root=document)=>root.querySelector(s);
         const order = JSON.parse(localStorage.getItem('avvmOrder_' + token) || '{}');
         if (order.imageData) {
           try {
-            const resGen = await fetch('/api/generate-video', {
+            const resGen = await fetch(apiBase + '/api/generate-video', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
@@ -468,8 +519,11 @@ const $=(s,root=document)=>root.querySelector(s);
       }
 
       const interval = setInterval(async () => {
+        const pollController = new AbortController();
+        const pollTimeoutId = setTimeout(() => pollController.abort(), 5000);
         try {
-          const res = await fetch(`/api/generate-video?id=${requestId}`);
+          const res = await fetch(apiBase + `/api/generate-video?id=${requestId}`, { signal: pollController.signal });
+          clearTimeout(pollTimeoutId);
           if (!res.ok) throw new Error("Status query failed");
           const statusData = await res.json();
           
@@ -508,6 +562,7 @@ const $=(s,root=document)=>root.querySelector(s);
             showRetryButton(requestId, token, progressDiv);
           }
         } catch (e) {
+          clearTimeout(pollTimeoutId);
           console.error("Polling error:", e);
         }
       }, 3000);
