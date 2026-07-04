@@ -1,94 +1,108 @@
-const { fal } = require("@fal-ai/client");
-
 module.exports = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
-  요청 메서드가 "OPTIONS"인 경우
-    res.status(200).end();를 반환합니다.
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
   }
 
-  만약 process.env.FAL_KEY가 아니라면 {
-    return res.status(500).json({ error: "FAL_KEY 환경 변수가 Vercel에 구성되어 있지 않습니다." });
+  // 1. Ensure FAL_KEY is present
+  if (!process.env.FAL_KEY) {
+    return res.status(500).json({ error: "FAL_KEY environment variable is not configured on Vercel." });
   }
 
-  요청 방식이 "GET"인 경우
+  // 2. Validate GET parameters immediately
+  if (req.method === "GET") {
     const { id } = req.query;
-    id가 아닌 경우 {
-      return res.status(400).json({ error: "요청 ID 매개변수가 누락되었습니다." });
+    if (!id) {
+      return res.status(400).json({ error: "Missing request id parameter." });
     }
+  }
 
-    노력하다 {
+  // 3. Dynamic import of @fal-ai/client to bypass CommonJS ESM require crash
+  let fal;
+  try {
+    const falModule = await import("@fal-ai/client");
+    fal = falModule.fal;
+    fal.config({ credentials: process.env.FAL_KEY });
+  } catch (err) {
+    console.error("Failed to dynamically import @fal-ai/client:", err);
+    return res.status(500).json({ error: "Failed to load @fal-ai/client dependency dynamically: " + err.message });
+  }
+
+  if (req.method === "GET") {
+    const { id } = req.query;
+    try {
       const status = await fal.queue.status("fal-ai/luma-dream-machine/image-to-video", {
         requestId: id,
-        로그: false
+        logs: false
       });
-      res.status(200).json(status)를 반환합니다.
+      return res.status(200).json(status);
     } catch (err) {
-      console.error("상태 조회 오류:", err);
-      return res.status(500).json({ error: err.message || "Fal.ai에서 상태를 조회하는 데 실패했습니다." });
+      console.error("Error querying status:", err);
+      return res.status(500).json({ error: err.message || "Failed to query status from Fal.ai" });
     }
   }
 
-  요청 방식이 "POST"인 경우
+  if (req.method === "POST") {
     const { imageData, prompt } = req.body;
-    만약 (!imageData)라면 {
-      return res.status(400).json({ error: "imageData base64 문자열이 누락되었습니다." });
+    if (!imageData) {
+      return res.status(400).json({ error: "Missing imageData base64 string" });
     }
 
-    노력하다 {
+    try {
       const matches = imageData.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
-      일치하는 항목이 없거나 일치하는 항목의 길이가 3이 아니면 {
-        return res.status(400).json({ error: "잘못된 base64 imageData 형식입니다." });
+      if (!matches || matches.length !== 3) {
+        return res.status(400).json({ error: "Invalid base64 imageData format." });
       }
       
       const mimeType = matches[1];
       const base64Data = matches[2];
       const buffer = Buffer.from(base64Data, 'base64');
 
-      확장자를 "png"로 설정하세요.
-      만약 mimeType에 "jpeg"이 포함되어 있거나 "jpg"이 포함되어 있다면,
-        확장자 = "jpg";
-      } 그렇지 않고 mimeType에 "webp"가 포함되어 있으면 {
-        확장 = "webp";
+      let extension = "png";
+      if (mimeType.includes("jpeg") || mimeType.includes("jpg")) {
+        extension = "jpg";
+      } else if (mimeType.includes("webp")) {
+        extension = "webp";
       }
 
       const fileName = `upload-${Date.now()}.${extension}`;
 
       const uploadResult = await fal.storage.upload(buffer, {
-        파일 이름: 파일 이름,
-        콘텐츠 유형: mimeType
+        fileName: fileName,
+        contentType: mimeType
       });
 
       const imageUrl = uploadResult.url;
-      console.log("이미지가 Fal CDN에 성공적으로 업로드되었습니다:", imageUrl);
+      console.log("Image uploaded to Fal CDN successfully:", imageUrl);
 
-      const submitPrompt = prompt || "영화 같은 3D 카메라 패닝, 고급 패션, 부드러운 움직임, 높은 디테일, 명작";
+      const submitPrompt = prompt || "Cinematic 3D camera pan, high fashion, smooth motion, high detail, masterpiece";
 
       const queueResult = await fal.queue.submit("fal-ai/luma-dream-machine/image-to-video", {
-        입력: {
-          이미지 URL: 이미지 URL,
-          프롬프트: 제출 프롬프트
+        input: {
+          image_url: imageUrl,
+          prompt: submitPrompt
         }
       });
 
-      console.log("Fal.ai 큐 제출이 성공적으로 완료되었습니다. ID:", queueResult.request_id);
+      console.log("Fal.ai Queue Submitted successfully. ID:", queueResult.request_id);
 
-      res.status(200).json({를 반환합니다.
-        성공: 사실입니다.
+      return res.status(200).json({
+        success: true,
         requestId: queueResult.request_id,
-        이미지 URL: 이미지 URL
+        imageUrl: imageUrl
       });
     } catch (err) {
-      console.error("Fal 생성 시작 중 오류 발생:", err);
-      let errMsg = err.message || "Fal.ai 비디오 생성을 시작하는 데 실패했습니다.";
-      오류 메시지에 "금지됨"이라는 메시지가 포함되어 있거나, "권한 없음"이라는 메시지가 포함되어 있거나, 오류 상태 코드가 403인 경우 {
-        errMsg = "Fal.ai API Key가 유효하지 않은 엄지손가락이 있습니다(403 Forbidden). Vercel 건강 상태의 FAL_KEY 값을 확인하세요.";
+      console.error("Error initiating Fal generation:", err);
+      let errMsg = err.message || "Failed to start Fal.ai video generation";
+      if (errMsg.toLowerCase().includes("forbidden") || errMsg.toLowerCase().includes("unauthorized") || err.status === 403) {
+        errMsg = "Fal.ai API Key가 유효하지 않거나 승인이 거부되었습니다 (403 Forbidden). Vercel 환경 변수의 FAL_KEY 값과 권한을 확인해 주세요.";
       }
-      res.status(500).json({ error: errMsg })를 반환합니다.
+      return res.status(500).json({ error: errMsg });
     }
   }
 
-  return res.status(405).json({ error: "메서드가 허용되지 않습니다" });
+  return res.status(405).json({ error: "Method not allowed" });
 };
