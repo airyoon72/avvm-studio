@@ -47,10 +47,19 @@ module.exports = async (req, res) => {
       if (status.status === "COMPLETED") {
         try {
           const result = await fal.queue.result(MODEL_ID, { requestId: id });
+          console.log("Fal Queue Result raw payload:", JSON.stringify(result));
+          
           const videoUrl =
             result?.data?.video?.url ||
             result?.video?.url ||
+            (result?.data?.video && typeof result.data.video === 'string' ? result.data.video : null) ||
+            (result?.video && typeof result.video === 'string' ? result.video : null) ||
+            (result?.data?.output && result.data.output[0]) ||
+            (result?.output && result.output[0]) ||
+            (result?.data?.images && result.data.images[0]?.url) ||
+            (result?.images && result.images[0]?.url) ||
             null;
+
           return res.status(200).json({
             ...status,
             status: "COMPLETED",
