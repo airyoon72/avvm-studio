@@ -1,1 +1,157 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>AVVM 서버 진단 v2</title>
+<style>
+  body { font-family: -apple-system, system-ui, sans-serif; background:#0a0a0a; color:#eee; padding:24px; max-width:640px; margin:0 auto; }
+  h1 { font-size:20px; color:#d8f233; }
+  button { background:#d8f233; color:#000; font-weight:800; border:none; padding:14px 22px; border-radius:12px; font-size:15px; cursor:pointer; width:100%; margin:16px 0; }
+  .step { border:1px solid #333; border-radius:12px; padding:14px; margin:10px 0; font-size:13px; line-height:1.6; }
+  .step .name { font-weight:800; margin-bottom:4px; }
+  .ok { border-color:#7dd87d; } .ok .name { color:#7dd87d; }
+  .fail { border-color:#ff5c5c; } .fail .name { color:#ff5c5c; }
+  .info { border-color:#888; } .info .name { color:#aaa; }
+  .wait .name { color:#d8f233; }
+  pre { background:#111; padding:10px; border-radius:8px; overflow-x:auto; font-size:11px; white-space:pre-wrap; word-break:break-all; color:#bbb; }
+  .summary { margin-top:18px; padding:16px; border-radius:12px; background:#161616; font-size:14px; font-weight:700; line-height:1.7; }
+</style>
+</head>
+<body>
+<h1>🔧 AVVM 서버 진단 v2</h1>
+<p style="font-size:13px; color:#999;" id="envNote"></p>
+<button id="runBtn" onclick="runDiagnostics()">진단 시작 ▶</button>
+<div id="results"></div>
+<div id="summary" class="summary" style="display:none;"></div>
 
+<script>
+var SAME_ORIGIN = /avvm\.studio$/.test(location.hostname);
+var BASE = SAME_ORIGIN ? '' : 'https://avvm.studio';
+document.getElementById('envNote').textContent = SAME_ORIGIN
+  ? '✓ avvm.studio에서 직접 실행 중 (가장 정확한 모드)'
+  : '외부에서 실행 중 — app.js 검사는 생략될 수 있습니다.';
+
+var TEST_IMAGE = (function() {
+  var c = document.createElement('canvas');
+  c.width = 64; c.height = 64;
+  var ctx = c.getContext('2d');
+  ctx.fillStyle = '#cc3344'; ctx.fillRect(0,0,64,64);
+  ctx.fillStyle = '#d8f233'; ctx.fillRect(16,16,32,32);
+  return c.toDataURL('image/jpeg', 0.8);
+})();
+
+function addStep(id, name, detail, cls) {
+  var el = document.getElementById(id);
+  if (!el) {
+    el = document.createElement('div');
+    el.id = id;
+    document.getElementById('results').appendChild(el);
+  }
+  el.className = 'step ' + cls;
+  el.innerHTML = '<div class="name">' + name + '</div>' + (detail || '');
+}
+
+function fetchWithTimeout(url, options, ms) {
+  return Promise.race([
+    fetch(url, options),
+    new Promise(function(_, reject) {
+      setTimeout(function(){ reject(new Error('TIMEOUT')); }, ms);
+    })
+  ]);
+}
+
+async function runDiagnostics() {
+  document.getElementById('runBtn').disabled = true;
+  document.getElementById('results').innerHTML = '';
+  document.getElementById('summary').style.display = 'none';
+  var findings = [];
+
+  addStep('s1', '1️⃣ 배포된 app.js 버전 확인 중...', '', 'wait');
+  try {
+    var r1 = await fetchWithTimeout(BASE + '/app.js?diag=' + Date.now(), {}, 15000);
+    var js = await r1.text();
+    var hasCompress = js.indexOf('compressImage') !== -1;
+    var hasTimeout = js.indexOf('15000') !== -1 || js.indexOf('AbortController') !== -1;
+    if (hasCompress) {
+      addStep('s1', '1️⃣ app.js — ✅ 최신 버전 배포됨', 'compressImage ✓' + (hasTimeout ? ' / 타임아웃 처리 ✓' : '') + ' (크기: ' + Math.round(js.length/1024) + 'KB)', 'ok');
+      findings.push('frontend_ok');
+    } else {
+      addStep('s1', '1️⃣ app.js — ❌ 구버전이 배포되어 있음!', 'compressImage 함수가 없습니다 → 최신 app.js가 아직 배포되지 않았습니다.', 'fail');
+      findings.push('frontend_old');
+    }
+  } catch (e1) {
+    addStep('s1', '1️⃣ app.js — ℹ️ 이 환경에서는 확인 불가', SAME_ORIGIN ? String(e1) : '(외부 실행이라 생략 — 서버 검사에는 영향 없음)', 'info');
+    findings.push('frontend_unknown');
+  }
+
+  addStep('s2', '2️⃣ 테스트 이미지로 생성 요청(POST) 전송 중... (최대 40초)', '', 'wait');
+  var requestId = null;
+  var t0 = Date.now();
+  try {
+    var r2 = await fetchWithTimeout(BASE + '/api/generate-video', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ imageData: TEST_IMAGE, prompt: 'diagnostic test, simple slow pan' })
+    }, 40000);
+    var elapsed = ((Date.now()-t0)/1000).toFixed(1);
+    var body2 = await r2.text();
+    var json2 = null;
+    try { json2 = JSON.parse(body2); } catch(_) {}
+
+    if (r2.ok && json2 && json2.requestId) {
+      requestId = json2.requestId;
+      addStep('s2', '2️⃣ 생성 요청 — ✅ 성공! (' + elapsed + '초)', 'requestId: ' + json2.requestId + '<br/>이미지 CDN 업로드 ✓ / fal.ai 큐 등록 ✓', 'ok');
+      findings.push('post_ok');
+    } else {
+      addStep('s2', '2️⃣ 생성 요청 — ❌ 실패 (HTTP ' + r2.status + ', ' + elapsed + '초)', '<pre>' + body2.slice(0, 800) + '</pre>', 'fail');
+      findings.push('post_fail');
+    }
+  } catch (e2) {
+    var elapsed2 = ((Date.now()-t0)/1000).toFixed(1);
+    if (e2 && e2.message === 'TIMEOUT') {
+      addStep('s2', '2️⃣ 생성 요청 — ❌ 40초 무응답', '서버 함수가 응답 없이 멈춰 있습니다 (' + elapsed2 + '초 경과). Vercel 함수 실행 시간 제한 가능성 → vercel.json에 maxDuration 설정 필요.', 'fail');
+      findings.push('post_timeout');
+    } else {
+      addStep('s2', '2️⃣ 생성 요청 — ❌ 요청 자체가 차단됨', '<pre>' + String(e2) + '</pre>브라우저(사파리/크롬)에서 열었는지 확인하세요.', 'fail');
+      findings.push('post_neterr');
+    }
+  }
+
+  if (requestId) {
+    addStep('s3', '3️⃣ 상태 조회(폴링) 테스트 중...', '', 'wait');
+    try {
+      var r3 = await fetchWithTimeout(BASE + '/api/generate-video?id=' + requestId, {}, 15000);
+      var body3 = await r3.text();
+      var json3 = null;
+      try { json3 = JSON.parse(body3); } catch(_) {}
+      if (r3.ok && json3 && json3.status) {
+        addStep('s3', '3️⃣ 상태 조회 — ✅ 정상 (현재: ' + json3.status + ')', '폴링 경로 작동 확인. 실제 주문에서는 IN_QUEUE → IN_PROGRESS → COMPLETED로 진행됩니다.', 'ok');
+        findings.push('poll_ok');
+      } else {
+        addStep('s3', '3️⃣ 상태 조회 — ❌ 실패 (HTTP ' + r3.status + ')', '<pre>' + body3.slice(0,500) + '</pre>', 'fail');
+        findings.push('poll_fail');
+      }
+    } catch (e3) {
+      addStep('s3', '3️⃣ 상태 조회 — ❌ 에러', String(e3), 'fail');
+      findings.push('poll_err');
+    }
+  }
+
+  var s = document.getElementById('summary');
+  s.style.display = 'block';
+  if (findings.indexOf('post_ok') !== -1 && findings.indexOf('frontend_ok') !== -1) {
+    s.innerHTML = '🎉 <span style="color:#7dd87d">전체 시스템 정상!</span><br/>멈췄던 건 브라우저 캐시일 가능성이 큽니다. 시크릿 창에서 실제 주문을 다시 테스트해 보세요.';
+  } else if (findings.indexOf('frontend_old') !== -1) {
+    s.innerHTML = '📌 <span style="color:#ff5c5c">원인 확정: 구버전 app.js가 배포되어 있습니다.</span>' + (findings.indexOf('post_ok') !== -1 ? '<br/>서버는 정상 작동 중이므로, 최신 app.js만 푸시/재배포하면 끝납니다. ✓' : '');
+  } else if (findings.indexOf('post_fail') !== -1 || findings.indexOf('post_timeout') !== -1) {
+    s.innerHTML = '📌 <span style="color:#ff5c5c">서버 함수(POST)에서 막히고 있습니다.</span><br/>위 2번 박스의 에러 내용이 정확한 원인입니다 — 이 화면을 스크린샷해서 보내주세요.';
+  } else {
+    s.innerHTML = '이 화면을 통째로 스크린샷해서 보내주세요.';
+  }
+  document.getElementById('runBtn').disabled = false;
+  document.getElementById('runBtn').textContent = '다시 진단 ↻';
+}
+</script>
+</body>
+</html>
