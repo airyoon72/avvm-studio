@@ -18,7 +18,7 @@ module.exports = async (req, res) => {
   // 2. Validate GET parameters (prefer status_url / response_url, fallback to constructing from id)
   if (req.method === "GET") {
     const id = req.query.id || req.query.requestId || req.query.request_id;
-    const statusUrl = req.query.status_url || req.query.statusUrl || (id ? `https://queue.fal.run/${MODEL_ID}/requests/${id}/status` : null);
+    const statusUrl = req.query.status_url || req.query.statusUrl || (id ? `https://queue.fal.run/${MODEL_ID}/requests/${id}` : null);
     const responseUrl = req.query.response_url || req.query.responseUrl || (id ? `https://queue.fal.run/${MODEL_ID}/requests/${id}` : null);
 
     if (!statusUrl) {
@@ -38,36 +38,43 @@ module.exports = async (req, res) => {
       
       const status = await statusRes.json();
 
-      // 2b. If status is COMPLETED, query response endpoint directly to extract the URL
+      // 2b. If status is COMPLETED, parse the video URL from the status payload
       if (status.status === "COMPLETED") {
-        if (!responseUrl) {
-          return res.status(400).json({ error: "Task completed but missing responseUrl to fetch results." });
-        }
+        let videoUrl =
+          status?.video?.url ||
+          status?.data?.video?.url ||
+          (status?.video && typeof status.video === 'string' ? status.video : null) ||
+          (status?.output && status.output[0]) ||
+          (status?.data?.output && status.data.output[0]) ||
+          null;
 
-        try {
-          const resultRes = await fetch(responseUrl, {
-            method: "GET",
-            headers: { "Authorization": `Key ${falKey}` }
-          });
-          if (resultRes.ok) {
-            const result = await resultRes.json();
-            const videoUrl =
-              result?.video?.url ||
-              result?.data?.video?.url ||
-              (result?.video && typeof result.video === 'string' ? result.video : null) ||
-              (result?.output && result.output[0]) ||
-              (result?.data?.output && result.data.output[0]) ||
-              null;
-            
-            return res.status(200).json({
-              ...status,
-              status: "COMPLETED",
-              output: videoUrl ? [videoUrl] : []
+        // If not found in the status response, fall back to fetching from responseUrl
+        if (!videoUrl && responseUrl && responseUrl !== statusUrl) {
+          try {
+            const resultRes = await fetch(responseUrl, {
+              method: "GET",
+              headers: { "Authorization": `Key ${falKey}` }
             });
+            if (resultRes.ok) {
+              const result = await resultRes.json();
+              videoUrl =
+                result?.video?.url ||
+                result?.data?.video?.url ||
+                (result?.video && typeof result.video === 'string' ? result.video : null) ||
+                (result?.output && result.output[0]) ||
+                (result?.data?.output && result.data.output[0]) ||
+                null;
+            }
+          } catch (resErr) {
+            console.error("Error fetching queue response:", resErr);
           }
-        } catch (resErr) {
-          console.error("Error fetching queue response:", resErr);
         }
+        
+        return res.status(200).json({
+          ...status,
+          status: "COMPLETED",
+          output: videoUrl ? [videoUrl] : []
+        });
       }
 
       return res.status(200).json(status);
