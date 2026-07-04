@@ -333,6 +333,8 @@ const $=(s,root=document)=>root.querySelector(s);
             if (dataGen.requestId) {
               requestId = dataGen.requestId;
               draft.requestId = requestId;
+              draft.statusUrl = dataGen.statusUrl;
+              draft.responseUrl = dataGen.responseUrl;
               draft.status = 'processing';
               draft.statusKo = '영상 제작 중';
             } else {
@@ -417,6 +419,8 @@ const $=(s,root=document)=>root.querySelector(s);
               const dataGen = await resGen.json();
               if (dataGen.requestId) {
                 order.requestId = dataGen.requestId;
+                order.statusUrl = dataGen.statusUrl;
+                order.responseUrl = dataGen.responseUrl;
                 order.status = 'processing';
                 order.statusKo = '영상 제작 중';
                 localStorage.setItem('avvmOrder_' + token, JSON.stringify(order));
@@ -466,6 +470,8 @@ const $=(s,root=document)=>root.querySelector(s);
               const dataGen = await resGen.json();
               if (dataGen.requestId) {
                 order.requestId = dataGen.requestId;
+                order.statusUrl = dataGen.statusUrl;
+                order.responseUrl = dataGen.responseUrl;
                 order.status = 'processing';
                 order.statusKo = '영상 제작 중';
                 localStorage.setItem('avvmOrder_' + token, JSON.stringify(order));
@@ -522,7 +528,14 @@ const $=(s,root=document)=>root.querySelector(s);
         const pollController = new AbortController();
         const pollTimeoutId = setTimeout(() => pollController.abort(), 5000);
         try {
-          const res = await fetch(apiBase + `/api/generate-video?id=${requestId}`, { signal: pollController.signal });
+          const order = JSON.parse(localStorage.getItem('avvmOrder_' + token) || '{}');
+          
+          let queryUrl = apiBase + `/api/generate-video?id=${requestId}`;
+          if (order.statusUrl) {
+            queryUrl += `&status_url=${encodeURIComponent(order.statusUrl)}&response_url=${encodeURIComponent(order.responseUrl)}`;
+          }
+
+          const res = await fetch(queryUrl, { signal: pollController.signal });
           clearTimeout(pollTimeoutId);
           if (!res.ok) throw new Error("Status query failed");
           const statusData = await res.json();
@@ -530,7 +543,6 @@ const $=(s,root=document)=>root.querySelector(s);
           const bar = document.getElementById('videoProgressBar');
           const label = document.getElementById('videoProgressLabel');
           const status = statusData.status; 
-          const order = JSON.parse(localStorage.getItem('avvmOrder_' + token) || '{}');
 
           if (status === 'IN_QUEUE') {
             if (bar) bar.style.width = '15%';
