@@ -85,37 +85,7 @@ module.exports = async (req, res) => {
     }
 
     try {
-      const matches = imageData.match(/^data:([A-Za-z0-9.+\/-]+);base64,(.+)$/);
-      if (!matches || matches.length !== 3) {
-        return res.status(400).json({ error: "Invalid base64 imageData format." });
-      }
-
-      const mimeType = matches[1];
-      const base64Data = matches[2];
-      const buffer = Buffer.from(base64Data, "base64");
-
-      // 3a. Upload binary file directly using standard multipart FormData
-      const formData = new FormData();
-      const fileBlob = new Blob([buffer], { type: mimeType });
-      formData.append("file", fileBlob, `upload-${Date.now()}.${mimeType.split('/')[1] || 'jpg'}`);
-
-      console.log("Uploading file via REST API...");
-      const uploadRes = await fetch("https://queue.fal.run/files/upload", {
-        method: "POST",
-        headers: { "Authorization": `Key ${falKey}` },
-        body: formData
-      });
-
-      if (!uploadRes.ok) {
-        const uploadErrText = await uploadRes.text();
-        throw new Error(`Fal.ai storage upload failed: ${uploadRes.status} | ${uploadErrText}`);
-      }
-
-      const uploadData = await uploadRes.json();
-      const imageUrl = uploadData.url;
-      console.log("Image uploaded to Fal CDN successfully:", imageUrl);
-
-      // 3b. Submit prompt to the queue
+      console.log("Submitting base64 image directly to Fal.ai Queue...");
       const submitPrompt = prompt || "Cinematic 3D camera pan, high fashion, smooth motion, high detail, masterpiece";
       const submitRes = await fetch(`https://queue.fal.run/${MODEL_ID}`, {
         method: "POST",
@@ -125,7 +95,7 @@ module.exports = async (req, res) => {
         },
         body: JSON.stringify({
           input: {
-            image_url: imageUrl,
+            image_url: imageData,
             prompt: submitPrompt
           }
         })
@@ -144,7 +114,7 @@ module.exports = async (req, res) => {
         requestId: submitData.request_id,
         statusUrl: submitData.status_url,
         responseUrl: submitData.response_url,
-        imageUrl: imageUrl
+        imageUrl: imageData
       });
     } catch (err) {
       console.error("Error initiating Fal generation:", err);
