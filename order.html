@@ -191,6 +191,9 @@
 
   <script>
     (function() {
+      const apiBase = (location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.hostname.endsWith('.lhr.life')) 
+        ? 'https://avvm.studio' 
+        : '';
       const urlParams = new URLSearchParams(window.location.search);
       const token = urlParams.get('t');
       if (!token) return;
@@ -263,8 +266,11 @@
           `;
 
           const interval = setInterval(async () => {
+            const pollController = new AbortController();
+            const pollTimeoutId = setTimeout(() => pollController.abort(), 5000);
             try {
-              const res = await fetch(`/api/generate-video?id=${requestId}`);
+              const res = await fetch(apiBase + `/api/generate-video?id=${requestId}`, { signal: pollController.signal });
+              clearTimeout(pollTimeoutId);
               if (!res.ok) throw new Error("Status query failed");
               const statusData = await res.json();
               
@@ -311,6 +317,7 @@
                 `;
               }
             } catch (e) {
+              clearTimeout(pollTimeoutId);
               console.error("Polling error on details page:", e);
             }
           }, 3000);
