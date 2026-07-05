@@ -7,6 +7,10 @@ const ALLOWED_DURATION = ["5s", "9s"];
 const ALLOWED_RESOLUTION = ["540p", "720p", "1080p"];
 const ALLOWED_ASPECT = ["16:9", "9:16", "4:3", "3:4", "21:9", "9:21", "1:1"];
 
+// Supabase 추가
+import { createClient } from '@supabase/supabase-js'
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY)
+
 module.exports = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
@@ -83,11 +87,44 @@ module.exports = async (req, res) => {
           if (m) videoUrl = m[0];
         }
 
+        // Supabase 영구 저장 로직 추가
+        if (videoUrl) {
+          try {
+            const videoResponse = await fetch(videoUrl)
+            const videoBuffer = await videoResponse.arrayBuffer()
+
+            const fileName = `${id}.mp4`
+            const { error: uploadError } = await supabase.storage
+            .from('results')
+            .upload(fileName, videoBuffer, {
+                contentType: 'video/mp4',
+                upsert: true
+              })
+
+            if (!uploadError) {
+              const { data: urlData } = supabase.storage
+              .from('results')
+              .getPublicUrl(fileName)
+
+              await supabase.from('orders').update({
+                result_url: urlData.publicUrl,
+                status: 'completed',
+                fal_video_url: videoUrl
+              }).eq('order_id', id)
+
+              videoUrl = urlData.publicUrl // 응답 URL을 Supabase로 교체
+            }
+          } catch (e) {
+            console.error('Supabase upload failed:', e)
+          }
+        }
+        // Supabase 로직 끝
+
         return res.status(200).json({
-          ...status,
+         ...status,
           status: "COMPLETED",
-          output: videoUrl ? [videoUrl] : [],
-          debug: videoUrl ? undefined : { notes: notes, result: result }
+          output: videoUrl? [videoUrl] : [],
+          debug: videoUrl? undefined : { notes: notes, result: result }
         });
       }
 
@@ -107,14 +144,14 @@ module.exports = async (req, res) => {
 
     try {
       const matches = imageData.match(/^data:([A-Za-z0-9.+\/-]+);base64,(.+)$/);
-      if (!matches || matches.length !== 3) {
+      if (!matches || matches.length!== 3) {
         return res.status(400).json({ error: "Invalid base64 imageData format." });
       }
 
       // 옵션 검증 — 잘못된 값이 오면 안전한 기본값으로
-      const safeDuration = ALLOWED_DURATION.includes(duration) ? duration : "5s";
-      const safeResolution = ALLOWED_RESOLUTION.includes(resolution) ? resolution : "540p";
-      const safeAspect = ALLOWED_ASPECT.includes(aspectRatio) ? aspectRatio : "9:16";
+      const safeDuration = ALLOWED_DURATION.includes(duration)? duration : "5s";
+      const safeResolution = ALLOWED_RESOLUTION.includes(resolution)? resolution : "540p";
+      const safeAspect = ALLOWED_ASPECT.includes(aspectRatio)? aspectRatio : "9:16";
 
       const submitPrompt = prompt || "Cinematic 3D camera pan, high fashion, smooth motion, high detail, masterpiece";
 
