@@ -4720,3 +4720,71 @@ body.modal-open{
   z-index: 2; /* Sits in front of flow background, behind main contents */
   opacity: 0.85;
 }
+
+/* ==========================================
+   Memorial Section Styles
+   ========================================== */
+.memorial-section {
+  padding: 80px 0;
+  background: linear-gradient(180deg, #050505 0%, #0c0c0c 100%);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+.memorial-section .section-bar {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 24px;
+}
+.memorial-section .pricing-grid {
+  grid-template-columns: repeat(2, 1fr);
+  max-width: 840px;
+  margin: 30px auto 0;
+}
+.memorial-section .price-card {
+  border-color: rgba(255, 255, 255, 0.08);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.005));
+  box-shadow: none;
+}
+.memorial-section .price-card.featured {
+  border-color: rgba(216, 242, 51, 0.25);
+  background: linear-gradient(145deg, rgba(216, 242, 51, 0.03), rgba(255, 255, 255, 0.01));
+}
+.memorial-section .price-card.featured .badge {
+  background: rgba(216, 242, 51, 0.85);
+  color: #000;
+}
+
+/* ==========================================
+   ID / Profile Photo Section Styles
+   ========================================== */
+.id-profile-section {
+  padding: 80px 0;
+  background: #050505;
+}
+.id-profile-section .section-bar {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 24px;
+}
+.id-profile-grid {
+  grid-template-columns: repeat(3, 1fr);
+  margin-top: 30px;
+}
+.id-profile-grid .price-card {
+  border-color: rgba(255, 255, 255, 0.08);
+}
+.id-profile-grid .price-card.featured {
+  border-color: rgba(216, 242, 51, 0.35);
+  background: linear-gradient(145deg, rgba(216, 242, 51, 0.04), rgba(255, 255, 255, 0.01));
+}
+
+/* Responsive adjustments for new sections */
+@media (max-width: 920px) {
+  .memorial-section .pricing-grid,
+  .id-profile-grid {
+    grid-template-columns: 1fr !important;
+    max-width: 480px;
+  }
+  .memorial-section,
+  .id-profile-section {
+    padding: 60px 20px;
+  }
+}

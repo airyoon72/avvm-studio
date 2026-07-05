@@ -27,7 +27,7 @@ window.addEventListener('error', function(e) {
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=Inter:wght@400;500;600;700;800;900&amp;family=Cormorant+Garamond:ital,wght@1,700;1,900&amp;display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="style.css?v=22">
+<link rel="stylesheet" href="style.css?v=26">
 </meta><link rel="preload" as="video" href="https://avvmstudio25.vercel.app/videos/hero-original-then-loop.mp4?v=8" type="video/mp4">
 <!-- AVVM V10 Scroll Stable -->
 </head>
@@ -82,7 +82,7 @@ window.addEventListener('error', function(e) {
 <nav class="nav" id="nav">
 <div class="nav-inner">
 <a aria-label="AVVM home" class="avvm-logo-link logo" href="#hero"><img alt="AVVM" class="avvm-play-logo-img" src="https://avvmstudio25.vercel.app/assets/avvm-play-logo.png"/></a>
-<div class="links"><a href="#works">Works</a><a href="#process">How it works</a><a href="#pricing">Pricing</a><a href="#about">About</a><a href="#faq">FAQ</a></div>
+<div class="links"><a href="#works">Works</a><a href="#one-photo-new-world">Transform</a><a href="#pricing">Business</a><a href="#memorial">Memorial</a><a href="#id-profile">ID·Profile</a><a href="#faq">FAQ</a></div>
 <div class="nav-cta nav-cta-native-lang">
 <div class="native-lang-box lang-with-icon" id="nativeLangBox"><video aria-hidden="true" autoplay="" class="lang-globe-icon" loop="" muted="" playsinline="" poster="https://avvmstudio25.vercel.app/assets/lang-globe-icon.jpg" src="https://avvmstudio25.vercel.app/assets/lang-globe-icon.mp4"></video>
 <label for="nativeLangSelect"></label>
@@ -469,6 +469,124 @@ window.addEventListener('error', function(e) {
 </div>
 <div class="pricing-note" data-i18n="pricingNote"><span data-i18n="pricingNote">납품 일정은 주문 내용 확인 후 안내됩니다. 외화 표시는 참고용이며 실제 결제는 원화(KRW)로 진행됩니다.</span></div>
 </div></section>
+
+<section class="memorial-section" id="memorial">
+  <div class="container">
+    <div class="section-bar">
+      <h2 class="section-label">Memorial</h2>
+      <span class="view-all">다시 만나는 순간</span>
+    </div>
+    
+    <div class="memorial-intro" style="margin-bottom: 30px;">
+      <p class="memorial-copy" style="font-size: 15px; color: rgba(255,255,255,0.7); line-height: 1.7; word-break: keep-all;">
+        오래된 사진 속, 그리운 순간이 다시 움직입니다.<br>
+        무지개다리를 건너간 반려동물, 빛바랜 필름 속 가족의 모습을 자연스러운 영상으로 복원해드립니다.
+      </p>
+    </div>
+
+    <!-- Sample video -->
+    <div class="memorial-media-container" style="margin-bottom: 40px; border-radius: 18px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); background: #000; display: flex; justify-content: center;">
+      <video class="memorial-video" autoplay loop muted playsinline poster="https://avvmstudio25.vercel.app/assets/posters/videos_portfolio_story-lifestyle.jpg" style="width: 100%; max-height: 520px; object-fit: cover;">
+        <source src="https://avvmstudio25.vercel.app/videos/portfolio/story-lifestyle.mp4" type="video/mp4">
+      </video>
+    </div>
+
+    <!-- Products grid -->
+    <div class="pricing-grid">
+      <article class="price-card featured" data-plan="Memorial Basic">
+        <span class="badge">추천</span>
+        <h3>Memorial Basic</h3>
+        <div class="price">₩29,900</div>
+        <p style="margin-bottom: 15px; font-size: 13px; color: rgba(255,255,255,0.7);">사진 1장 → 모션 영상 변환 (화질 복원 포함)</p>
+        <ul>
+          <li>사진 1장으로 자연스러운 연출</li>
+          <li>기본 화질 복원 및 해상도 업스케일</li>
+          <li><b>재생성 1회 보장</b></li>
+          <li>납기: 24시간 내 전달</li>
+        </ul>
+        <button class="btn btn-primary" data-open="" data-plan="Memorial Basic" style="margin-top: 15px;">START PROJECT ↗</button>
+      </article>
+
+      <article class="price-card" data-plan="Memorial Duo">
+        <h3>Memorial Duo</h3>
+        <div class="price">₩49,900</div>
+        <p style="margin-bottom: 15px; font-size: 13px; color: rgba(255,255,255,0.7);">사진 2장 세트 (추억을 더 풍성하게)</p>
+        <ul>
+          <li>사진 2장으로 각각 다른 모션 영상 연출</li>
+          <li>기본 화질 복원 및 해상도 업스케일</li>
+          <li><b>재생성 1회 보장</b></li>
+          <li>납기: 48시간 내 전달</li>
+        </ul>
+        <button class="btn" data-open="" data-plan="Memorial Duo" style="margin-top: 15px;">START PROJECT ↗</button>
+      </article>
+    </div>
+
+    <div class="memorial-bottom-notice" style="margin-top: 30px; padding: 18px; border-radius: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); font-size: 12px; color: rgba(255,255,255,0.5); line-height: 1.6; text-align: left; word-break: keep-all;">
+      💡 AI 복원 특성상 실제 모습과 다르게 표현될 수 있으며, 마음에 들지 않을 경우 1회 재제작을 도와드립니다. 결과물은 검수 후 전달됩니다.
+    </div>
+  </div>
+</section>
+
+<section class="id-profile-section" id="id-profile">
+  <div class="container">
+    <div class="section-bar">
+      <h2 class="section-label">ID / Profile</h2>
+      <span class="view-all">증명사진·프로필사진 파일 제작</span>
+    </div>
+
+    <div class="id-intro" style="margin-bottom: 30px;">
+      <p class="id-copy" style="font-size: 15px; color: rgba(255,255,255,0.7); line-height: 1.7; word-break: keep-all;">
+        사진관 방문 없이, 기존 사진으로 제출용 사진 파일을 준비하세요.<br>
+        여권, 주민등록증, 운전면허, 이력서, 사원증, 프로필용까지 용도별 규격에 맞춘 JPG 파일로 제작해드립니다.
+      </p>
+    </div>
+
+    <!-- Products grid -->
+    <div class="pricing-grid id-profile-grid">
+      <article class="price-card" data-plan="ID Mini">
+        <h3>ID Mini</h3>
+        <div class="price">₩5,900</div>
+        <p style="margin-bottom: 15px; font-size: 13px; color: rgba(255,255,255,0.7);">단일 규격 파일 1종 제공</p>
+        <ul>
+          <li>원본 기반 규격 맞춤 파일 제작</li>
+          <li>여권/면허/이력서 중 선택 1종</li>
+          <li>납기: <b>24시간 내 전달</b></li>
+        </ul>
+        <button class="btn" data-open="" data-plan="ID Mini" style="margin-top: 15px;">START PROJECT ↗</button>
+      </article>
+
+      <article class="price-card featured" data-plan="ID Set">
+        <span class="badge">추천</span>
+        <h3>ID Set</h3>
+        <div class="price">₩9,900</div>
+        <p style="margin-bottom: 15px; font-size: 13px; color: rgba(255,255,255,0.7);">여권/주민등록증/운전면허/이력서 규격 세트</p>
+        <ul>
+          <li>원본 기반 규격 맞춤 파일 제작</li>
+          <li>제출 목적별 4대 규격 전체 패키지</li>
+          <li>납기: <b>24시간 내 전달</b></li>
+        </ul>
+        <button class="btn btn-primary" data-open="" data-plan="ID Set" style="margin-top: 15px;">START PROJECT ↗</button>
+      </article>
+
+      <article class="price-card" data-plan="Profile Pro">
+        <h3>Profile Pro</h3>
+        <div class="price">₩29,900</div>
+        <p style="margin-bottom: 15px; font-size: 13px; color: rgba(255,255,255,0.7);">취업/사원증/비즈니스 고급 보정</p>
+        <ul>
+          <li>원본 기반 규격 맞춤 파일 제작</li>
+          <li>피부, 대칭, 조명 등 1:1 디테일 고급 보정</li>
+          <li>납기: <b>48시간 내 전달</b></li>
+        </ul>
+        <button class="btn" data-open="" data-plan="Profile Pro" style="margin-top: 15px;">START PROJECT ↗</button>
+      </article>
+    </div>
+
+    <div class="id-bottom-notice" style="margin-top: 30px; padding: 18px; border-radius: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); font-size: 12px; color: rgba(255,255,255,0.5); line-height: 1.6; text-align: left; word-break: keep-all;">
+      💡 여권, 주민등록증, 운전면허증 등 공식 신분증 사진은 각 기관의 심사 기준에 따라 승인 여부가 달라질 수 있습니다. AVVM은 원본 사진을 기준으로 규격 맞춤, 크롭, 용량 조정, 자연스러운 보정을 지원하며 최종 접수 승인을 보장하지 않습니다. 촬영 상태(초점, 조명, 배경)가 기준에 크게 미달하는 원본은 제작이 어려울 수 있으며, 이 경우 전액 환불됩니다.
+    </div>
+  </div>
+</section>
+
 <footer class="footer" id="faq"><div class="container footer-inner"><div style="display:flex;align-items:center;gap:20px"><div class="footer-logo footer-logo-img-wrap"><img alt="AVVM" class="footer-avvm-logo-img" src="https://avvmstudio25.vercel.app/assets/avvm-play-logo.png"/></div><span>The AI Video Vending Machine</span></div><div class="footer-links">
 <a href="#" data-legal="service">Service</a>
 <a href="#" data-legal="terms">Terms</a>
@@ -580,6 +698,9 @@ window.addEventListener('error', function(e) {
       <small>JPG, PNG, WEBP 등 이미지 파일</small>
     </label>
     <input accept="image/*" class="field photo-upload-input" id="imageInput" type="file"/>
+  </div>
+  <div class="upload-guide-box" id="uploadGuideBox" style="display:none; margin-top: 10px; padding: 12px; background: rgba(216,242,51,0.06); border-radius: 12px; font-size: 11px; color: rgba(255,255,255,0.75); border: 1px solid rgba(216,242,51,0.25); text-align: left; line-height: 1.5; word-break: keep-all;">
+    💡 <b>여권용 가이드:</b> 정면·무배경·귀가 보이게 촬영된 사진을 올려주세요.
   </div>
   
   <div class="preview" id="imagePreview">
@@ -710,6 +831,6 @@ window.addEventListener('error', function(e) {
 <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.36/dist/lenis.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-<script src="app.js?v=22"></script>
+<script src="app.js?v=26"></script>
 </body>
 </html>

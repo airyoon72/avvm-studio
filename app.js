@@ -23,7 +23,12 @@ const $=(s,root=document)=>root.querySelector(s);
       Starter:'₩19,900',
       Pro:'₩39,900',
       Signature:'₩79,900',
-      Custom:'상담 후 견적'
+      Custom:'상담 후 견적',
+      'Memorial Basic':'₩29,900',
+      'Memorial Duo':'₩49,900',
+      'ID Mini':'₩5,900',
+      'ID Set':'₩9,900',
+      'Profile Pro':'₩29,900'
     }; window.selectedPlan='Pro';
     function setOrderSummary(){
       const lang=localStorage.getItem('avvmLang')||'ko';
@@ -119,6 +124,16 @@ const $=(s,root=document)=>root.querySelector(s);
       modalCard.classList.remove('done');
       modalCard.classList.remove('plan-choosing');
       setOrderSummary();
+      
+      const guide = $('#uploadGuideBox');
+      if (guide) {
+        if (plan.startsWith('ID') || plan.startsWith('Profile')) {
+          guide.style.display = 'block';
+        } else {
+          guide.style.display = 'none';
+        }
+      }
+
       modal.classList.add('on');
       document.body.style.overflow='hidden';
       if(window.__avvmLenis) window.__avvmLenis.stop();
@@ -157,7 +172,43 @@ const $=(s,root=document)=>root.querySelector(s);
       }
     });
     let lastOrder=null;
+    const apiBase = (location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.hostname.endsWith('.lhr.life')) 
+      ? 'https://avvm.studio' 
+      : '';
     function makeOrderId(){ return 'AVVM-' + new Date().toISOString().slice(0,10).replaceAll('-','') + '-' + Math.random().toString(36).slice(2,7).toUpperCase(); }
+    
+    function compressImage(file, maxW = 1024, maxH = 1024) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            let w = img.width;
+            let h = img.height;
+            if (w > maxW || h > maxH) {
+              if (w > h) {
+                h = Math.round((h * maxW) / w);
+                w = maxW;
+              } else {
+                w = Math.round((w * maxH) / h);
+                h = maxH;
+              }
+            }
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, w, h);
+            resolve(canvas.toDataURL('image/jpeg', 0.8));
+          };
+          img.onerror = reject;
+          img.src = e.target.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
     async function createOrder(){
       syncCustomerInputs(); const brand=getCustomerValue('#brandInput','#brandInput2');
       const email=getCustomerValue('#emailInput','#emailInput2');
@@ -174,8 +225,73 @@ const $=(s,root=document)=>root.querySelector(s);
       if(!phone){toast('카톡/문자 알림용 휴대폰 번호를 입력해주세요'); focusCustomerField('#phoneInput','#phoneInput2'); return;}
       if(!privacyConsent || !notifyConsent || !refundConsent){toast('필수 동의 항목을 확인해주세요'); focusAndReveal('#consentGroup'); return;}
 
-      const token=(crypto && crypto.getRandomValues) ? Array.from(crypto.getRandomValues(new Uint8Array(16))).map(b=>b.toString(16).padStart(2,'0')).join('') : Math.random().toString(36).slice(2)+Date.now().toString(36);
+      // 1. Switch to success screen immediately to show progress loader!
+      modalCard.classList.add('done');
       const orderId=makeOrderId();
+      $('#successOrderId').textContent='ORDER #' + orderId;
+      toast('주문 접수 시작 ✓');
+
+      // Create initial progress container in the success panel
+      let progressDiv = document.getElementById('videoProgressContainer');
+      if (!progressDiv) {
+        progressDiv = document.createElement('div');
+        progressDiv.id = 'videoProgressContainer';
+        progressDiv.style.marginTop = '18px';
+        progressDiv.style.marginBottom = '18px';
+        progressDiv.style.padding = '18px';
+        progressDiv.style.borderRadius = '16px';
+        progressDiv.style.background = 'rgba(216,242,51,0.06)';
+        progressDiv.style.border = '1px dashed rgba(216,242,51,0.3)';
+        progressDiv.style.textAlign = 'center';
+        
+        const successPanel = document.querySelector('.success-panel');
+        if (successPanel) {
+          const viewLink = document.getElementById('viewOrderLink');
+          successPanel.insertBefore(progressDiv, viewLink);
+        }
+      }
+
+      progressDiv.innerHTML = `
+        <div style="font-size:12px; font-weight:800; color:var(--lime); margin-bottom:8px; text-transform:uppercase; letter-spacing:0.05em; display:flex; align-items:center; justify-content:center; gap:6px;">
+          <span class="spinner" style="display:inline-block; width:12px; height:12px; border:2px solid var(--lime); border-top-color:transparent; border-radius:50%; animation:spin 1s linear infinite;"></span>
+          서버 연결 및 이미지 업로드 중...
+        </div>
+        <div style="width:100%; height:6px; background:rgba(255,255,255,0.1); border-radius:999px; overflow:hidden; margin:10px 0;">
+          <div id="videoProgressBar" style="width:10%; height:100%; background:var(--lime); transition:width 0.4s ease; border-radius:999px;"></div>
+        </div>
+        <div id="videoProgressLabel" style="font-size:11px; color:rgba(255,255,255,0.6)">Fal.ai CDN으로 사진 데이터를 전송하고 있습니다.</div>
+      `;
+
+      // Inject spinner animation if missing
+      if (!document.getElementById('spinnerStyle')) {
+        const style = document.createElement('style');
+        style.id = 'spinnerStyle';
+        style.textContent = `@keyframes spin { to { transform: rotate(360deg); } }`;
+        document.head.appendChild(style);
+      }
+
+      let imageData = '';
+      const imgFile = $('#imageInput')?.files?.[0];
+      if (imgFile) {
+        try {
+          // Resize and compress image to a maximum of 1024px width/height and 0.8 quality
+          imageData = await compressImage(imgFile, 1024, 1024);
+        } catch (e) {
+          console.error("Compression failed, attempting raw reader:", e);
+          try {
+            imageData = await new Promise((resolve, reject) => {
+              const reader = new FileReader();
+              reader.onload = () => resolve(reader.result);
+              reader.onerror = reject;
+              reader.readAsDataURL(imgFile);
+            });
+          } catch (e2) {
+            console.error(e2);
+          }
+        }
+      }
+
+      const token=(crypto && crypto.getRandomValues) ? Array.from(crypto.getRandomValues(new Uint8Array(16))).map(b=>b.toString(16).padStart(2,'0')).join('') : Math.random().toString(36).slice(2)+Date.now().toString(36);
       const draft={
         orderId,
         token,
@@ -183,6 +299,7 @@ const $=(s,root=document)=>root.querySelector(s);
         brand,
         email,
         phone,
+        imageData,
         consents:{
           privacy:privacyConsent,
           transactionalNotice:notifyConsent,
@@ -207,10 +324,57 @@ const $=(s,root=document)=>root.querySelector(s);
         notificationMethod:'kakao_or_sms',
         viewUrl: location.origin + '/order.html?t=' + token
       };
+
+      // 2. Trigger Fal.ai Video Generation with 15s Timeout
+      let requestId = null;
+      let apiError = null;
+
+      if (imageData) {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 15000);
+        try {
+          const resGen = await fetch(apiBase + '/api/generate-video', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              imageData,
+              prompt: `A beautiful cinematic video of brand ${brand}, style ${category}, mood ${mood}. High fashion, flowing movement, smooth panning shot, 8k resolution, photorealistic, masterpiece.`
+            }),
+            signal: controller.signal
+          });
+          clearTimeout(timeoutId);
+          if (resGen.ok) {
+            const dataGen = await resGen.json();
+            if (dataGen.requestId) {
+              requestId = dataGen.requestId;
+              draft.requestId = requestId;
+              draft.statusUrl = dataGen.statusUrl;
+              draft.responseUrl = dataGen.responseUrl;
+              draft.status = 'processing';
+              draft.statusKo = '영상 제작 중';
+            } else {
+              apiError = "서버리스 API로부터 잘못된 형식의 응답을 받았습니다.";
+            }
+          } else {
+            const errData = await resGen.json().catch(() => ({}));
+            apiError = errData.error || `HTTP 에러 ${resGen.status}`;
+          }
+        } catch (err) {
+          clearTimeout(timeoutId);
+          if (err.name === 'AbortError') {
+            apiError = "서버 응답 제한 시간(15초)을 초과했습니다. Vercel 환경 변수의 FAL_KEY를 확인하고 배포 상태를 다시 점검해 주세요.";
+          } else {
+            apiError = err.message || "네트워크 요청이 실패했습니다.";
+          }
+          console.error("Failed to start video generation API:", err);
+        }
+      }
+
       try{
         const res=await fetch('/api/order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(draft)});
         if(res.ok){ const data=await res.json(); if(data.orderId) draft.orderId=data.orderId; }
       }catch(e){}
+
       draft.viewUrl = location.origin + '/order.html?t=' + draft.token;
       lastOrder=draft;
       const orders=JSON.parse(localStorage.getItem('avvmOrders')||'[]').filter(o=>o.token!==draft.token);
@@ -223,9 +387,214 @@ const $=(s,root=document)=>root.querySelector(s);
       if(view){ view.href=draft.viewUrl; }
       const copy=$('#orderLinkCopy');
       if(copy){ copy.textContent='주문 링크가 생성되었습니다. 실제 운영에서는 결제 완료 후 이미지 업로드 링크가 열립니다.'; copy.dataset.customized='1'; }
-      modalCard.classList.add('done');
-      toast('Payment-ready order created ✓');
+      toast('주문 임시 접수 완료 ✓');
+
+      // 3. Start Polling or Show Failure
+      if (requestId) {
+        startPolling(requestId, draft.token);
+      } else if (imageData && apiError) {
+        showDetailedFailure(apiError, draft.token, progressDiv);
+      } else {
+        progressDiv.innerHTML = `
+          <div style="font-size:12px; font-weight:800; color:var(--lime); margin-bottom:4px;">주문이 정상 접수되었습니다.</div>
+          <div style="font-size:11px; color:rgba(255,255,255,0.6)">실제 비디오 제작을 하려면 사진을 업로드해 주세요.</div>
+        `;
+      }
     }
+
+    function showDetailedFailure(errorMessage, token, container) {
+      container.innerHTML = `
+        <div style="font-size:12px; font-weight:800; color:#ff4d4d; margin-bottom:8px; text-transform:uppercase;">✗ 영상 제작 요청 실패 (Request Failed)</div>
+        <div style="font-size:11px; color:rgba(255,255,255,0.7); line-height:1.6; margin-bottom:12px; word-break:break-all;">
+          에러 내용: ${errorMessage}<br/>
+          <span style="color:rgba(255,255,255,0.45); font-size:10px;">(Vercel의 FAL_KEY 설정과 API 상태를 다시 확인해 주세요.)</span>
+        </div>
+        <button id="retryVideoBtn" class="btn btn-primary" style="margin-top:6px; padding:10px 18px; font-size:11px; background:#ff4d4d; border-color:#ff4d4d; color:#fff; cursor:pointer;">재시도 (Retry Generation)</button>
+      `;
+      
+      document.getElementById('retryVideoBtn')?.addEventListener('click', async () => {
+        container.innerHTML = `
+          <div style="font-size:12px; font-weight:800; color:var(--lime); margin-bottom:8px; display:flex; align-items:center; justify-content:center; gap:6px;">
+            <span class="spinner" style="display:inline-block; width:12px; height:12px; border:2px solid var(--lime); border-top-color:transparent; border-radius:50%; animation:spin 1s linear infinite;"></span>
+            영상을 다시 요청하는 중...
+          </div>
+        `;
+        const order = JSON.parse(localStorage.getItem('avvmOrder_' + token) || '{}');
+        if (order.imageData) {
+          try {
+            const resGen = await fetch(apiBase + '/api/generate-video', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                imageData: order.imageData,
+                prompt: `A beautiful cinematic video of brand ${order.brand}, style ${order.category}, mood ${order.mood}. High fashion, flowing movement, smooth panning shot, 8k resolution, photorealistic, masterpiece.`
+              })
+            });
+            if (resGen.ok) {
+              const dataGen = await resGen.json();
+              if (dataGen.requestId) {
+                order.requestId = dataGen.requestId;
+                order.statusUrl = dataGen.statusUrl;
+                order.responseUrl = dataGen.responseUrl;
+                order.status = 'processing';
+                order.statusKo = '영상 제작 중';
+                localStorage.setItem('avvmOrder_' + token, JSON.stringify(order));
+                startPolling(dataGen.requestId, token);
+              } else {
+                showDetailedFailure("응답 형식 오류가 발생했습니다.", token, container);
+              }
+            } else {
+              const errData = await resGen.json().catch(() => ({}));
+              showDetailedFailure(errData.error || `HTTP 에러 ${resGen.status}`, token, container);
+            }
+          } catch (err) {
+            showDetailedFailure(err.message || "네트워크 연결이 원활하지 않습니다.", token, container);
+          }
+        }
+      });
+    }
+
+    function showCompletedVideo(videoUrl, container) {
+      container.innerHTML = `
+        <div style="font-size:12px; font-weight:800; color:var(--lime); margin-bottom:10px; text-transform:uppercase; letter-spacing:0.05em; display:flex; align-items:center; justify-content:center; gap:6px;">
+          <span style="font-size:14px;">✓</span> AI 영상 제작 완료 (AI Video Generated)
+        </div>
+        <video src="${videoUrl}" controls autoplay loop playsinline style="width:100%; border-radius:12px; border:1px solid var(--lime); box-shadow:0 0 18px rgba(216,242,51,0.22); background:#000; max-height:240px; object-fit:cover;"></video>
+      `;
+    }
+
+    function showRetryButton(requestId, token, container) {
+      container.innerHTML = `
+        <div style="font-size:12px; font-weight:800; color:#ff4d4d; margin-bottom:8px; text-transform:uppercase;">✗ 영상 제작 실패 (Generation Failed)</div>
+        <button id="retryVideoBtn" class="btn btn-primary" style="margin-top:6px; padding:10px 18px; font-size:11px; background:#ff4d4d; border-color:#ff4d4d; color:#fff; cursor:pointer;">재시도 (Retry Generation)</button>
+      `;
+      document.getElementById('retryVideoBtn')?.addEventListener('click', async () => {
+        container.innerHTML = `<div style="font-size:11px; color:rgba(255,255,255,0.6)">영상을 다시 요청하는 중... (Restarting generation...)</div>`;
+        const order = JSON.parse(localStorage.getItem('avvmOrder_' + token) || '{}');
+        if (order.imageData) {
+          try {
+            const resGen = await fetch(apiBase + '/api/generate-video', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                imageData: order.imageData,
+                prompt: `A beautiful cinematic video of brand ${order.brand}, style ${order.category}, mood ${order.mood}. High fashion, flowing movement, smooth panning shot, 8k resolution, photorealistic, masterpiece.`
+              })
+            });
+            if (resGen.ok) {
+              const dataGen = await resGen.json();
+              if (dataGen.requestId) {
+                order.requestId = dataGen.requestId;
+                order.statusUrl = dataGen.statusUrl;
+                order.responseUrl = dataGen.responseUrl;
+                order.status = 'processing';
+                order.statusKo = '영상 제작 중';
+                localStorage.setItem('avvmOrder_' + token, JSON.stringify(order));
+                startPolling(dataGen.requestId, token);
+              }
+            }
+          } catch (err) {
+            console.error(err);
+          }
+        }
+      });
+    }
+
+    function startPolling(requestId, token) {
+      let progressDiv = document.getElementById('videoProgressContainer');
+      if (!progressDiv) {
+        progressDiv = document.createElement('div');
+        progressDiv.id = 'videoProgressContainer';
+        progressDiv.style.marginTop = '18px';
+        progressDiv.style.marginBottom = '18px';
+        progressDiv.style.padding = '18px';
+        progressDiv.style.borderRadius = '16px';
+        progressDiv.style.background = 'rgba(216,242,51,0.06)';
+        progressDiv.style.border = '1px dashed rgba(216,242,51,0.3)';
+        progressDiv.style.textAlign = 'center';
+        
+        const successPanel = document.querySelector('.success-panel');
+        if (successPanel) {
+          const viewLink = document.getElementById('viewOrderLink');
+          successPanel.insertBefore(progressDiv, viewLink);
+        }
+      }
+
+      progressDiv.innerHTML = `
+        <div style="font-size:12px; font-weight:800; color:var(--lime); margin-bottom:8px; text-transform:uppercase; letter-spacing:0.05em; display:flex; align-items:center; justify-content:center; gap:6px;">
+          <span class="spinner" style="display:inline-block; width:12px; height:12px; border:2px solid var(--lime); border-top-color:transparent; border-radius:50%; animation:spin 1s linear infinite;"></span>
+          AI 영상 제작 진행 중 (AI Video Generating)
+        </div>
+        <div style="width:100%; height:6px; background:rgba(255,255,255,0.1); border-radius:999px; overflow:hidden; margin:10px 0;">
+          <div id="videoProgressBar" style="width:5%; height:100%; background:var(--lime); transition:width 0.4s ease; border-radius:999px;"></div>
+        </div>
+        <div id="videoProgressLabel" style="font-size:11px; color:rgba(255,255,255,0.6)">대기 열 등록 및 서버 요청 대기 중...</div>
+      `;
+
+      // Inject spinner animation if missing
+      if (!document.getElementById('spinnerStyle')) {
+        const style = document.createElement('style');
+        style.id = 'spinnerStyle';
+        style.textContent = `@keyframes spin { to { transform: rotate(360deg); } }`;
+        document.head.appendChild(style);
+      }
+
+      const interval = setInterval(async () => {
+        const pollController = new AbortController();
+        const pollTimeoutId = setTimeout(() => pollController.abort(), 5000);
+        try {
+          const order = JSON.parse(localStorage.getItem('avvmOrder_' + token) || '{}');
+          
+          let queryUrl = apiBase + `/api/generate-video?id=${requestId}`;
+          if (order.statusUrl) {
+            queryUrl += `&status_url=${encodeURIComponent(order.statusUrl)}&response_url=${encodeURIComponent(order.responseUrl)}`;
+          }
+
+          const res = await fetch(queryUrl, { signal: pollController.signal });
+          clearTimeout(pollTimeoutId);
+          if (!res.ok) throw new Error("Status query failed");
+          const statusData = await res.json();
+          
+          const bar = document.getElementById('videoProgressBar');
+          const label = document.getElementById('videoProgressLabel');
+          const status = statusData.status; 
+
+          if (status === 'IN_QUEUE') {
+            if (bar) bar.style.width = '15%';
+            if (label) label.textContent = `대기열 진입 중 (대기번호: ${statusData.queue_position || 1})`;
+          } else if (status === 'IN_PROGRESS') {
+            const pct = Math.max(20, Math.min(95, Math.round((statusData.progress || 0) * 100)));
+            if (bar) bar.style.width = `${pct}%`;
+            if (label) label.textContent = `영상 프레임 렌더링 중... ${pct}%`;
+          } else if (status === 'COMPLETED') {
+            clearInterval(interval);
+            if (bar) bar.style.width = '100%';
+            if (label) label.textContent = '영상 제작 완료!';
+            
+            const videoUrl = statusData.output && statusData.output[0];
+            if (videoUrl) {
+              order.videoUrl = videoUrl;
+              order.status = 'completed';
+              order.statusKo = '제작 완료';
+              localStorage.setItem('avvmOrder_' + token, JSON.stringify(order));
+              showCompletedVideo(videoUrl, progressDiv);
+            } else {
+              if (label) label.textContent = '제작 완료되었으나 영상 파일을 찾을 수 없습니다.';
+            }
+          } else if (status === 'FAILED') {
+            clearInterval(interval);
+            order.status = 'failed';
+            order.statusKo = '제작 실패';
+            localStorage.setItem('avvmOrder_' + token, JSON.stringify(order));
+            showRetryButton(requestId, token, progressDiv);
+          }
+        } catch (e) {
+          clearTimeout(pollTimeoutId);
+          console.error("Polling error:", e);
+        }
+      }, 3000);
+    }
+
     $('#submitOrder').addEventListener('click',createOrder);
     $('#downloadOrder').addEventListener('click',()=>{ if(!lastOrder){toast('저장된 주문이 없습니다'); return;} const blob=new Blob([JSON.stringify(lastOrder,null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=lastOrder.orderId+'.json'; a.click(); URL.revokeObjectURL(a.href); });
     $('#resetOrder').addEventListener('click',()=>{ modalCard.classList.remove('done'); $('#brandInput').value=''; $('#emailInput').value=''; if($('#phoneInput')) $('#phoneInput').value=''; if($('#brandInput2')) $('#brandInput2').value=''; if($('#emailInput2')) $('#emailInput2').value=''; if($('#phoneInput2')) $('#phoneInput2').value=''; if($('#notifyConsent')) $('#notifyConsent').checked=true; $('#moodInput').value=''; $('#imageInput').value=''; $('#imagePreview').classList.remove('on'); updatePhotoUploadLabel(); if($('#viewOrderLink')) $('#viewOrderLink').href='#'; lastOrder=null; setTimeout(()=>{ syncCustomerInputs(); focusAndReveal('#photoUploadVisibleBlock'); },80); });
