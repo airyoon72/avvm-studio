@@ -154,12 +154,28 @@ window.addEventListener('error', function(e) {
 <button class="btn btn-primary has-help" data-help="사진을 올리고 원하는 스타일을 선택하면 주문 흐름이 시작됩니다." data-help-key="help2" data-help-ko="사진을 올리고 원하는 스타일을 선택하면 주문 흐름이 시작됩니다." data-open=""><span data-i18n="startProject">START PROJECT ↗</span></button>
 <button class="play showreel-btn has-help" data-help="AVVM 샘플 영상을 크게 확인합니다." data-help-key="help3" data-help-ko="AVVM 샘플 영상을 크게 확인합니다." id="watchShowreel" type="button"><i>▶</i><span data-i18n="viewShowreel">VIEW SHOWREEL</span></button>
 </div>
+<div class="hero-new-notice" onclick="location.href='#memorial'" style="cursor: pointer; display: inline-flex; align-items: center; gap: 10px; margin-top: 24px; padding: 10px 18px; border-radius: 999px; background: rgba(216,242,51,0.08); border: 1px solid rgba(216,242,51,0.25); box-shadow: 0 0 20px rgba(216,242,51,0.05); animation: pulseGlow 2s infinite ease-in-out; text-decoration: none;">
+  <span style="font-size: 14px;">🐶</span>
+  <span style="font-size: 12px; color: #fff; font-weight: 800; letter-spacing: -0.02em;">
+    [신규] <b>소중한 추억 복원 (Memorial)</b> 런칭! 오래된 사진, 반려동물 사진 복원하기 ↗
+  </span>
+</div>
 </div>
 <div class="hero-v5-bottom">
 <span class="mouse"></span>
 <span><span data-i18n="scrollExplore">SCROLL TO EXPLORE</span></span>
 </div>
 </header>
+
+<div class="quick-nav-bar">
+  <div class="quick-nav-inner">
+    <a href="#one-photo-new-world" class="quick-nav-item">⚡️ Transform</a>
+    <a href="#pricing" class="quick-nav-item">💼 Business</a>
+    <a href="#memorial" class="quick-nav-item">🐶 Memorial <span class="nav-sub-tag">추억복원</span></a>
+    <a href="#id-profile" class="quick-nav-item">🪪 ID·Profile <span class="nav-sub-tag">증명사진</span></a>
+  </div>
+</div>
+
 <section class="ba-section" id="before-after">
 <div class="container">
 <div class="ba-shell">
@@ -376,14 +392,14 @@ window.addEventListener('error', function(e) {
 <table class="spec-table">
 <thead><tr><th>Feature</th><th>Starter</th><th>Pro</th><th>Signature</th></tr></thead>
 <tbody>
-<tr><td>Length</td><td>10s</td><td>15s</td><td>30s</td></tr>
+<tr><td>Length</td><td>approx. 10s (9s)</td><td>15s</td><td>30s</td></tr>
 <tr><td>Commercial use</td><td class="spec-yes">Included</td><td class="spec-yes">Included</td><td class="spec-yes">Included</td></tr>
 <tr><td>BGM / SFX</td><td class="spec-option">Basic</td><td class="spec-yes">Included</td><td class="spec-yes">Premium</td></tr>
 <tr><td>Caption / Copy</td><td class="spec-option">Basic</td><td class="spec-yes">Included</td><td class="spec-yes">Included</td></tr>
 <tr><td>AI Voiceover</td><td>Option</td><td>Option</td><td class="spec-option">Consult</td></tr>
 <tr><td>Revision</td><td>None</td><td>1 round</td><td>2 rounds</td></tr>
 <tr><td>Aspect Ratio</td><td><span data-i18n-auto="autoKo16">9:16 / 16:9 / 1:1 선택</span></td><td><span data-i18n-auto="autoKo17">9:16 / 16:9 / 1:1 선택</span></td><td><span data-i18n-auto="autoKo18">9:16 / 16:9 / 1:1 선택</span></td></tr>
-<tr><td>Resolution</td><td><span data-i18n-auto="autoKo19">460p / 720p / 1080p / 4K 선택</span></td><td><span data-i18n-auto="autoKo20">460p / 720p / 1080p / 4K 선택</span></td><td><span data-i18n-auto="autoKo21">460p / 720p / 1080p / 4K 선택</span></td></tr>
+<tr><td>Resolution</td><td><span data-i18n-auto="autoKo19">540p / 720p / 1080p 선택</span></td><td><span data-i18n-auto="autoKo20">540p / 720p / 1080p 선택</span></td><td><span data-i18n-auto="autoKo21">540p / 720p / 1080p 선택</span></td></tr>
 </tbody>
 </table>
 </div>
@@ -405,8 +421,8 @@ window.addEventListener('error', function(e) {
 </div>
 <div class="consumer-price-grid">
 <article class="consumer-price-card"><span class="tag">TRY</span><h4>Mini</h4><div class="consumer-price">₩4,900</div><p data-i18n="miniCopy">5초 / 1스타일 / 가볍게 체험하는 스티커사진급 변신 영상</p><button data-i18n="tryNow" data-open="" data-plan="Mini Transform">TRY NOW</button></article>
-<article class="consumer-price-card featured"><span class="tag">BEST</span><h4>Basic</h4><div class="consumer-price">₩7,900</div><p data-i18n="basicConsumerCopy">8초 / 1스타일 / SNS에 올리기 좋은 기본 트랜스폼</p><button data-i18n="startTransform" data-open="" data-plan="Basic Transform">START TRANSFORM</button></article>
-<article class="consumer-price-card"><span class="tag">PLUS</span><h4>Best</h4><div class="consumer-price">₩12,900</div><p data-i18n="bestConsumerCopy">10초 / 여행+패션 무드 / 더 강한 틱톡형 전환</p><button data-i18n="chooseBest" data-open="" data-plan="Best Transform">CHOOSE BEST</button></article>
+<article class="consumer-price-card featured"><span class="tag">BEST</span><h4>Basic</h4><div class="consumer-price">₩7,900</div><p data-i18n="basicConsumerCopy">9초 / 1스타일 / SNS에 올리기 좋은 기본 트랜스폼</p><button data-i18n="startTransform" data-open="" data-plan="Basic Transform">START TRANSFORM</button></article>
+<article class="consumer-price-card"><span class="tag">PLUS</span><h4>Best</h4><div class="consumer-price">₩12,900</div><p data-i18n="bestConsumerCopy">약 10초(9초) / 여행+패션 무드 / 더 강한 틱톡형 전환</p><button data-i18n="chooseBest" data-open="" data-plan="Best Transform">CHOOSE BEST</button></article>
 <article class="consumer-price-card"><span class="tag">SET</span><h4>3 Style Set</h4><div class="consumer-price">₩19,900</div><p data-i18n="setConsumerCopy">3개 스타일 묶음 / 여행·패션·워킹 변신을 한 번에</p><button data-i18n="getSet" data-open="" data-plan="3 Style Set">GET SET</button></article>
 </div>
 <div class="consumer-prompt-box">
@@ -427,14 +443,14 @@ window.addEventListener('error', function(e) {
 <article class="price-card" data-krw="19900" data-plan="Starter" data-plan-card="" data-seconds="10">
 <h3>Starter</h3>
 <div class="price" data-krw="19900" data-money="">₩19,900</div>
-<p><span data-duration="" data-seconds="10"><span data-i18n-auto="autoKo22">10초</span></span> · <span data-i18n="starterUse">빠른 숏폼 광고용</span></p>
+<p><span data-duration="" data-seconds="10"><span data-i18n-auto="autoKo22">약 10초(9초)</span></span> · <span data-i18n="starterUse">빠른 숏폼 광고용</span></p>
 <ul>
-<li><span data-duration="" data-seconds="10"><span data-i18n-auto="autoKo23">10초</span></span> <span data-i18n="starterItem1">시네마틱 영상 1편</span></li>
+<li><span data-duration="" data-seconds="10"><span data-i18n-auto="autoKo23">약 10초(9초)</span></span> <span data-i18n="starterItem1">시네마틱 영상 1편</span></li>
 <li data-i18n="starterItem2">비율 선택: 9:16 / 16:9 / 1:1</li>
-<li data-i18n="starterItem3">해상도 선택: 460p / 720p / 1080p / 4K</li>
+<li data-i18n="starterItem3">해상도 선택: 540p / 720p / 1080p</li>
 <li data-i18n="commercialUse">상업적 사용 가능</li>
 </ul>
-<button class="btn has-help" data-help="10초 숏폼 영상. 빠른 테스트와 SNS 광고에 적합합니다." data-help-key="help27" data-help-ko="10초 숏폼 영상. 빠른 테스트와 SNS 광고에 적합합니다." data-open="" data-plan="Starter"><span data-i18n="start">Start</span></button>
+<button class="btn has-help" data-help="약 10초(9초) 숏폼 영상. 빠른 테스트와 SNS 광고에 적합합니다." data-help-key="help27" data-help-ko="약 10초(9초) 숏폼 영상. 빠른 테스트와 SNS 광고에 적합합니다." data-open="" data-plan="Starter"><span data-i18n="start">Start</span></button>
 </article>
 <article class="price-card featured" data-krw="39900" data-plan="Pro" data-plan-card="" data-seconds="15">
 <span class="badge" data-i18n="bestSeller">Best Seller</span>
@@ -445,7 +461,7 @@ window.addEventListener('error', function(e) {
 <li><span data-duration="" data-seconds="15"><span data-i18n-auto="autoKo25">15초</span></span> <span data-i18n="proItem1">프리미엄 영상 1편</span></li>
 <li data-i18n="proItem2">비율 선택: 9:16 / 16:9 / 1:1</li>
 <li data-i18n="proItem3">1회 수정 포함</li>
-<li data-i18n="proItem4">해상도 선택: 460p / 720p / 1080p / 4K</li>
+<li data-i18n="proItem4">해상도 선택: 540p / 720p / 1080p</li>
 <li data-i18n="priorityWork">우선 작업</li>
 </ul>
 <button class="btn btn-primary has-help" data-help="15초 프리미엄 영상. 브랜드와 제품 광고에 가장 추천합니다." data-help-key="help28" data-help-ko="15초 프리미엄 영상. 브랜드와 제품 광고에 가장 추천합니다." data-open="" data-plan="Pro"><span data-i18n="start">Start</span></button>
@@ -458,14 +474,14 @@ window.addEventListener('error', function(e) {
 <li><span data-duration="" data-seconds="30"><span data-i18n-auto="autoKo27">30초</span></span> <span data-i18n="signatureItem1">시그니처 영상 1편</span></li>
 <li data-i18n="signatureItem2">비율 선택: 9:16 / 16:9 / 1:1</li>
 <li data-i18n="signatureItem3">2회 수정 포함</li>
-<li data-i18n="signatureItem4">해상도 선택: 460p / 720p / 1080p / 4K</li>
+<li data-i18n="signatureItem4">해상도 선택: 540p / 720p / 1080p</li>
 <li data-i18n="signatureItem5">디렉터 스타일 감수</li>
 </ul>
 <button class="btn has-help" data-help="30초 시그니처 영상. 쇼릴, 브랜드 필름, 고급 광고용입니다." data-help-key="help29" data-help-ko="30초 시그니처 영상. 쇼릴, 브랜드 필름, 고급 광고용입니다." data-open="" data-plan="Signature"><span data-i18n="start">Start</span></button>
 </article>
 </div>
 <div class="pricing-choice-note" data-i18n="sizeChoiceNote">
-<span data-i18n="sizeChoiceNote">비율과 해상도는 주문 단계에서 직접 선택합니다. 선택 가능: 9:16 / 16:9 / 1:1 · 460p / 720p / 1080p / 4K</span>
+<span data-i18n="sizeChoiceNote">비율과 해상도는 주문 단계에서 직접 선택합니다. 선택 가능: 9:16 / 16:9 / 1:1 · 540p / 720p / 1080p</span>
 </div>
 <div class="pricing-note" data-i18n="pricingNote"><span data-i18n="pricingNote">납품 일정은 주문 내용 확인 후 안내됩니다. 외화 표시는 참고용이며 실제 결제는 원화(KRW)로 진행됩니다.</span></div>
 </div></section>
@@ -549,7 +565,7 @@ window.addEventListener('error', function(e) {
         <p style="margin-bottom: 15px; font-size: 13px; color: rgba(255,255,255,0.7);">단일 규격 파일 1종 제공</p>
         <ul>
           <li>원본 기반 규격 맞춤 파일 제작</li>
-          <li>여권/면허/이력서 중 선택 1종</li>
+          <li>여권/주민등록증/운전면허/이력서 중 선택 1종</li>
           <li>납기: <b>24시간 내 전달</b></li>
         </ul>
         <button class="btn" data-open="" data-plan="ID Mini" style="margin-top: 15px;">START PROJECT ↗</button>
@@ -638,13 +654,13 @@ window.addEventListener('error', function(e) {
         <span class="plan-choice-tag">BEST</span>
         <b>Basic Transform</b>
         <strong>₩7,900</strong>
-        <small>8초 / SNS 업로드용 기본 변신</small>
+        <small>9초 / SNS 업로드용 기본 변신</small>
       </button>
       <button type="button" class="plan-choice-card" data-plan-choice="Best Transform">
         <span class="plan-choice-tag">PLUS</span>
         <b>Best Transform</b>
         <strong>₩12,900</strong>
-        <small>10초 / 여행+패션 무드</small>
+        <small>약 10초(9초) / 여행+패션 무드</small>
       </button>
       <button type="button" class="plan-choice-card" data-plan-choice="3 Style Set">
         <span class="plan-choice-tag">SET</span>
@@ -660,7 +676,7 @@ window.addEventListener('error', function(e) {
         <span class="plan-choice-tag">START</span>
         <b>Starter</b>
         <strong>₩19,900</strong>
-        <small>10초 / 빠른 숏폼 광고</small>
+        <small>약 10초(9초) / 빠른 숏폼 광고</small>
       </button>
       <button type="button" class="plan-choice-card recommended" data-plan-choice="Pro">
         <span class="plan-choice-tag">RECOMMENDED</span>
@@ -679,6 +695,44 @@ window.addEventListener('error', function(e) {
         <b>Custom Project</b>
         <strong>상담 견적</strong>
         <small>공모전·영화제·대형 브랜드 영상</small>
+      </button>
+    </section>
+
+    <section class="plan-choice-section">
+      <div class="plan-choice-kicker">메모리얼 복원</div>
+      <button type="button" class="plan-choice-card recommended" data-plan-choice="Memorial Basic">
+        <span class="plan-choice-tag">추천</span>
+        <b>Memorial Basic</b>
+        <strong>₩29,900</strong>
+        <small>사진 1장 복원 / 재생성 1회</small>
+      </button>
+      <button type="button" class="plan-choice-card" data-plan-choice="Memorial Duo">
+        <span class="plan-choice-tag">DUO</span>
+        <b>Memorial Duo</b>
+        <strong>₩49,900</strong>
+        <small>사진 2장 영상 세트 / 재생성 1회</small>
+      </button>
+    </section>
+
+    <section class="plan-choice-section">
+      <div class="plan-choice-kicker">증명·프로필</div>
+      <button type="button" class="plan-choice-card" data-plan-choice="ID Mini">
+        <span class="plan-choice-tag">MINI</span>
+        <b>ID Mini</b>
+        <strong>₩5,900</strong>
+        <small>여권/주민등록증/면허/이력서 중 1종</small>
+      </button>
+      <button type="button" class="plan-choice-card recommended" data-plan-choice="ID Set">
+        <span class="plan-choice-tag">추천</span>
+        <b>ID Set</b>
+        <strong>₩9,900</strong>
+        <small>4대 규격 전체 패키지 (여권/주민증/면허/이력서)</small>
+      </button>
+      <button type="button" class="plan-choice-card" data-plan-choice="Profile Pro">
+        <span class="plan-choice-tag">PRO</span>
+        <b>Profile Pro</b>
+        <strong>₩29,900</strong>
+        <small>취업/사원증/비즈니스 고급 보정</small>
       </button>
     </section>
   </div>
@@ -701,6 +755,17 @@ window.addEventListener('error', function(e) {
   </div>
   <div class="upload-guide-box" id="uploadGuideBox" style="display:none; margin-top: 10px; padding: 12px; background: rgba(216,242,51,0.06); border-radius: 12px; font-size: 11px; color: rgba(255,255,255,0.75); border: 1px solid rgba(216,242,51,0.25); text-align: left; line-height: 1.5; word-break: keep-all;">
     💡 <b>여권용 가이드:</b> 정면·무배경·귀가 보이게 촬영된 사진을 올려주세요.
+  </div>
+
+  <div class="order-option-group" id="idSpecGroup" style="display:none; margin-top:24px">
+    <div class="order-option-title">규격 선택</div>
+    <div class="option-chips" data-option-group="idSpec">
+      <button class="option-chip active" data-value="여권" type="button">여권</button>
+      <button class="option-chip" data-value="주민등록증" type="button">주민등록증</button>
+      <button class="option-chip" data-value="운전면허" type="button">운전면허</button>
+      <button class="option-chip" data-value="이력서" type="button">이력서</button>
+    </div>
+    <input id="idSpec" name="idSpec" type="hidden" value="여권"/>
   </div>
   
   <div class="preview" id="imagePreview">
@@ -787,12 +852,12 @@ window.addEventListener('error', function(e) {
 <div class="order-option-group" id="resolutionGroup">
 <div class="order-option-title" data-i18n="resolutionTitle">Resolution</div>
 <div class="option-chips" data-option-group="resolution">
-<button class="option-chip active" data-value="460p" type="button">460p</button>
+<button class="option-chip active" data-value="540p" type="button">540p</button>
 <button class="option-chip" data-value="720p" type="button">720p</button>
 <button class="option-chip" data-value="1080p" type="button">1080p</button>
 <button class="option-chip" data-value="4K" type="button">4K</button>
 </div>
-<input id="resolution" name="resolution" type="hidden" value="460p"/>
+<input id="resolution" name="resolution" type="hidden" value="540p"/>
 </div>
 <button class="btn btn-primary has-help" data-help="입력한 주문 정보를 확인하고 테스트 주문을 접수합니다. 실제 결제 연결 전까지는 테스트 접수입니다." data-help-key="help30" data-help-ko="입력한 주문 정보를 확인하고 테스트 주문을 접수합니다. 실제 결제 연결 전까지는 테스트 접수입니다." id="submitOrder" style="width:100%;margin-top:14px" type="button" disabled>테스트 주문 접수</button></div><div class="success-panel"><div class="success-icon">✓</div><h3>PROJECT<br/>STARTED.</h3><p><span data-i18n-auto="autoKo30">주문 흐름이 정상 작동합니다. 실제 결제 연결 전까지는 주문 초안이 브라우저에 저장되고, 주문 파일을 내려받을 수 있습니다.</span></p><div class="order-id" id="successOrderId">ORDER #AVVM-DEMO</div><p class="order-link-copy" id="orderLinkCopy"><span data-i18n-auto="autoFinal2">완성되면 카톡/문자로 알려드리고, 링크에서 바로 확인할 수 있습니다.</span></p><a class="btn btn-primary order-view-link" href="#" id="viewOrderLink" rel="noopener" target="_blank"><span data-i18n-auto="autoFinal3">주문 링크 열기</span></a><div class="status-mini"><div class="status-row"><div class="status-step on"><span data-i18n-auto="autoFinal4">접수됨</span></div><div class="status-step on"><span data-i18n-auto="autoFinal5">제작 대기</span></div><div class="status-step"><span data-i18n-auto="autoFinal6">검수 중</span></div><div class="status-step"><span data-i18n-auto="autoFinal7">완성</span></div></div></div><div class="success-actions"><button class="btn btn-primary" id="downloadOrder" type="button">DOWNLOAD ORDER</button><button class="btn" id="resetOrder" type="button">CREATE ANOTHER</button></div></div></div></div>
 <div class="video-modal" id="showreelModal"><div class="video-box"><div class="video-head"><span>AVVM SHOWREEL</span><button class="close" id="closeShowreel" type="button">×</button></div><video controls="" id="showreelVideo" playsinline="" preload="metadata" src="https://avvmstudio25.vercel.app/videos/showreel.mp4?v=2"></video></div></div>
@@ -808,10 +873,7 @@ window.addEventListener('error', function(e) {
 <div class="legal-backdrop" id="legalBackdrop"></div>
 <article aria-labelledby="legalTitle" aria-modal="true" class="legal-panel" role="dialog">
 <button class="legal-close" id="legalClose" type="button">×</button>
-<div id="legalContent"></div>
-<div class="legal-disclaimer">
-        This legal notice is a business-use draft for AVVM.studio and should be reviewed by a legal professional before full commercial launch, especially for international payments, refunds, and privacy compliance.
-      </div>
+</div>
 </article>
 </div>
 
