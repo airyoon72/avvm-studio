@@ -1,230 +1,137 @@
-const MODEL_ID = "fal-ai/luma-dream-machine/ray-2-flash/image-to-video";
-const LEGACY_MODEL_ID = "fal-ai/luma-dream-machine/image-to-video";
-
-const ALLOWED_DURATION = ["5s", "9s"];
-const ALLOWED_RESOLUTION = ["540p", "720p", "1080p"];
-const ALLOWED_ASPECT = ["16:9", "9:16", "4:3", "3:4", "21:9", "9:21", "1:1"];
-
-// Supabase 클라이언트 (환경변수 없으면 null — 기존 방식으로 계속 작동)
-async function getSupabase() {
-  if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) return null;
-  try {
-    const { createClient } = await import("@supabase/supabase-js");
-    return createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
-  } catch (e) {
-    console.error("Supabase init failed:", e.message);
-    return null;
-  }
-}
-
-// fal 영상을 Supabase Storage로 복사하고 영구 URL 반환 (실패 시 null)
-async function archiveVideo(supabase, requestId, falUrl) {
-  try {
-    const dl = await fetch(falUrl);
-    if (!dl.ok) throw new Error("download HTTP " + dl.status);
-    const buf = Buffer.from(await dl.arrayBuffer());
-
-    const path = requestId + ".mp4";
-    const { error: upErr } = await supabase.storage
-      .from("videos")
-      .upload(path, buf, { contentType: "video/mp4", upsert: true });
-    if (upErr) throw upErr;
-
-    const { data } = supabase.storage.from("videos").getPublicUrl(path);
-    return data?.publicUrl || null;
-  } catch (e) {
-    console.error("archiveVideo failed:", e.message);
-    return null;
-  }
-}
+const MODEL_ID = "fal-ai/luma-dream-machine/image-to-video";
 
 module.exports = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
-  if (req.method === "OPTIONS") return res.status(200).end();
-
-  if (!process.env.FAL_KEY) {
-    return res.status(500).json({ error: "FAL_KEY environment variable is not configured on Vercel." });
+  요청 메서드가 "OPTIONS"인 경우
+    res.status(200).end();를 반환합니다.
   }
 
-  let fal;
-  try {
-    const falModule = await import("@fal-ai/client");
-    fal = falModule.fal;
-    fal.config({ credentials: process.env.FAL_KEY });
-  } catch (err) {
-    return res.status(500).json({ error: "Failed to load @fal-ai/client: " + err.message });
+  // 1. FAL_KEY가 있는지 확인하십시오
+  const falKey = process.env.FAL_KEY;
+  falseKey가 아닌 경우 {
+    return res.status(500).json({ error: "FAL_KEY 환경 변수가 Vercel에 구성되어 있지 않습니다." });
   }
 
-  // ─────────── GET: 상태 조회 + 완료 시 영구 URL 반환 ───────────
-  if (req.method === "GET") {
+  // 2. GET 매개변수 유효성 검사 (status_url/response_url 사용을 권장하며, 그렇지 않을 경우 id를 기반으로 매개변수를 생성합니다.)
+  요청 방식이 "GET"인 경우
     const id = req.query.id || req.query.requestId || req.query.request_id;
-    if (!id) {
-      return res.status(400).json({ error: "Missing request_id parameter." });
+    const statusUrl = req.query.status_url || req.query.statusUrl || (id ? `https://queue.fal.run/${MODEL_ID}/requests/${id}` : null);
+    const responseUrl = req.query.response_url || req.query.responseUrl || (id ? `https://queue.fal.run/${MODEL_ID}/requests/${id}` : null);
+
+    statusUrl이 아닌 경우 {
+      return res.status(400).json({ error: "필수 식별자가 누락되었습니다. status_url, response_url 또는 요청 ID가 필요합니다." });
     }
-    try {
-      const supabase = await getSupabase();
 
-      // 1) DB에 이미 영구 URL이 저장돼 있으면 fal 조회 없이 바로 반환 (중복 복사 방지)
-      if (supabase) {
-        const { data: existing } = await supabase
-          .from("orders")
-          .select("result_url")
-          .eq("request_id", id)
-          .maybeSingle();
-        if (existing && existing.result_url) {
-          return res.status(200).json({
-            status: "COMPLETED",
-            request_id: id,
-            output: [existing.result_url],
-            archived: true
-          });
-        }
+    노력하다 {
+      // 2a. 네이티브 글로벌 GET(가상 호출)을 통해 상태 엔드포인트를 직접 호출합니다.
+      const statusRes = await fetch(statusUrl, {
+        메서드: "GET",
+        헤더: { "인증": `키 ${falKey}` }
+      });
+      
+      만약 statusRes.ok가 아니면 {
+        throw new Error(`Fal.ai 상태 확인 실패: ${statusRes.status}`);
       }
+      
+      const status = await statusRes.json();
 
-      // 2) fal 상태 조회 (새 모델 → 실패 시 예전 모델)
-      let status = null;
-      let modelUsed = MODEL_ID;
-      try {
-        status = await fal.queue.status(MODEL_ID, { requestId: id, logs: false });
-      } catch (_) {
-        status = await fal.queue.status(LEGACY_MODEL_ID, { requestId: id, logs: false });
-        modelUsed = LEGACY_MODEL_ID;
-      }
-
-      if (status.status === "COMPLETED") {
-        let result = null;
-        const notes = [];
-
-        try {
-          const r1 = await fal.queue.result(modelUsed, { requestId: id });
-          result = r1?.data || r1;
-        } catch (e1) {
-          notes.push("client result: " + e1.message);
-        }
-
-        if (!result && status.response_url) {
-          try {
-            const r2 = await fetch(status.response_url, {
-              headers: { "Authorization": "Key " + process.env.FAL_KEY }
-            });
-            const bodyText = await r2.text();
-            if (r2.ok) {
-              try { result = JSON.parse(bodyText); } catch (_) { notes.push("direct: non-JSON"); }
-            } else {
-              notes.push("direct: HTTP " + r2.status + " body=" + bodyText.slice(0, 300));
-            }
-          } catch (e2) {
-            notes.push("direct: " + e2.message);
-          }
-        }
-
+      // 2b. 상태가 COMPLETED인 경우, 상태 페이로드에서 비디오 URL을 파싱합니다.
+      상태가 "완료됨"인 경우 {
         let videoUrl =
-          result?.video?.url ||
-          result?.data?.video?.url ||
-          result?.output?.video?.url ||
-          null;
+          상태?.비디오?.URL ||
+          상태?.데이터?.비디오?.URL ||
+          (status?.video && typeof status.video === 'string' ? status.video : null) ||
+          (status?.output && status.output[0]) ||
+          (status?.data?.output && status.data.output[0]) ||
+          널;
 
-        if (!videoUrl && result) {
-          const raw = JSON.stringify(result);
-          const m = raw.match(/https:\/\/[^"]+\.(mp4|mov|webm)[^"]*/);
-          if (m) videoUrl = m[0];
-        }
-
-        // 3) 영상을 Supabase로 복사 → 영구 URL 저장 (실패해도 fal URL로 계속 진행)
-        let finalUrl = videoUrl;
-        let archived = false;
-        if (videoUrl && supabase) {
-          const permanentUrl = await archiveVideo(supabase, id, videoUrl);
-          if (permanentUrl) {
-            finalUrl = permanentUrl;
-            archived = true;
-            await supabase.from("orders").upsert({
-              request_id: id,
-              result_url: permanentUrl,
-              status: "completed"
+        // 상태 응답에서 찾을 수 없는 경우, responseUrl에서 가져오는 방식으로 대체합니다.
+        만약 videoUrl이 아니고 responseUrl이 아니고 responseUrl이 statusUrl과 같지 않다면 {
+          노력하다 {
+            const resultRes = await fetch(responseUrl, {
+              메서드: "GET",
+              헤더: { "인증": `키 ${falKey}` }
             });
+            결과가 괜찮으면 {
+              const result = await resultRes.json();
+              비디오 URL =
+                결과?.비디오?.URL ||
+                결과?.데이터?.비디오?.URL ||
+                (result?.video && typeof result.video === 'string' ? result.video : null) ||
+                (result?.output && result.output[0]) ||
+                (result?.data?.output && result.data.output[0]) ||
+                널;
+            }
+          } catch (resErr) {
+            console.error("큐 응답을 가져오는 중 오류 발생:", resErr);
           }
         }
-
-        return res.status(200).json({
-          ...status,
-          status: "COMPLETED",
-          output: finalUrl ? [finalUrl] : [],
-          archived: archived,
-          debug: finalUrl ? undefined : { notes: notes, result: result }
+        
+        res.status(200).json({를 반환합니다.
+          ...상태,
+          상태: "완료됨"
+          출력: videoUrl ? [videoUrl] : []
         });
       }
 
-      return res.status(200).json(status);
+      res.status(200).json(status)를 반환합니다.
     } catch (err) {
-      console.error("Error querying status:", err);
-      return res.status(500).json({ error: err.message || "Failed to query status from Fal.ai" });
+      console.error("상태 조회 오류:", err);
+      return res.status(500).json({ error: err.message || "Fal.ai에서 상태를 조회하는 데 실패했습니다." });
     }
   }
 
-  // ─────────── POST: 이미지로 영상 생성 요청 ───────────
-  if (req.method === "POST") {
-    const { imageData, prompt, duration, resolution, aspectRatio, orderId } = req.body || {};
-    if (!imageData) {
-      return res.status(400).json({ error: "Missing imageData base64 string" });
+  // 3. POST 요청: 비디오 생성 제출
+  요청 방식이 "POST"인 경우
+    const { imageData, prompt } = req.body || {};
+    만약 (!imageData)라면 {
+      return res.status(400).json({ error: "imageData base64 문자열이 누락되었습니다." });
     }
 
-    try {
-      const matches = imageData.match(/^data:([A-Za-z0-9.+\/-]+);base64,(.+)$/);
-      if (!matches || matches.length !== 3) {
-        return res.status(400).json({ error: "Invalid base64 imageData format." });
-      }
-
-      const safeDuration = ALLOWED_DURATION.includes(duration) ? duration : "5s";
-      const safeResolution = ALLOWED_RESOLUTION.includes(resolution) ? resolution : "540p";
-      const safeAspect = ALLOWED_ASPECT.includes(aspectRatio) ? aspectRatio : "9:16";
-
-      const submitPrompt = prompt || "Cinematic 3D camera pan, high fashion, smooth motion, high detail, masterpiece";
-
-      const queueResult = await fal.queue.submit(MODEL_ID, {
-        input: {
-          image_url: imageData,
-          prompt: submitPrompt,
-          duration: safeDuration,
-          resolution: safeResolution,
-          aspect_ratio: safeAspect
-        }
+    노력하다 {
+      console.log("Fal.ai 큐에 base64 이미지를 직접 제출합니다...");
+      const submitPrompt = prompt || "영화 같은 3D 카메라 패닝, 고급 패션, 부드러운 움직임, 높은 디테일, 명작";
+      const submitRes = await fetch(`https://queue.fal.run/${MODEL_ID}`, {
+        방법: "POST",
+        헤더: {
+          "권한 부여": `키 ${falKey}`,
+          "콘텐츠 유형": "application/json"
+        },
+        본문: JSON.stringify({
+          입력: {
+            이미지 URL: 이미지 데이터,
+            프롬프트: 제출 프롬프트
+          }
+        })
       });
 
-      // 주문 행 기록 (실패해도 생성 흐름은 계속)
-      try {
-        const supabase = await getSupabase();
-        if (supabase) {
-          await supabase.from("orders").insert({
-            request_id: queueResult.request_id,
-            order_id: orderId || null,
-            status: "processing"
-          });
-        }
-      } catch (dbErr) {
-        console.error("orders insert failed:", dbErr.message);
+      제출 완료(submitRes.ok)가 아니면 {
+        const submitErrText = await submitRes.text();
+        throw new Error(`Fal.ai 큐 제출 실패: ${submitRes.status} | ${submitErrText}`);
       }
 
-      console.log("Fal.ai Queue Submitted. ID:", queueResult.request_id,
-        "| opts:", safeDuration, safeResolution, safeAspect);
+      const submitData = await submitRes.json();
+      console.log("Fal.ai 큐 제출이 성공적으로 완료되었습니다. ID:", submitData.request_id);
 
-      return res.status(200).json({
-        success: true,
-        requestId: queueResult.request_id,
-        options: { duration: safeDuration, resolution: safeResolution, aspectRatio: safeAspect }
+      res.status(200).json({를 반환합니다.
+        성공: 사실입니다.
+        requestId: submitData.request_id,
+        statusUrl: submitData.status_url,
+        responseUrl: submitData.response_url,
+        이미지 URL: 이미지 데이터
       });
     } catch (err) {
-      console.error("Error initiating Fal generation:", err);
-      let errMsg = err.message || "Failed to start Fal.ai video generation";
-      if (err.body && err.body.detail) {
-        try { errMsg += " | detail: " + JSON.stringify(err.body.detail); } catch (_) {}
+      console.error("Fal 생성 시작 중 오류 발생:", err);
+      let errMsg = err.message || "Fal.ai 비디오 생성을 시작하는 데 실패했습니다.";
+      오류 메시지에 "금지됨", "권한 없음", "승인되지 않음"이 포함되거나 오류 상태 코드가 403 또는 401인 경우 {
+        errMsg = "Fal.ai API Key가 유효하지 않은 크기가 있습니다 (401/403). Vercel 건강 상태의 FAL_KEY 값과 권한을 부여하십시오.";
       }
-      return res.status(500).json({ error: errMsg });
+      res.status(500).json({ error: errMsg })를 반환합니다.
     }
   }
 
-  return res.status(405).json({ error: "Method not allowed" });
+  return res.status(405).json({ error: "메서드가 허용되지 않습니다" });
 };
