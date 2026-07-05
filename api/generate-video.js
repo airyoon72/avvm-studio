@@ -30,38 +30,45 @@ module.exports = async (req, res) => {
       const status = await fal.queue.status(MODEL_ID, { requestId: id, logs: false });
 
       if (status.status === "COMPLETED") {
-        try {
-          const result = await fal.queue.result(MODEL_ID, { requestId: id });
+        let result = null;
+        let fetchNote = null;
 
-          // 다양한 응답 구조에서 영상 URL 추출 시도
-          let videoUrl =
-            result?.data?.video?.url ||
-            result?.video?.url ||
-            result?.data?.output?.video?.url ||
-            (Array.isArray(result?.data?.output) ? result.data.output[0] : null) ||
-            null;
-
-          // 최후의 수단: 결과 전체에서 영상 URL 패턴 검색
-          if (!videoUrl) {
-            const raw = JSON.stringify(result);
-            const m = raw.match(/https:\/\/[^"]+\.(mp4|mov|webm)[^"]*/);
-            if (m) videoUrl = m[0];
+        // fal이 알려준 response_url로 직접 결과 조회 (경로 추측 안 함)
+        if (status.response_url) {
+          try {
+            const r = await fetch(status.response_url, {
+              headers: { "Authorization": "Key " + process.env.FAL_KEY }
+            });
+            if (r.ok) {
+              result = await r.json();
+            } else {
+              fetchNote = "response_url fetch HTTP " + r.status;
+            }
+          } catch (e) {
+            fetchNote = "response_url fetch error: " + e.message;
           }
-
-          return res.status(200).json({
-            ...status,
-            status: "COMPLETED",
-            output: videoUrl ? [videoUrl] : [],
-            debug: videoUrl ? undefined : result
-          });
-        } catch (resultErr) {
-          console.error("Error fetching result:", resultErr);
-          return res.status(200).json({
-            ...status,
-            output: [],
-            debug: "result fetch failed: " + resultErr.message
-          });
         }
+
+        // 다양한 응답 구조에서 영상 URL 추출
+        let videoUrl =
+          result?.video?.url ||
+          result?.data?.video?.url ||
+          result?.output?.video?.url ||
+          null;
+
+        // 최후의 수단: 결과 전체에서 영상 URL 패턴 검색
+        if (!videoUrl && result) {
+          const raw = JSON.stringify(result);
+          const m = raw.match(/https:\/\/[^"]+\.(mp4|mov|webm)[^"]*/);
+          if (m) videoUrl = m[0];
+        }
+
+        return res.status(200).json({
+          ...status,
+          status: "COMPLETED",
+          output: videoUrl ? [videoUrl] : [],
+          debug: videoUrl ? undefined : (fetchNote || result)
+        });
       }
 
       return res.status(200).json(status);
@@ -79,7 +86,6 @@ module.exports = async (req, res) => {
     }
 
     try {
-      // 데이터 URI 형식 검증
       const matches = imageData.match(/^data:([A-Za-z0-9.+\/-]+);base64,(.+)$/);
       if (!matches || matches.length !== 3) {
         return res.status(400).json({ error: "Invalid base64 imageData format." });
@@ -87,7 +93,6 @@ module.exports = async (req, res) => {
 
       const submitPrompt = prompt || "Cinematic 3D camera pan, high fashion, smooth motion, high detail, masterpiece";
 
-      // 스토리지 업로드 생략 — fal.ai는 base64 데이터 URI를 image_url로 직접 받음
       const queueResult = await fal.queue.submit(MODEL_ID, {
         input: {
           image_url: imageData,
@@ -113,4 +118,3 @@ module.exports = async (req, res) => {
 
   return res.status(405).json({ error: "Method not allowed" });
 };
-
