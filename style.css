@@ -4864,11 +4864,12 @@ body.modal-open{
   }
 }
 
-/* Right-aligned Hero notice teaser positioning (opposite of buttons) */
+/* Hero notice teaser positioning: placed directly in-flow inside hero-v5-content */
 .hero-teaser-wrapper {
-  position: absolute;
-  right: min(7vw, 72px);
-  bottom: 82px; /* positioned perfectly between actions (above) and scroll-to-explore (below) */
+  position: relative;
+  margin-top: 24px;
+  margin-bottom: 4px;
+  align-self: flex-start;
   z-index: 10;
   opacity: 0;
   transform: translateY(20px);
@@ -4913,11 +4914,14 @@ body.modal-open{
     padding: 6px 12px;
     font-size: 12px;
   }
+  .hero-v5-content {
+    padding-bottom: 88px !important; /* Reset padding back since notice flows relatively */
+  }
   .hero-teaser-wrapper {
-    left: 50%;
-    right: auto;
-    transform: translateX(-50%) translateY(20px);
-    bottom: 74px;
+    align-self: center !important;
+    text-align: center;
+    margin: 18px auto 0 !important;
+    transform: translateY(20px);
     width: max-content;
     max-width: calc(100% - 32px);
   }
