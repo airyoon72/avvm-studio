@@ -1,15 +1,42 @@
-// 새 모델: 길이(5s/9s), 해상도(540p/720p/1080p), 비율 지정 가능
 const MODEL_ID = "fal-ai/luma-dream-machine/ray-2-flash/image-to-video";
-// 예전 주문 조회 호환용
 const LEGACY_MODEL_ID = "fal-ai/luma-dream-machine/image-to-video";
 
 const ALLOWED_DURATION = ["5s", "9s"];
 const ALLOWED_RESOLUTION = ["540p", "720p", "1080p"];
 const ALLOWED_ASPECT = ["16:9", "9:16", "4:3", "3:4", "21:9", "9:21", "1:1"];
 
-// Supabase 추가
-import { createClient } from '@supabase/supabase-js'
-const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY)
+// Supabase 클라이언트 (환경변수 없으면 null — 기존 방식으로 계속 작동)
+async function getSupabase() {
+  if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) return null;
+  try {
+    const { createClient } = await import("@supabase/supabase-js");
+    return createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
+  } catch (e) {
+    console.error("Supabase init failed:", e.message);
+    return null;
+  }
+}
+
+// fal 영상을 Supabase Storage로 복사하고 영구 URL 반환 (실패 시 null)
+async function archiveVideo(supabase, requestId, falUrl) {
+  try {
+    const dl = await fetch(falUrl);
+    if (!dl.ok) throw new Error("download HTTP " + dl.status);
+    const buf = Buffer.from(await dl.arrayBuffer());
+
+    const path = requestId + ".mp4";
+    const { error: upErr } = await supabase.storage
+      .from("videos")
+      .upload(path, buf, { contentType: "video/mp4", upsert: true });
+    if (upErr) throw upErr;
+
+    const { data } = supabase.storage.from("videos").getPublicUrl(path);
+    return data?.publicUrl || null;
+  } catch (e) {
+    console.error("archiveVideo failed:", e.message);
+    return null;
+  }
+}
 
 module.exports = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -31,14 +58,33 @@ module.exports = async (req, res) => {
     return res.status(500).json({ error: "Failed to load @fal-ai/client: " + err.message });
   }
 
-  // ─────────── GET: 상태 조회 + 완료 시 영상 URL 반환 ───────────
+  // ─────────── GET: 상태 조회 + 완료 시 영구 URL 반환 ───────────
   if (req.method === "GET") {
     const id = req.query.id || req.query.requestId || req.query.request_id;
     if (!id) {
       return res.status(400).json({ error: "Missing request_id parameter." });
     }
     try {
-      // 새 모델로 먼저 조회, 실패하면 예전 모델로 조회 (과거 주문 호환)
+      const supabase = await getSupabase();
+
+      // 1) DB에 이미 영구 URL이 저장돼 있으면 fal 조회 없이 바로 반환 (중복 복사 방지)
+      if (supabase) {
+        const { data: existing } = await supabase
+          .from("orders")
+          .select("result_url")
+          .eq("request_id", id)
+          .maybeSingle();
+        if (existing && existing.result_url) {
+          return res.status(200).json({
+            status: "COMPLETED",
+            request_id: id,
+            output: [existing.result_url],
+            archived: true
+          });
+        }
+      }
+
+      // 2) fal 상태 조회 (새 모델 → 실패 시 예전 모델)
       let status = null;
       let modelUsed = MODEL_ID;
       try {
@@ -87,44 +133,28 @@ module.exports = async (req, res) => {
           if (m) videoUrl = m[0];
         }
 
-        // Supabase 영구 저장 로직 추가
-        if (videoUrl) {
-          try {
-            const videoResponse = await fetch(videoUrl)
-            const videoBuffer = await videoResponse.arrayBuffer()
-
-            const fileName = `${id}.mp4`
-            const { error: uploadError } = await supabase.storage
-            .from('results')
-            .upload(fileName, videoBuffer, {
-                contentType: 'video/mp4',
-                upsert: true
-              })
-
-            if (!uploadError) {
-              const { data: urlData } = supabase.storage
-              .from('results')
-              .getPublicUrl(fileName)
-
-              await supabase.from('orders').update({
-                result_url: urlData.publicUrl,
-                status: 'completed',
-                fal_video_url: videoUrl
-              }).eq('order_id', id)
-
-              videoUrl = urlData.publicUrl // 응답 URL을 Supabase로 교체
-            }
-          } catch (e) {
-            console.error('Supabase upload failed:', e)
+        // 3) 영상을 Supabase로 복사 → 영구 URL 저장 (실패해도 fal URL로 계속 진행)
+        let finalUrl = videoUrl;
+        let archived = false;
+        if (videoUrl && supabase) {
+          const permanentUrl = await archiveVideo(supabase, id, videoUrl);
+          if (permanentUrl) {
+            finalUrl = permanentUrl;
+            archived = true;
+            await supabase.from("orders").upsert({
+              request_id: id,
+              result_url: permanentUrl,
+              status: "completed"
+            });
           }
         }
-        // Supabase 로직 끝
 
         return res.status(200).json({
-         ...status,
+          ...status,
           status: "COMPLETED",
-          output: videoUrl? [videoUrl] : [],
-          debug: videoUrl? undefined : { notes: notes, result: result }
+          output: finalUrl ? [finalUrl] : [],
+          archived: archived,
+          debug: finalUrl ? undefined : { notes: notes, result: result }
         });
       }
 
@@ -137,21 +167,20 @@ module.exports = async (req, res) => {
 
   // ─────────── POST: 이미지로 영상 생성 요청 ───────────
   if (req.method === "POST") {
-    const { imageData, prompt, duration, resolution, aspectRatio } = req.body || {};
+    const { imageData, prompt, duration, resolution, aspectRatio, orderId } = req.body || {};
     if (!imageData) {
       return res.status(400).json({ error: "Missing imageData base64 string" });
     }
 
     try {
       const matches = imageData.match(/^data:([A-Za-z0-9.+\/-]+);base64,(.+)$/);
-      if (!matches || matches.length!== 3) {
+      if (!matches || matches.length !== 3) {
         return res.status(400).json({ error: "Invalid base64 imageData format." });
       }
 
-      // 옵션 검증 — 잘못된 값이 오면 안전한 기본값으로
-      const safeDuration = ALLOWED_DURATION.includes(duration)? duration : "5s";
-      const safeResolution = ALLOWED_RESOLUTION.includes(resolution)? resolution : "540p";
-      const safeAspect = ALLOWED_ASPECT.includes(aspectRatio)? aspectRatio : "9:16";
+      const safeDuration = ALLOWED_DURATION.includes(duration) ? duration : "5s";
+      const safeResolution = ALLOWED_RESOLUTION.includes(resolution) ? resolution : "540p";
+      const safeAspect = ALLOWED_ASPECT.includes(aspectRatio) ? aspectRatio : "9:16";
 
       const submitPrompt = prompt || "Cinematic 3D camera pan, high fashion, smooth motion, high detail, masterpiece";
 
@@ -164,6 +193,20 @@ module.exports = async (req, res) => {
           aspect_ratio: safeAspect
         }
       });
+
+      // 주문 행 기록 (실패해도 생성 흐름은 계속)
+      try {
+        const supabase = await getSupabase();
+        if (supabase) {
+          await supabase.from("orders").insert({
+            request_id: queueResult.request_id,
+            order_id: orderId || null,
+            status: "processing"
+          });
+        }
+      } catch (dbErr) {
+        console.error("orders insert failed:", dbErr.message);
+      }
 
       console.log("Fal.ai Queue Submitted. ID:", queueResult.request_id,
         "| opts:", safeDuration, safeResolution, safeAspect);
