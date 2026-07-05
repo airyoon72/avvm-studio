@@ -1401,6 +1401,23 @@ const $=(s,root=document)=>root.querySelector(s);
     if(copy && !copy.dataset.customized) copy.textContent=order.orderCopy;
     const link=document.getElementById('viewOrderLink');
     if(link) link.textContent=order.orderLink;
+    // Translate the Hero Memorial teaser dynamically
+    const teaserText = {
+      "ko": "[신규] <b>소중한 추억 복원 (Memorial)</b> 런칭! 오래된 사진, 반려동물 사진 복원하기 ↗",
+      "en": "[NEW] <b>Precious Memories Restoration (Memorial)</b> launched! Restore old or pet photos ↗",
+      "ja": "[新規] <b>大切な思い出の復元 (Memorial)</b> 開始！ペットや古い写真を復元します ↗",
+      "zh": "[新推出] <b>珍贵回忆复原 (Memorial)</b> 上线！复原老照片与宠物照片 ↗",
+      "es": "[NUEVO] ¡Lanzamiento de <b>Restauración de Recuerdos (Memorial)</b>! Restaura fotos antiguas o de mascotas ↗",
+      "fr": "[NOUVEAU] Lancement de la <b>Restauration de Souvenirs (Memorial)</b> ! Restaurez vos anciennes photos ou de vos animaux ↗",
+      "de": "[NEU] <b>Erinnerungswiederherstellung (Memorial)</b> gestartet! Alte Fotos oder Haustierfotos restaurieren ↗",
+      "pt": "[NOVO] Lancement da <b>Restaure de Memórias (Memorial)</b>! Restaure fotos antigas ou de animais de estimação ↗",
+      "ar": "[جديد] إطلاق <b>استعادة الذكريات الثمينة (Memorial)</b>! استرجع صورك القديمة أو صور حيواناتك الأليفة ↗"
+    };
+    const noticeInner = document.querySelector('.hero-new-notice span:nth-child(2)');
+    if (noticeInner) {
+      noticeInner.innerHTML = teaserText[lang] || teaserText.ko;
+    }
+
     if(typeof window.applyHeroTitleLang === 'function') window.applyHeroTitleLang(lang);
     if(typeof window.applyConsentLang === 'function') window.applyConsentLang(lang);
     if(typeof window.applyBusinessInfo === 'function') window.applyBusinessInfo(lang);
@@ -2188,10 +2205,27 @@ const $=(s,root=document)=>root.querySelector(s);
     }
   }
 
-  // Intercept user actions to stop auto translation cycle
-  document.addEventListener('click', stopAutoplay, { capture: true, passive: true });
-  document.addEventListener('touchstart', stopAutoplay, { capture: true, passive: true });
-  document.addEventListener('keydown', stopAutoplay, { capture: true, passive: true });
+  // Intercept user actions to stop auto translation cycle only on meaningful interactions
+  document.addEventListener('click', function(e) {
+    const target = e.target;
+    if (
+      target.closest('[data-open]') ||
+      target.closest('.modal') ||
+      target.closest('.plan-choice-card') ||
+      target.closest('input') ||
+      target.closest('textarea') ||
+      target.closest('select') ||
+      target.closest('.global-lang-bar')
+    ) {
+      stopAutoplay();
+    }
+  }, { capture: true, passive: true });
+
+  document.addEventListener('keydown', function(e) {
+    if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA')) {
+      stopAutoplay();
+    }
+  }, { capture: true, passive: true });
 
   document.addEventListener('change', function(e) {
     if (e.target && (e.target.id === 'heroNativeLangSelect' || e.target.id === 'nativeLangSelect')) {

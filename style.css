@@ -3039,14 +3039,14 @@ html[lang="zh"] [data-i18n-auto]{
     gap:4px!important;
   }
   .hero-brand-tagline{
-    font-size:7px!important;
+    font-size:8.2px!important;
     letter-spacing:.08em!important;
     max-width:46vw!important;
     overflow:hidden!important;
     text-overflow:ellipsis!important;
   }
   .hero-v5-content{
-    padding-top:104px!important;
+    padding-top:122px!important; /* Added space for the larger tagline */
   }
   .footer-avvm-logo-img{
     height:34px!important;
@@ -3054,7 +3054,7 @@ html[lang="zh"] [data-i18n-auto]{
 }
 @media(max-width:520px){
   .hero-brand-tagline{
-    font-size:6.5px!important;
+    font-size:7.7px!important;
   }
   .footer-inner > div:first-child{
     flex-wrap:wrap!important;
@@ -3552,11 +3552,11 @@ html[lang="zh"] [data-i18n-auto]{
 
   .hero-brand-tagline{
     max-width:46vw!important;
-    font-size:6.5px!important;
+    font-size:7.5px!important;
   }
 
   .hero-v5-content{
-    padding-top:112px!important;
+    padding-top:128px!important; /* Added space for the larger tagline */
   }
 }
 
@@ -3707,7 +3707,7 @@ html[lang="zh"] [data-i18n-auto]{
     display:block!important;
     max-width:58vw!important;
     color:var(--lime,#D8F233)!important;
-    font-size:6.7px!important;
+    font-size:8px!important;
     line-height:1!important;
     font-weight:950!important;
     letter-spacing:.08em!important;
@@ -3780,7 +3780,7 @@ html[lang="zh"] [data-i18n-auto]{
   }
 
   .hero-v5-content{
-    padding-top:108px!important;
+    padding-top:124px!important; /* Added space for the larger tagline */
   }
 }
 
@@ -4864,6 +4864,42 @@ body.modal-open{
   }
 }
 
+/* Right-aligned Hero notice teaser positioning (opposite of buttons) */
+.hero-teaser-wrapper {
+  position: absolute;
+  right: min(7vw, 72px);
+  bottom: 82px; /* positioned perfectly between actions (above) and scroll-to-explore (below) */
+  z-index: 10;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: v5FadeUp .86s cubic-bezier(.16,1,.3,1) 1.5s forwards;
+}
+
+.hero-new-notice {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: rgba(216,242,51,0.08);
+  border: 1px solid rgba(216,242,51,0.25);
+  box-shadow: 0 0 20px rgba(216,242,51,0.05);
+  animation: pulseGlow 2s infinite ease-in-out;
+  text-decoration: none;
+}
+
+.hero-new-notice span:nth-child(1) {
+  font-size: 14px;
+}
+
+.hero-new-notice span:nth-child(2) {
+  font-size: 12px;
+  color: #fff;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
 @media(max-width:680px){
   .quick-nav-bar {
     top: 66px; /* below mobile nav header (height: 66px) */
@@ -4877,5 +4913,104 @@ body.modal-open{
     padding: 6px 12px;
     font-size: 12px;
   }
+  .hero-teaser-wrapper {
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%) translateY(20px);
+    bottom: 74px;
+    width: max-content;
+    max-width: calc(100% - 32px);
+  }
+  .hero-new-notice {
+    padding: 8px 14px;
+  }
+  .hero-new-notice span:nth-child(2) {
+    font-size: 11px;
+  }
+}
+
+/* ==========================================
+   Memorial Before / After Comparison Styles
+   ========================================== */
+.memorial-ba-stage {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 40px;
+}
+.memorial-ba-card {
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #0b0b0b;
+  height: 380px;
+  display: flex;
+  flex-direction: column;
+}
+.memorial-ba-card.featured {
+  border-color: rgba(216, 242, 51, 0.25);
+  box-shadow: 0 10px 30px rgba(216, 242, 51, 0.04);
+}
+.memorial-ba-media {
+  flex: 1;
+  background-size: cover;
+  background-position: center;
+}
+.memorial-ba-video-wrapper {
+  flex: 1;
+  position: relative;
+}
+.memorial-ba-video-wrapper video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.memorial-ba-label {
+  padding: 12px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background: #050505;
+  text-align: center;
+  font-weight: 700;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+.memorial-ba-card.featured .memorial-ba-label {
+  color: var(--lime);
+  border-top-color: rgba(216, 242, 51, 0.15);
+}
+
+@media (max-width: 768px) {
+  .memorial-ba-stage {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .memorial-ba-card {
+    height: 320px;
+  }
+}
+
+/* Desktop Navigation Brand Tagline */
+.nav-brand-stack {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+  gap: 2px !important;
+}
+.nav-brand-tagline {
+  color: var(--lime, #D8F233) !important;
+  font-size: 8.8px !important;
+  line-height: 1 !important;
+  font-weight: 950 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  white-space: nowrap !important;
+  opacity: 0.94 !important;
+  text-shadow: 0 0 12px rgba(216,242,51,0.22) !important;
+  margin-top: 1px !important;
 }
 
