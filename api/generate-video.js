@@ -20,6 +20,7 @@ module.exports = async (req, res) => {
     return res.status(500).json({ error: "Failed to load @fal-ai/client: " + err.message });
   }
 
+  // ─────────── GET: 상태 조회 + 완료 시 영상 URL 반환 ───────────
   if (req.method === "GET") {
     const id = req.query.id || req.query.requestId || req.query.request_id;
     if (!id) {
@@ -31,17 +32,38 @@ module.exports = async (req, res) => {
       if (status.status === "COMPLETED") {
         try {
           const result = await fal.queue.result(MODEL_ID, { requestId: id });
-          const videoUrl = result?.data?.video?.url || result?.video?.url || null;
+
+          // 다양한 응답 구조에서 영상 URL 추출 시도
+          let videoUrl =
+            result?.data?.video?.url ||
+            result?.video?.url ||
+            result?.data?.output?.video?.url ||
+            (Array.isArray(result?.data?.output) ? result.data.output[0] : null) ||
+            null;
+
+          // 최후의 수단: 결과 전체에서 영상 URL 패턴 검색
+          if (!videoUrl) {
+            const raw = JSON.stringify(result);
+            const m = raw.match(/https:\/\/[^"]+\.(mp4|mov|webm)[^"]*/);
+            if (m) videoUrl = m[0];
+          }
+
           return res.status(200).json({
             ...status,
             status: "COMPLETED",
-            output: videoUrl ? [videoUrl] : []
+            output: videoUrl ? [videoUrl] : [],
+            debug: videoUrl ? undefined : result
           });
         } catch (resultErr) {
           console.error("Error fetching result:", resultErr);
-          return res.status(200).json({ ...status, output: [] });
+          return res.status(200).json({
+            ...status,
+            output: [],
+            debug: "result fetch failed: " + resultErr.message
+          });
         }
       }
+
       return res.status(200).json(status);
     } catch (err) {
       console.error("Error querying status:", err);
@@ -49,6 +71,7 @@ module.exports = async (req, res) => {
     }
   }
 
+  // ─────────── POST: 이미지로 영상 생성 요청 ───────────
   if (req.method === "POST") {
     const { imageData, prompt } = req.body || {};
     if (!imageData) {
