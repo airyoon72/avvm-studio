@@ -212,7 +212,7 @@
     @keyframes v5FadeUp{to{opacity:1;transform:translateY(0)}}
 
     @media (max-width:780px){
-      .nav{display:none!important}
+      .nav:not(.scrolled){display:none!important}
       .hero-v5{
         min-height:100svh;
         height:100svh;
@@ -247,7 +247,7 @@
         max-width:98%;
       }
       .hero-v5-sub{
-        margin-top:17px;
+        margin-top:36px;
         max-width:325px;
         font-size:14px;
         line-height:1.58;
@@ -3660,7 +3660,7 @@ html[lang="zh"] [data-i18n-auto]{
 
 /* Mobile: use hero top brand + language, hide fixed nav */
 @media (max-width: 780px){
-  .nav{
+  .nav:not(.scrolled){
     display:none!important;
   }
 
@@ -4959,6 +4959,7 @@ body.modal-open{
   flex: 1;
   background-size: cover;
   background-position: center;
+  transform: scale(1.03);
 }
 .memorial-ba-video-wrapper {
   flex: 1;
