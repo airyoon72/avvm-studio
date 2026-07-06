@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- AVVM V32 PORTONE REVIEW READY - ADDRESS FILLED -->
 
 <html lang="ko">
 <head>
@@ -27,7 +28,37 @@ window.addEventListener('error', function(e) {
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=Inter:wght@400;500;600;700;800;900&amp;family=Cormorant+Garamond:ital,wght@1,700;1,900&amp;display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="style.css?v=29">
+<link rel="stylesheet" href="style.css?v=32">
+<style>
+/* AVVM v31 review-safe additions */
+.option-chip.disabled,
+.option-chip:disabled {
+  opacity: .35;
+  cursor: not-allowed;
+  text-decoration: line-through;
+}
+.review-safe-note {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(216,242,51,0.06);
+  border: 1px solid rgba(216,242,51,0.22);
+  color: rgba(255,255,255,0.74);
+  font-size: 12px;
+  line-height: 1.55;
+  word-break: keep-all;
+}
+.legal-content {
+  width: 100%;
+  max-height: calc(86vh - 80px);
+  overflow: auto;
+  padding-right: 4px;
+}
+.consent-row strong,
+.consent-row b {
+  color: #fff;
+}
+</style>
 </meta><link rel="preload" as="video" href="https://avvmstudio25.vercel.app/videos/hero-original-then-loop.mp4?v=8" type="video/mp4">
 <!-- AVVM V10 Scroll Stable -->
 <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
@@ -461,7 +492,7 @@ window.addEventListener('error', function(e) {
 <tr><td>AI Voiceover</td><td>Option</td><td>Option</td><td class="spec-option">Consult</td></tr>
 <tr><td>Revision</td><td>None</td><td>1 round</td><td>2 rounds</td></tr>
 <tr><td>Aspect Ratio</td><td><span data-i18n-auto="autoKo16">9:16 / 16:9 / 1:1 선택</span></td><td><span data-i18n-auto="autoKo17">9:16 / 16:9 / 1:1 선택</span></td><td><span data-i18n-auto="autoKo18">9:16 / 16:9 / 1:1 선택</span></td></tr>
-<tr><td>Resolution</td><td><span data-i18n-auto="autoKo19">540p / 720p / 1080p 선택</span></td><td><span data-i18n-auto="autoKo20">540p / 720p / 1080p 선택</span></td><td><span data-i18n-auto="autoKo21">540p / 720p / 1080p 선택</span></td></tr>
+<tr><td>Resolution</td><td><span data-i18n-auto="autoKo19">540p / 720p / 1080p 선택</span></td><td><span data-i18n-auto="autoKo20">720p / 1080p 선택</span></td><td><span data-i18n-auto="autoKo21">1080p / 4K 선택</span></td></tr>
 </tbody>
 </table>
 </div>
@@ -523,7 +554,7 @@ window.addEventListener('error', function(e) {
 <li><span data-duration="" data-seconds="15"><span data-i18n-auto="autoKo25">15초</span></span> <span data-i18n="proItem1">프리미엄 영상 1편</span></li>
 <li data-i18n="proItem2">비율 선택: 9:16 / 16:9 / 1:1</li>
 <li data-i18n="proItem3">1회 수정 포함</li>
-<li data-i18n="proItem4">해상도 선택: 540p / 720p / 1080p</li>
+<li data-i18n="proItem4">해상도 선택: 720p / 1080p</li>
 <li data-i18n="priorityWork">우선 작업</li>
 </ul>
 <button class="btn btn-primary has-help" data-help="15초 프리미엄 영상. 브랜드와 제품 광고에 가장 추천합니다." data-help-key="help28" data-help-ko="15초 프리미엄 영상. 브랜드와 제품 광고에 가장 추천합니다." data-open="" data-plan="Pro"><span data-i18n="start">Start</span></button>
@@ -536,16 +567,19 @@ window.addEventListener('error', function(e) {
 <li><span data-duration="" data-seconds="30"><span data-i18n-auto="autoKo27">30초</span></span> <span data-i18n="signatureItem1">시그니처 영상 1편</span></li>
 <li data-i18n="signatureItem2">비율 선택: 9:16 / 16:9 / 1:1</li>
 <li data-i18n="signatureItem3">2회 수정 포함</li>
-<li data-i18n="signatureItem4">해상도 선택: 540p / 720p / 1080p</li>
+<li data-i18n="signatureItem4">해상도 선택: 1080p / 4K</li>
 <li data-i18n="signatureItem5">디렉터 스타일 감수</li>
 </ul>
 <button class="btn has-help" data-help="30초 시그니처 영상. 쇼릴, 브랜드 필름, 고급 광고용입니다." data-help-key="help29" data-help-ko="30초 시그니처 영상. 쇼릴, 브랜드 필름, 고급 광고용입니다." data-open="" data-plan="Signature"><span data-i18n="start">Start</span></button>
 </article>
 </div>
 <div class="pricing-choice-note" data-i18n="sizeChoiceNote">
-<span data-i18n="sizeChoiceNote">비율과 해상도는 주문 단계에서 직접 선택합니다. 선택 가능: 9:16 / 16:9 / 1:1 · 540p / 720p / 1080p</span>
+<span data-i18n="sizeChoiceNote">비율은 9:16 / 16:9 / 1:1 중 선택 가능합니다. 해상도는 플랜별로 제공되며, 4K는 Signature 또는 Custom 플랜에서만 선택 가능합니다.</span>
 </div>
-<div class="pricing-note" data-i18n="pricingNote"><span data-i18n="pricingNote">납품 일정은 주문 내용 확인 후 안내됩니다. 외화 표시는 참고용이며 실제 결제는 원화(KRW)로 진행됩니다.</span></div>
+<div class="pricing-note" data-i18n="pricingNote"><span data-i18n="pricingNote">납품 일정: Starter 24~48시간, Pro 2~3영업일, Signature 3~5영업일 기준입니다. 이미지 품질, 수정 범위, 4K 여부에 따라 변동될 수 있습니다. 외화 표시는 참고용이며 실제 결제는 원화(KRW)로 진행됩니다.</span></div>
+<div class="review-safe-note">
+  ※ AVVM은 즉시 자동 생성툴이 아니라 고객 이미지 기반 맞춤형 디지털 콘텐츠 제작 서비스입니다. 결제 후 이미지 검토, AI 초안 생성, 품질 검수, 최종 납품 순서로 진행됩니다.
+</div>
 </div></section>
 
 <section class="memorial-section" id="memorial">
@@ -608,8 +642,9 @@ window.addEventListener('error', function(e) {
       </article>
     </div>
 
-    <div class="memorial-bottom-notice" style="margin-top: 30px; padding: 18px; border-radius: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); font-size: 12px; color: rgba(255,255,255,0.5); line-height: 1.6; text-align: left; word-break: keep-all;">
-      💡 AI 복원 특성상 실제 모습과 다르게 표현될 수 있으며, 마음에 들지 않을 경우 1회 재제작을 도와드립니다. 결과물은 검수 후 전달됩니다.
+    <div class="memorial-bottom-notice" style="margin-top: 30px; padding: 18px; border-radius: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); font-size: 12px; color: rgba(255,255,255,0.62); line-height: 1.7; text-align: left; word-break: keep-all;">
+      💡 AI 복원 특성상 실제 모습과 다르게 표현될 수 있으며, 마음에 들지 않을 경우 플랜 기준에 따라 1회 재제작을 도와드립니다. 결과물은 검수 후 전달됩니다.<br>
+      업로드하는 가족·반려동물·고인 사진에 대한 사용 권한이 고객 본인에게 있어야 하며, 제3자의 초상권·저작권·명예를 침해하는 요청은 제작이 제한될 수 있습니다.
     </div>
   </div>
 </section>
@@ -668,8 +703,9 @@ window.addEventListener('error', function(e) {
       </article>
     </div>
 
-    <div class="id-bottom-notice" style="margin-top: 30px; padding: 18px; border-radius: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); font-size: 12px; color: rgba(255,255,255,0.5); line-height: 1.6; text-align: left; word-break: keep-all;">
-      💡 여권, 주민등록증, 운전면허증 등 공식 신분증 사진은 각 기관의 심사 기준에 따라 승인 여부가 달라질 수 있습니다. AVVM은 원본 사진을 기준으로 규격 맞춤, 크롭, 용량 조정, 자연스러운 보정을 지원하며 최종 접수 승인을 보장하지 않습니다. 촬영 상태(초점, 조명, 배경)가 기준에 크게 미달하는 원본은 제작이 어려울 수 있으며, 이 경우 전액 환불됩니다.
+    <div class="id-bottom-notice" style="margin-top: 30px; padding: 18px; border-radius: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); font-size: 12px; color: rgba(255,255,255,0.62); line-height: 1.7; text-align: left; word-break: keep-all;">
+      💡 여권, 주민등록증, 운전면허증 등 공식 신분증 사진은 각 기관의 심사 기준에 따라 승인 여부가 달라질 수 있습니다. AVVM은 원본 사진을 기준으로 규격 맞춤, 크롭, 용량 조정, 자연스러운 보정을 지원하며 최종 접수 승인을 보장하지 않습니다.<br>
+      타인 사칭, 신원 왜곡, 연령 변경, 얼굴 교체, 실제 인물과 다른 신분 생성 목적의 편집은 진행하지 않습니다. 촬영 상태(초점, 조명, 배경)가 기준에 크게 미달하는 원본은 제작이 어려울 수 있으며, 이 경우 전액 환불됩니다.
     </div>
   </div>
 </section>
@@ -687,6 +723,7 @@ window.addEventListener('error', function(e) {
 상호: 라라랜드맘 · 브랜드: AVVM.studio · 대표자: 윤동국<br/>
 사업자등록번호: 347-37-01807 · 통신판매업 신고번호: 제2026-경기파주-2862호<br/>
 대표 연락처: 0505-007-5221 · 이메일: airyoon72@naver.com · 도메인: avvm.studio<br/>
+사업장 주소: 경기도 파주시 미래로310번길 182-37 B동 2층 02호<br/>
 본 서비스는 실물 배송이 없는 맞춤형 디지털 콘텐츠 제작 서비스이며, 결제는 원화(KRW)로 처리됩니다.<br/>
 결제대행 및 개인정보 처리 위탁: 주식회사 코리아포트원(전자결제 서비스 제공, 결제 처리, 결제 결과 확인 및 정산 업무)<br/>
 <a href="#" data-legal="service">서비스/상품 정보</a> · <a href="#" data-legal="delivery">디지털 제공 안내</a> · <a href="#" data-legal="terms">이용약관</a> · <a href="#" data-legal="privacy">개인정보처리방침</a> · <a href="#" data-legal="refund">환불정책</a> · <a href="#" data-legal="pg">PG 심사 정보</a>
@@ -884,7 +921,10 @@ window.addEventListener('error', function(e) {
   <p class="test-mode-note"><b>현재는 PG 승인 전 테스트 모드입니다.</b><br>이 버튼은 실제 결제가 아니라 주문 흐름과 제작 품질 확인용 테스트 접수로 동작합니다. PG 승인 후 실제 결제 버튼으로 전환됩니다.</p>
   <b>결제 전 확인</b>
   <p>본 상품은 고객 이미지 기반 맞춤 제작 디지털 콘텐츠입니다. 제작 착수 후에는 단순 변심에 의한 취소·환불이 제한될 수 있습니다.</p>
+  <p>업로드한 사진, 로고, 상품 이미지, 인물 사진에 대한 사용 권한은 주문자에게 있어야 하며, 타인 사칭·신원 왜곡·무단 상업 이용 목적의 제작은 진행하지 않습니다.</p>
   <p>영상은 AI 기술을 활용하여 제작되며, 이미지 품질과 요청 스타일에 따라 결과가 달라질 수 있습니다.</p>
+  <p>업로드하는 사진, 로고, 상품 이미지, 인물 사진에 대한 사용 권한은 고객 본인에게 있어야 합니다.</p>
+  <p>ID·Profile 서비스는 제출용 규격 맞춤과 자연스러운 보정을 위한 서비스이며, 타인 사칭·신원 왜곡 목적의 편집은 진행하지 않습니다.</p>
 </div>
 <div class="consent-group" id="consentGroup">
   <label class="consent-row">
@@ -898,6 +938,10 @@ window.addEventListener('error', function(e) {
   <label class="consent-row">
     <input id="refundConsent" type="checkbox">
     <span><b>[필수] 맞춤 제작 디지털 콘텐츠 및 환불 제한 동의</b><br>본 상품은 고객이 제공한 이미지와 요청사항을 바탕으로 제작되는 맞춤형 디지털 콘텐츠입니다. 제작 착수 후에는 단순 변심에 의한 취소·환불이 제한될 수 있음을 확인했습니다.</span>
+  </label>
+  <label class="consent-row">
+    <input id="rightsConsent" type="checkbox">
+    <span><b>[필수] 이미지 사용 권한 및 초상권·저작권 확인</b><br>업로드하는 사진, 로고, 상품 이미지, 인물 사진에 대한 사용 권한이 본인에게 있으며, 타인 사칭·신원 왜곡·무단 상업 이용 목적의 제작을 요청하지 않음을 확인합니다.</span>
   </label>
   <label class="consent-row optional">
     <input id="marketingConsent" type="checkbox">
@@ -916,12 +960,13 @@ window.addEventListener('error', function(e) {
 <div class="order-option-group" id="resolutionGroup">
 <div class="order-option-title" data-i18n="resolutionTitle">Resolution</div>
 <div class="option-chips" data-option-group="resolution">
-<button class="option-chip active" data-value="540p" type="button">540p</button>
+<button class="option-chip" data-value="540p" type="button">540p</button>
 <button class="option-chip" data-value="720p" type="button">720p</button>
-<button class="option-chip" data-value="1080p" type="button">1080p</button>
-<button class="option-chip" data-value="4K" type="button" id="chip-4k" style="display:none;">4K</button>
+<button class="option-chip active" data-value="1080p" type="button">1080p</button>
+<button class="option-chip disabled" data-value="4K" type="button" id="chip-4k" disabled title="4K는 Signature 또는 Custom 플랜에서만 선택 가능합니다.">4K</button>
 </div>
-<input id="resolution" name="resolution" type="hidden" value="540p"/>
+<p class="order-form-helper" style="margin-top:8px">4K는 Signature 또는 Custom 플랜에서만 선택 가능합니다.</p>
+<input id="resolution" name="resolution" type="hidden" value="1080p"/>
 </div>
 <button class="btn btn-primary has-help" data-help="입력한 주문 정보를 기반으로 PortOne 가상 테스트 결제를 시작합니다. 실제 금액은 결제되지 않습니다." data-help-key="help30" data-help-ko="입력한 주문 정보를 기반으로 PortOne 가상 테스트 결제를 시작합니다. 실제 금액은 결제되지 않습니다." id="submitOrder" style="width:100%;margin-top:14px" type="button" disabled>테스트 결제하기</button></div><div class="success-panel"><div class="success-icon">✓</div><h3>PROJECT<br/>STARTED.</h3><p><span data-i18n-auto="autoKo30">주문 흐름이 정상 작동합니다. 실제 결제 연결 전까지는 주문 초안이 브라우저에 저장되고, 주문 파일을 내려받을 수 있습니다.</span></p><div class="order-id" id="successOrderId">ORDER #AVVM-DEMO</div><p class="order-link-copy" id="orderLinkCopy"><span data-i18n-auto="autoFinal2">완성되면 카톡/문자로 알려드리고, 링크에서 바로 확인할 수 있습니다.</span></p><a class="btn btn-primary order-view-link" href="#" id="viewOrderLink" rel="noopener" target="_blank"><span data-i18n-auto="autoFinal3">주문 링크 열기</span></a><div class="status-mini"><div class="status-row"><div class="status-step on"><span data-i18n-auto="autoFinal4">접수됨</span></div><div class="status-step on"><span data-i18n-auto="autoFinal5">제작 대기</span></div><div class="status-step"><span data-i18n-auto="autoFinal6">검수 중</span></div><div class="status-step"><span data-i18n-auto="autoFinal7">완성</span></div></div></div><div class="success-actions"><button class="btn btn-primary" id="downloadOrder" type="button">DOWNLOAD ORDER</button><button class="btn" id="resetOrder" type="button">CREATE ANOTHER</button></div></div></div></div>
 <div class="video-modal" id="showreelModal"><div class="video-box"><div class="video-head"><span>AVVM SHOWREEL</span><button class="close" id="closeShowreel" type="button">×</button></div><video controls="" id="showreelVideo" playsinline="" preload="metadata" src="https://avvmstudio25.vercel.app/videos/showreel.mp4?v=2"></video></div></div>
@@ -937,7 +982,7 @@ window.addEventListener('error', function(e) {
 <div class="legal-backdrop" id="legalBackdrop"></div>
 <article aria-labelledby="legalTitle" aria-modal="true" class="legal-panel" role="dialog">
 <button class="legal-close" id="legalClose" type="button">×</button>
-</div>
+<div class="legal-content" id="legalContent"></div>
 </article>
 </div>
 
@@ -957,6 +1002,122 @@ window.addEventListener('error', function(e) {
 <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.36/dist/lenis.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-<script src="app.js?v=29"></script>
+<script src="app.js?v=32"></script>
+
+<script>
+/* AVVM v31 index-only safeguards
+   - app.js를 바로 수정하지 않아도 새 필수동의(rightsConsent)를 결제 클릭 전에 검사합니다.
+   - 4K 옵션은 Signature / Custom 플랜에서만 활성화합니다.
+*/
+(function(){
+  const FOUR_K_PLAN_KEYWORDS = ['Signature', 'Custom'];
+
+  function $(id){ return document.getElementById(id); }
+
+  function toastSafe(message){
+    const toast = $('toast');
+    if (toast) {
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2200);
+    } else {
+      alert(message);
+    }
+  }
+
+  function getCurrentPlan(){
+    if (window.selectedPlan) return String(window.selectedPlan);
+    const summary = $('orderSummary')?.textContent || '';
+    const knownPlans = [
+      'Mini Transform','Basic Transform','Best Transform','3 Style Set',
+      'Starter','Pro','Signature','Custom','Custom Project',
+      'Memorial Basic','Memorial Duo','ID Mini','ID Set','Profile Pro'
+    ];
+    return knownPlans.find(plan => summary.includes(plan)) || 'Pro';
+  }
+
+  function isFourKAllowed(plan){
+    return FOUR_K_PLAN_KEYWORDS.some(keyword => String(plan || '').includes(keyword));
+  }
+
+  function activateResolution(value){
+    const group = $('resolutionGroup');
+    const hidden = $('resolution');
+    if (!group || !hidden) return;
+    group.querySelectorAll('.option-chip').forEach(btn => {
+      btn.classList.toggle('active', btn.getAttribute('data-value') === value);
+    });
+    hidden.value = value;
+  }
+
+  function syncResolutionByPlan(){
+    const plan = getCurrentPlan();
+    const allow4k = isFourKAllowed(plan);
+    const chip4k = $('chip-4k');
+    const hidden = $('resolution');
+    const group = $('resolutionGroup');
+    if (!group || !hidden || !chip4k) return;
+
+    chip4k.style.display = allow4k ? '' : 'none';
+    chip4k.disabled = !allow4k;
+    chip4k.classList.toggle('disabled', !allow4k);
+    chip4k.title = allow4k ? '' : '4K는 Signature 또는 Custom 플랜에서만 선택 가능합니다.';
+
+    if (!allow4k && hidden.value === '4K') {
+      activateResolution('1080p');
+    }
+
+    if (String(plan).includes('Pro') && hidden.value === '540p') {
+      activateResolution('1080p');
+    }
+
+    if ((String(plan).includes('Signature') || String(plan).includes('Custom')) && !hidden.value) {
+      activateResolution('1080p');
+    }
+  }
+
+  function requiredConsentsIncludingRightsOk(){
+    return !!(
+      $('privacyConsent')?.checked &&
+      $('notifyConsent')?.checked &&
+      $('refundConsent')?.checked &&
+      $('rightsConsent')?.checked
+    );
+  }
+
+  document.addEventListener('click', function(e){
+    const submit = e.target.closest && e.target.closest('#submitOrder');
+    if (submit && !requiredConsentsIncludingRightsOk()) {
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+      toastSafe('필수 동의 항목을 모두 확인해주세요.');
+      const group = $('consentGroup');
+      if (group) group.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return false;
+    }
+
+    if (e.target.closest && e.target.closest('[data-open], [data-plan-choice], [data-plan]')) {
+      setTimeout(syncResolutionByPlan, 80);
+      setTimeout(syncResolutionByPlan, 300);
+    }
+  }, true);
+
+  document.addEventListener('change', function(e){
+    if (e.target && e.target.closest && e.target.closest('#consentGroup, #resolutionGroup')) {
+      setTimeout(syncResolutionByPlan, 0);
+    }
+  }, true);
+
+  const summary = $('orderSummary');
+  if (summary && window.MutationObserver) {
+    new MutationObserver(syncResolutionByPlan).observe(summary, { childList:true, characterData:true, subtree:true });
+  }
+
+  window.syncResolutionByPlan = syncResolutionByPlan;
+  setTimeout(syncResolutionByPlan, 400);
+})();
+</script>
+
 </body>
 </html>
