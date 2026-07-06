@@ -30,6 +30,12 @@ const $=(s,root=document)=>root.querySelector(s);
       'ID Set':'₩9,900',
       'Profile Pro':'₩29,900'
     }; window.selectedPlan='Pro';
+    function getNumericPrice(plan) {
+      const priceStr = window.prices[plan] || '₩39,900';
+      if (priceStr.includes('상담') || priceStr.includes('Negotiation')) return 100;
+      const cleaned = priceStr.replace(/[^0-9]/g, '');
+      return parseInt(cleaned, 10) || 100;
+    }
     function setOrderSummary(){
       const lang=localStorage.getItem('avvmLang')||'ko';
       const order=window.ORDER ? (window.ORDER[lang]||window.ORDER.ko) : {planPrefix:'Selected plan: '};
@@ -124,6 +130,24 @@ const $=(s,root=document)=>root.querySelector(s);
       modalCard.classList.remove('done');
       modalCard.classList.remove('plan-choosing');
       setOrderSummary();
+
+      // 4K resolution selection restriction logic
+      const chip4K = document.getElementById('chip-4k');
+      if (chip4K) {
+        if (plan === 'Signature' || plan === 'Custom') {
+          chip4K.style.display = 'inline-block';
+        } else {
+          chip4K.style.display = 'none';
+          // If 4K was selected, fallback to 1080p
+          if (chip4K.classList.contains('active')) {
+            chip4K.classList.remove('active');
+            const defaultChip = document.querySelector('[data-option-group="resolution"] [data-value="1080p"]');
+            if (defaultChip) defaultChip.classList.add('active');
+            const hiddenRes = document.getElementById('resolution');
+            if (hiddenRes) hiddenRes.value = '1080p';
+          }
+        }
+      }
       
       const isIdProfile = plan.startsWith('ID') || plan.startsWith('Profile');
       const guide = $('#uploadGuideBox');
@@ -212,25 +236,9 @@ const $=(s,root=document)=>root.querySelector(s);
       });
     }
 
-    async function createOrder(){
-      syncCustomerInputs(); const brand=getCustomerValue('#brandInput','#brandInput2');
-      const email=getCustomerValue('#emailInput','#emailInput2');
-      const phone=getCustomerValue('#phoneInput','#phoneInput2');
-      const privacyConsent=!!($('#privacyConsent') && $('#privacyConsent').checked);
-      const notifyConsent=!!($('#notifyConsent') && $('#notifyConsent').checked);
-      const refundConsent=!!($('#refundConsent') && $('#refundConsent').checked);
-      const marketingConsent=!!($('#marketingConsent') && $('#marketingConsent').checked);
-      const category=$('.cat.active')?.textContent || 'Custom';
-      const mood=$('#moodInput').value.trim();
-
-      if(!brand){toast('성함 / 브랜드명을 입력해주세요'); focusCustomerField('#brandInput','#brandInput2'); return;}
-      if(email && !email.includes('@')){toast('이메일 형식을 확인해주세요'); focusCustomerField('#emailInput','#emailInput2'); return;}
-      if(!phone){toast('카톡/문자 알림용 휴대폰 번호를 입력해주세요'); focusCustomerField('#phoneInput','#phoneInput2'); return;}
-      if(!privacyConsent || !notifyConsent || !refundConsent){toast('필수 동의 항목을 확인해주세요'); focusAndReveal('#consentGroup'); return;}
-
+    async function proceedWithOrderCreation(orderId, brand, email, phone, privacyConsent, notifyConsent, refundConsent, marketingConsent, category, mood) {
       // 1. Switch to success screen immediately to show progress loader!
       modalCard.classList.add('done');
-      const orderId=makeOrderId();
       $('#successOrderId').textContent='ORDER #' + orderId;
       toast('주문 접수 시작 ✓');
 
@@ -390,8 +398,8 @@ const $=(s,root=document)=>root.querySelector(s);
       const view=$('#viewOrderLink');
       if(view){ view.href=draft.viewUrl; }
       const copy=$('#orderLinkCopy');
-      if(copy){ copy.textContent='주문 링크가 생성되었습니다. 실제 운영에서는 결제 완료 후 이미지 업로드 링크가 열립니다.'; copy.dataset.customized='1'; }
-      toast('주문 임시 접수 완료 ✓');
+      if(copy){ copy.textContent='주문 링크가 생성되었습니다. 결제 완료 후 이미지 업로드 링크가 열렸습니다.'; copy.dataset.customized='1'; }
+      toast('주문 접수 완료 ✓');
 
       // 3. Start Polling or Show Failure
       if (requestId) {
@@ -403,6 +411,54 @@ const $=(s,root=document)=>root.querySelector(s);
           <div style="font-size:12px; font-weight:800; color:var(--lime); margin-bottom:4px;">주문이 정상 접수되었습니다.</div>
           <div style="font-size:11px; color:rgba(255,255,255,0.6)">실제 비디오 제작을 하려면 사진을 업로드해 주세요.</div>
         `;
+      }
+    }
+
+    async function createOrder(){
+      syncCustomerInputs(); const brand=getCustomerValue('#brandInput','#brandInput2');
+      const email=getCustomerValue('#emailInput','#emailInput2');
+      const phone=getCustomerValue('#phoneInput','#phoneInput2');
+      const privacyConsent=!!($('#privacyConsent') && $('#privacyConsent').checked);
+      const notifyConsent=!!($('#notifyConsent') && $('#notifyConsent').checked);
+      const refundConsent=!!($('#refundConsent') && $('#refundConsent').checked);
+      const marketingConsent=!!($('#marketingConsent') && $('#marketingConsent').checked);
+      const category=$('.cat.active')?.textContent || 'Custom';
+      const mood=$('#moodInput').value.trim();
+
+      if(!brand){toast('성함 / 브랜드명을 입력해주세요'); focusCustomerField('#brandInput','#brandInput2'); return;}
+      if(email && !email.includes('@')){toast('이메일 형식을 확인해주세요'); focusCustomerField('#emailInput','#emailInput2'); return;}
+      if(!phone){toast('카톡/문자 알림용 휴대폰 번호를 입력해주세요'); focusCustomerField('#phoneInput','#phoneInput2'); return;}
+      if(!privacyConsent || !notifyConsent || !refundConsent){toast('필수 동의 항목을 확인해주세요'); focusAndReveal('#consentGroup'); return;}
+
+      const orderId=makeOrderId();
+
+      // Trigger PortOne Test Payment!
+      if (window.IMP) {
+        const IMP = window.IMP;
+        IMP.init("imp00000000"); // Universal test ID
+
+        const planPrice = getNumericPrice(window.selectedPlan);
+        
+        IMP.request_pay({
+          pg: "html5_inicis.INIpayTest", 
+          pay_method: "card",
+          merchant_uid: orderId,
+          name: `AVVM: ${window.selectedPlan} Plan`,
+          amount: planPrice,
+          buyer_email: email || "test@avvm.studio",
+          buyer_name: brand || "Guest",
+          buyer_tel: phone || "010-0000-0000",
+        }, async function (rsp) {
+          if (rsp.success) {
+            toast('결제 완료! 비디오 생성을 시작합니다.');
+            await proceedWithOrderCreation(orderId, brand, email, phone, privacyConsent, notifyConsent, refundConsent, marketingConsent, category, mood);
+          } else {
+            toast('결제 취소 또는 실패: ' + rsp.error_msg);
+          }
+        });
+      } else {
+        toast('결제 모듈 로드 실패. 임시 주문 접수로 진행합니다.');
+        await proceedWithOrderCreation(orderId, brand, email, phone, privacyConsent, notifyConsent, refundConsent, marketingConsent, category, mood);
       }
     }
 
@@ -1355,6 +1411,9 @@ const $=(s,root=document)=>root.querySelector(s);
   }
   function applyAVVMLang(lang){
     lang=lang||langNow();
+    if (lang !== 'ko' && lang !== 'en') {
+      lang = 'en'; // Strict KO/EN fallback for PG review safety
+    }
     const base=I18N[lang]||I18N.ko;
     const auto=AUTO[lang]||AUTO.ko;
     const help=HELP[lang]||HELP.ko;
@@ -2174,7 +2233,7 @@ const $=(s,root=document)=>root.querySelector(s);
 
 // Master multi-language initialization and sync
 (function(){
-  const languages = ['ko', 'en', 'ja', 'zh', 'es', 'fr', 'de', 'pt', 'ar'];
+  const languages = ['ko', 'en'];
   let cycleIdx = 0;
   let autoplayInterval = null;
 

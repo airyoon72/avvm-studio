@@ -30,6 +30,7 @@ window.addEventListener('error', function(e) {
 <link rel="stylesheet" href="style.css?v=28">
 </meta><link rel="preload" as="video" href="videos/hero-original-then-loop.mp4?v=8" type="video/mp4">
 <!-- AVVM V10 Scroll Stable -->
+<script src="https://cdn.iamport.kr/v1/iamport.js"></script>
 </head>
 <body>
 <!-- Dynamic Vector Loader Screen (AVVM Logo Anim) -->
@@ -92,13 +93,6 @@ window.addEventListener('error', function(e) {
 <select aria-label="Language" id="nativeLangSelect">
 <option value="ko">KO</option>
 <option value="en">EN</option>
-<option value="ja">JP</option>
-<option value="zh">CN</option>
-<option value="es">ES</option>
-<option value="fr">FR</option>
-<option value="de">DE</option>
-<option value="pt">PT</option>
-<option value="ar">AR</option>
 </select>
 </div>
 <button class="btn" data-open=""><span data-i18n="startProject">START PROJECT ↗</span></button>
@@ -135,13 +129,6 @@ window.addEventListener('error', function(e) {
 <select aria-label="Language" id="heroNativeLangSelect">
 <option value="ko">KO</option>
 <option value="en">EN</option>
-<option value="ja">JP</option>
-<option value="zh">CN</option>
-<option value="es">ES</option>
-<option value="fr">FR</option>
-<option value="de">DE</option>
-<option value="pt">PT</option>
-<option value="ar">AR</option>
 </select>
 </div>
 <button aria-label="Start project" class="hero-menu-dot has-help" data-help="프로젝트 시작: 이미지 업로드와 주문 정보를 입력합니다." data-help-key="help1" data-help-ko="프로젝트 시작: 이미지 업로드와 주문 정보를 입력합니다." data-open="">START</button></div>
@@ -284,6 +271,54 @@ window.addEventListener('error', function(e) {
 </div>
 </div>
 </section>
+
+<section class="services-overview" id="services">
+  <div class="container">
+    <div class="section-bar">
+      <h2 class="section-label">Our Services</h2>
+      <span class="view-all">4 CORE AI STUDIOS</span>
+    </div>
+    
+    <div class="services-grid">
+      <!-- Card 1: Commercial Video -->
+      <a href="#pricing" class="service-card">
+        <div class="service-card-glow"></div>
+        <div class="service-icon">📽️</div>
+        <h3>Commercial Video</h3>
+        <p>사진 한 장으로 제작하는 고해상도 브랜드 광고 및 제품 쇼릴 영상</p>
+        <span class="service-tag">Starter / Pro / Signature</span>
+      </a>
+      
+      <!-- Card 2: Personal Transform -->
+      <a href="#one-photo-new-world" class="service-card">
+        <div class="service-card-glow"></div>
+        <div class="service-icon">⚡</div>
+        <h3>Personal Transform</h3>
+        <p>일상 사진을 해외 여행 숏폼 릴스나 트렌디한 패션 화보 영상으로 변환</p>
+        <span class="service-tag">Travel / Fashion / Walking</span>
+      </a>
+
+      <!-- Card 3: Memory Video -->
+      <a href="#memorial" class="service-card">
+        <div class="service-card-glow"></div>
+        <div class="service-icon">🐶</div>
+        <h3>Memory Video</h3>
+        <p>가족, 부모님, 무지개다리를 건넌 반려동물의 추억 복원 비디오</p>
+        <span class="service-tag">Memorial Basic / Duo</span>
+      </a>
+
+      <!-- Card 4: ID / Profile File -->
+      <a href="#id-profile" class="service-card">
+        <div class="service-card-glow"></div>
+        <div class="service-icon">🪪</div>
+        <h3>ID / Profile File</h3>
+        <p>사진관 방문 없는 여권, 면허, 사원증, 프로필용 고품질 디지털 사진 제작</p>
+        <span class="service-tag">ID Mini / Set / Profile Pro</span>
+      </a>
+    </div>
+  </div>
+</section>
+
 <section class="works" id="works">
 <div class="container">
 <div class="section-bar"><h2 class="section-label">OUR WORKS</h2><a class="view-all" href="#pricing">VIEW ALL WORKS ↗</a></div>
@@ -891,10 +926,11 @@ window.addEventListener('error', function(e) {
 <button class="option-chip active" data-value="540p" type="button">540p</button>
 <button class="option-chip" data-value="720p" type="button">720p</button>
 <button class="option-chip" data-value="1080p" type="button">1080p</button>
+<button class="option-chip" data-value="4K" type="button" id="chip-4k" style="display:none;">4K</button>
 </div>
 <input id="resolution" name="resolution" type="hidden" value="540p"/>
 </div>
-<button class="btn btn-primary has-help" data-help="입력한 주문 정보를 확인하고 테스트 주문을 접수합니다. 실제 결제 연결 전까지는 테스트 접수입니다." data-help-key="help30" data-help-ko="입력한 주문 정보를 확인하고 테스트 주문을 접수합니다. 실제 결제 연결 전까지는 테스트 접수입니다." id="submitOrder" style="width:100%;margin-top:14px" type="button" disabled>테스트 주문 접수</button></div><div class="success-panel"><div class="success-icon">✓</div><h3>PROJECT<br/>STARTED.</h3><p><span data-i18n-auto="autoKo30">주문 흐름이 정상 작동합니다. 실제 결제 연결 전까지는 주문 초안이 브라우저에 저장되고, 주문 파일을 내려받을 수 있습니다.</span></p><div class="order-id" id="successOrderId">ORDER #AVVM-DEMO</div><p class="order-link-copy" id="orderLinkCopy"><span data-i18n-auto="autoFinal2">완성되면 카톡/문자로 알려드리고, 링크에서 바로 확인할 수 있습니다.</span></p><a class="btn btn-primary order-view-link" href="#" id="viewOrderLink" rel="noopener" target="_blank"><span data-i18n-auto="autoFinal3">주문 링크 열기</span></a><div class="status-mini"><div class="status-row"><div class="status-step on"><span data-i18n-auto="autoFinal4">접수됨</span></div><div class="status-step on"><span data-i18n-auto="autoFinal5">제작 대기</span></div><div class="status-step"><span data-i18n-auto="autoFinal6">검수 중</span></div><div class="status-step"><span data-i18n-auto="autoFinal7">완성</span></div></div></div><div class="success-actions"><button class="btn btn-primary" id="downloadOrder" type="button">DOWNLOAD ORDER</button><button class="btn" id="resetOrder" type="button">CREATE ANOTHER</button></div></div></div></div>
+<button class="btn btn-primary has-help" data-help="입력한 주문 정보를 기반으로 PortOne 가상 테스트 결제를 시작합니다. 실제 금액은 결제되지 않습니다." data-help-key="help30" data-help-ko="입력한 주문 정보를 기반으로 PortOne 가상 테스트 결제를 시작합니다. 실제 금액은 결제되지 않습니다." id="submitOrder" style="width:100%;margin-top:14px" type="button" disabled>테스트 결제하기</button></div><div class="success-panel"><div class="success-icon">✓</div><h3>PROJECT<br/>STARTED.</h3><p><span data-i18n-auto="autoKo30">주문 흐름이 정상 작동합니다. 실제 결제 연결 전까지는 주문 초안이 브라우저에 저장되고, 주문 파일을 내려받을 수 있습니다.</span></p><div class="order-id" id="successOrderId">ORDER #AVVM-DEMO</div><p class="order-link-copy" id="orderLinkCopy"><span data-i18n-auto="autoFinal2">완성되면 카톡/문자로 알려드리고, 링크에서 바로 확인할 수 있습니다.</span></p><a class="btn btn-primary order-view-link" href="#" id="viewOrderLink" rel="noopener" target="_blank"><span data-i18n-auto="autoFinal3">주문 링크 열기</span></a><div class="status-mini"><div class="status-row"><div class="status-step on"><span data-i18n-auto="autoFinal4">접수됨</span></div><div class="status-step on"><span data-i18n-auto="autoFinal5">제작 대기</span></div><div class="status-step"><span data-i18n-auto="autoFinal6">검수 중</span></div><div class="status-step"><span data-i18n-auto="autoFinal7">완성</span></div></div></div><div class="success-actions"><button class="btn btn-primary" id="downloadOrder" type="button">DOWNLOAD ORDER</button><button class="btn" id="resetOrder" type="button">CREATE ANOTHER</button></div></div></div></div>
 <div class="video-modal" id="showreelModal"><div class="video-box"><div class="video-head"><span>AVVM SHOWREEL</span><button class="close" id="closeShowreel" type="button">×</button></div><video controls="" id="showreelVideo" playsinline="" preload="metadata" src="videos/showreel.mp4?v=2"></video></div></div>
 <div class="toast" id="toast">Ready</div>
 
