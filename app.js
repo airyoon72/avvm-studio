@@ -236,6 +236,11 @@ const $=(s,root=document)=>root.querySelector(s);
       });
     }
 
+    /* ==========================================
+       [HOOK 1b: 실제 주문 처리 및 전송 (Actual Order Generation & API Dispatch)]
+       - 검증 완료된 주문 데이터를 빌드하여 로컬 스토리지에 저장하고
+       - 비디오 제작 API 및 DB 저장 API(/api/order)를 호출합니다.
+       ========================================== */
     async function proceedWithOrderCreation(orderId, brand, email, phone, privacyConsent, notifyConsent, refundConsent, marketingConsent, category, mood) {
       // 1. Switch to success screen immediately to show progress loader!
       modalCard.classList.add('done');
@@ -328,7 +333,7 @@ const $=(s,root=document)=>root.querySelector(s);
         status:'pending_payment',
         statusKo:'결제 대기',
         payment:{
-          provider:'portone_toss',
+          provider:'portone_v2_kpn',
           currency:'KRW',
           idempotencyKey: orderId + '-pay-1',
           webhookVerified:false
@@ -414,51 +419,142 @@ const $=(s,root=document)=>root.querySelector(s);
       }
     }
 
+    /* ==========================================
+       [HOOK 1a: 주문 생성 및 검증 (Order Validation & Trigger)]
+       - 사용자가 입력한 고객 정보 및 동의 상태를 검증하고
+       - 결제 처리를 유도하는 함수입니다.
+       ========================================== */
+    const PORTONE_V2_CONFIG = Object.freeze({
+      storeId: 'store-d1ebe1b0-2b8e-47aa-8a15-ac7682751ad7',
+      channelKey: 'channel-key-aa785533-541b-4702-95ec-2533edb80475'
+    });
+    let paymentInProgress = false;
+
+    function loadPortOneV2(){
+      if(window.PortOne && typeof window.PortOne.requestPayment === 'function'){
+        return Promise.resolve(window.PortOne);
+      }
+      if(window.__avvmPortOneV2Promise) return window.__avvmPortOneV2Promise;
+      window.__avvmPortOneV2Promise = new Promise((resolve,reject)=>{
+        const existing=document.querySelector('script[data-avvm-portone-v2]');
+        if(existing){
+          existing.addEventListener('load',()=>resolve(window.PortOne),{once:true});
+          existing.addEventListener('error',()=>reject(new Error('PortOne V2 SDK를 불러오지 못했습니다.')),{once:true});
+          return;
+        }
+        const script=document.createElement('script');
+        script.src='https://cdn.portone.io/v2/browser-sdk.js';
+        script.async=true;
+        script.dataset.avvmPortoneV2='1';
+        script.onload=()=>{
+          if(window.PortOne && typeof window.PortOne.requestPayment === 'function') resolve(window.PortOne);
+          else reject(new Error('PortOne V2 SDK 초기화에 실패했습니다.'));
+        };
+        script.onerror=()=>reject(new Error('PortOne V2 SDK를 불러오지 못했습니다.'));
+        document.head.appendChild(script);
+      });
+      return window.__avvmPortOneV2Promise;
+    }
+
+    function setPaymentButtonBusy(busy){
+      const button=$('#submitOrder');
+      if(!button) return;
+      button.disabled=busy || !(
+        $('#privacyConsent')?.checked &&
+        $('#notifyConsent')?.checked &&
+        $('#refundConsent')?.checked
+      );
+      button.textContent=busy ? '결제창을 여는 중...' : '테스트 결제하기';
+      button.setAttribute('aria-busy', busy ? 'true' : 'false');
+    }
+
     async function createOrder(){
-      syncCustomerInputs(); const brand=getCustomerValue('#brandInput','#brandInput2');
+      if(paymentInProgress) return;
+      syncCustomerInputs();
+      const brand=getCustomerValue('#brandInput','#brandInput2');
       const email=getCustomerValue('#emailInput','#emailInput2');
       const phone=getCustomerValue('#phoneInput','#phoneInput2');
       const privacyConsent=!!($('#privacyConsent') && $('#privacyConsent').checked);
       const notifyConsent=!!($('#notifyConsent') && $('#notifyConsent').checked);
       const refundConsent=!!($('#refundConsent') && $('#refundConsent').checked);
       const marketingConsent=!!($('#marketingConsent') && $('#marketingConsent').checked);
-      const category=$('.cat.active')?.textContent || 'Custom';
-      const mood=$('#moodInput').value.trim();
+      const category=$('.cat.active')?.textContent?.trim() || 'Custom';
+      const mood=$('#moodInput')?.value?.trim() || '';
 
       if(!brand){toast('성함 / 브랜드명을 입력해주세요'); focusCustomerField('#brandInput','#brandInput2'); return;}
       if(email && !email.includes('@')){toast('이메일 형식을 확인해주세요'); focusCustomerField('#emailInput','#emailInput2'); return;}
       if(!phone){toast('카톡/문자 알림용 휴대폰 번호를 입력해주세요'); focusCustomerField('#phoneInput','#phoneInput2'); return;}
       if(!privacyConsent || !notifyConsent || !refundConsent){toast('필수 동의 항목을 확인해주세요'); focusAndReveal('#consentGroup'); return;}
+      if(window.selectedPlan === 'Custom' || String(window.prices[window.selectedPlan]||'').includes('상담')){
+        toast('Custom 플랜은 상담 후 견적으로 진행됩니다.');
+        return;
+      }
 
       const orderId=makeOrderId();
+      const totalAmount=getNumericPrice(window.selectedPlan);
+      if(!Number.isFinite(totalAmount) || totalAmount < 100){
+        toast('결제 금액을 확인할 수 없습니다.');
+        return;
+      }
 
-      // Trigger PortOne Test Payment!
-      if (window.IMP) {
-        const IMP = window.IMP;
-        IMP.init("imp00000000"); // Universal test ID
-
-        const planPrice = getNumericPrice(window.selectedPlan);
-        
-        IMP.request_pay({
-          pg: "html5_inicis.INIpayTest", 
-          pay_method: "card",
-          merchant_uid: orderId,
-          name: `AVVM: ${window.selectedPlan} Plan`,
-          amount: planPrice,
-          buyer_email: email || "test@avvm.studio",
-          buyer_name: brand || "Guest",
-          buyer_tel: phone || "010-0000-0000",
-        }, async function (rsp) {
-          if (rsp.success) {
-            toast('결제 완료! 비디오 생성을 시작합니다.');
-            await proceedWithOrderCreation(orderId, brand, email, phone, privacyConsent, notifyConsent, refundConsent, marketingConsent, category, mood);
-          } else {
-            toast('결제 취소 또는 실패: ' + rsp.error_msg);
+      paymentInProgress=true;
+      setPaymentButtonBusy(true);
+      try{
+        const PortOne=await loadPortOneV2();
+        const paymentId=`${orderId}-${Date.now()}`.replace(/[^a-zA-Z0-9_-]/g,'');
+        const response=await PortOne.requestPayment({
+          storeId:PORTONE_V2_CONFIG.storeId,
+          channelKey:PORTONE_V2_CONFIG.channelKey,
+          paymentId,
+          orderName:`AVVM ${window.selectedPlan}`.slice(0,40),
+          totalAmount,
+          currency:'CURRENCY_KRW',
+          payMethod:'CARD',
+          customer:{
+            fullName:brand,
+            phoneNumber:phone.replace(/[^0-9]/g,''),
+            ...(email ? {email} : {})
           }
         });
-      } else {
-        toast('결제 모듈 로드 실패. 임시 주문 접수로 진행합니다.');
-        await proceedWithOrderCreation(orderId, brand, email, phone, privacyConsent, notifyConsent, refundConsent, marketingConsent, category, mood);
+
+        if(!response){
+          toast('결제창이 닫혔습니다. 다시 시도해주세요.');
+          return;
+        }
+        if(response.code){
+          console.warn('PortOne payment failed:',response);
+          toast(response.message || '결제가 취소되었거나 실패했습니다.');
+          return;
+        }
+
+        toast('테스트 결제가 완료되었습니다. 주문을 접수합니다.');
+        await proceedWithOrderCreation(
+          orderId, brand, email, phone,
+          privacyConsent, notifyConsent, refundConsent, marketingConsent,
+          category, mood
+        );
+        if(lastOrder){
+          lastOrder.payment={
+            provider:'portone_v2_kpn',
+            paymentId:response.paymentId || paymentId,
+            transactionType:response.transactionType || '',
+            txId:response.txId || '',
+            currency:'KRW',
+            amount:totalAmount,
+            browserResponseReceived:true,
+            serverVerified:false
+          };
+          lastOrder.status='payment_browser_completed';
+          lastOrder.statusKo='결제 결과 수신';
+          localStorage.setItem('avvmOrder_'+lastOrder.token,JSON.stringify(lastOrder));
+          localStorage.setItem('avvmLastOrder',JSON.stringify(lastOrder));
+        }
+      }catch(error){
+        console.error('PortOne V2 payment error:',error);
+        toast(error?.message || '결제 모듈 실행 중 오류가 발생했습니다.');
+      }finally{
+        paymentInProgress=false;
+        setPaymentButtonBusy(false);
       }
     }
 
@@ -655,6 +751,10 @@ const $=(s,root=document)=>root.querySelector(s);
       }, 3000);
     }
 
+    /* ==========================================
+       [HOOK 0: 결제 버튼 이벤트 (Checkout Button Click Event)]
+       - 사용자가 주문 양식 작성을 완료하고 결제/접수 버튼을 클릭했을 때의 리스너
+       ========================================== */
     $('#submitOrder').addEventListener('click',createOrder);
     $('#downloadOrder').addEventListener('click',()=>{ if(!lastOrder){toast('저장된 주문이 없습니다'); return;} const blob=new Blob([JSON.stringify(lastOrder,null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=lastOrder.orderId+'.json'; a.click(); URL.revokeObjectURL(a.href); });
     $('#resetOrder').addEventListener('click',()=>{ modalCard.classList.remove('done'); $('#brandInput').value=''; $('#emailInput').value=''; if($('#phoneInput')) $('#phoneInput').value=''; if($('#brandInput2')) $('#brandInput2').value=''; if($('#emailInput2')) $('#emailInput2').value=''; if($('#phoneInput2')) $('#phoneInput2').value=''; if($('#notifyConsent')) $('#notifyConsent').checked=true; $('#moodInput').value=''; $('#imageInput').value=''; $('#imagePreview').classList.remove('on'); updatePhotoUploadLabel(); if($('#viewOrderLink')) $('#viewOrderLink').href='#'; lastOrder=null; setTimeout(()=>{ syncCustomerInputs(); focusAndReveal('#photoUploadVisibleBlock'); },80); });
@@ -2518,41 +2618,6 @@ const $=(s,root=document)=>root.querySelector(s);
         }
       `;
       document.head.appendChild(style);
-    }
-  });
-})();
-
-
-
-/* AVVM V20 test-order mode + business name normalization */
-(function(){
-  function ready(fn){ if(document.readyState !== 'loading') fn(); else document.addEventListener('DOMContentLoaded', fn); }
-  ready(function(){
-    // Business name cleanup in visible text nodes
-    function walk(node){
-      if(node.nodeType === 3){
-        node.nodeValue = node.nodeValue
-          .replace(/라라랜드맘/g,'라라랜드맘')
-          .replace(/라라랜드맘/g,'라라랜드맘')
-          .replace(/Service by 라라랜드맘 \/ AVVM/g,'서비스 제공: 라라랜드맘 / AVVM')
-          .replace(/Brand: AVVM\.studio · Service by 라라랜드맘 \/ AVVM/g,'브랜드: AVVM.studio · 서비스 제공: 라라랜드맘 / AVVM');
-      } else {
-        node.childNodes && node.childNodes.forEach(walk);
-      }
-    }
-    walk(document.body);
-
-    // Button label for PG pending test mode
-    const submit = document.getElementById('submitOrder');
-    if(submit) submit.textContent = '테스트 주문 접수';
-
-    // Add test mode notice if missing
-    const checkout = document.querySelector('.checkout-notice');
-    if(checkout && !checkout.querySelector('.test-mode-note')){
-      const p = document.createElement('p');
-      p.className = 'test-mode-note';
-      p.innerHTML = '<b>현재는 PG 승인 전 테스트 모드입니다.</b><br>이 버튼은 실제 결제가 아니라 주문 흐름과 제작 품질 확인용 테스트 접수로 동작합니다. PG 승인 후 실제 결제 버튼으로 전환됩니다.';
-      checkout.insertBefore(p, checkout.firstChild);
     }
   });
 })();
