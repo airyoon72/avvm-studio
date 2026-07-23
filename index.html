@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- AVVM V34 KPN TEST WINDOW READY - ADDRESS FILLED -->
+<!-- AVVM V35 KPN TEST WINDOW READY - ADDRESS FILLED -->
 
 <html lang="ko">
 <head>
@@ -28,7 +28,7 @@ window.addEventListener('error', function(e) {
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=Inter:wght@400;500;600;700;800;900&amp;family=Cormorant+Garamond:ital,wght@1,700;1,900&amp;display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="style.css?v=34">
+<link rel="stylesheet" href="style.css?v=35">
 <style>
 /* AVVM v31 review-safe additions */
 .option-chip.disabled,
@@ -1015,12 +1015,16 @@ window.addEventListener('error', function(e) {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 
 <script>
-/* AVVM V34 — KPN TEST PAYMENT WINDOW FOR PG REVIEW ONLY */
+/* AVVM V35 — KPN TEST PAYMENT WINDOW FOR PG REVIEW ONLY */
 (function () {
   'use strict';
 
-  const PORTONE_STORE_ID = 'REPLACE_WITH_PORTONE_STORE_ID';
-  const KPN_TEST_CHANNEL_KEY = 'REPLACE_WITH_KPN_TEST_CHANNEL_KEY';
+  /*
+   * 포트원 콘솔의 실제 값을 입력하세요.
+   * 예: store-xxxxxxxx / channel-key-xxxxxxxx
+   */
+  const PORTONE_STORE_ID = 'store-d1ebe1b0-2b8e-47aa-8a15-ac7682751ad7';
+  const KPN_TEST_CHANNEL_KEY = 'channel-key-aa785533-541b-4702-95ec-2533edb80475';
 
   const PLAN_PRICES = Object.freeze({
     'Mini Transform': 4900,
@@ -1067,7 +1071,13 @@ window.addEventListener('error', function(e) {
     return planNames.find((plan) => summary.includes(plan)) || 'Pro';
   }
 
-  function getAmount(plan) { return PLAN_PRICES[plan] || 39900; }
+  function getAmount(plan) {
+    const amount = PLAN_PRICES[plan];
+    if (!Number.isInteger(amount) || amount <= 0) {
+      throw new Error(`지원하지 않는 결제 상품입니다: ${plan}`);
+    }
+    return amount;
+  }
   function sanitizeCustomerName(v) { return String(v || '').trim().replace(/\s+/g, ' ').slice(0, 50); }
   function sanitizePhone(v) { return String(v || '').trim().replace(/[^\d-]/g, '').slice(0, 20); }
   function sanitizeEmail(v) { return String(v || '').trim().slice(0, 100); }
@@ -1124,6 +1134,12 @@ window.addEventListener('error', function(e) {
     }
 
     const plan = getSelectedPlan();
+
+    if (plan === 'Custom' || plan === 'Custom Project') {
+      showMessage('Custom Project는 상담 견적 상품으로 온라인 결제를 지원하지 않습니다.');
+      return;
+    }
+
     const totalAmount = getAmount(plan);
     const paymentId = createKpnSafePaymentId();
     const submitButton = byId('submitOrder');
@@ -1156,6 +1172,13 @@ window.addEventListener('error', function(e) {
         showMessage('결제창이 닫혔습니다.');
         return;
       }
+
+      if (typeof response !== 'object') {
+        showMessage('테스트 결제 응답 형식을 확인할 수 없습니다.');
+        console.warn('[AVVM KPN TEST] Unexpected response:', response);
+        return;
+      }
+
       if (response.code) {
         showMessage(`테스트 결제 중단: ${response.message || response.code}`);
         console.warn('[AVVM KPN TEST] response:', response);
@@ -1202,7 +1225,7 @@ window.addEventListener('error', function(e) {
 })();
 </script>
 
-<script src="app.js?v=34"></script>
+<script src="app.js?v=35"></script>
 
 <script>
 /* AVVM v31 index-only safeguards
