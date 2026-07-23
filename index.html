@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- AVVM V33 KPN TEST WINDOW READY - ADDRESS FILLED -->
+<!-- AVVM V34 KPN TEST WINDOW READY - ADDRESS FILLED -->
 
 <html lang="ko">
 <head>
@@ -28,7 +28,7 @@ window.addEventListener('error', function(e) {
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=Inter:wght@400;500;600;700;800;900&amp;family=Cormorant+Garamond:ital,wght@1,700;1,900&amp;display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="style.css?v=33">
+<link rel="stylesheet" href="style.css?v=34">
 <style>
 /* AVVM v31 review-safe additions */
 .option-chip.disabled,
@@ -1015,7 +1015,7 @@ window.addEventListener('error', function(e) {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 
 <script>
-/* AVVM V33 — KPN TEST PAYMENT WINDOW FOR PG REVIEW ONLY */
+/* AVVM V34 — KPN TEST PAYMENT WINDOW FOR PG REVIEW ONLY */
 (function () {
   'use strict';
 
@@ -1171,7 +1171,13 @@ window.addEventListener('error', function(e) {
       paymentRequestInProgress = false;
       if (submitButton) {
         submitButton.textContent = submitButton.dataset.originalText || '테스트 결제하기';
-        submitButton.disabled = false;
+
+        /*
+         * 결제창 종료 후 버튼을 무조건 활성화하지 않습니다.
+         * 필수 동의가 유지된 경우에만 다시 누를 수 있게 하고,
+         * 이름·휴대폰 번호는 재호출 시 함수 내부에서 다시 검증합니다.
+         */
+        submitButton.disabled = !requiredConsentsAreChecked();
       }
     }
   }
@@ -1196,7 +1202,7 @@ window.addEventListener('error', function(e) {
 })();
 </script>
 
-<script src="app.js?v=33"></script>
+<script src="app.js?v=34"></script>
 
 <script>
 /* AVVM v31 index-only safeguards
