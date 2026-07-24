@@ -501,7 +501,7 @@ const $=(s,root=document)=>root.querySelector(s);
       setPaymentButtonBusy(true);
       try{
         const PortOne=await loadPortOneV2();
-        const paymentId=`${orderId}-${Date.now()}`.replace(/[^a-zA-Z0-9_-]/g,'');
+        const paymentId = orderId.replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 32);
         const response=await PortOne.requestPayment({
           storeId:PORTONE_V2_CONFIG.storeId,
           channelKey:PORTONE_V2_CONFIG.channelKey,
