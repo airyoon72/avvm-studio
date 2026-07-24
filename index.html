@@ -1092,12 +1092,10 @@ window.addEventListener('error', function(e) {
   }
 
   function createKpnSafePaymentId() {
-    const randomPart = (
-      window.crypto?.randomUUID?.().replace(/-/g, '') ||
-      `${Date.now()}${Math.random().toString(16).slice(2)}`
-    ).replace(/[^a-zA-Z0-9]/g, '');
-    return `AVVM${randomPart}`.slice(0, 40);
-  }
+  return ("AVVM" + Date.now().toString(36) + Math.random().toString(36).slice(2))
+    .replace(/[^A-Za-z0-9]/g, "")
+    .slice(0, 32);
+}
 
   async function openKpnTestPaymentWindow() {
     if (paymentRequestInProgress) return;
