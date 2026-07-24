@@ -1205,21 +1205,23 @@ window.addEventListener('error', function(e) {
     }
   }
 
-  document.addEventListener('click', function (event) {
-    const submitButton = event.target?.closest?.('#submitOrder');
-    if (!submitButton) return;
+  /*
+document.addEventListener('click', function (event) {
+  const submitButton = event.target?.closest?.('#submitOrder');
+  if (!submitButton) return;
 
-    event.preventDefault();
-    event.stopPropagation();
-    event.stopImmediatePropagation();
+  event.preventDefault();
+  event.stopPropagation();
+  event.stopImmediatePropagation();
 
-    if (!isConfigured()) {
-      showMessage('PortOne Store ID와 KPN 테스트 Channel Key를 입력한 뒤 다시 시도해주세요.');
-      return;
-    }
+  if (!isConfigured()) {
+    showMessage('PortOne Store ID와 KPN 테스트 Channel Key를 입력한 뒤 다시 시도해주세요.');
+    return;
+  }
 
-    void openKpnTestPaymentWindow();
-  }, true);
+  void openKpnTestPaymentWindow();
+}, true);
+*/
 
   window.openKpnTestPaymentWindow = openKpnTestPaymentWindow;
 })();
