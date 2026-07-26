@@ -610,15 +610,33 @@ const $=(s,root=document)=>root.querySelector(s);
       });
     }
 
-    function showCompletedVideo(videoUrl, container) {
-      container.innerHTML = `
-        <div style="font-size:12px; font-weight:800; color:var(--lime); margin-bottom:10px; text-transform:uppercase; letter-spacing:0.05em; display:flex; align-items:center; justify-content:center; gap:6px;">
-          <span style="font-size:14px;">✓</span> AI 영상 제작 완료 (AI Video Generated)
-        </div>
-        <video src="${videoUrl}" controls autoplay loop playsinline style="width:100%; border-radius:12px; border:1px solid var(--lime); box-shadow:0 0 18px rgba(216,242,51,0.22); background:#000; max-height:240px; object-fit:cover;"></video>
-      `;
-    }
+    function showCompletedVideo(videoUrl, container, token) {
+  const order = token
+    ? JSON.parse(localStorage.getItem('avvmOrder_' + token) || '{}')
+    : JSON.parse(localStorage.getItem('avvmLastOrder') || '{}');
 
+  order.videoUrl = videoUrl;
+
+  if (window.AVVMDeliveryMVP) {
+    window.AVVMDeliveryMVP.render(order, container);
+    return;
+  }
+
+  container.innerHTML = `
+    <div style="font-size:12px;font-weight:800;color:var(--lime);margin-bottom:10px;">
+      ✓ AI 영상 제작 완료
+    </div>
+
+    <video
+      src="${videoUrl}"
+      controls
+      autoplay
+      loop
+      playsinline
+      style="width:100%;border-radius:12px;background:#000;">
+    </video>
+  `;
+}
     function showRetryButton(requestId, token, container) {
       container.innerHTML = `
         <div style="font-size:12px; font-weight:800; color:#ff4d4d; margin-bottom:8px; text-transform:uppercase;">✗ 영상 제작 실패 (Generation Failed)</div>
