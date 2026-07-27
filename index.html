@@ -255,7 +255,7 @@ window.addEventListener('error', function(e) {
         <p data-i18n="proofPortraitCopy">평범한 인물 사진을 고급 패션 캠페인 무드의 짧은 영상으로 전환합니다.</p>
         <div class="proof-pair">
           <figure class="proof-frame proof-input"><img src="sample-editorial-input.png" alt="인물 에디토리얼 입력 사진" loading="lazy"/><figcaption><b>INPUT</b><span data-i18n="proofPortraitInput">평범한 인물 사진</span></figcaption></figure>
-          <figure class="proof-frame proof-output"><video autoplay loop muted playsinline preload="metadata" aria-label="인물 에디토리얼 결과 영상"><source src="sample-editorial-output.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofPortraitOutput">패션 에디토리얼 영상</span></figcaption></figure>
+          <figure class="proof-frame proof-output"><video class="proof-video" autoplay loop muted playsinline preload="none" aria-label="인물 에디토리얼 결과 영상"><source data-src="sample-editorial-output.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofPortraitOutput">패션 에디토리얼 영상</span></figcaption></figure>
         </div>
       </article>
       <article class="proof-card">
@@ -263,7 +263,7 @@ window.addEventListener('error', function(e) {
         <p data-i18n="proofMemorialCopy">오래된 사진 속 존재가 다시 움직이는 기억으로 이어집니다.</p>
         <div class="proof-pair">
           <figure class="proof-frame proof-input"><img src="memorial-before.jpg" alt="깜순이 메모리얼 입력 사진" loading="lazy"/><figcaption><b>INPUT</b><span data-i18n="proofMemorialInput">오래된 흑백 사진</span></figcaption></figure>
-          <figure class="proof-frame proof-output"><video autoplay loop muted playsinline preload="metadata" aria-label="깜순이 메모리얼 복원 결과 영상"><source src="memorial-before-after.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofMemorialOutput">다시 움직이는 기억</span></figcaption></figure>
+          <figure class="proof-frame proof-output"><video class="proof-video" autoplay loop muted playsinline preload="none" aria-label="깜순이 메모리얼 복원 결과 영상"><source data-src="memorial-before-after.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofMemorialOutput">다시 움직이는 기억</span></figcaption></figure>
         </div>
       </article>
       <article class="proof-card">
@@ -271,7 +271,7 @@ window.addEventListener('error', function(e) {
         <p data-i18n="proofProductCopy">평범한 제품 사진을 빛·카메라 무브먼트가 있는 광고 영상으로 제작합니다.</p>
         <div class="proof-pair">
           <figure class="proof-frame proof-input"><img src="sample-product-input-v2.png" alt="시계 제품 광고 입력 사진" loading="lazy"/><figcaption><b>INPUT</b><span data-i18n="proofProductInput">일반 제품 사진</span></figcaption></figure>
-          <figure class="proof-frame proof-output"><video autoplay loop muted playsinline preload="metadata" aria-label="시계 제품 광고 결과 영상"><source src="sample-product-output.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofProductOutput">럭셔리 광고 영상</span></figcaption></figure>
+          <figure class="proof-frame proof-output"><video class="proof-video" autoplay loop muted playsinline preload="none" aria-label="시계 제품 광고 결과 영상"><source data-src="sample-product-output.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofProductOutput">럭셔리 광고 영상</span></figcaption></figure>
         </div>
       </article>
       <article class="proof-card">
@@ -280,6 +280,38 @@ window.addEventListener('error', function(e) {
         <div class="proof-pair">
           <figure class="proof-frame proof-input"><img src="sample-editorial-input.png" alt="프로필 입력 사진" loading="lazy"/><figcaption><b>INPUT</b><span data-i18n="proofProfileInput">일반 인물 사진</span></figcaption></figure>
           <figure class="proof-frame proof-output"><img src="sample-profile-output.png" alt="프로필 보정 결과 사진" loading="lazy"/><figcaption><b>OUTPUT</b><span data-i18n="proofProfileOutput">정돈된 프로필 사진</span></figcaption></figure>
+        </div>
+      </article>
+      <article class="proof-card">
+        <div class="proof-card-head"><span>05</span><h3 data-i18n="proofBeautyName">뷰티 광고</h3></div>
+        <p data-i18n="proofBeautyCopy">기본 제품 사진을 물성·빛·카메라 무브먼트가 있는 뷰티 필름으로 만듭니다.</p>
+        <div class="proof-pair">
+          <figure class="proof-frame proof-input"><img src="sample-beauty-input.jpg" alt="뷰티 광고 입력 사진" loading="lazy"/><figcaption><b>INPUT</b><span data-i18n="proofBeautyInput">기본 제품 사진</span></figcaption></figure>
+          <figure class="proof-frame proof-output"><video class="proof-video" autoplay loop muted playsinline preload="none" aria-label="뷰티 광고 결과 영상"><source data-src="sample-beauty-output-v2.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofBeautyOutput">리퀴드 뷰티 필름</span></figcaption></figure>
+        </div>
+      </article>
+      <article class="proof-card">
+        <div class="proof-card-head"><span>06</span><h3 data-i18n="proofFoodName">푸드 광고</h3></div>
+        <p data-i18n="proofFoodCopy">음식의 질감과 온도를 살린 짧은 메뉴·브랜드 필름을 제작합니다.</p>
+        <div class="proof-pair">
+          <figure class="proof-frame proof-input"><img src="sample-food-input.jpg" alt="푸드 광고 입력 사진" loading="lazy"/><figcaption><b>INPUT</b><span data-i18n="proofFoodInput">일반 음식 사진</span></figcaption></figure>
+          <figure class="proof-frame proof-output"><video class="proof-video" autoplay loop muted playsinline preload="none" aria-label="푸드 광고 결과 영상"><source data-src="sample-food-output.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofFoodOutput">시네마틱 푸드 필름</span></figcaption></figure>
+        </div>
+      </article>
+      <article class="proof-card">
+        <div class="proof-card-head"><span>07</span><h3 data-i18n="proofTravelName">트래블 변신</h3></div>
+        <p data-i18n="proofTravelCopy">인물 사진 한 장을 여행지와 스타일이 바뀌는 짧은 릴로 전환합니다.</p>
+        <div class="proof-pair">
+          <figure class="proof-frame proof-input"><img src="sample-editorial-input.png" alt="트래블 변신 입력 사진" loading="lazy"/><figcaption><b>INPUT</b><span data-i18n="proofTravelInput">일반 인물 사진</span></figcaption></figure>
+          <figure class="proof-frame proof-output"><video class="proof-video" autoplay loop muted playsinline preload="none" aria-label="트래블 변신 결과 영상"><source data-src="sample-travel-output.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofTravelOutput">여행 시네마 릴</span></figcaption></figure>
+        </div>
+      </article>
+      <article class="proof-card">
+        <div class="proof-card-head"><span>08</span><h3 data-i18n="proofWeddingName">웨딩 필름</h3></div>
+        <p data-i18n="proofWeddingCopy">인물 사진을 바탕으로 의상·공간·빛을 정돈한 웨딩 무드 필름을 제작합니다.</p>
+        <div class="proof-pair">
+          <figure class="proof-frame proof-input"><img src="sample-editorial-input.png" alt="웨딩 필름 입력 사진" loading="lazy"/><figcaption><b>INPUT</b><span data-i18n="proofWeddingInput">일반 인물 사진</span></figcaption></figure>
+          <figure class="proof-frame proof-output"><video class="proof-video" autoplay loop muted playsinline preload="none" aria-label="웨딩 필름 결과 영상"><source data-src="sample-wedding-output.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofWeddingOutput">웨딩 에디토리얼 필름</span></figcaption></figure>
         </div>
       </article>
     </div>
@@ -1305,8 +1337,8 @@ document.addEventListener('click', function (event) {
 })();
 </script>
 
-<script src="i18n.js?v=1"></script>
-<script src="app.js?v=36"></script>
+<script src="i18n.js?v=2"></script>
+<script src="app.js?v=37"></script>
 <script>
 /* AVVM v31 index-only safeguards
    - app.js를 바로 수정하지 않아도 새 필수동의(rightsConsent)를 결제 클릭 전에 검사합니다.

@@ -858,3 +858,34 @@ if($('#resetOrder')) {
     if(e.key === 'Escape') closeShowreel();
   });
 })();
+
+/* Sample videos are loaded only when their card approaches the viewport. */
+(function(){
+  const videos = Array.from(document.querySelectorAll('.proof-video'));
+  if (!videos.length) return;
+
+  const loadVideo = (video) => {
+    if (video.dataset.loaded) return;
+    const source = video.querySelector('source[data-src]');
+    if (!source) return;
+    source.src = source.dataset.src;
+    video.dataset.loaded = 'true';
+    video.load();
+    video.play().catch(() => {});
+  };
+
+  if (!('IntersectionObserver' in window)) {
+    videos.forEach(loadVideo);
+    return;
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      loadVideo(entry.target);
+      observer.unobserve(entry.target);
+    });
+  }, { rootMargin: '280px 0px' });
+
+  videos.forEach((video) => observer.observe(video));
+})();
