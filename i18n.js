@@ -6,7 +6,7 @@
   let language = localStorage.getItem(STORAGE_KEY) === 'en' ? 'en' : 'ko';
 
   const en = {
-    heroEyebrow: 'THE AI VIDEO VENDING MACHINE', heroSub: 'Premium commercial videos from a single image.', kkamsooniVideo: 'KKAMSOONI VIDEO',
+    heroEyebrow: 'THE AI VIDEO VENDING MACHINE', heroSub: 'Premium commercial videos from a single image.', kkamsooniVideo: 'KKAMSOONI VIDEO', webStudioEyebrow: 'SISTER BRAND · WEB-STUDIO', webStudioTitle: 'WATCH. JEWELRY.<br>LIFESTYLE.', webStudioCopy: 'WEB-STUDIO curates watches, jewelry, and elevated lifestyle objects through one clear point of view. Discover the sister brand’s promotional film here.', webStudioPending: 'Sister-site link will be added with the public WEB-STUDIO address.',
     startProject: 'START PROJECT ↗', viewShowreel: 'VIEW SHOWREEL', scrollExplore: 'SCROLL TO EXPLORE',
     beforeAfterCopy: 'Upload one image and AVVM turns it into a commercial-grade cinematic result.',
     demoEyebrow: 'IMAGE TO CINEMA', demoTitle: 'FROM ONE IMAGE<br>TO A COMMERCIAL VIDEO.',
