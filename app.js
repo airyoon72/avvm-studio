@@ -789,7 +789,75 @@ const $=(s,root=document)=>root.querySelector(s);
        - 사용자가 주문 양식 작성을 완료하고 결제/접수 버튼을 클릭했을 때의 리스너
        ========================================== */
     $('#submitOrder').addEventListener('click',createOrder);
-    $('#downloadOrder').addEventListener('click',()=>{ if(!lastOrder){toast('저장된 주문이 없습니다'); return;} const blob=new Blob([JSON.stringify(lastOrder,null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=lastOrder.orderId+'.json'; a.click(); URL.revokeObjectURL(a.href); });
+    $('#downloadOrder').addEventListener('click', async () => {
+  const order =
+    lastOrder ||
+    JSON.parse(
+      localStorage.getItem('avvmLastOrder') || '{}'
+    );
+
+  if (!order || !order.orderId) {
+    toast('저장된 주문이 없습니다.');
+    return;
+  }
+
+  if (!order.videoUrl) {
+    toast('영상 제작이 아직 완료되지 않았습니다.');
+    return;
+  }
+
+  const button = $('#downloadOrder');
+  const originalText =
+    button?.textContent || 'DOWNLOAD VIDEO';
+
+  if (button) {
+    button.disabled = true;
+    button.textContent = 'DOWNLOADING...';
+  }
+
+  try {
+    const response = await fetch(order.videoUrl);
+
+    if (!response.ok) {
+      throw new Error(
+        `영상 다운로드 실패: ${response.status}`
+      );
+    }
+
+    const videoBlob = await response.blob();
+    const blobUrl = URL.createObjectURL(videoBlob);
+
+    const link = document.createElement('a');
+    link.href = blobUrl;
+    link.download =
+      `${order.orderId || 'AVVM-video'}.mp4`;
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    setTimeout(() => {
+      URL.revokeObjectURL(blobUrl);
+    }, 5000);
+
+    toast('영상 다운로드를 시작했습니다.');
+  } catch (error) {
+    console.error('Video download error:', error);
+
+    toast('영상을 새 창으로 엽니다. 길게 눌러 저장하세요.');
+
+    window.open(
+      order.videoUrl,
+      '_blank',
+      'noopener'
+    );
+  } finally {
+    if (button) {
+      button.disabled = false;
+      button.textContent = originalText;
+    }
+  }
+});
     $('#resetOrder').addEventListener('click',()=>{ modalCard.classList.remove('done'); $('#brandInput').value=''; $('#emailInput').value=''; if($('#phoneInput')) $('#phoneInput').value=''; if($('#brandInput2')) $('#brandInput2').value=''; if($('#emailInput2')) $('#emailInput2').value=''; if($('#phoneInput2')) $('#phoneInput2').value=''; if($('#notifyConsent')) $('#notifyConsent').checked=true; $('#moodInput').value=''; $('#imageInput').value=''; $('#imagePreview').classList.remove('on'); updatePhotoUploadLabel(); if($('#viewOrderLink')) $('#viewOrderLink').href='#'; lastOrder=null; setTimeout(()=>{ syncCustomerInputs(); focusAndReveal('#photoUploadVisibleBlock'); },80); });
 
     const showreelModal=$('#showreelModal'); const showreelVideo=$('#showreelVideo');
