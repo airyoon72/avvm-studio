@@ -348,7 +348,7 @@ const $=(s,root=document)=>root.querySelector(s);
 
       if (imageData) {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 15000);
+        const timeoutId = setTimeout(() => controller.abort(), 60000);
         try {
           const resGen = await fetch(apiBase + '/api/generate-video', {
             method: 'POST',
