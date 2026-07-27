@@ -174,7 +174,7 @@
       const parent = node.parentElement;
       const original = node.nodeValue || '';
       if (!parent || !normalizeTranslationKey(original)) continue;
-      if (parent.closest('script, style, svg, canvas, option, textarea, [data-i18n], [data-i18n-auto]')) continue;
+      if (parent.closest('script, style, svg, canvas, option, textarea, [data-i18n], [data-i18n-auto], [data-i18n-exempt]')) continue;
       autoTextNodes.push({ node, original });
     }
   }
@@ -209,7 +209,7 @@
     help16: 'The vending-machine name means ordering is simple; results are delivered after review.',
     help17: 'We check AI results for issues such as awkward hands, broken text, and product distortion.',
     help18: 'The source image guides the result, but AI cannot guarantee a 100% identical reproduction.',
-    help19: 'A full automatic preview is planned for a future release; orders are currently reviewed after submission.',
+    help19: 'Upload a photo in the order flow to check source resolution, exposure, and visible detail before payment.',
     help20: 'An F1 racing and aerial-drive sample for automotive and sports brands.',
     help21: 'A culture and tourism sample where traditional craftsmanship expands into a future-city mood.',
     help22: 'Suitable for corporate, startup, and service-introduction videos.',

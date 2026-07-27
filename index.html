@@ -37,7 +37,7 @@ window.addEventListener('error', function(e) {
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=Inter:wght@400;500;600;700;800;900&amp;family=Cormorant+Garamond:ital,wght@1,700;1,900&amp;display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="style.css?v=35"/>
+<link rel="stylesheet" href="style.css?v=36"/>
 <style>
 /* AVVM v31 review-safe additions */
 .option-chip.disabled,
@@ -269,7 +269,7 @@ window.addEventListener('error', function(e) {
         <p data-i18n="proofProductCopy">평범한 제품 사진을 빛·카메라 무브먼트가 있는 광고 영상으로 제작합니다.</p>
         <div class="proof-pair">
           <figure class="proof-frame proof-input"><img src="sample-product-input-v2.png" alt="시계 제품 광고 입력 사진" loading="lazy"/><figcaption><b>INPUT</b><span data-i18n="proofProductInput">일반 제품 사진</span></figcaption></figure>
-          <figure class="proof-frame proof-output"><video class="proof-video" autoplay loop muted playsinline preload="none" aria-label="시계 제품 광고 결과 영상"><source data-src="sample-product-output.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofProductOutput">럭셔리 광고 영상</span></figcaption></figure>
+          <figure class="proof-frame proof-output"><span class="proof-quality-badge">4K MASTER · WEB OPTIMIZED</span><video class="proof-video" autoplay loop muted playsinline preload="none" aria-label="시계 제품 광고 결과 영상"><source data-src="higgsfield-ultra-product.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofProductOutput">럭셔리 광고 영상</span></figcaption></figure>
         </div>
       </article>
       <article class="proof-card">
@@ -322,6 +322,78 @@ window.addEventListener('error', function(e) {
       </article>
     </div>
     <p class="proof-lab-notice" data-i18n="proofLabNotice">샘플은 이해를 돕기 위한 실제 제작 예시입니다. 사진의 초점·조명·구도와 선택한 스타일에 따라 결과는 달라질 수 있으며, AVVM은 최종 전달 전 품질을 검수합니다.</p>
+  </div>
+</section>
+<section class="prompt-recipes" id="prompt-recipes">
+  <div class="container">
+    <div class="prompt-recipes-head">
+      <div class="mini-eyebrow">DIRECTOR'S PROMPT RECIPES</div>
+      <h2 data-i18n-auto="autoRecipeTitle">한 장을, 영화의 첫 장면으로.</h2>
+      <p data-i18n-auto="autoRecipeCopy">결과 예시에서 검증한 연출 방향을 바로 복사하거나, 주문 창에 적용해 내 사진으로 시작하세요. 모든 레시피는 원본의 인물·제품·구도를 우선 보존하도록 설계했습니다.</p>
+    </div>
+    <div class="prompt-recipe-grid" aria-label="AVVM prompt recipe library">
+      <article class="prompt-recipe-card">
+        <div class="prompt-recipe-meta"><span>01</span><b>PRODUCT · 4K</b></div><h3>PHYSICS PAUSE</h3>
+        <p data-i18n-auto="autoRecipeProduct">제품은 완전히 정지한 채, 주변의 시간과 빛만 한 박자 멈춥니다. 형태를 지키면서도 첫 프레임부터 시선을 멈추게 하는 제품 훅입니다.</p>
+        <code data-i18n-exempt>Keep the product still. Freeze the surrounding dust and light for one beat, then release into a precise micro push-in.</code>
+        <div class="prompt-recipe-actions"><button type="button" data-copy-recipe="product-orbit">COPY PROMPT</button><button type="button" data-apply-recipe="product-orbit">APPLY TO MY PHOTO ↗</button></div>
+      </article>
+      <article class="prompt-recipe-card">
+        <div class="prompt-recipe-meta"><span>02</span><b>BEAUTY · MACRO</b></div><h3>REFRACTION NOTE</h3>
+        <p data-i18n-auto="autoRecipeBeauty">제품 위를 지나가는 한 줄의 빛이 주변을 굴절시킵니다. 액체를 과하게 쏟아붓지 않고도 촉각적인 뷰티 무드를 만듭니다.</p>
+        <code data-i18n-exempt>One traveling highlight becomes a field of refraction around the unchanged product. Tactile macro, clean package.</code>
+        <div class="prompt-recipe-actions"><button type="button" data-copy-recipe="beauty-liquid">COPY PROMPT</button><button type="button" data-apply-recipe="beauty-liquid">APPLY TO MY PHOTO ↗</button></div>
+      </article>
+      <article class="prompt-recipe-card">
+        <div class="prompt-recipe-meta"><span>03</span><b>MEMORIAL · GENTLE</b></div><h3>ARCHIVE BREATH</h3>
+        <p data-i18n-auto="autoRecipeMemorial">과한 움직임 대신 눈빛·호흡·미세한 고개 움직임으로, 오래된 사진의 감정을 안전하게 되살립니다.</p>
+        <code data-i18n-exempt>Preserve identity, era, and original framing. One natural breath, a subtle blink, a gentle glance toward camera, archival film texture.</code>
+        <div class="prompt-recipe-actions"><button type="button" data-copy-recipe="memorial-return">COPY PROMPT</button><button type="button" data-apply-recipe="memorial-return">APPLY TO MY PHOTO ↗</button></div>
+      </article>
+      <article class="prompt-recipe-card">
+        <div class="prompt-recipe-meta"><span>04</span><b>EDITORIAL · PORTRAIT</b></div><h3>FRAME PASS</h3>
+        <p data-i18n-auto="autoRecipeEditorial">카메라가 어깨를 스치며 지나가는 한 번의 동작으로, 같은 인물이 전혀 다른 에디토리얼 공간에 이미 들어와 있는 듯 연결합니다.</p>
+        <code data-i18n-exempt>A single camera pass across the shoulder reveals the same person already in motion in an editorial world. No identity drift.</code>
+        <div class="prompt-recipe-actions"><button type="button" data-copy-recipe="editorial-walk">COPY PROMPT</button><button type="button" data-apply-recipe="editorial-walk">APPLY TO MY PHOTO ↗</button></div>
+      </article>
+      <article class="prompt-recipe-card">
+        <div class="prompt-recipe-meta"><span>05</span><b>TRAVEL · TRANSFORM</b></div><h3>EDGE CUT</h3>
+        <p data-i18n-auto="autoRecipeTravel">한 인물의 정체성을 유지한 채, 장소와 공기의 변화가 자연스럽게 이어지는 여행 전환입니다.</p>
+        <code data-i18n-exempt>Keep the person recognizable. A seamless portal transition into a sunlit destination, natural wind, elegant handheld motion, no face distortion.</code>
+        <div class="prompt-recipe-actions"><button type="button" data-copy-recipe="travel-portal">COPY PROMPT</button><button type="button" data-apply-recipe="travel-portal">APPLY TO MY PHOTO ↗</button></div>
+      </article>
+      <article class="prompt-recipe-card prompt-recipe-card--signal">
+        <div class="prompt-recipe-meta"><span>06</span><b>MUSIC VIDEO · PULSE</b></div><h3>BEAT FOLD</h3>
+        <p data-i18n-auto="autoRecipeMusic">강한 비트와 동작을 한 장면에 압축하되, 인물의 얼굴과 의상 실루엣은 흔들리지 않도록 설계합니다.</p>
+        <code data-i18n-exempt>Preserve identity and outfit silhouette. One sharp dance accent, pulsing stage light, controlled camera rush, high-energy music-video finish.</code>
+        <div class="prompt-recipe-actions"><button type="button" data-copy-recipe="music-pulse">COPY PROMPT</button><button type="button" data-apply-recipe="music-pulse">APPLY TO MY PHOTO ↗</button></div>
+      </article>
+      <article class="prompt-recipe-card">
+        <div class="prompt-recipe-meta"><span>07</span><b>FOOD · TACTILE</b></div><h3>HEAT INDEX</h3>
+        <p data-i18n-auto="autoRecipeFood">김·기포·크리스피한 표면 중 한 가지 질감만 극단적으로 가까이 보여준 뒤, 접시 전체로 돌아옵니다. 음식은 더 맛있어 보이고 영상은 덜 과장됩니다.</p>
+        <code data-i18n-exempt>Begin on one honest food texture: steam, crisp surface, or bubbles. Let the camera return to the untouched whole dish.</code>
+        <div class="prompt-recipe-actions"><button type="button" data-copy-recipe="food-heat">COPY PROMPT</button><button type="button" data-apply-recipe="food-heat">APPLY TO MY PHOTO ↗</button></div>
+      </article>
+      <article class="prompt-recipe-card">
+        <div class="prompt-recipe-meta"><span>08</span><b>WEDDING · FILM</b></div><h3>BORROWED LIGHT</h3>
+        <p data-i18n-auto="autoRecipeWedding">베일이나 어깨를 스치는 자연광이 잠깐 화면을 가렸다가, 더 깊어진 표정과 공간을 드러냅니다. 억지 슬로모션보다 조용하게 오래 남습니다.</p>
+        <code data-i18n-exempt>Natural light passes behind a veil or shoulder, briefly veiling the frame, then revealing a deeper moment. Honest emotion, no face change.</code>
+        <div class="prompt-recipe-actions"><button type="button" data-copy-recipe="wedding-light">COPY PROMPT</button><button type="button" data-apply-recipe="wedding-light">APPLY TO MY PHOTO ↗</button></div>
+      </article>
+      <article class="prompt-recipe-card">
+        <div class="prompt-recipe-meta"><span>09</span><b>CLASSIC · RESTORATION</b></div><h3>FILM GATE</h3>
+        <p data-i18n-auto="autoRecipeClassic">고전 사진의 입자와 시대감은 보존하고, 필름 게이트가 열리듯 아주 작은 시선과 숨만 움직입니다. 현대 필터로 덮지 않는 복원 방식입니다.</p>
+        <code data-i18n-exempt>Keep the original era, grain, and frame. As if a film gate opens, restore only a blink, breath, and slight eye movement. No modern restyle.</code>
+        <div class="prompt-recipe-actions"><button type="button" data-copy-recipe="classic-gate">COPY PROMPT</button><button type="button" data-apply-recipe="classic-gate">APPLY TO MY PHOTO ↗</button></div>
+      </article>
+      <article class="prompt-recipe-card prompt-recipe-card--signal">
+        <div class="prompt-recipe-meta"><span>10</span><b>ID · PROFILE</b></div><h3>IDENTITY LOCK</h3>
+        <p data-i18n-auto="autoRecipeProfile">변신보다 신뢰가 필요한 사진에는 움직임을 최소화합니다. 시선·피부·윤곽을 안정적으로 유지해 프로필용 짧은 모션에도 쓸 수 있습니다.</p>
+        <code data-i18n-exempt>Lock facial identity, pose, and proportions. Minimal living motion only: one calm breath and natural eye focus. Neutral, trustworthy finish.</code>
+        <div class="prompt-recipe-actions"><button type="button" data-copy-recipe="profile-lock">COPY PROMPT</button><button type="button" data-apply-recipe="profile-lock">APPLY TO MY PHOTO ↗</button></div>
+      </article>
+    </div>
+    <p class="prompt-recipes-note" data-i18n-auto="autoRecipeNote">레시피는 출발점입니다. 사용 권한이 있는 사진만 업로드해 주세요. 실제 결과는 원본 품질, 선택한 옵션 및 최종 검수에 따라 달라질 수 있습니다.</p>
   </div>
 </section>
 <section aria-label="AVVM trust points" class="trust-strip">
@@ -544,14 +616,14 @@ window.addEventListener('error', function(e) {
 </section>
 <section class="clarity-section" id="preview-coming">
 <div class="clarity-grid">
-<div class="preview-box has-help" data-help="정식 자동 프리뷰 기능은 추후 개발 예정입니다. 현재는 주문 후 검수 방식입니다." data-help-key="help19" data-help-ko="정식 자동 프리뷰 기능은 추후 개발 예정입니다. 현재는 주문 후 검수 방식입니다.">
-<span class="preview-pill">Coming Soon</span>
-<div><h3>2–3 SEC<br/>WATERMARK PREVIEW</h3><p><span data-i18n-auto="autoKo13">추후에는 자신의 상품 이미지를 올리면 저화질 워터마크 프리뷰를 빠르게 확인하고, 마음에 들 때 본 제작으로 이어지는 체험 공간을 제공할 예정입니다.</span></p></div>
+<div class="preview-box has-help" data-help="주문창에 사진을 올리면 해상도·노출·디테일을 먼저 분석하고, 선택한 규격과 제작 방향을 결제 전에 보여줍니다." data-help-key="help19" data-help-ko="주문창에 사진을 올리면 해상도·노출·디테일을 먼저 분석하고, 선택한 규격과 제작 방향을 결제 전에 보여줍니다.">
+<span class="preview-pill">LIVE PRE-FLIGHT</span>
+<div><h3>YOUR SOURCE.<br/>CHECKED FIRST.</h3><p><span data-i18n-auto="autoKo13">사진을 업로드하면 해상도·노출·디테일을 먼저 점검하고, 선택한 화면비와 화질 기준으로 제작 방향을 결제 전에 확인합니다.</span></p><button class="btn preview-cta" data-open="" data-plan="Pro" type="button" data-i18n-auto="autoPreflightCta">CHECK MY PHOTO ↗</button></div>
 </div>
 <div>
 <div class="clarity-kicker">Show before payment</div>
 <h2 class="clarity-title"><span data-i18n="tryTitle">TRY BEFORE<br/>FULL ORDER.</span></h2>
-<p class="clarity-copy"><span data-i18n-auto="autoKo14">MVP 단계에서는 샘플 쇼릴과 주문 상담 기반으로 시작하고, 다음 단계에서는 무료 프리뷰 기능을 추가해 결제 전 확신을 높입니다.</span></p>
+<p class="clarity-copy"><span data-i18n-auto="autoKo14">결과를 꾸며서 약속하지 않습니다. 먼저 원본의 제작 적합도와 실제 주문 규격을 보여주고, 이후 AI 렌더링과 전문가 검수를 거쳐 납품합니다.</span></p>
 </div>
 </div>
 </section>
@@ -1037,8 +1109,30 @@ window.addEventListener('error', function(e) {
     <input id="idSpec" name="idSpec" type="hidden" value="여권"/>
   </div>
   
-  <div class="preview" id="imagePreview">
-    <img alt="Uploaded preview" id="previewImg"/>
+  <div class="source-intelligence" id="imagePreview" aria-live="polite">
+    <div class="source-intelligence-head">
+      <span>AVVM PRE-FLIGHT</span>
+      <b id="preflightStatus">SOURCE CHECK</b>
+    </div>
+    <div class="source-intelligence-grid">
+      <div class="preflight-visual">
+        <img alt="업로드한 원본 사진 미리보기" id="previewImg"/>
+        <span class="preflight-scan" aria-hidden="true"></span>
+        <span class="preflight-source-label">YOUR SOURCE</span>
+      </div>
+      <div class="source-intelligence-copy">
+        <div class="source-score-row"><strong id="photoQualityScore">--</strong><span>/ 100</span><b id="photoQualityGrade">ANALYZING</b></div>
+        <div class="source-score-bar" aria-hidden="true"><i id="photoQualityMeter"></i></div>
+        <div class="source-metrics">
+          <span><b id="photoQualitySize">--</b> PIXELS</span>
+          <span><b id="photoQualityLight">--</b> LIGHT</span>
+          <span><b id="photoQualityDetail">--</b> DETAIL</span>
+        </div>
+        <p id="photoQualityTip" data-i18n-auto="autoPreflightTip">사진을 분석하면 제작 전 권장 사항을 알려드립니다.</p>
+        <div class="preflight-output" id="preflightOutput">BEAUTY · 9:16 · 1080P</div>
+      </div>
+    </div>
+    <p class="source-intelligence-note" data-i18n-auto="autoPreflightNote">결제 전 원본 사진의 제작 적합도를 확인합니다. 실제 결과는 선택한 스타일과 최종 검수에 따라 달라질 수 있습니다.</p>
   </div>
 
   <!-- Step 2: Style Selection -->
@@ -1383,10 +1477,10 @@ document.addEventListener('click', function (event) {
 })();
 </script>
 
-<script src="auto-translations.js?v=1"></script>
+<script src="auto-translations.js?v=2"></script>
 <script src="locales.js?v=2"></script>
-<script src="i18n.js?v=8"></script>
-<script src="app.js?v=38"></script>
+<script src="i18n.js?v=9"></script>
+<script src="app.js?v=39"></script>
 <script>
 /* AVVM v31 index-only safeguards
    - app.js를 바로 수정하지 않아도 새 필수동의(rightsConsent)를 결제 클릭 전에 검사합니다.
