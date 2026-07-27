@@ -72,7 +72,25 @@
     beautyFlowPrompt2: 'Soft slow motion, fresh hydration, and the rhythm of a refined beauty film.',
     beautyFlowTime3: 'TIME 00:10–00:15',
     beautyFlowScene3: 'A composed product end frame leaves a clear, lasting brand impression.',
-    beautyFlowPrompt3: 'Stable product form, clean negative space, and a quiet yet luxurious finish.'
+    beautyFlowPrompt3: 'Stable product form, clean negative space, and a quiet yet luxurious finish.',
+    worksKicker: 'CHOOSE A PRODUCTION TYPE',
+    worksTitle: 'WHAT DO YOU<br>WANT TO MAKE?',
+    worksIntro: 'See a verified result first, then start the production route that fits your photo.',
+    worksViewAll: 'VIEW VERIFIED RESULTS ↗',
+    worksProductTitle: 'PRODUCT AD',
+    worksProductCopy: 'Turn one product photo into a 15-second premium advertising film.',
+    worksAutomotiveTitle: 'AUTOMOTIVE FILM',
+    worksAutomotiveCopy: 'Build a film with driving energy and brand character from a vehicle photo.',
+    worksBeautyTitle: 'BEAUTY AD',
+    worksBeautyCopy: 'Turn one product photo into a beauty ad with light, texture, and mood.',
+    worksTravelTitle: 'TRAVEL TRANSFORM',
+    worksTravelCopy: 'Turn one portrait into a short transformation reel set in a new destination.',
+    worksWeddingTitle: 'WEDDING FILM',
+    worksWeddingCopy: 'Create a wedding film shaped by wardrobe, space, and light from one portrait.',
+    worksPetTitle: 'PET MEMORIAL',
+    worksPetCopy: 'Restore a cherished pet photo into a memory that moves again.',
+    worksResult: 'VIEW REAL RESULT ↗',
+    worksStart: 'MAKE MINE ↗'
   });
 
   const ko = {

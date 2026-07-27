@@ -250,7 +250,7 @@ window.addEventListener('error', function(e) {
       <p data-i18n="proofLabCopy">어떤 결과를 기대할 수 있는지 먼저 확인하세요. 모든 예시는 실제 입력 이미지와 AVVM 제작 결과를 나란히 보여줍니다.</p>
     </div>
     <div class="proof-grid">
-      <article class="proof-card">
+      <article class="proof-card" id="proof-portrait">
         <div class="proof-card-head"><span>01</span><h3 data-i18n="proofPortraitName">인물 에디토리얼</h3></div>
         <p data-i18n="proofPortraitCopy">평범한 인물 사진을 고급 패션 캠페인 무드의 짧은 영상으로 전환합니다.</p>
         <div class="proof-pair">
@@ -258,7 +258,7 @@ window.addEventListener('error', function(e) {
           <figure class="proof-frame proof-output"><video class="proof-video" autoplay loop muted playsinline preload="none" aria-label="인물 에디토리얼 결과 영상"><source data-src="sample-editorial-output.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofPortraitOutput">패션 에디토리얼 영상</span></figcaption></figure>
         </div>
       </article>
-      <article class="proof-card">
+      <article class="proof-card" id="proof-memorial">
         <div class="proof-card-head"><span>02</span><h3 data-i18n="proofMemorialName">메모리얼 복원</h3></div>
         <p data-i18n="proofMemorialCopy">오래된 사진 속 존재가 다시 움직이는 기억으로 이어집니다.</p>
         <div class="proof-pair">
@@ -266,7 +266,7 @@ window.addEventListener('error', function(e) {
           <figure class="proof-frame proof-output"><video class="proof-video" autoplay loop muted playsinline preload="none" aria-label="깜순이 메모리얼 복원 결과 영상"><source data-src="memorial-before-after.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofMemorialOutput">다시 움직이는 기억</span></figcaption></figure>
         </div>
       </article>
-      <article class="proof-card">
+      <article class="proof-card" id="proof-product">
         <div class="proof-card-head"><span>03</span><h3 data-i18n="proofProductName">제품 광고</h3></div>
         <p data-i18n="proofProductCopy">평범한 제품 사진을 빛·카메라 무브먼트가 있는 광고 영상으로 제작합니다.</p>
         <div class="proof-pair">
@@ -298,7 +298,7 @@ window.addEventListener('error', function(e) {
           <figure class="proof-frame proof-output"><video class="proof-video" autoplay loop muted playsinline preload="none" aria-label="푸드 광고 결과 영상"><source data-src="sample-food-output.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofFoodOutput">시네마틱 푸드 필름</span></figcaption></figure>
         </div>
       </article>
-      <article class="proof-card">
+      <article class="proof-card" id="proof-travel">
         <div class="proof-card-head"><span>07</span><h3 data-i18n="proofTravelName">트래블 변신</h3></div>
         <p data-i18n="proofTravelCopy">인물 사진 한 장을 여행지와 스타일이 바뀌는 짧은 릴로 전환합니다.</p>
         <div class="proof-pair">
@@ -306,7 +306,7 @@ window.addEventListener('error', function(e) {
           <figure class="proof-frame proof-output"><video class="proof-video" autoplay loop muted playsinline preload="none" aria-label="트래블 변신 결과 영상"><source data-src="sample-travel-output.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofTravelOutput">여행 시네마 릴</span></figcaption></figure>
         </div>
       </article>
-      <article class="proof-card">
+      <article class="proof-card" id="proof-wedding">
         <div class="proof-card-head"><span>08</span><h3 data-i18n="proofWeddingName">웨딩 필름</h3></div>
         <p data-i18n="proofWeddingCopy">인물 사진을 바탕으로 의상·공간·빛을 정돈한 웨딩 무드 필름을 제작합니다.</p>
         <div class="proof-pair">
@@ -460,12 +460,18 @@ window.addEventListener('error', function(e) {
 
 <section class="works" id="works">
 <div class="container">
-<div class="section-bar"><h2 class="section-label">OUR WORKS</h2><a class="view-all" href="#pricing">VIEW ALL WORKS ↗</a></div>
-<div class="works-strip" id="worksStrip">
-<button aria-label="Previous work" class="btn btn-round arrow left" id="workPrev" type="button">←</button><button aria-label="Next work" class="btn btn-round arrow right" id="workNext" type="button">→</button>
-<article class="work-card"><div class="bg w1"></div><span>Product</span></article><article class="work-card"><div class="bg w2"></div><span>Automotive</span></article><article class="work-card"><div class="bg w3"></div><span>Beauty</span></article><article class="work-card"><div class="bg w4"></div><span>Travel</span></article><article class="work-card"><div class="bg w5"></div><span>Wedding</span></article><article class="work-card"><div class="bg w6"></div><span>Pet</span></article>
+<div class="works-heading">
+<div><div class="works-kicker" data-i18n="worksKicker">CHOOSE A PRODUCTION TYPE</div><h2 class="section-label" data-i18n="worksTitle">어떤 영상을 만들고 싶으세요?</h2><p data-i18n="worksIntro">실제 결과를 먼저 보고, 내 사진에 맞는 제작 방식으로 바로 시작하세요.</p></div>
+<a class="view-all" href="#proof-lab" data-i18n="worksViewAll">VIEW VERIFIED RESULTS ↗</a>
 </div>
-<div class="dots"><i class="active"></i><i></i><i></i><i></i><i></i></div>
+<div class="works-strip" id="worksStrip">
+<article class="work-card"><div class="bg w1"></div><div class="work-card-content"><small>01 · PRODUCT AD</small><h3 data-i18n="worksProductTitle">제품 광고</h3><p data-i18n="worksProductCopy">제품 사진 한 장을 15초 프리미엄 광고 필름으로 만듭니다.</p><div class="work-card-meta">15 SEC · PRO</div></div><div class="work-card-actions"><a class="work-result-link" href="#proof-product" data-i18n="worksResult">실제 결과 보기 ↗</a><button class="work-start" data-category="Product" data-open="" data-plan="Pro" type="button" data-i18n="worksStart">내 사진으로 만들기 ↗</button></div></article>
+<article class="work-card"><div class="bg w2"></div><div class="work-card-content"><small>02 · AUTOMOTIVE</small><h3 data-i18n="worksAutomotiveTitle">자동차 필름</h3><p data-i18n="worksAutomotiveCopy">차량 사진에서 주행 에너지와 브랜드 감도가 있는 필름을 제작합니다.</p><div class="work-card-meta">30 SEC · SIGNATURE</div></div><div class="work-card-actions"><a class="work-result-link" href="#portfolio-automotive" data-i18n="worksResult">실제 결과 보기 ↗</a><button class="work-start" data-category="Custom" data-open="" data-plan="Signature" type="button" data-i18n="worksStart">내 사진으로 만들기 ↗</button></div></article>
+<article class="work-card"><div class="bg w3"></div><div class="work-card-content"><small>03 · BEAUTY</small><h3 data-i18n="worksBeautyTitle">뷰티 광고</h3><p data-i18n="worksBeautyCopy">한 장의 제품 사진에 빛·물성·무드를 더한 뷰티 광고를 만듭니다.</p><div class="work-card-meta">15 SEC · PRO</div></div><div class="work-card-actions"><a class="work-result-link" href="#sample-fancl" data-i18n="worksResult">실제 결과 보기 ↗</a><button class="work-start" data-category="Beauty" data-open="" data-plan="Pro" type="button" data-i18n="worksStart">내 사진으로 만들기 ↗</button></div></article>
+<article class="work-card"><div class="bg w4"></div><div class="work-card-content"><small>04 · TRAVEL</small><h3 data-i18n="worksTravelTitle">여행 변신</h3><p data-i18n="worksTravelCopy">인물 사진 한 장을 여행지로 확장되는 짧은 변신 릴스로 만듭니다.</p><div class="work-card-meta">9 SEC · TRANSFORM</div></div><div class="work-card-actions"><a class="work-result-link" href="#proof-travel" data-i18n="worksResult">실제 결과 보기 ↗</a><button class="work-start" data-category="Travel" data-open="" data-plan="Basic Transform" type="button" data-i18n="worksStart">내 사진으로 만들기 ↗</button></div></article>
+<article class="work-card"><div class="bg w5"></div><div class="work-card-content"><small>05 · WEDDING</small><h3 data-i18n="worksWeddingTitle">웨딩 필름</h3><p data-i18n="worksWeddingCopy">한 장의 인물 사진으로 스타일·공간·빛을 완성한 웨딩 필름을 제작합니다.</p><div class="work-card-meta">15 SEC · PRO</div></div><div class="work-card-actions"><a class="work-result-link" href="#proof-wedding" data-i18n="worksResult">실제 결과 보기 ↗</a><button class="work-start" data-category="Wedding" data-open="" data-plan="Pro" type="button" data-i18n="worksStart">내 사진으로 만들기 ↗</button></div></article>
+<article class="work-card"><div class="bg w6"></div><div class="work-card-content"><small>06 · PET MEMORIAL</small><h3 data-i18n="worksPetTitle">반려동물 메모리얼</h3><p data-i18n="worksPetCopy">소중한 반려동물 사진을 다시 움직이는 추억 영상으로 복원합니다.</p><div class="work-card-meta">1 PHOTO · MEMORIAL</div></div><div class="work-card-actions"><a class="work-result-link" href="#memorial" data-i18n="worksResult">실제 결과 보기 ↗</a><button class="work-start" data-category="Custom" data-open="" data-plan="Memorial Basic" type="button" data-i18n="worksStart">내 사진으로 만들기 ↗</button></div></article>
+</div>
 </div>
 </section>
 <section class="process" id="process">
@@ -552,7 +558,7 @@ window.addEventListener('error', function(e) {
 <p data-i18n="portfolioCopy">AVVM은 뷰티뿐 아니라 자동차, 문화, 기업, 축제, 스토리, 액션까지 다양한 산업군의 영상 샘플로 확장됩니다.</p>
 </div>
 <div class="portfolio-grid">
-<article class="portfolio-card has-help" data-help="F1 레이싱과 공중 추적 드라이브 샘플입니다. 자동차/스포츠 브랜드용입니다." data-help-key="help20" data-help-ko="F1 레이싱과 공중 추적 드라이브 샘플입니다. 자동차/스포츠 브랜드용입니다.">
+<article class="portfolio-card has-help" id="portfolio-automotive" data-help="F1 레이싱과 공중 추적 드라이브 샘플입니다. 자동차/스포츠 브랜드용입니다." data-help-key="help20" data-help-ko="F1 레이싱과 공중 추적 드라이브 샘플입니다. 자동차/스포츠 브랜드용입니다.">
 <video autoplay="" loop="" muted="" playsinline="" poster="https://avvmstudio25.vercel.app/assets/posters/videos_portfolio_f1-aerial-drive.jpg" preload="metadata" src="https://avvmstudio25.vercel.app/videos/portfolio/f1-aerial-drive.mp4"></video>
 <div class="portfolio-card-body"><small>AUTOMOTIVE</small><h3>F1 AERIAL DRIVE</h3><p data-i18n="portAuto"><span data-i18n="portAuto">공중 추적, 고속 코너링, 레이스 에너지를 보여주는 자동차 섹터 샘플입니다.</span></p></div>
 </article>
@@ -1020,12 +1026,12 @@ window.addEventListener('error', function(e) {
     <div class="order-form-section-title">2. 원하는 비디오 스타일 선택</div>
     <p class="order-form-helper">첨부한 사진에 적용할 AI 연출 스타일 테마를 골라주세요.</p>
     <div class="cat-grid">
-      <button class="cat active" type="button"><span data-i18n="catBeauty">Beauty</span></button>
-      <button class="cat" type="button"><span data-i18n="catProduct">Product</span></button>
-      <button class="cat" type="button"><span data-i18n="catFood">Food</span></button>
-      <button class="cat" type="button"><span data-i18n="catTravel">Travel</span></button>
-      <button class="cat" type="button"><span data-i18n="catWedding">Wedding</span></button>
-      <button class="cat" type="button"><span data-i18n="catCustom">Custom</span></button>
+      <button class="cat active" data-category="Beauty" type="button"><span data-i18n="catBeauty">Beauty</span></button>
+      <button class="cat" data-category="Product" type="button"><span data-i18n="catProduct">Product</span></button>
+      <button class="cat" data-category="Food" type="button"><span data-i18n="catFood">Food</span></button>
+      <button class="cat" data-category="Travel" type="button"><span data-i18n="catTravel">Travel</span></button>
+      <button class="cat" data-category="Wedding" type="button"><span data-i18n="catWedding">Wedding</span></button>
+      <button class="cat" data-category="Custom" type="button"><span data-i18n="catCustom">Custom</span></button>
       <button class="cat cat-btn" data-category="Personal Transform" type="button"><span data-i18n="catPersonal">Transform</span></button>
     </div>
     <textarea class="field" id="moodInput" placeholder="추가 요구사항 또는 영상 설명 (선택사항)" rows="3" style="margin-top:14px"></textarea>

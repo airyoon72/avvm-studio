@@ -204,7 +204,17 @@ function closeOrder(){
   if(window.__avvmLenis) window.__avvmLenis.start();
 }
 
-$$('[data-open]').forEach(b=>b.addEventListener('click',()=>openOrder(b.dataset.plan)));
+function selectCategory(category){
+  if(!category) return;
+  const target=$$('.cat').find(button=>button.dataset.category===category);
+  if(!target) return;
+  $$('.cat').forEach(button=>button.classList.toggle('active',button===target));
+}
+
+$$('[data-open]').forEach(b=>b.addEventListener('click',()=>{
+  selectCategory(b.dataset.category);
+  openOrder(b.dataset.plan);
+}));
 document.addEventListener('click', function(e){
   const choice=e.target.closest('[data-plan-choice]');
   if(!choice) return;
@@ -214,7 +224,7 @@ document.addEventListener('click', function(e){
 if($('#closeModal')) $('#closeModal').addEventListener('click',closeOrder); 
 if(modal) modal.addEventListener('click',e=>{if(e.target===modal)closeOrder();});
 
-$$('.cat').forEach(b=>b.addEventListener('click',()=>{$$('.cat').forEach(x=>x.classList.remove('active'));b.classList.add('active'); toast(`${b.textContent} mood selected`);}));
+$$('.cat').forEach(b=>b.addEventListener('click',()=>{selectCategory(b.dataset.category); toast(`${b.textContent} mood selected`);}));
 
 let lastOrder=null;
 const apiBase = (
