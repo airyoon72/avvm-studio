@@ -1,9 +1,13 @@
-/* AVVM bilingual UI: shared by the home page and the order-detail page. */
+/* AVVM multilingual UI: shared by the home page and the order-detail page. */
 (function () {
   'use strict';
 
   const STORAGE_KEY = 'avvmLang';
-  let language = localStorage.getItem(STORAGE_KEY) === 'en' ? 'en' : 'ko';
+  const LANGUAGE_META = window.AVVM_LANGUAGE_META || {
+    ko: { htmlLang: 'ko', dir: 'ltr' }, en: { htmlLang: 'en', dir: 'ltr' }
+  };
+  const savedLanguage = localStorage.getItem(STORAGE_KEY);
+  let language = LANGUAGE_META[savedLanguage] ? savedLanguage : 'ko';
 
   const en = {
     heroEyebrow: 'THE AI VIDEO VENDING MACHINE', heroSub: 'Premium commercial videos from a single image.', baInputLabel: 'INPUT · 30-YEAR-OLD PHOTO', baOutputLabel: 'OUTPUT · KKAMSOONI RUNS AGAIN', baProcessTop: 'AI MEMORIAL REMASTER', baProcessBottom: 'STILL PAST → RUNNING MEMORY', baCaseNote: 'One frozen photo. A memory running back to you.', kkamsooniPhoto: 'KKAMSOONI · 30 YEARS AGO', kkamsooniMotion: '🐕 KKAMSOONI, NOW IN MOTION', webStudioEyebrow: 'SISTER BRAND · WEB-STUDIO', webStudioTitle: 'WATCH. JEWELRY.<br>LIFESTYLE.', webStudioCopy: 'WEB-STUDIO curates watches, jewelry, and elevated lifestyle objects through one clear point of view. Discover the sister brand’s promotional film here.', webStudioPending: 'VISIT WEB-STUDIO ↗', proofLabEyebrow: 'RESULT PREVIEW LIBRARY', proofLabTitle: 'YOUR PHOTO,<br>WITH PROOF.', proofLabCopy: 'See the result range first. Every example places a real input image next to its AVVM production result.', proofPortraitName: 'PORTRAIT EDITORIAL', proofPortraitCopy: 'Turn an everyday portrait into a short luxury fashion-campaign film.', proofPortraitInput: 'Everyday portrait', proofPortraitOutput: 'Fashion editorial film', proofMemorialName: 'MEMORIAL RESTORATION', proofMemorialCopy: 'Let a presence in an old photograph move again as a living memory.', proofMemorialInput: 'Old black-and-white photo', proofMemorialOutput: 'A memory in motion', proofProductName: 'PRODUCT ADVERTISING', proofProductCopy: 'Produce an advertising film with light and camera movement from a simple product photo.', proofProductInput: 'Standard product photo', proofProductOutput: 'Luxury advertising film', proofProfileName: 'ID · PROFILE', proofProfileCopy: 'Keep the person’s identity while refining background, wardrobe, and lighting for the right profile use.', proofProfileInput: 'Everyday portrait', proofProfileOutput: 'Refined profile photo', proofBeautyName: 'BEAUTY ADVERTISING', proofBeautyCopy: 'Turn a basic product photo into a beauty film with texture, light, and camera movement.', proofBeautyInput: 'Basic product photo', proofBeautyOutput: 'Liquid beauty film', proofFoodName: 'FOOD ADVERTISING', proofFoodCopy: 'Create a short menu or brand film that brings out food texture and warmth.', proofFoodInput: 'Everyday food photo', proofFoodOutput: 'Cinematic food film', proofTravelName: 'TRAVEL TRANSFORM', proofTravelCopy: 'Turn one portrait into a short reel with a new destination and style.', proofTravelInput: 'Everyday portrait', proofTravelOutput: 'Travel cinema reel', proofWeddingName: 'WEDDING FILM', proofWeddingCopy: 'Build a wedding mood film from one portrait by refining wardrobe, space, and light.', proofWeddingInput: 'Everyday portrait', proofWeddingOutput: 'Wedding editorial film', proofLabNotice: 'These are real production examples for reference. Results vary with the source photo’s focus, light, composition, and selected style; AVVM reviews quality before final delivery.',
@@ -110,8 +114,12 @@
     orderReceived: '주문 접수 완료', orderProcessing: '영상 제작 중', orderCompleteStatus: '제작 완료', orderFailed: '제작 실패', backHome: '홈페이지로 돌아가기'
   };
 
+  function isKorean() { return language === 'ko'; }
+
   function t(key, fallback) {
-    return (language === 'en' ? en[key] : ko[key]) || fallback || key;
+    if (isKorean()) return ko[key] || fallback || key;
+    const locale = (window.AVVM_LOCALES || {})[language] || {};
+    return locale[key] || en[key] || fallback || key;
   }
 
   function setText(node, value) { if (node && value != null) node.textContent = value; }
@@ -122,7 +130,7 @@
       const attribute = useHtml ? 'data-avvm-ko-html' : 'data-avvm-ko-text';
       if (!node.hasAttribute(attribute)) node.setAttribute(attribute, useHtml ? node.innerHTML : node.textContent);
       const original = node.getAttribute(attribute);
-      if (language === 'en') (useHtml ? setHtml : setText)(node, englishValue);
+      if (!isKorean()) (useHtml ? setHtml : setText)(node, englishValue);
       else (useHtml ? setHtml : setText)(node, original);
     });
   }
@@ -131,15 +139,15 @@
     document.querySelectorAll('[data-i18n], [data-i18n-auto]').forEach(node => {
       const key = node.dataset.i18n || node.dataset.i18nAuto;
       if (!node.dataset.avvmKoHtml) node.dataset.avvmKoHtml = node.innerHTML;
-      if (language === 'en' && en[key]) node.innerHTML = en[key];
-      else if (language === 'ko') node.innerHTML = node.dataset.avvmKoHtml;
+      if (!isKorean()) node.innerHTML = t(key, en[key] || node.dataset.avvmKoHtml);
+      else node.innerHTML = node.dataset.avvmKoHtml;
     });
   }
 
   function applyFooterAndCheckout() {
     const footerLinks = ['Service', 'Terms', 'Privacy', 'Refund', 'Delivery', 'Business'];
     document.querySelectorAll('.footer-links a').forEach((node, index) => {
-      setText(node, language === 'en' ? footerLinks[index] : t(['footerService', 'footerTerms', 'footerPrivacy', 'footerRefund', 'footerDelivery', 'footerBusiness'][index], footerLinks[index]));
+      setText(node, !isKorean() ? footerLinks[index] : t(['footerService', 'footerTerms', 'footerPrivacy', 'footerRefund', 'footerDelivery', 'footerBusiness'][index], footerLinks[index]));
     });
     localized('.business-info', `
       <b>AVVM.studio business information</b><br>
@@ -176,7 +184,7 @@
     [['#brandInput', 'Enter your name or brand'], ['#emailInput', 'Email for the video download link'], ['#phoneInput', 'Mobile number for KakaoTalk/SMS delivery'], ['#moodInput', 'Additional requests or video description (optional)']].forEach(([selector, value]) => {
       const node = document.querySelector(selector); if (!node) return;
       if (!node.dataset.avvmKoPlaceholder) node.dataset.avvmKoPlaceholder = node.placeholder;
-      node.placeholder = language === 'en' ? value : node.dataset.avvmKoPlaceholder;
+      node.placeholder = !isKorean() ? value : node.dataset.avvmKoPlaceholder;
     });
     localized('.checkout-notice', `<p class="test-mode-note"><b>PG review test mode is currently active.</b><br>This button opens the KPN test payment window. Live payment completion is enabled only after PG approval and server verification are connected.</p><b>Before payment</b><p>This product is made-to-order digital content based on your image. Cancellation or refund for a change of mind may be limited after production starts.</p><p><b>Service period:</b> Delivery begins after payment and production materials are received. Transform products take 1–3 business days; 3 Style Set takes 3–7 business days; Starter 24–48 hours; Pro 2–3 business days; Signature 3–5 business days. Memorial and ID/Profile products follow the period shown on their cards.</p><p>You must have rights to use uploaded photos, logos, product images, and portraits. We do not accept impersonation, identity deception, or unauthorized commercial-use requests.</p>`, true);
     const consentCopy = [
@@ -188,11 +196,11 @@
     ];
     document.querySelectorAll('#consentGroup .consent-row span').forEach((node, index) => {
       if (!node.dataset.avvmKoHtml) node.dataset.avvmKoHtml = node.innerHTML;
-      node.innerHTML = language === 'en' ? consentCopy[index] : node.dataset.avvmKoHtml;
+      node.innerHTML = !isKorean() ? consentCopy[index] : node.dataset.avvmKoHtml;
     });
     localized('#resolutionGroup .order-form-helper', '4K is available only for Signature or Custom plans.');
     const submit = document.getElementById('submitOrder');
-    if (submit && submit.getAttribute('aria-busy') !== 'true') setText(submit, language === 'en' ? 'TEST PAYMENT' : '테스트 결제하기');
+    if (submit && submit.getAttribute('aria-busy') !== 'true') setText(submit, !isKorean() ? 'TEST PAYMENT' : '테스트 결제하기');
     localized('#downloadOrder', 'DOWNLOAD VIDEO'); localized('#resetOrder', 'CREATE ANOTHER');
   }
 
@@ -250,10 +258,10 @@
     const labels = ['Order ID', 'Name / brand', 'Email address', 'Mobile number', 'Selected plan', 'Price', 'Video style', 'Aspect ratio', 'Resolution'];
     document.querySelectorAll('.detail-row span:first-child').forEach((node, index) => {
       if (!node.dataset.avvmKoText) node.dataset.avvmKoText = node.textContent;
-      node.textContent = language === 'en' ? labels[index] : node.dataset.avvmKoText;
+      node.textContent = !isKorean() ? labels[index] : node.dataset.avvmKoText;
     });
     localized('.image-preview-section .section-title', 'Uploaded production photo'); localized('.video-preview-section .section-title', 'Generated AI video'); localized('#emptyMsg', 'No image was attached.'); localized('.order-card > .btn', t('backHome'));
-    const image = document.getElementById('orderImg'); if (image) image.alt = language === 'en' ? 'Uploaded photo' : '첨부된 제작 사진';
+    const image = document.getElementById('orderImg'); if (image) image.alt = !isKorean() ? 'Uploaded photo' : '첨부된 제작 사진';
   }
 
   function status(status) {
@@ -262,9 +270,12 @@
   }
 
   function apply(nextLanguage) {
-    language = nextLanguage === 'en' ? 'en' : 'ko';
+    language = LANGUAGE_META[nextLanguage] ? nextLanguage : 'ko';
     localStorage.setItem(STORAGE_KEY, language);
-    document.documentElement.lang = language;
+    const meta = LANGUAGE_META[language];
+    document.documentElement.lang = meta.htmlLang || language;
+    document.documentElement.dir = meta.dir === 'rtl' ? 'rtl' : 'ltr';
+    document.body?.setAttribute('dir-text', meta.dir === 'rtl' ? 'rtl' : 'ltr');
     applyMarkedText();
     applyFooterAndCheckout();
     applyLowerPageSections();
@@ -280,7 +291,7 @@
     apply(language);
   }
 
-  window.AVVM_I18N = { t, apply, get language() { return language; }, status };
+  window.AVVM_I18N = { t, apply, status, languages: LANGUAGE_META, get language() { return language; } };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
   else init();
 })();

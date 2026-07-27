@@ -127,13 +127,12 @@ window.addEventListener('error', function(e) {
   <a aria-label="AVVM home" class="avvm-logo-link logo" href="#hero"><img alt="AVVM" class="avvm-play-logo-img" src="https://avvmstudio25.vercel.app/assets/avvm-play-logo.png"/></a>
   <div class="nav-brand-tagline"><span data-i18n="heroEyebrow">THE AI VIDEO VENDING MACHINE</span></div>
 </div>
-<div class="links"><a href="#works">Works</a><a href="#one-photo-new-world">Transform</a><a href="#pricing">Business</a><a href="#memorial">Memorial</a><a href="#id-profile">ID·Profile</a><a href="https://web-studio-quiet.airyoon72.chatgpt.site" rel="noopener" target="_blank">WEB-STUDIO ↗</a><a href="#faq">FAQ</a></div>
+<div class="links"><a href="#works" data-i18n="navWorks">Works</a><a href="#one-photo-new-world" data-i18n="navTransform">Transform</a><a href="#pricing" data-i18n="navBusiness">Business</a><a href="#memorial" data-i18n="navMemorial">Memorial</a><a href="#id-profile" data-i18n="navProfile">ID·Profile</a><a href="https://web-studio-quiet.airyoon72.chatgpt.site" rel="noopener" target="_blank">WEB-STUDIO ↗</a><a href="#faq" data-i18n="navFaq">FAQ</a></div>
 <div class="nav-cta nav-cta-native-lang">
 <div class="native-lang-box lang-with-icon" id="nativeLangBox"><video aria-hidden="true" autoplay="" class="lang-globe-icon" loop="" muted="" playsinline="" poster="https://avvmstudio25.vercel.app/assets/lang-globe-icon.jpg" src="https://avvmstudio25.vercel.app/assets/lang-globe-icon.mp4"></video>
 <label for="nativeLangSelect"></label>
 <select aria-label="Language" id="nativeLangSelect">
-<option value="ko">KO</option>
-<option value="en">EN</option>
+<option value="ko">KO</option><option value="en">EN</option><option value="ja">JA</option><option value="zh">ZH</option><option value="es">ES</option><option value="fr">FR</option><option value="de">DE</option><option value="pt">PT</option><option value="hi">HI</option><option value="ar">AR</option>
 </select>
 </div>
 <button class="btn" data-open=""><span data-i18n="startProject">START PROJECT ↗</span></button>
@@ -168,8 +167,7 @@ window.addEventListener('error', function(e) {
 <div class="native-lang-box hero-native-lang lang-with-icon" id="heroNativeLangBox"><video aria-hidden="true" autoplay="" class="lang-globe-icon" loop="" muted="" playsinline="" poster="https://avvmstudio25.vercel.app/assets/lang-globe-icon.jpg" src="https://avvmstudio25.vercel.app/assets/lang-globe-icon.mp4"></video>
 <label for="heroNativeLangSelect"></label>
 <select aria-label="Language" id="heroNativeLangSelect">
-<option value="ko">KO</option>
-<option value="en">EN</option>
+<option value="ko">KO</option><option value="en">EN</option><option value="ja">JA</option><option value="zh">ZH</option><option value="es">ES</option><option value="fr">FR</option><option value="de">DE</option><option value="pt">PT</option><option value="hi">HI</option><option value="ar">AR</option>
 </select>
 </div>
 <button aria-label="Start project" class="hero-menu-dot has-help" data-help="프로젝트 시작: 이미지 업로드와 주문 정보를 입력합니다." data-help-key="help1" data-help-ko="프로젝트 시작: 이미지 업로드와 주문 정보를 입력합니다." data-open="">START</button></div>
@@ -1385,8 +1383,9 @@ document.addEventListener('click', function (event) {
 })();
 </script>
 
-<script src="i18n.js?v=4"></script>
-<script src="app.js?v=37"></script>
+<script src="locales.js?v=1"></script>
+<script src="i18n.js?v=5"></script>
+<script src="app.js?v=38"></script>
 <script>
 /* AVVM v31 index-only safeguards
    - app.js를 바로 수정하지 않아도 새 필수동의(rightsConsent)를 결제 클릭 전에 검사합니다.

@@ -2616,6 +2616,24 @@ body[dir-text="rtl"] .legal-panel,
 body[dir-text="rtl"] .consumer-copy,
 body[dir-text="rtl"] .clarity-copy{direction:rtl;text-align:right!important}
 
+html[dir="rtl"] .proof-lab-header,
+html[dir="rtl"] .proof-card,
+html[dir="rtl"] .portfolio-global-head,
+html[dir="rtl"] .portfolio-card-body,
+html[dir="rtl"] .web-studio-copy,
+html[dir="rtl"] .consumer-copy,
+html[dir="rtl"] .modal-card,
+html[dir="rtl"] .order-card {
+  direction: rtl;
+  text-align: right;
+}
+html[dir="rtl"] .proof-card-head,
+html[dir="rtl"] .footer-inner,
+html[dir="rtl"] .links,
+html[dir="rtl"] .hero-v5-actions {
+  direction: rtl;
+}
+
 
 /* AVVM language select globe icon */
 .native-lang-box.lang-with-icon,

@@ -56,8 +56,8 @@ function getNumericPrice(plan) {
 
 function setOrderSummary(){
   const lang=localStorage.getItem('avvmLang')||'ko';
-  const order=window.ORDER ? (window.ORDER[lang]||window.ORDER.ko) : null;
-  const planPrefix=order?.planPrefix || (lang === 'en' ? 'Selected plan: ' : '선택한 플랜: ');
+  const order=window.ORDER ? (window.ORDER[lang]||window.ORDER.en||window.ORDER.ko) : null;
+  const planPrefix=order?.planPrefix || (lang === 'ko' ? '선택한 플랜: ' : 'Selected plan: ');
   if(summary) summary.textContent=`${planPrefix}${window.selectedPlan} · ${window.prices[window.selectedPlan]||window.prices.Pro}`;
 }
 
@@ -506,7 +506,7 @@ function setPaymentButtonBusy(busy, busyLabel){
     $('#refundConsent')?.checked &&
     $('#rightsConsent')?.checked
   );
-  button.textContent=busy ? (busyLabel || tr('paymentOpening', '결제창을 여는 중...')) : (window.AVVM_I18N?.language === 'en' ? 'TEST PAYMENT' : '테스트 결제하기');
+  button.textContent=busy ? (busyLabel || tr('paymentOpening', '결제창을 여는 중...')) : (window.AVVM_I18N?.language !== 'ko' ? 'TEST PAYMENT' : '테스트 결제하기');
   button.setAttribute('aria-busy', busy ? 'true' : 'false');
 }
 
