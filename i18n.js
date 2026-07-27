@@ -57,6 +57,11 @@
     orderReceived: 'Order received', orderProcessing: 'Video in production', orderCompleteStatus: 'Production complete', orderFailed: 'Production failed', backHome: 'BACK TO HOME'
   };
 
+  Object.assign(en, {
+    memorialLaunchNotice: '[NEW] <b>Memorial Restoration</b> is here. Restore cherished old photos and beloved pet memories ↗',
+    memorialNavTag: 'MEMORIAL'
+  });
+
   const ko = {
     footerService: '서비스', footerTerms: '이용약관', footerPrivacy: '개인정보처리방침', footerRefund: '환불정책', footerDelivery: '디지털 제공 안내', footerBusiness: '사업자 정보',
     paymentOpening: '결제창을 여는 중...', optimizingImage: '사진 최적화 중...', attachPhoto: '사진 첨부하기', acceptedImageTypes: 'JPG, PNG, WEBP 등 이미지 파일', imageRequired: '영상 제작에 사용할 사진을 첨부해주세요.', imageType: 'JPG, PNG 또는 WEBP 형식의 사진만 사용할 수 있습니다.', imageSize: '사진 원본은 15MB 이하로 선택해주세요.',
