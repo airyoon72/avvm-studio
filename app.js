@@ -751,7 +751,7 @@ const $=(s,root=document)=>root.querySelector(s);
               order.status = 'completed';
               order.statusKo = '제작 완료';
               localStorage.setItem('avvmOrder_' + token, JSON.stringify(order));
-              showCompletedVideo(videoUrl, progressDiv, tokon);
+              showCompletedVideo(videoUrl, progressDiv, token);
             } else {
               if (label) label.textContent = '제작 완료되었으나 영상 파일을 찾을 수 없습니다.';
             }
