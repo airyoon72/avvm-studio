@@ -66,6 +66,31 @@ function getImageSource(body) {
   return imageData;
 }
 
+// Fal's image-to-video endpoint accepts data URLs reliably. Some Fal runners
+// cannot fetch a private Supabase signed URL directly, so fetch it server-side
+// first. This does not send Base64 through the browser anymore.
+async function toFalImageInput(source) {
+  if (source.startsWith("data:")) return source;
+
+  const imageResponse = await fetch(source);
+  if (!imageResponse.ok) {
+    throw new Error("업로드된 이미지를 읽을 수 없습니다. (HTTP " + imageResponse.status + ")");
+  }
+
+  const contentType = String(imageResponse.headers.get("content-type") || "image/jpeg")
+    .split(";")[0]
+    .toLowerCase();
+  if (!["image/jpeg", "image/png", "image/webp"].includes(contentType)) {
+    throw new Error("업로드된 이미지 형식이 올바르지 않습니다.");
+  }
+
+  const buffer = Buffer.from(await imageResponse.arrayBuffer());
+  if (!buffer.length || buffer.length > 4 * 1024 * 1024) {
+    throw new Error("업로드된 이미지 용량이 올바르지 않습니다.");
+  }
+  return `data:${contentType};base64,${buffer.toString("base64")}`;
+}
+
 module.exports = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
@@ -192,6 +217,7 @@ module.exports = async (req, res) => {
     try {
       const { prompt, duration, resolution, aspectRatio } = req.body || {};
       const imageSource = getImageSource(req.body);
+      const falImageInput = await toFalImageInput(imageSource);
       const safeDuration = ALLOWED_DURATION.includes(duration) ? duration : "5s";
       const safeResolution = ALLOWED_RESOLUTION.includes(resolution) ? resolution : "540p";
       const safeAspect = ALLOWED_ASPECT.includes(aspectRatio) ? aspectRatio : "9:16";
@@ -199,7 +225,7 @@ module.exports = async (req, res) => {
 
       const queueResult = await fal.queue.submit(MODEL_ID, {
         input: {
-          image_url: imageSource,
+          image_url: falImageInput,
           prompt: submitPrompt,
           duration: safeDuration,
           resolution: safeResolution,
