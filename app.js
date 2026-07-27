@@ -299,7 +299,14 @@ const $=(s,root=document)=>root.querySelector(s);
       if (imgFile) {
         try {
           // Resize and compress image to a maximum of 1024px width/height and 0.8 quality
-          imageData = await compressImage(imgFile, 1024, 1024);
+          const isMobile =
+            /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+          imageData = await compressImage(
+            imgFile,
+            isMobile ? 768 : 1024,
+            isMobile ? 768 : 1024
+          );
         } catch (e) {
           console.error("Compression failed, attempting raw reader:", e);
           try {
