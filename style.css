@@ -3879,9 +3879,24 @@ html[lang="zh"] [data-i18n-auto]{
     transition: opacity 0.3s, transform 0.3s;
 }
 
+/* JS가 준비되기 전에는 브라우저 기본 커서를 유지합니다. */
+body:not(.custom-cursor-ready) .custom-cursor,
+body:not(.custom-cursor-ready) .custom-cursor-follower {
+    opacity: 0;
+}
+
 /* Cursor fine pointer overrides */
 @media (pointer: fine) {
-    body, a, button, select, input, textarea, .option-chip, .cat, .legal-close, .close {
+    body.custom-cursor-ready,
+    body.custom-cursor-ready a,
+    body.custom-cursor-ready button,
+    body.custom-cursor-ready select,
+    body.custom-cursor-ready input,
+    body.custom-cursor-ready textarea,
+    body.custom-cursor-ready .option-chip,
+    body.custom-cursor-ready .cat,
+    body.custom-cursor-ready .legal-close,
+    body.custom-cursor-ready .close {
         cursor: none !important;
     }
 }
