@@ -215,10 +215,7 @@ const apiBase = (
   location.hostname === '127.0.0.1' ||
   location.hostname.endsWith('.lhr.life') ||
   location.hostname.endsWith('.vercel.app')
-) ? 'https://avvm.studio' : ''; 
-  ? 'https://avvm.studio' 
-  : '';
-
+) ? 'https://avvm.studio' : '';
 function makeOrderId(){ 
   return 'AVVM-' + new Date().toISOString().slice(0,10).replaceAll('-','') + '-' + Math.random().toString(36).slice(2,7).toUpperCase(); 
 }
