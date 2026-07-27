@@ -3715,6 +3715,7 @@ html[lang="zh"] [data-i18n-auto]{
     white-space:nowrap!important;
     overflow:hidden!important;
     text-overflow:ellipsis!important;
+    margin-top:-11px!important;
   }
 
   .hero-v5-top .hero-top-actions{
@@ -5113,7 +5114,8 @@ body.modal-open{
   white-space: nowrap !important;
   opacity: 0.94 !important;
   text-shadow: 0 0 12px rgba(216,242,51,0.22) !important;
-  margin-top: 1px !important;
+  /* Pull the tagline into the transparent lower area of the logo artwork. */
+  margin-top: -13px !important;
 }
 
 /* ==========================================================================
