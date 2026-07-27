@@ -247,7 +247,7 @@ function compressImage(file, maxW = 1024, maxH = 1024) {
 /* ==========================================
    [HOOK 1b: 결제 성공 후 실제 주문 접수 & 영상 생성]
    ========================================== */
-async function proceedWithOrderCreation(orderId, brand, email, phone, privacyConsent, notifyConsent, refundConsent, marketingConsent, category, mood, paymentResponse, totalAmount) {
+async function proceedWithOrderCreation(orderId, brand, email, phone, privacyConsent, notifyConsent, refundConsent, rightsConsent, marketingConsent, category, mood, paymentResponse, totalAmount) {
   if(modalCard) modalCard.classList.add('done');
   if($('#successOrderId')) $('#successOrderId').textContent='ORDER #' + orderId;
   toast('주문 접수 시작 ✓');
@@ -308,7 +308,7 @@ async function proceedWithOrderCreation(orderId, brand, email, phone, privacyCon
     token,
     createdAt:new Date().toISOString(),
     brand, email, phone, imageData,
-    consents:{ privacy:privacyConsent, transactionalNotice:notifyConsent, customDigitalRefundLimit:refundConsent, marketing:marketingConsent },
+    consents:{ privacy:privacyConsent, transactionalNotice:notifyConsent, customDigitalRefundLimit:refundConsent, imageRights:rightsConsent, marketing:marketingConsent },
     plan:window.selectedPlan,
     price:window.prices[window.selectedPlan]||window.prices.Pro,
     category, mood,
@@ -439,7 +439,8 @@ function setPaymentButtonBusy(busy){
   button.disabled=busy || !(
     $('#privacyConsent')?.checked &&
     $('#notifyConsent')?.checked &&
-    $('#refundConsent')?.checked
+    $('#refundConsent')?.checked &&
+    $('#rightsConsent')?.checked
   );
   button.textContent=busy ? '결제창을 여는 중...' : '테스트 결제하기';
   button.setAttribute('aria-busy', busy ? 'true' : 'false');
@@ -454,6 +455,7 @@ async function createOrder(){
   const privacyConsent=!!($('#privacyConsent')?.checked);
   const notifyConsent=!!($('#notifyConsent')?.checked);
   const refundConsent=!!($('#refundConsent')?.checked);
+  const rightsConsent=!!($('#rightsConsent')?.checked);
   const marketingConsent=!!($('#marketingConsent')?.checked);
   const category=$('.cat.active')?.textContent?.trim() || 'Custom';
   const mood=$('#moodInput')?.value?.trim() || '';
@@ -461,7 +463,7 @@ async function createOrder(){
   if(!brand){toast('성함 / 브랜드명을 입력해주세요'); focusCustomerField('#brandInput','#brandInput2'); return;}
   if(email && !email.includes('@')){toast('이메일 형식을 확인해주세요'); focusCustomerField('#emailInput','#emailInput2'); return;}
   if(!phone){toast('카톡/문자 알림용 휴대폰 번호를 입력해주세요'); focusCustomerField('#phoneInput','#phoneInput2'); return;}
-  if(!privacyConsent || !notifyConsent || !refundConsent){toast('필수 동의 항목을 확인해주세요'); focusAndReveal('#consentGroup'); return;}
+  if(!privacyConsent || !notifyConsent || !refundConsent || !rightsConsent){toast('필수 동의 항목을 확인해주세요'); focusAndReveal('#consentGroup'); return;}
   if(window.selectedPlan === 'Custom' || String(window.prices[window.selectedPlan]||'').includes('상담')){
     toast('Custom 플랜은 상담 후 견적으로 진행됩니다.');
     return;
@@ -512,7 +514,7 @@ async function createOrder(){
     // 결제 성공 시에만 AI 영상 생성 및 주문 등록 진행
     await proceedWithOrderCreation(
       orderId, brand, email, phone,
-      privacyConsent, notifyConsent, refundConsent, marketingConsent,
+      privacyConsent, notifyConsent, refundConsent, rightsConsent, marketingConsent,
       category, mood, response, totalAmount
     );
 
@@ -730,7 +732,11 @@ if($('#resetOrder')) {
     if($('#brandInput2')) $('#brandInput2').value = ''; 
     if($('#emailInput2')) $('#emailInput2').value = ''; 
     if($('#phoneInput2')) $('#phoneInput2').value = ''; 
-    if($('#notifyConsent')) $('#notifyConsent').checked = true; 
+    if($('#privacyConsent')) $('#privacyConsent').checked = false; 
+    if($('#notifyConsent')) $('#notifyConsent').checked = false; 
+    if($('#refundConsent')) $('#refundConsent').checked = false; 
+    if($('#rightsConsent')) $('#rightsConsent').checked = false; 
+    if($('#marketingConsent')) $('#marketingConsent').checked = false; 
     if($('#moodInput')) $('#moodInput').value = ''; 
     if($('#imageInput')) $('#imageInput').value = ''; 
     if($('#imagePreview')) $('#imagePreview').classList.remove('on'); 
