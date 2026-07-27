@@ -22,7 +22,7 @@
     portFestival: 'An event-film sample for fireworks, night events, and local festivals.',
     portStory: 'A lifestyle and story sample that highlights human emotion and atmosphere.',
     portMetaverse: 'A metaverse sample connecting local cultural symbols with a digital network.',
-    portAction: 'An experimental action sample with fighting, pursuit, and tense transitions.',
+    portAction: 'A music-video sample with stage performance, rhythmic movement, and dramatic lighting.',
     includedTitle: 'WHAT IS<br>INCLUDED?', consumerKicker: 'For everyone · sticker-photo price', consumerTitle: 'ONE PHOTO,<br>NEW WORLD.',
     consumerCopy: 'Upload one great photo. Turn an everyday image into an overseas landmark, Instagram aesthetic, or fashion-model mood video.',
     travelJumpTitle: 'Jump to global landmarks', travelJumpCopy: 'Expand a seated photo into a global-mood video set in Paris, New York, Santorini, Tokyo, and more.',
