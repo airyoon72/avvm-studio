@@ -59,7 +59,20 @@
 
   Object.assign(en, {
     memorialLaunchNotice: '[NEW] <b>Memorial Restoration</b> is here. Restore cherished old photos and beloved pet memories ↗',
-    memorialNavTag: 'MEMORIAL'
+    memorialNavTag: 'MEMORIAL',
+    beautyFlowKicker: 'DIRECTION FLOW',
+    beautyFlowTitle: 'A 15-second beauty film shaped with polished direction',
+    beautyFlowSceneLabel: 'SCENE / CONTENT',
+    beautyFlowPromptLabel: 'VIDEO PROMPT',
+    beautyFlowTime1: 'TIME 00:00–00:05',
+    beautyFlowScene1: 'The product arrives over clear ripples as transparent blue light sets the opening mood.',
+    beautyFlowPrompt1: 'Glass-like reflections, a restrained camera push-in, and a premium skincare-campaign mood.',
+    beautyFlowTime2: 'TIME 00:05–00:10',
+    beautyFlowScene2: 'Water texture and skin close-ups continue the clean, sensorial product story.',
+    beautyFlowPrompt2: 'Soft slow motion, fresh hydration, and the rhythm of a refined beauty film.',
+    beautyFlowTime3: 'TIME 00:10–00:15',
+    beautyFlowScene3: 'A composed product end frame leaves a clear, lasting brand impression.',
+    beautyFlowPrompt3: 'Stable product form, clean negative space, and a quiet yet luxurious finish.'
   });
 
   const ko = {

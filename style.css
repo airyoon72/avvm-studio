@@ -1098,11 +1098,75 @@
       height:auto;
       opacity:.92;
     }
+    .beauty-direction-flow{
+      padding:17px;
+      background:
+        radial-gradient(circle at 100% 0,rgba(137,220,255,.18),transparent 38%),
+        linear-gradient(135deg,rgba(5,23,32,.98),rgba(4,8,13,.98));
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 16px 36px rgba(0,0,0,.18);
+    }
+    .beauty-flow-head{
+      display:grid;
+      gap:5px;
+      padding-bottom:14px;
+      border-bottom:1px solid rgba(180,233,255,.18);
+    }
+    .beauty-flow-head span,
+    .beauty-flow-step em{
+      color:#9deaff;
+      font-size:9px;
+      font-style:normal;
+      font-weight:900;
+      letter-spacing:.14em;
+      line-height:1.2;
+      text-transform:uppercase;
+    }
+    .beauty-flow-head b{
+      color:#f6fbff;
+      font-size:14px;
+      letter-spacing:-.02em;
+      line-height:1.35;
+    }
+    .beauty-flow-list{
+      display:grid;
+      gap:0;
+      list-style:none;
+      margin:0;
+      padding:0;
+    }
+    .beauty-flow-step{
+      display:grid;
+      grid-template-columns:86px 1fr 1fr;
+      gap:11px;
+      padding:13px 0;
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+    .beauty-flow-step:last-child{border-bottom:0;padding-bottom:0}
+    .beauty-flow-time{
+      color:var(--lime);
+      font-size:9px;
+      font-weight:900;
+      letter-spacing:.06em;
+      line-height:1.45;
+    }
+    .beauty-flow-step div{min-width:0}
+    .beauty-flow-step p{
+      margin:5px 0 0;
+      color:rgba(239,249,255,.72);
+      font-size:10px;
+      line-height:1.48;
+      word-break:keep-all;
+    }
     @media(max-width:900px){
       .sample-work{padding:72px 0}
       .sample-grid{grid-template-columns:1fr;gap:28px}
       .sample-card{min-height:72svh;border-radius:22px}
       .sample-copy{font-size:14px}
+      .beauty-flow-step{grid-template-columns:86px 1fr 1fr}
+    }
+    @media(max-width:520px){
+      .beauty-flow-step{grid-template-columns:1fr 1fr;gap:8px 12px}
+      .beauty-flow-time{grid-column:1/-1}
     }
 
 
