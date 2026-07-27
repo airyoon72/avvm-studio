@@ -209,7 +209,13 @@ if(modal) modal.addEventListener('click',e=>{if(e.target===modal)closeOrder();})
 $$('.cat').forEach(b=>b.addEventListener('click',()=>{$$('.cat').forEach(x=>x.classList.remove('active'));b.classList.add('active'); toast(`${b.textContent} mood selected`);}));
 
 let lastOrder=null;
-const apiBase = (location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.hostname.endsWith('.lhr.life')) 
+const apiBase = (
+  location.protocol === 'file:' ||
+  location.hostname === 'localhost' ||
+  location.hostname === '127.0.0.1' ||
+  location.hostname.endsWith('.lhr.life') ||
+  location.hostname.endsWith('.vercel.app')
+) ? 'https://avvm.studio' : ''; 
   ? 'https://avvm.studio' 
   : '';
 
