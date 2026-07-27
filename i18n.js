@@ -151,6 +151,53 @@
     localized('#downloadOrder', 'DOWNLOAD VIDEO'); localized('#resetOrder', 'CREATE ANOTHER');
   }
 
+  function applyLowerPageSections() {
+    localized('.review-safe-note:not(#service-delivery-period)', '※ AVVM is not an instant automatic-generation tool. It is a made-to-order digital-content production service based on your image. After payment, we review the image, create an AI draft, check quality, and deliver the final result.', true);
+    localized('#service-delivery-period', '<strong>Service period</strong><br>We deliver the finished result within the production period announced for each product after payment and production materials are received.<br>Mini, Basic, and Best Transform products take 1–3 business days; 3 Style Set takes 3–7 business days.<br>Starter takes 24–48 hours, Pro takes 2–3 business days, and Signature takes 3–5 business days.<br>Memorial and ID/Profile products follow the 24–48 hour period shown on their cards.<br>Timing may vary with source-image quality, additional materials, requests, or revisions. We will notify you if a delay is expected.', true);
+
+    localized('#memorial .section-bar .view-all', 'A moment met again');
+    localized('#memorial .memorial-copy', 'Beloved moments in old photographs can move again.<br>We restore cherished pets and family memories from faded film into a natural video.', true);
+    localized('#memorial [data-plan="Memorial Basic"] > .badge', 'Recommended');
+    localized('#memorial [data-plan="Memorial Basic"] > p', 'One photo → motion video (including quality restoration)');
+    [
+      'Natural motion direction from one photo',
+      'Basic quality restoration and resolution upscaling',
+      '<b>One regeneration included</b>',
+      'Delivery: within 24 hours'
+    ].forEach((copy, index) => localized(`#memorial [data-plan="Memorial Basic"] li:nth-child(${index + 1})`, copy, true));
+    localized('#memorial [data-plan="Memorial Duo"] > p', 'Two-photo set for a richer memory');
+    [
+      'A different motion video from each of two photos',
+      'Basic quality restoration and resolution upscaling',
+      '<b>One regeneration included</b>',
+      'Delivery: within 48 hours'
+    ].forEach((copy, index) => localized(`#memorial [data-plan="Memorial Duo"] li:nth-child(${index + 1})`, copy, true));
+    localized('.memorial-bottom-notice', '💡 AI restoration may differ from the original appearance. If you are not satisfied, we will support one regeneration according to the plan. Results are delivered after review.<br>You must have rights to use uploaded family, pet, and memorial photographs. Requests that infringe a third party’s portrait rights, copyright, or reputation may be declined.', true);
+
+    localized('#id-profile .section-bar .view-all', 'ID and profile-photo file production');
+    localized('#id-profile .id-copy', 'Prepare a submission-ready photo file from an existing photo, without visiting a photo studio.<br>We make JPG files tailored for passports, resident IDs, driver licences, résumés, employee IDs, and profiles.', true);
+    localized('#id-profile [data-plan="ID Mini"] > p', 'One file in one selected format');
+    [
+      'A source-based file tailored to the selected specification',
+      'Choose one: passport, resident ID, driver licence, or résumé',
+      'Delivery: <b>within 24 hours</b>'
+    ].forEach((copy, index) => localized(`#id-profile [data-plan="ID Mini"] li:nth-child(${index + 1})`, copy, true));
+    localized('#id-profile [data-plan="ID Set"] > .badge', 'Recommended');
+    localized('#id-profile [data-plan="ID Set"] > p', 'Passport, resident ID, driver licence, and résumé format set');
+    [
+      'A source-based file tailored to each specification',
+      'Complete package of all four major submission formats',
+      'Delivery: <b>within 24 hours</b>'
+    ].forEach((copy, index) => localized(`#id-profile [data-plan="ID Set"] li:nth-child(${index + 1})`, copy, true));
+    localized('#id-profile [data-plan="Profile Pro"] > p', 'Premium retouching for employment, ID, and business profiles');
+    [
+      'A source-based file tailored to the selected specification',
+      'One-to-one detail retouching for skin, symmetry, lighting, and more',
+      'Delivery: <b>within 48 hours</b>'
+    ].forEach((copy, index) => localized(`#id-profile [data-plan="Profile Pro"] li:nth-child(${index + 1})`, copy, true));
+    localized('.id-bottom-notice', '💡 Official passport, resident-ID, and driver-licence photographs may be accepted differently by each institution. AVVM supports specification matching, cropping, file-size adjustment, and natural retouching from the source image, but cannot guarantee final acceptance.<br>We do not process impersonation, identity deception, age alteration, face replacement, or creation of an identity different from a real person. If the source image is substantially below the required standard for focus, lighting, or background, production may not be possible; in that case, a full refund is provided.', true);
+  }
+
   function applyOrderPage() {
     const card = document.querySelector('.order-card');
     if (!card) return;
@@ -175,6 +222,7 @@
     document.documentElement.lang = language;
     applyMarkedText();
     applyFooterAndCheckout();
+    applyLowerPageSections();
     applyOrderPage();
     document.querySelectorAll('[data-avvm-language-select], #nativeLangSelect, #heroNativeLangSelect').forEach(select => { select.value = language; });
     document.dispatchEvent(new CustomEvent('avvm:languagechange', { detail: { language } }));
