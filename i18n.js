@@ -60,6 +60,10 @@
   };
 
   Object.assign(en, {
+    proofClassicName: 'CLASSIC PORTRAIT RESTORATION',
+    proofClassicCopy: 'Preserve the texture and expression of a black-and-white portrait while bringing it back into motion.',
+    proofClassicInput: 'Original classic portrait',
+    proofClassicOutput: 'Restored cinematic motion',
     webStudioLogoTransform: 'ORIGINAL LOGO → CRYSTAL TRANSFORM',
     webStudioJewelryFilm: 'JEWELRY CAMPAIGN FILM',
     webStudioWatchFilm: 'WATCH MECHANISM FILM',
