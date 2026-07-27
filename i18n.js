@@ -125,6 +125,41 @@
   function setText(node, value) { if (node && value != null) node.textContent = value; }
   function setHtml(node, value) { if (node && value != null) node.innerHTML = value; }
 
+  const helpEnglish = {
+    help1: 'Start a project by uploading an image and entering order information.',
+    help2: 'Upload a photo and choose a style to begin the order flow.',
+    help3: 'View AVVM sample films at a larger size.',
+    help4: 'A real Memorial example: the old photo on the left is restored as motion on the right.',
+    help5: 'Upload a photo and choose a style to begin the order flow.',
+    help6: 'This is a production service: AI creates a draft and a human checks the final quality.',
+    help7: 'Final review helps reduce AI-specific errors such as distorted product shapes and logos.',
+    help8: 'Foreign-currency displays are reference only; payment and refund standards use KRW.',
+    help9: 'The official domain and business information are provided to increase payment trust.',
+    help10: 'Play a demo where one photo becomes a cinematic scene.',
+    help11: 'A representative demo of an input image becoming a cinematic scene.',
+    help12: 'View the action-transformation sample at a larger size.',
+    help13: 'Play a beauty and skincare advertising sample.',
+    help14: 'A 15-second beauty-ad sample featuring ripples, product shots, and skin close-ups.',
+    help15: 'View the beauty sample at a larger size.',
+    help16: 'The vending-machine name means ordering is simple; results are delivered after review.',
+    help17: 'We check AI results for issues such as awkward hands, broken text, and product distortion.',
+    help18: 'The source image guides the result, but AI cannot guarantee a 100% identical reproduction.',
+    help19: 'A full automatic preview is planned for a future release; orders are currently reviewed after submission.',
+    help20: 'An F1 racing and aerial-drive sample for automotive and sports brands.',
+    help21: 'A culture and tourism sample where traditional craftsmanship expands into a future-city mood.',
+    help22: 'Suitable for corporate, startup, and service-introduction videos.',
+    help23: 'A sample for festivals, local events, and event promotion.',
+    help24: 'A sample for emotional drama, lifestyle, and brand-story videos.',
+    help25: 'A metaverse expansion sample built around regional culture and network imagery.',
+    help26: 'A music-video sample with stage performance, rhythmic movement, and lighting direction.',
+    help27: 'A short-form video suitable for fast testing and social-media advertising.',
+    help28: 'A premium 15-second video recommended for brand and product advertising.',
+    help29: 'A 30-second signature video for showreels, brand films, and premium advertising.',
+    help30: 'This opens the KPN test payment window using your order information. For review, close the window without completing payment.'
+  };
+
+  Object.assign(en, helpEnglish);
+
   function localized(selector, englishValue, useHtml) {
     document.querySelectorAll(selector).forEach(node => {
       const attribute = useHtml ? 'data-avvm-ko-html' : 'data-avvm-ko-text';
@@ -132,6 +167,32 @@
       const original = node.getAttribute(attribute);
       if (!isKorean()) (useHtml ? setHtml : setText)(node, englishValue);
       else (useHtml ? setHtml : setText)(node, original);
+    });
+  }
+
+  function localizedKey(selector, key, englishValue, useHtml) {
+    document.querySelectorAll(selector).forEach(node => {
+      const attribute = useHtml ? 'data-avvm-ko-html' : 'data-avvm-ko-text';
+      if (!node.hasAttribute(attribute)) node.setAttribute(attribute, useHtml ? node.innerHTML : node.textContent);
+      const original = node.getAttribute(attribute);
+      (isKorean() ? (useHtml ? setHtml : setText) : (useHtml ? setHtml : setText))(node, isKorean() ? original : t(key, englishValue));
+    });
+  }
+
+  function applyStaticPageCopy() {
+    localizedKey('.quick-nav-item[href="#id-profile"] .nav-sub-tag', 'quickProfileTag', 'ID PHOTO');
+    localizedKey('.service-card:nth-of-type(1) p', 'serviceCommercialCopy', 'High-resolution brand advertising and product-showreel videos from one photo.');
+    localizedKey('.service-card:nth-of-type(2) p', 'servicePersonalCopy', 'Turn everyday photos into travel short-form reels or trend-forward fashion films.');
+    localizedKey('.service-card:nth-of-type(3) p', 'serviceMemorialCopy', 'Restore memories of family, parents, and beloved pets as moving video.');
+    localizedKey('.service-card:nth-of-type(4) p', 'serviceIdCopy', 'High-quality digital photos for passports, licences, employee IDs, and profiles without a studio visit.');
+    localizedKey('[data-plan-choice="Custom"] strong', 'customQuote', 'Custom quote');
+    localizedKey('[data-plan-choice="Memorial Basic"] .plan-choice-tag, [data-plan-choice="ID Set"] .plan-choice-tag', 'recommended', 'Recommended');
+  }
+
+  function applyHelpText() {
+    document.querySelectorAll('[data-help-key]').forEach(node => {
+      if (!node.dataset.helpKo) node.dataset.helpKo = node.dataset.help || '';
+      node.dataset.help = isKorean() ? node.dataset.helpKo : t(node.dataset.helpKey, helpEnglish[node.dataset.helpKey] || node.dataset.helpKo);
     });
   }
 
@@ -261,6 +322,7 @@
       node.textContent = !isKorean() ? labels[index] : node.dataset.avvmKoText;
     });
     localized('.image-preview-section .section-title', 'Uploaded production photo'); localized('.video-preview-section .section-title', 'Generated AI video'); localized('#emptyMsg', 'No image was attached.'); localized('.order-card > .btn', t('backHome'));
+    setText(document.getElementById('statusLabel'), t('orderReceived', 'Order received'));
     const image = document.getElementById('orderImg'); if (image) image.alt = !isKorean() ? 'Uploaded photo' : '첨부된 제작 사진';
   }
 
@@ -277,9 +339,11 @@
     document.documentElement.dir = meta.dir === 'rtl' ? 'rtl' : 'ltr';
     document.body?.setAttribute('dir-text', meta.dir === 'rtl' ? 'rtl' : 'ltr');
     applyMarkedText();
+    applyStaticPageCopy();
     applyFooterAndCheckout();
     applyLowerPageSections();
     applyOrderPage();
+    applyHelpText();
     document.querySelectorAll('[data-avvm-language-select], #nativeLangSelect, #heroNativeLangSelect').forEach(select => { select.value = language; });
     document.dispatchEvent(new CustomEvent('avvm:languagechange', { detail: { language } }));
   }

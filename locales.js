@@ -105,4 +105,38 @@
       orderReceived: 'تم استلام الطلب', orderProcessing: 'الفيديو قيد الإنتاج', orderCompleteStatus: 'اكتمل الإنتاج', orderFailed: 'فشل الإنتاج', backHome: 'العودة إلى الصفحة الرئيسية'
     }
   };
+
+  /* Copy that does not have a data-i18n marker in the original markup. Keeping
+     it here prevents the lower cards and quick navigation from being left in
+     Korean when a visitor switches languages. */
+  const supportingCopy = {
+    ja: {
+      quickProfileTag: '証明写真', serviceCommercialCopy: '一枚の写真から作る高解像度ブランド広告・商品ショーリール映像', servicePersonalCopy: '日常写真を海外旅行のショート動画やトレンド感あるファッション映像へ変換', serviceMemorialCopy: '家族・両親・大切なペットの思い出をよみがえらせる映像', serviceIdCopy: '写真館に行かずに作る、パスポート・免許証・社員証・プロフィール向け高品質デジタル写真', customQuote: '個別見積もり', recommended: 'おすすめ'
+    },
+    zh: {
+      quickProfileTag: '证件照', serviceCommercialCopy: '用一张照片制作高清品牌广告与产品展示视频', servicePersonalCopy: '将日常照片变成海外旅行短片或潮流时尚大片', serviceMemorialCopy: '修复家人、父母和珍爱宠物的回忆影像', serviceIdCopy: '无需前往照相馆，制作适用于护照、驾照、工牌和头像的高品质电子照片', customQuote: '咨询报价', recommended: '推荐'
+    },
+    es: {
+      quickProfileTag: 'FOTO DE ID', serviceCommercialCopy: 'Vídeos publicitarios y showreels de producto en alta resolución a partir de una foto', servicePersonalCopy: 'Convierte fotos cotidianas en reels de viaje o editoriales de moda', serviceMemorialCopy: 'Vídeos que restauran recuerdos de familia, padres y mascotas queridas', serviceIdCopy: 'Fotos digitales de alta calidad para pasaporte, licencia, credencial y perfil, sin visitar un estudio', customQuote: 'Presupuesto personalizado', recommended: 'Recomendado'
+    },
+    fr: {
+      quickProfileTag: 'PHOTO D’IDENTITÉ', serviceCommercialCopy: 'Publicités de marque et showreels produit haute définition à partir d’une photo', servicePersonalCopy: 'Transformez des photos du quotidien en reels de voyage ou éditoriaux mode', serviceMemorialCopy: 'Vidéos qui restaurent les souvenirs de famille, de parents et d’animaux chers', serviceIdCopy: 'Photos numériques haute qualité pour passeport, permis, badge et profil, sans studio photo', customQuote: 'Devis sur mesure', recommended: 'Recommandé'
+    },
+    de: {
+      quickProfileTag: 'AUSWEISFOTO', serviceCommercialCopy: 'Hochauflösende Markenwerbung und Produkt-Showreels aus einem einzigen Foto', servicePersonalCopy: 'Verwandeln Sie Alltagsfotos in Reise-Reels oder trendige Fashion-Editorials', serviceMemorialCopy: 'Videos, die Erinnerungen an Familie, Eltern und geliebte Haustiere bewahren', serviceIdCopy: 'Hochwertige digitale Fotos für Pass, Führerschein, Ausweis und Profil – ohne Fotostudio', customQuote: 'Individuelles Angebot', recommended: 'Empfohlen'
+    },
+    pt: {
+      quickProfileTag: 'FOTO DE ID', serviceCommercialCopy: 'Anúncios de marca e showreels de produtos em alta resolução a partir de uma foto', servicePersonalCopy: 'Transforme fotos do dia a dia em reels de viagem ou editoriais de moda', serviceMemorialCopy: 'Vídeos que restauram memórias de família, pais e animais de estimação queridos', serviceIdCopy: 'Fotos digitais de alta qualidade para passaporte, habilitação, crachá e perfil sem ir ao estúdio', customQuote: 'Orçamento sob consulta', recommended: 'Recomendado'
+    },
+    hi: {
+      quickProfileTag: 'आईडी फोटो', serviceCommercialCopy: 'एक फोटो से हाई-रिज़ॉल्यूशन ब्रांड विज्ञापन और उत्पाद शो-रील वीडियो', servicePersonalCopy: 'रोज़मर्रा की तस्वीरों को यात्रा रील्स या ट्रेंडी फैशन एडिटोरियल में बदलें', serviceMemorialCopy: 'परिवार, माता-पिता और प्यारे पालतू जानवरों की यादों को संजोने वाले वीडियो', serviceIdCopy: 'स्टूडियो जाए बिना पासपोर्ट, लाइसेंस, आईडी और प्रोफ़ाइल के लिए उच्च-गुणवत्ता डिजिटल फोटो', customQuote: 'कस्टम कोटेशन', recommended: 'सुझावित'
+    },
+    ar: {
+      quickProfileTag: 'صورة هوية', serviceCommercialCopy: 'إعلانات للعلامات التجارية وعروض منتجات عالية الدقة من صورة واحدة', servicePersonalCopy: 'حوّل الصور اليومية إلى مقاطع سفر قصيرة أو إطلالات أزياء عصرية', serviceMemorialCopy: 'فيديوهات تستعيد ذكريات العائلة والوالدين والحيوانات الأليفة العزيزة', serviceIdCopy: 'صور رقمية عالية الجودة للجواز والرخصة والبطاقة والملف الشخصي من دون زيارة الاستوديو', customQuote: 'عرض سعر مخصص', recommended: 'موصى به'
+    }
+  };
+
+  Object.entries(supportingCopy).forEach(([language, copy]) => {
+    Object.assign(window.AVVM_LOCALES[language], copy);
+  });
 })();
