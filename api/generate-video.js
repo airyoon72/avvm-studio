@@ -1,6 +1,6 @@
-// Replace: api/generate-video.js
-// New clients send imageUrl (a private Supabase signed URL). imageData remains
-// temporarily supported for old deployed clients, so rolling deployment is safe.
+// AVVM image-to-video Vercel function.
+// The browser sends a pre-compressed image data URL. A private Supabase signed
+// URL is also accepted for a future direct-upload flow.
 
 const MODEL_ID = "fal-ai/luma-dream-machine/ray-2-flash/image-to-video";
 const LEGACY_MODEL_ID = "fal-ai/luma-dream-machine/image-to-video";
@@ -9,7 +9,38 @@ const SOURCE_BUCKET = process.env.SOURCE_IMAGE_BUCKET || "source-images";
 const ALLOWED_DURATION = ["5s", "9s"];
 const ALLOWED_RESOLUTION = ["540p", "720p", "1080p"];
 const ALLOWED_ASPECT = ["16:9", "9:16", "4:3", "3:4", "21:9", "9:21", "1:1"];
-const MAX_LEGACY_DATA_URL_CHARS = 5_700_000;
+const MAX_IMAGE_DATA_URL_CHARS = 3_500_000;
+const IMAGE_DATA_URL = /^data:(image\/(?:jpeg|png|webp));base64,([A-Za-z0-9+/]+={0,2})$/;
+
+function requestError(statusCode, message) {
+  const error = new Error(message);
+  error.statusCode = statusCode;
+  return error;
+}
+
+function allowedOrigins() {
+  return (process.env.AVVM_ALLOWED_ORIGINS || [
+    "https://avvm.studio",
+    "https://www.avvm.studio",
+    "https://avvmstudio25.vercel.app",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "null"
+  ].join(","))
+    .split(",")
+    .map(value => value.trim())
+    .filter(Boolean);
+}
+
+function setCors(req, res) {
+  const origin = String(req.headers.origin || "");
+  if (origin && !allowedOrigins().includes(origin)) return false;
+  if (origin) res.setHeader("Access-Control-Allow-Origin", origin);
+  res.setHeader("Vary", "Origin");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  return true;
+}
 
 async function getSupabase() {
   if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) return null;
@@ -56,19 +87,20 @@ function getImageSource(body) {
     return imageUrl;
   }
 
-  // Keep old browser versions working during deployment. Remove this branch only
-  // after all active clients have received the new app.js.
+  // The active browser flow sends a compressed data URL. Keep it intentionally
+  // small so the request remains below Vercel's function request-body limit.
   const imageData = typeof body?.imageData === "string" ? body.imageData : "";
-  const isDataUrl = /^data:([A-Za-z0-9.+\/-]+);base64,[A-Za-z0-9+/=]+$/.test(imageData);
-  if (!isDataUrl || imageData.length > MAX_LEGACY_DATA_URL_CHARS) {
-    throw new Error("Missing valid imageUrl.");
+  if (!IMAGE_DATA_URL.test(imageData)) {
+    throw requestError(415, "JPG, PNG 또는 WEBP 형식의 이미지가 필요합니다.");
+  }
+  if (imageData.length > MAX_IMAGE_DATA_URL_CHARS) {
+    throw requestError(413, "사진 용량이 너무 큽니다. 더 작은 사진으로 다시 시도해주세요.");
   }
   return imageData;
 }
 
-// Fal's image-to-video endpoint accepts data URLs reliably. Some Fal runners
-// cannot fetch a private Supabase signed URL directly, so fetch it server-side
-// first. This does not send Base64 through the browser anymore.
+// Fal's image-to-video endpoint accepts data URLs reliably. If the optional
+// direct-upload flow supplies a private signed URL, fetch it server-side first.
 async function toFalImageInput(source) {
   if (source.startsWith("data:")) return source;
 
@@ -92,9 +124,7 @@ async function toFalImageInput(source) {
 }
 
 module.exports = async (req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  if (!setCors(req, res)) return res.status(403).json({ error: "허용되지 않은 출처의 요청입니다." });
   if (req.method === "OPTIONS") return res.status(204).end();
 
   if (!process.env.FAL_KEY) {
@@ -252,7 +282,11 @@ module.exports = async (req, res) => {
       });
     } catch (error) {
       console.error("Error initiating Fal generation:", error);
-      return res.status(400).json({ error: error.message || "Failed to start Fal.ai video generation" });
+      const statusCode = error.statusCode || 502;
+      const message = error.statusCode
+        ? error.message
+        : "영상 제작 서버에 요청하지 못했습니다. 잠시 후 다시 시도해주세요.";
+      return res.status(statusCode).json({ error: message });
     }
   }
 

@@ -617,8 +617,12 @@ window.addEventListener('error', function(e) {
     <!-- Memorial Before / After Stage -->
     <div class="memorial-ba-stage">
       <div class="memorial-ba-card">
-        <div class="memorial-ba-media" style="background-image: url('memorial-before.jpg');"></div>
-        <div class="memorial-ba-label">INPUT PHOTO (원본 사진)</div>
+        <div class="memorial-ba-video-wrapper">
+          <video autoplay loop muted playsinline preload="metadata" poster="memorial-before.jpg">
+            <source src="memorial-kkamsooni.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="memorial-ba-label" data-i18n="kkamsooniVideo">깜순이 영상</div>
       </div>
       <div class="memorial-ba-card featured">
         <div class="memorial-ba-video-wrapper">
@@ -871,7 +875,7 @@ window.addEventListener('error', function(e) {
       <b>사진 첨부하기</b>
       <small>JPG, PNG, WEBP 등 이미지 파일</small>
     </label>
-    <input accept="image/*" class="field photo-upload-input" id="imageInput" type="file"/>
+    <input accept="image/jpeg,image/png,image/webp" class="field photo-upload-input" id="imageInput" type="file"/>
   </div>
   <div class="upload-guide-box" id="uploadGuideBox" style="display:none; margin-top: 10px; padding: 12px; background: rgba(216,242,51,0.06); border-radius: 12px; font-size: 11px; color: rgba(255,255,255,0.75); border: 1px solid rgba(216,242,51,0.25); text-align: left; line-height: 1.5; word-break: keep-all;">
     💡 <b>여권용 가이드:</b> 정면·무배경·귀가 보이게 촬영된 사진을 올려주세요.
@@ -1234,7 +1238,8 @@ document.addEventListener('click', function (event) {
 })();
 </script>
 
-<script src="app.js?v=35"></script>
+<script src="i18n.js?v=1"></script>
+<script src="app.js?v=36"></script>
 <script>
 /* AVVM v31 index-only safeguards
    - app.js를 바로 수정하지 않아도 새 필수동의(rightsConsent)를 결제 클릭 전에 검사합니다.
@@ -1362,8 +1367,12 @@ document.addEventListener('click', function (event) {
 </script>
 
 <script>
-/* 첫 화면을 덮는 로더가 반드시 해제되도록 보장합니다. */
+/* 로고 드로잉이 끝난 뒤에만 첫 화면을 엽니다. */
 (function () {
+  const splashStartedAt = performance.now();
+  const minimumSplashMs = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ? 0 : 2100;
+  let scheduled = false;
+
   function dismissLoader() {
     const loader = document.getElementById('loader');
     if (!loader || loader.classList.contains('loaded')) return;
@@ -1375,14 +1384,21 @@ document.addEventListener('click', function (event) {
     }, 950);
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', dismissLoader, { once: true });
-  } else {
-    dismissLoader();
+  function scheduleDismiss() {
+    if (scheduled) return;
+    scheduled = true;
+    const elapsed = performance.now() - splashStartedAt;
+    window.setTimeout(dismissLoader, Math.max(0, minimumSplashMs - elapsed));
   }
 
-  // 외부 동영상·CDN 응답이 지연되어도 화면은 열어 둡니다.
-  window.setTimeout(dismissLoader, 2500);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', scheduleDismiss, { once: true });
+  } else {
+    scheduleDismiss();
+  }
+
+  // 외부 CDN이 멈춰도 로고 애니메이션을 끝까지 보여준 뒤 화면을 엽니다.
+  window.setTimeout(scheduleDismiss, 5000);
 })();
 </script>
 
@@ -1410,6 +1426,72 @@ document.addEventListener('click', function (event) {
   window.addEventListener('pointermove', moveCursor, { passive: true });
   window.addEventListener('blur', () => document.body.classList.remove('custom-cursor-ready'));
   document.documentElement.addEventListener('mouseleave', () => document.body.classList.remove('custom-cursor-ready'));
+})();
+</script>
+
+<script>
+/* 마우스를 따라가는 점선 브러시 효과입니다. 터치·저전력 환경에서는 실행하지 않습니다. */
+(function () {
+  if (!window.matchMedia?.('(pointer: fine)').matches || window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
+
+  const canvas = document.getElementById('brush-canvas');
+  const context = canvas?.getContext('2d');
+  if (!canvas || !context) return;
+
+  const points = [];
+  const lifetime = 420;
+  let frame = 0;
+
+  function resize() {
+    const scale = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.round(window.innerWidth * scale);
+    canvas.height = Math.round(window.innerHeight * scale);
+    canvas.style.width = window.innerWidth + 'px';
+    canvas.style.height = window.innerHeight + 'px';
+    context.setTransform(scale, 0, 0, scale, 0, 0);
+  }
+
+  function draw() {
+    frame = 0;
+    const now = performance.now();
+    while (points.length && now - points[0].time > lifetime) points.shift();
+    context.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+    for (let index = 1; index < points.length; index += 1) {
+      const previous = points[index - 1];
+      const point = points[index];
+      const age = now - point.time;
+      const alpha = Math.max(0, 1 - age / lifetime) * 0.72;
+      if (alpha <= 0) continue;
+      context.beginPath();
+      context.setLineDash([2, 7]);
+      context.lineDashOffset = -age * 0.035;
+      context.strokeStyle = `rgba(216, 242, 51, ${alpha})`;
+      context.lineWidth = Math.max(0.7, 2.2 - age / 250);
+      context.moveTo(previous.x, previous.y);
+      context.lineTo(point.x, point.y);
+      context.stroke();
+    }
+
+    if (points.length) frame = requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('pointermove', event => {
+    if (event.pointerType === 'touch') return;
+    const last = points[points.length - 1];
+    if (last && Math.hypot(event.clientX - last.x, event.clientY - last.y) < 3) return;
+    points.push({ x: event.clientX, y: event.clientY, time: performance.now() });
+    if (!frame) frame = requestAnimationFrame(draw);
+  }, { passive: true });
+
+  window.addEventListener('resize', resize, { passive: true });
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      points.length = 0;
+      context.clearRect(0, 0, window.innerWidth, window.innerHeight);
+    }
+  });
+  resize();
 })();
 </script>
 
