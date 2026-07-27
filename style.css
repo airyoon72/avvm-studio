@@ -5040,6 +5040,8 @@ body.modal-open{
   letter-spacing: .08em;
   text-transform: uppercase;
 }
+.web-studio-link { text-decoration: none; transition: color .2s ease, transform .2s ease; }
+.web-studio-link:hover { color: #fff; transform: translateX(4px); }
 .web-studio-reels {
   width: min(100%, 430px);
   justify-self: end;
