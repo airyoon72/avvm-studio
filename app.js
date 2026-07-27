@@ -226,13 +226,21 @@ const $=(s,root=document)=>root.querySelector(s);
             canvas.height = h;
             const ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0, w, h);
-            resolve(canvas.toDataURL('image/jpeg', 0.8));
+            const isMobile =
+              /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+            resolve(
+              canvas.toDataURL(
+                'image/jpeg',
+                isMobile ? 0.72 : 0.8
+              )
+            );
           };
           img.onerror = reject;
           img.src = e.target.result;
         };
         reader.onerror = reject;
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(file);j
       });
     }
 
