@@ -5114,6 +5114,32 @@ body.modal-open{
   line-height: 1.75;
   word-break: keep-all;
 }
+.web-studio-logo-motion {
+  max-width: 560px;
+  margin: 20px 0 22px;
+  overflow: hidden;
+  border: 1px solid rgba(216,242,51,.38);
+  border-radius: 14px;
+  background: #f0eee7;
+  box-shadow: 0 24px 60px rgba(0,0,0,.32);
+}
+.web-studio-logo-motion video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1392 / 208;
+  object-fit: cover;
+  background: #f0eee7;
+}
+.web-studio-logo-motion span {
+  display: block;
+  padding: 8px 11px;
+  background: #050505;
+  color: var(--lime);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .12em;
+  text-align: center;
+}
 .web-studio-pending {
   display: inline-block;
   margin-top: 24px;

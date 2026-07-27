@@ -58,6 +58,9 @@
   };
 
   Object.assign(en, {
+    webStudioLogoTransform: 'ORIGINAL LOGO → CRYSTAL TRANSFORM',
+    webStudioJewelryFilm: 'JEWELRY CAMPAIGN FILM',
+    webStudioWatchFilm: 'WATCH MECHANISM FILM',
     memorialLaunchNotice: '[NEW] <b>Memorial Restoration</b> is here. Restore cherished old photos and beloved pet memories ↗',
     memorialNavTag: 'MEMORIAL',
     beautyFlowKicker: 'DIRECTION FLOW',
