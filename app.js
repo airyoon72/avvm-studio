@@ -799,3 +799,302 @@ if($('#resetOrder')) {
     if(e.key === 'Escape') closeShowreel();
   });
 })();
+/*
+  Append this entire file to the END of app.js.
+  It overrides only the image/order path. Existing PortOne, plan, and Fal
+  polling code stays in place.
+*/
+(() => {
+  const MAX_INPUT_BYTES = 20 * 1024 * 1024;
+  const MAX_UPLOAD_BYTES = 3.8 * 1024 * 1024;
+  const MAX_SIDE = 1600;
+  const ALLOWED_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
+  const uploadInput = document.getElementById("imageInput");
+  let preparedImage = { file: null, promise: null };
+
+  function makeToken() {
+    if (window.crypto?.getRandomValues) {
+      return Array.from(window.crypto.getRandomValues(new Uint8Array(16)))
+        .map((value) => value.toString(16).padStart(2, "0"))
+        .join("");
+    }
+    return Math.random().toString(36).slice(2) + Date.now().toString(36);
+  }
+
+  function setUploadHint(text) {
+    const hint = document.querySelector("#photoUploadVisibleBlock .photo-upload-drop small");
+    if (hint) hint.textContent = text;
+  }
+
+  function ensureSpinnerStyle() {
+    if (document.getElementById("spinnerStyle")) return;
+    const style = document.createElement("style");
+    style.id = "spinnerStyle";
+    style.textContent = "@keyframes spin { to { transform: rotate(360deg); } }";
+    document.head.appendChild(style);
+  }
+
+  function showProgress(container, title, label, percentage) {
+    ensureSpinnerStyle();
+    container.innerHTML = `
+      <div id="videoProgressTitle" style="font-size:12px;font-weight:800;color:var(--lime);margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em;display:flex;align-items:center;justify-content:center;gap:6px">
+        <span style="display:inline-block;width:12px;height:12px;border:2px solid var(--lime);border-top-color:transparent;border-radius:50%;animation:spin 1s linear infinite"></span>
+      </div>
+      <div style="width:100%;height:6px;background:rgba(255,255,255,.1);border-radius:999px;overflow:hidden;margin:10px 0">
+        <div id="videoProgressBar" style="width:0%;height:100%;background:var(--lime);transition:width .25s ease;border-radius:999px"></div>
+      </div>
+      <div id="videoProgressLabel" style="font-size:11px;color:rgba(255,255,255,.6)"></div>
+    `;
+    container.querySelector("#videoProgressTitle").append(document.createTextNode(title));
+    container.querySelector("#videoProgressLabel").textContent = label;
+    container.querySelector("#videoProgressBar").style.width = `${Math.max(0, Math.min(100, percentage))}%`;
+  }
+
+  function updateProgress(label, percentage) {
+    const bar = document.getElementById("videoProgressBar");
+    const text = document.getElementById("videoProgressLabel");
+    if (bar) bar.style.width = `${Math.max(0, Math.min(100, percentage))}%`;
+    if (text) text.textContent = label;
+  }
+
+  function canvasToBlob(canvas, quality) {
+    return new Promise((resolve, reject) => {
+      canvas.toBlob((blob) => blob ? resolve(blob) : reject(new Error("이미지 압축에 실패했습니다.")), "image/jpeg", quality);
+    });
+  }
+
+  async function decodeImage(file) {
+    if (window.createImageBitmap) {
+      try { return await window.createImageBitmap(file, { imageOrientation: "from-image" }); } catch (_) {}
+    }
+    return new Promise((resolve, reject) => {
+      const objectUrl = URL.createObjectURL(file);
+      const image = new Image();
+      image.onload = () => { URL.revokeObjectURL(objectUrl); resolve(image); };
+      image.onerror = () => { URL.revokeObjectURL(objectUrl); reject(new Error("이미지를 열 수 없습니다.")); };
+      image.src = objectUrl;
+    });
+  }
+
+  async function optimizeImage(file) {
+    if (!ALLOWED_TYPES.has(file.type)) throw new Error("JPG, PNG 또는 WEBP 이미지만 올릴 수 있습니다.");
+    if (file.size > MAX_INPUT_BYTES) throw new Error("원본 이미지는 20MB 이하만 올릴 수 있습니다.");
+
+    const image = await decodeImage(file);
+    try {
+      const longest = Math.max(image.width, image.height);
+      const baseScale = Math.min(1, MAX_SIDE / longest);
+      const render = async (scale, quality) => {
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.max(1, Math.round(image.width * scale));
+        canvas.height = Math.max(1, Math.round(image.height * scale));
+        const context = canvas.getContext("2d", { alpha: false });
+        context.drawImage(image, 0, 0, canvas.width, canvas.height);
+        return canvasToBlob(canvas, quality);
+      };
+
+      let blob = await render(baseScale, 0.82);
+      if (blob.size > MAX_UPLOAD_BYTES) blob = await render(baseScale * 0.82, 0.72);
+      if (blob.size > MAX_UPLOAD_BYTES) throw new Error("압축 후에도 4MB를 초과합니다. 더 작은 사진을 선택해 주세요.");
+
+      return new File([blob], `avvm-${Date.now()}.jpg`, { type: "image/jpeg" });
+    } finally {
+      if (typeof image.close === "function") image.close();
+    }
+  }
+
+  function getPreparedImage(file) {
+    if (preparedImage.file === file && preparedImage.promise) return preparedImage.promise;
+    const promise = optimizeImage(file);
+    preparedImage = { file, promise };
+    return promise;
+  }
+
+  if (uploadInput) {
+    uploadInput.addEventListener("change", () => {
+      const file = uploadInput.files?.[0];
+      if (!file) { preparedImage = { file: null, promise: null }; return; }
+      setUploadHint("사진을 업로드용으로 최적화하고 있습니다…");
+      getPreparedImage(file)
+        .then((optimized) => setUploadHint(`업로드 준비 완료 · ${(optimized.size / 1024 / 1024).toFixed(1)}MB`))
+        .catch((error) => setUploadHint(error.message));
+    });
+  }
+
+  function uploadSourceImage(file, token, onProgress) {
+    return new Promise((resolve, reject) => {
+      const request = new XMLHttpRequest();
+      request.open("POST", `${apiBase}/api/upload-source-image?token=${encodeURIComponent(token)}`);
+      request.timeout = 60000;
+      request.setRequestHeader("Content-Type", "application/octet-stream");
+      request.setRequestHeader("X-Image-Type", file.type);
+      request.upload.onprogress = (event) => {
+        if (event.lengthComputable) onProgress(Math.round((event.loaded / event.total) * 100));
+      };
+      request.onerror = () => reject(new Error("이미지 업로드 연결에 실패했습니다."));
+      request.ontimeout = () => reject(new Error("이미지 업로드 시간이 초과되었습니다."));
+      request.onload = () => {
+        let payload = null;
+        try { payload = JSON.parse(request.responseText); } catch (_) {}
+        if (request.status < 200 || request.status >= 300) {
+          reject(new Error(payload?.error || `이미지 업로드 실패 (${request.status})`));
+          return;
+        }
+        resolve(payload);
+      };
+      request.send(file);
+    });
+  }
+
+  function saveLocalOrder(order) {
+    // Intentionally keep only metadata and a signed URL. Never store Base64 image data.
+    const saved = { ...order };
+    delete saved.imageData;
+    const orders = JSON.parse(localStorage.getItem("avvmOrders") || "[]").filter((item) => item.token !== saved.token);
+    orders.unshift(saved);
+    localStorage.setItem("avvmOrders", JSON.stringify(orders.slice(0, 50)));
+    localStorage.setItem(`avvmOrder_${saved.token}`, JSON.stringify(saved));
+    localStorage.setItem("avvmLastOrder", JSON.stringify(saved));
+  }
+
+  async function saveOrderToServer(order) {
+    try {
+      const response = await fetch(`${apiBase}/api/order`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(order)
+      });
+      if (!response.ok) return;
+      const data = await response.json();
+      if (data?.orderId) order.orderId = data.orderId;
+    } catch (_) {
+      // The local order is still available and the video job continues.
+    }
+  }
+
+  proceedWithOrderCreation = async function (
+    orderId, brand, email, phone,
+    privacyConsent, notifyConsent, refundConsent, rightsConsent, marketingConsent,
+    category, mood, paymentResponse, totalAmount
+  ) {
+    if (modalCard) modalCard.classList.add("done");
+    if ($("#successOrderId")) $("#successOrderId").textContent = `ORDER #${orderId}`;
+
+    let progress = document.getElementById("videoProgressContainer");
+    if (!progress) {
+      progress = document.createElement("div");
+      progress.id = "videoProgressContainer";
+      progress.style.cssText = "margin:18px 0;padding:18px;border-radius:16px;background:rgba(216,242,51,.06);border:1px dashed rgba(216,242,51,.3);text-align:center";
+      document.querySelector(".success-panel")?.insertBefore(progress, document.getElementById("viewOrderLink"));
+    }
+
+    const sourceFile = $("#imageInput")?.files?.[0] || null;
+    const token = makeToken();
+    let uploaded = null;
+
+    try {
+      if (sourceFile) {
+        showProgress(progress, "사진 최적화 중…", "고화질은 유지하고 전송 용량을 줄이고 있습니다.", 5);
+        const optimized = await getPreparedImage(sourceFile);
+        showProgress(progress, "사진 업로드 중…", "안전한 제작용 저장소로 전송하고 있습니다.", 10);
+        uploaded = await uploadSourceImage(optimized, token, (percent) => {
+          updateProgress(`사진 업로드 중… ${percent}%`, 10 + Math.round(percent * 0.7));
+        });
+      }
+    } catch (error) {
+      showDetailedFailure(error.message || "이미지 준비에 실패했습니다.", token, progress);
+      return;
+    }
+
+    const draft = {
+      orderId,
+      token,
+      createdAt: new Date().toISOString(),
+      brand, email, phone,
+      imageUrl: uploaded?.imageUrl || "",
+      imagePath: uploaded?.imagePath || "",
+      imageExpiresAt: uploaded?.expiresAt || "",
+      imageName: sourceFile?.name || "no_image",
+      consents: { privacy: privacyConsent, transactionalNotice: notifyConsent, customDigitalRefundLimit: refundConsent, imageRights: rightsConsent, marketing: marketingConsent },
+      plan: window.selectedPlan,
+      price: window.prices[window.selectedPlan] || window.prices.Pro,
+      category, mood,
+      aspectRatio: document.getElementById("aspectRatio")?.value || "9:16",
+      resolution: document.getElementById("resolution")?.value || "540p",
+      idSpec: document.getElementById("idSpec")?.value || "",
+      status: "payment_completed",
+      statusKo: "결제 완료",
+      payment: { provider: "portone_v2_kpn", paymentId: paymentResponse?.paymentId || orderId, txId: paymentResponse?.txId || "", currency: "KRW", amount: totalAmount, browserResponseReceived: true, serverVerified: false },
+      notificationMethod: "kakao_or_sms",
+      viewUrl: `${location.origin}/order.html?t=${token}`
+    };
+
+    lastOrder = draft;
+    saveLocalOrder(draft);
+    saveOrderToServer(draft).then(() => saveLocalOrder(draft));
+    if ($("#successOrderId")) $("#successOrderId").textContent = `ORDER #${draft.orderId}`;
+    if ($("#viewOrderLink")) $("#viewOrderLink").href = draft.viewUrl;
+
+    if (!draft.imageUrl) {
+      progress.innerHTML = "<div style=\"font-size:12px;font-weight:800;color:var(--lime);margin-bottom:4px\">주문이 정상 접수되었습니다.</div><div style=\"font-size:11px;color:rgba(255,255,255,.6)\">제작할 사진은 주문 페이지에서 추가할 수 있습니다.</div>";
+      return;
+    }
+
+    showProgress(progress, "영상 제작 요청 중…", "AI 제작 대기열에 등록하고 있습니다.", 85);
+    try {
+      const response = await fetch(`${apiBase}/api/generate-video`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          imageUrl: draft.imageUrl,
+          prompt: `A beautiful cinematic video of brand ${brand}, style ${category}, mood ${mood}. High fashion, flowing movement, smooth panning shot, photorealistic, masterpiece.`,
+          resolution: draft.resolution,
+          aspectRatio: draft.aspectRatio
+        })
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || !data.requestId) throw new Error(data.error || "영상 제작 요청에 실패했습니다.");
+
+      draft.requestId = data.requestId;
+      draft.status = "processing";
+      draft.statusKo = "영상 제작 중";
+      saveLocalOrder(draft);
+      saveOrderToServer(draft).then(() => saveLocalOrder(draft));
+      updateProgress("AI 영상 제작이 시작되었습니다.", 95);
+      startPolling(data.requestId, draft.token);
+    } catch (error) {
+      showDetailedFailure(error.message || "영상 제작 요청에 실패했습니다.", draft.token, progress);
+    }
+  };
+
+  showDetailedFailure = function (errorMessage, token, container) {
+    if (!container) return;
+    container.innerHTML = `
+      <div style="font-size:12px;font-weight:800;color:#ff4d4d;margin-bottom:8px">✗ 영상 제작 요청 실패</div>
+      <div style="font-size:11px;color:rgba(255,255,255,.7);line-height:1.6;margin-bottom:12px"></div>
+      <button id="retryVideoBtn" class="btn btn-primary" style="margin-top:6px;padding:10px 18px;font-size:11px;background:#ff4d4d;border-color:#ff4d4d;color:#fff">재시도</button>
+    `;
+    container.querySelector("div:nth-child(2)").textContent = errorMessage;
+    document.getElementById("retryVideoBtn")?.addEventListener("click", async () => {
+      const order = JSON.parse(localStorage.getItem(`avvmOrder_${token}`) || "{}");
+      if (!order.imageUrl) { updateProgress("제작 사진을 다시 선택해 주세요.", 0); return; }
+      showProgress(container, "영상 제작 재요청 중…", "AI 제작 대기열에 등록하고 있습니다.", 90);
+      try {
+        const response = await fetch(`${apiBase}/api/generate-video`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ imageUrl: order.imageUrl, prompt: `A beautiful cinematic video of brand ${order.brand}, style ${order.category}, mood ${order.mood}.`, resolution: order.resolution, aspectRatio: order.aspectRatio })
+        });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok || !data.requestId) throw new Error(data.error || "재요청에 실패했습니다.");
+        order.requestId = data.requestId;
+        order.status = "processing";
+        order.statusKo = "영상 제작 중";
+        saveLocalOrder(order);
+        startPolling(data.requestId, token);
+      } catch (error) {
+        showDetailedFailure(error.message || "재요청에 실패했습니다.", token, container);
+      }
+    });
+  };
+})();
