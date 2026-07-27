@@ -275,9 +275,10 @@
 
   function applyFooterAndCheckout() {
     const footerLinks = ['Service', 'Terms', 'Privacy', 'Refund', 'Delivery', 'Business'];
+    const footerKeys = ['footerService', 'footerTerms', 'footerPrivacy', 'footerRefund', 'footerDelivery', 'footerBusiness'];
     document.querySelectorAll('.footer-links a').forEach((node, index) => {
       if (!node.dataset.avvmKoText) node.dataset.avvmKoText = node.textContent;
-      setText(node, isKorean() ? node.dataset.avvmKoText : autoText(node.dataset.avvmKoText, footerLinks[index]));
+      setText(node, isKorean() ? t(footerKeys[index], node.dataset.avvmKoText) : autoText(node.dataset.avvmKoText, footerLinks[index]));
     });
     localized('.business-info', `
       <b>AVVM.studio business information</b><br>
