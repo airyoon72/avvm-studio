@@ -1307,14 +1307,22 @@ document.addEventListener('click', function (event) {
     }
   }
 
-  function requiredConsentsIncludingRightsOk(){
-    return !!(
-      $('privacyConsent')?.checked &&
-      $('notifyConsent')?.checked &&
-      $('refundConsent')?.checked &&
-      $('rightsConsent')?.checked
-    );
-  }
+  function requiredConsentsIncludingRightsOk(){
+    return !!(
+      $('privacyConsent')?.checked &&
+      $('notifyConsent')?.checked &&
+      $('refundConsent')?.checked &&
+      $('rightsConsent')?.checked
+    );
+  }
+
+  function syncPaymentButton(){
+    const submit = $('submitOrder');
+    if (!submit) return;
+
+    const paymentBusy = submit.getAttribute('aria-busy') === 'true';
+    submit.disabled = paymentBusy || !requiredConsentsIncludingRightsOk();
+  }
 
   document.addEventListener('click', function(e){
     const submit = e.target.closest && e.target.closest('#submitOrder');
@@ -1334,19 +1342,74 @@ document.addEventListener('click', function (event) {
     }
   }, true);
 
-  document.addEventListener('change', function(e){
-    if (e.target && e.target.closest && e.target.closest('#consentGroup, #resolutionGroup')) {
-      setTimeout(syncResolutionByPlan, 0);
-    }
-  }, true);
+  document.addEventListener('change', function(e){
+    if (e.target && e.target.closest && e.target.closest('#consentGroup, #resolutionGroup')) {
+      syncPaymentButton();
+      setTimeout(syncResolutionByPlan, 0);
+    }
+  }, true);
 
   const summary = $('orderSummary');
   if (summary && window.MutationObserver) {
     new MutationObserver(syncResolutionByPlan).observe(summary, { childList:true, characterData:true, subtree:true });
   }
 
-  window.syncResolutionByPlan = syncResolutionByPlan;
-  setTimeout(syncResolutionByPlan, 400);
+  window.syncResolutionByPlan = syncResolutionByPlan;
+  window.syncPaymentButton = syncPaymentButton;
+  setTimeout(syncResolutionByPlan, 400);
+  syncPaymentButton();
+})();
+</script>
+
+<script>
+/* 첫 화면을 덮는 로더가 반드시 해제되도록 보장합니다. */
+(function () {
+  function dismissLoader() {
+    const loader = document.getElementById('loader');
+    if (!loader || loader.classList.contains('loaded')) return;
+
+    loader.classList.add('loaded');
+    loader.setAttribute('aria-hidden', 'true');
+    window.setTimeout(() => {
+      loader.style.display = 'none';
+    }, 950);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', dismissLoader, { once: true });
+  } else {
+    dismissLoader();
+  }
+
+  // 외부 동영상·CDN 응답이 지연되어도 화면은 열어 둡니다.
+  window.setTimeout(dismissLoader, 2500);
+})();
+</script>
+
+<script>
+/* 기본 커서를 숨기기 전에 커스텀 커서가 실제로 움직이는지 보장합니다. */
+(function () {
+  if (!window.matchMedia || !window.matchMedia('(pointer: fine)').matches) return;
+
+  const cursor = document.getElementById('custom-cursor');
+  const follower = document.getElementById('custom-cursor-follower');
+  if (!cursor || !follower) return;
+
+  function moveCursor(event) {
+    if (event.pointerType === 'touch') return;
+
+    const x = event.clientX + 'px';
+    const y = event.clientY + 'px';
+    cursor.style.left = x;
+    cursor.style.top = y;
+    follower.style.left = x;
+    follower.style.top = y;
+    document.body.classList.add('custom-cursor-ready');
+  }
+
+  window.addEventListener('pointermove', moveCursor, { passive: true });
+  window.addEventListener('blur', () => document.body.classList.remove('custom-cursor-ready'));
+  document.documentElement.addEventListener('mouseleave', () => document.body.classList.remove('custom-cursor-ready'));
 })();
 </script>
 
