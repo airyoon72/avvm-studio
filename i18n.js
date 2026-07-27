@@ -125,6 +125,71 @@
   function setText(node, value) { if (node && value != null) node.textContent = value; }
   function setHtml(node, value) { if (node && value != null) node.innerHTML = value; }
 
+  const autoTextNodes = [];
+
+  function normalizeTranslationKey(value) {
+    return String(value || '')
+      .replace(/&nbsp;/gi, ' ')
+      .replace(/&amp;/gi, '&')
+      .replace(/&lt;/gi, '<')
+      .replace(/&gt;/gi, '>')
+      .replace(/&quot;/gi, '"')
+      .replace(/&#39;/gi, "'")
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  function autoMap() {
+    return (window.AVVM_AUTO_TRANSLATIONS || {})[language] || {};
+  }
+
+  function autoText(source, fallback) {
+    if (isKorean()) return source;
+    const key = normalizeTranslationKey(source);
+    const translated = autoMap()[key] || autoMap()[String(source || '').trim()];
+    return translated || fallback || source;
+  }
+
+  function autoHtml(source, fallback) {
+    if (isKorean()) return source;
+    const wrapped = `<span>${source || ''}</span>`;
+    let translatedAny = false;
+    const translated = wrapped.replace(/>([^<>]+)</g, (match, text) => {
+      const leading = (text.match(/^\s*/) || [''])[0];
+      const trailing = (text.match(/\s*$/) || [''])[0];
+      const value = text.slice(leading.length, text.length - trailing.length);
+      const replacement = autoText(value, value);
+      if (replacement !== value) translatedAny = true;
+      return `>${leading}${replacement}${trailing}<`;
+    });
+    if (translatedAny) return translated.slice(6, -7);
+    return autoText(source, fallback || source);
+  }
+
+  function captureAutoTextNodes() {
+    if (autoTextNodes.length || !document.body || !window.NodeFilter) return;
+    const walker = document.createTreeWalker(document.body, window.NodeFilter.SHOW_TEXT);
+    let node;
+    while ((node = walker.nextNode())) {
+      const parent = node.parentElement;
+      const original = node.nodeValue || '';
+      if (!parent || !normalizeTranslationKey(original)) continue;
+      if (parent.closest('script, style, svg, canvas, option, textarea, [data-i18n], [data-i18n-auto]')) continue;
+      autoTextNodes.push({ node, original });
+    }
+  }
+
+  function applyAutoTextNodes() {
+    autoTextNodes.forEach(({ node, original }) => {
+      if (!node.isConnected) return;
+      if (isKorean()) { node.nodeValue = original; return; }
+      const leading = (original.match(/^\s*/) || [''])[0];
+      const trailing = (original.match(/\s*$/) || [''])[0];
+      const value = original.slice(leading.length, original.length - trailing.length);
+      node.nodeValue = `${leading}${autoText(value, value)}${trailing}`;
+    });
+  }
+
   const helpEnglish = {
     help1: 'Start a project by uploading an image and entering order information.',
     help2: 'Upload a photo and choose a style to begin the order flow.',
@@ -165,7 +230,7 @@
       const attribute = useHtml ? 'data-avvm-ko-html' : 'data-avvm-ko-text';
       if (!node.hasAttribute(attribute)) node.setAttribute(attribute, useHtml ? node.innerHTML : node.textContent);
       const original = node.getAttribute(attribute);
-      if (!isKorean()) (useHtml ? setHtml : setText)(node, englishValue);
+      if (!isKorean()) (useHtml ? setHtml : setText)(node, useHtml ? autoHtml(original, englishValue) : autoText(original, englishValue));
       else (useHtml ? setHtml : setText)(node, original);
     });
   }
@@ -175,7 +240,9 @@
       const attribute = useHtml ? 'data-avvm-ko-html' : 'data-avvm-ko-text';
       if (!node.hasAttribute(attribute)) node.setAttribute(attribute, useHtml ? node.innerHTML : node.textContent);
       const original = node.getAttribute(attribute);
-      (isKorean() ? (useHtml ? setHtml : setText) : (useHtml ? setHtml : setText))(node, isKorean() ? original : t(key, englishValue));
+      const locale = (window.AVVM_LOCALES || {})[language] || {};
+      const value = isKorean() ? original : (locale[key] || (useHtml ? autoHtml(original, englishValue) : autoText(original, englishValue)));
+      (useHtml ? setHtml : setText)(node, value);
     });
   }
 
@@ -200,7 +267,8 @@
     document.querySelectorAll('[data-i18n], [data-i18n-auto]').forEach(node => {
       const key = node.dataset.i18n || node.dataset.i18nAuto;
       if (!node.dataset.avvmKoHtml) node.dataset.avvmKoHtml = node.innerHTML;
-      if (!isKorean()) node.innerHTML = t(key, en[key] || node.dataset.avvmKoHtml);
+      const locale = (window.AVVM_LOCALES || {})[language] || {};
+      if (!isKorean()) node.innerHTML = locale[key] || autoHtml(node.dataset.avvmKoHtml, en[key] || node.dataset.avvmKoHtml);
       else node.innerHTML = node.dataset.avvmKoHtml;
     });
   }
@@ -208,7 +276,8 @@
   function applyFooterAndCheckout() {
     const footerLinks = ['Service', 'Terms', 'Privacy', 'Refund', 'Delivery', 'Business'];
     document.querySelectorAll('.footer-links a').forEach((node, index) => {
-      setText(node, !isKorean() ? footerLinks[index] : t(['footerService', 'footerTerms', 'footerPrivacy', 'footerRefund', 'footerDelivery', 'footerBusiness'][index], footerLinks[index]));
+      if (!node.dataset.avvmKoText) node.dataset.avvmKoText = node.textContent;
+      setText(node, isKorean() ? node.dataset.avvmKoText : autoText(node.dataset.avvmKoText, footerLinks[index]));
     });
     localized('.business-info', `
       <b>AVVM.studio business information</b><br>
@@ -319,10 +388,14 @@
     const labels = ['Order ID', 'Name / brand', 'Email address', 'Mobile number', 'Selected plan', 'Price', 'Video style', 'Aspect ratio', 'Resolution'];
     document.querySelectorAll('.detail-row span:first-child').forEach((node, index) => {
       if (!node.dataset.avvmKoText) node.dataset.avvmKoText = node.textContent;
-      node.textContent = !isKorean() ? labels[index] : node.dataset.avvmKoText;
+      node.textContent = isKorean() ? node.dataset.avvmKoText : autoText(node.dataset.avvmKoText, labels[index]);
     });
     localized('.image-preview-section .section-title', 'Uploaded production photo'); localized('.video-preview-section .section-title', 'Generated AI video'); localized('#emptyMsg', 'No image was attached.'); localized('.order-card > .btn', t('backHome'));
-    setText(document.getElementById('statusLabel'), t('orderReceived', 'Order received'));
+    const statusLabel = document.getElementById('statusLabel');
+    if (statusLabel) {
+      if (!statusLabel.dataset.avvmKoText) statusLabel.dataset.avvmKoText = statusLabel.textContent;
+      setText(statusLabel, isKorean() ? statusLabel.dataset.avvmKoText : autoText(statusLabel.dataset.avvmKoText, t('orderReceived', 'Order received')));
+    }
     const image = document.getElementById('orderImg'); if (image) image.alt = !isKorean() ? 'Uploaded photo' : '첨부된 제작 사진';
   }
 
@@ -343,12 +416,14 @@
     applyFooterAndCheckout();
     applyLowerPageSections();
     applyOrderPage();
+    applyAutoTextNodes();
     applyHelpText();
     document.querySelectorAll('[data-avvm-language-select], #nativeLangSelect, #heroNativeLangSelect').forEach(select => { select.value = language; });
     document.dispatchEvent(new CustomEvent('avvm:languagechange', { detail: { language } }));
   }
 
   function init() {
+    captureAutoTextNodes();
     document.querySelectorAll('[data-avvm-language-select], #nativeLangSelect, #heroNativeLangSelect').forEach(select => {
       select.addEventListener('change', event => apply(event.target.value));
     });
