@@ -6037,3 +6037,25 @@ body.modal-open{
 .lang-globe-icon::after {
   display: block !important;
 }
+
+/* Supplied animated globe: keep its native motion continuous inside the button. */
+.lang-globe-icon {
+  animation: none !important;
+  background: #050b10 !important;
+}
+.lang-globe-icon::before,
+.lang-globe-icon::after {
+  content: none !important;
+  display: none !important;
+}
+.lang-globe-icon > .lang-globe-video {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.54);
+  transform-origin: 50% 55%;
+  pointer-events: none;
+}
