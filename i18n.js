@@ -453,6 +453,9 @@
     applyHelpText();
     document.querySelectorAll('[data-avvm-language-select], #nativeLangSelect, #heroNativeLangSelect').forEach(select => { select.value = language; });
     document.dispatchEvent(new CustomEvent('avvm:languagechange', { detail: { language } }));
+    // Text reflow happens after a language switch. Reset any stale horizontal
+    // iPhone Safari offset once the new Japanese/Chinese copy is applied.
+    requestAnimationFrame(() => window.scrollTo({ left: 0, top: window.scrollY, behavior: 'auto' }));
   }
 
   function init() {

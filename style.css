@@ -6059,3 +6059,61 @@ body.modal-open{
   transform-origin: 50% 55%;
   pointer-events: none;
 }
+
+/* CJK mobile safety: Japanese and Chinese legal/order copy can be a single
+   continuous run of characters. Desktop keep-all rules must not widen the
+   document on iPhone. */
+@media (max-width: 780px) {
+  html[lang="ja"] .business-info,
+  html[lang="zh"] .business-info,
+  html[lang="ja"] .legal-visible-footer,
+  html[lang="zh"] .legal-visible-footer,
+  html[lang="ja"] .portone-privacy-note,
+  html[lang="zh"] .portone-privacy-note,
+  html[lang="ja"] .memorial-copy,
+  html[lang="zh"] .memorial-copy,
+  html[lang="ja"] .id-copy,
+  html[lang="zh"] .id-copy,
+  html[lang="ja"] .memorial-bottom-notice,
+  html[lang="zh"] .memorial-bottom-notice,
+  html[lang="ja"] .id-bottom-notice,
+  html[lang="zh"] .id-bottom-notice,
+  html[lang="ja"] .test-mode-note,
+  html[lang="zh"] .test-mode-note,
+  html[lang="ja"] .order-form-helper,
+  html[lang="zh"] .order-form-helper,
+  html[lang="ja"] .consumer-copy,
+  html[lang="zh"] .consumer-copy,
+  html[lang="ja"] .consumer-mode-card p,
+  html[lang="zh"] .consumer-mode-card p,
+  html[lang="ja"] .consumer-price-card p,
+  html[lang="zh"] .consumer-price-card p,
+  html[lang="ja"] .web-studio-copy p,
+  html[lang="zh"] .web-studio-copy p,
+  html[lang="ja"] .work-card p,
+  html[lang="zh"] .work-card p,
+  html[lang="ja"] .service-card p,
+  html[lang="zh"] .service-card p,
+  html[lang="ja"] .design-lab-brief-head > p,
+  html[lang="zh"] .design-lab-brief-head > p,
+  html[lang="ja"] .design-lab-type small,
+  html[lang="zh"] .design-lab-type small,
+  html[lang="ja"] .design-logo-word small,
+  html[lang="zh"] .design-logo-word small {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    word-break: break-all !important;
+    line-break: anywhere !important;
+  }
+
+  html[lang="ja"] .business-info,
+  html[lang="zh"] .business-info,
+  html[lang="ja"] .legal-visible-footer,
+  html[lang="zh"] .legal-visible-footer {
+    width: calc(100% - 28px) !important;
+    max-width: calc(100vw - 28px) !important;
+    box-sizing: border-box !important;
+  }
+}
