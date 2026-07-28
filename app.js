@@ -47,6 +47,53 @@ window.prices={
 }; 
 window.selectedPlan='Pro';
 
+/* A plan promises one known delivery quality. Customers do not have to guess
+   which output is included, and the API receives the same locked value. */
+const PLAN_OUTPUTS = Object.freeze({
+  'Mini Transform': { resolution: '540p', label: '540P · MINI' },
+  'Basic Transform': { resolution: '720p', label: 'HD · 720P' },
+  'Best Transform': { resolution: '720p', label: 'HD · 720P' },
+  '3 Style Set': { resolution: '720p', label: 'HD · 720P' },
+  'Starter': { resolution: '720p', label: 'HD · 720P' },
+  'Pro': { resolution: '1080p', label: 'FULL HD · 1080P' },
+  'Signature': { resolution: '1080p', label: 'FULL HD · 1080P' },
+  'Custom': { resolution: '1080p', label: 'CUSTOM · CONSULTATION' },
+  'Memorial Basic': { resolution: '1080p', label: 'FULL HD · 1080P' },
+  'Memorial Duo': { resolution: '1080p', label: 'FULL HD · 1080P' },
+  'ID Mini': { resolution: '1080p', label: 'FILE DELIVERY' },
+  'ID Set': { resolution: '1080p', label: 'FILE DELIVERY' },
+  'Profile Pro': { resolution: '1080p', label: 'FILE DELIVERY' }
+});
+window.AVVM_PLAN_OUTPUTS = PLAN_OUTPUTS;
+
+function getPlanOutput(plan = window.selectedPlan) {
+  return PLAN_OUTPUTS[String(plan)] || PLAN_OUTPUTS.Pro;
+}
+
+function syncPlanOutput(plan = window.selectedPlan) {
+  const output = getPlanOutput(plan);
+  const hidden = $('#resolution');
+  const value = $('#resolutionIncludedValue');
+  const planLabel = $('#resolutionIncludedPlan');
+  const helper = $('#resolutionHelper');
+  const korean = (localStorage.getItem('avvmLang') || 'ko') === 'ko';
+
+  if (hidden) hidden.value = output.resolution;
+  if (value) value.textContent = output.label;
+  if (planLabel) {
+    planLabel.textContent = String(plan) === 'Custom'
+      ? (korean ? '상담 후 납품 사양 확정' : 'Delivery specification confirmed after consultation')
+      : (korean ? `${plan} 플랜에 포함` : `Included with ${plan}`);
+  }
+  if (helper) {
+    helper.textContent = String(plan) === 'Custom'
+      ? (korean ? '추가 장면·특수 연출·제작 범위는 상담 견적으로 확정합니다.' : 'Extra scenes, special direction, and the production scope are confirmed by custom quote.')
+      : (korean ? '해상도는 플랜에 포함되어 있으며, 원본 사진 품질에 따라 최종 검수 시 안내드립니다.' : 'Delivery quality is included with your plan; final guidance depends on the source-photo review.');
+  }
+  updatePreflightOutput();
+}
+window.syncPlanOutput = syncPlanOutput;
+
 function getNumericPrice(plan) {
   const priceStr = window.prices[plan] || '₩39,900';
   if (priceStr.includes('상담') || priceStr.includes('Negotiation')) return 100;
@@ -308,22 +355,7 @@ function openOrder(plan){
     modalCard.classList.remove('plan-choosing');
   }
   setOrderSummary();
-
-  const chip4K = document.getElementById('chip-4k');
-  if (chip4K) {
-    if (plan === 'Signature' || plan === 'Custom') {
-      chip4K.style.display = 'inline-block';
-    } else {
-      chip4K.style.display = 'none';
-      if (chip4K.classList.contains('active')) {
-        chip4K.classList.remove('active');
-        const defaultChip = document.querySelector('[data-option-group="resolution"] [data-value="1080p"]');
-        if (defaultChip) defaultChip.classList.add('active');
-        const hiddenRes = document.getElementById('resolution');
-        if (hiddenRes) hiddenRes.value = '1080p';
-      }
-    }
-  }
+  syncPlanOutput(plan);
   
   const isIdProfile = plan.startsWith('ID') || plan.startsWith('Profile');
   const guide = $('#uploadGuideBox');
@@ -359,6 +391,7 @@ function selectCategory(category){
   const target=$$('.cat').find(button=>button.dataset.category===category);
   if(!target) return;
   $$('.cat').forEach(button=>button.classList.toggle('active',button===target));
+  renderGuidedStyleFlow();
   updatePreflightOutput();
 }
 
@@ -397,9 +430,9 @@ document.addEventListener('click',async(event)=>{
     setTimeout(()=>{ if(copyButton.isConnected) copyButton.textContent='COPY PROMPT'; },1700);
     return;
   }
+  selectCategory(recipe.category);
   const moodInput=$('#moodInput');
   if(moodInput) moodInput.value=recipe.prompt;
-  selectCategory(recipe.category);
   openOrder(window.selectedPlan || 'Pro');
   toast('Recipe applied. Add your photo to start the pre-flight check.');
 });
@@ -446,10 +479,10 @@ const MAX_IMAGE_DATA_URL_CHARS = 3500000;
 const ACCEPTED_IMAGE_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp']);
 
 function getVideoOptions(){
-  const resolution = document.getElementById('resolution')?.value || '1080p';
+  const resolution = document.getElementById('resolution')?.value || getPlanOutput().resolution;
   return {
     duration: '5s',
-    resolution: resolution === '4K' ? '1080p' : resolution,
+    resolution,
     aspectRatio: document.getElementById('aspectRatio')?.value || '9:16'
   };
 }
@@ -508,6 +541,171 @@ const PROMPT_RECIPES={
   'classic-gate':{category:'Custom',prompt:'Keep the original era, monochrome or archival grain, clothing, and frame. As if a film gate opens, restore only a blink, breath, and slight eye movement. No modern restyle, no altered identity, no dramatic gesture.'},
   'profile-lock':{category:'Custom',prompt:'Lock facial identity, pose, skin texture, and proportions. Minimal living motion only: one calm breath and natural eye focus. Neutral professional light and a trustworthy finish. No face reshaping, no wardrobe change, no background replacement.'}
 };
+
+/* The visible path remains short: category → specific mood → one camera rhythm.
+   Prompts are original AVVM recipes that prioritise source preservation. */
+const STYLE_GUIDES = Object.freeze({
+  Beauty: [
+    { id: 'beauty-refraction', title: 'LIQUID REFRACTION', titleKo: '리퀴드 굴절광', description: 'Light refracts around an unchanged beauty product.', descriptionKo: '제품은 그대로 두고 빛과 투명한 굴절감만 움직입니다.', prompt: 'Keep the exact beauty product, cap, label, and proportions. A single travelling highlight creates a controlled field of glass-like refraction around the package. Premium macro skincare film, no packaging change, no invented text.' },
+    { id: 'beauty-satin', title: 'SATIN SKIN', titleKo: '새틴 스킨', description: 'Soft texture, calm highlights, and an editorial finish.', descriptionKo: '부드러운 광택과 피부 질감을 정돈한 에디토리얼 무드입니다.', prompt: 'Preserve the exact beauty product and skin tone. Use soft satin highlights, restrained texture movement, and a clean editorial beauty grade. No warped packaging, no unreadable labels.' },
+    { id: 'beauty-night', title: 'NIGHT CHROME', titleKo: '나이트 크롬', description: 'A sculpted nocturnal campaign with one controlled light sweep.', descriptionKo: '한 번의 빛 스윕으로 완성하는 조각 같은 나이트 캠페인입니다.', prompt: 'Keep the product silhouette and label exact. Shape a dark chromed beauty campaign with one precise light sweep and controlled reflections. No new objects, no distorted logo.' }
+  ],
+  Product: [
+    { id: 'product-physics', title: 'PHYSICS PAUSE', titleKo: '피직스 포즈', description: 'The object stays fixed while light and atmosphere pause around it.', descriptionKo: '제품은 고정하고 빛과 공기만 멈추게 하는 제품 훅입니다.', prompt: 'Keep the product, logo, dial, material, and silhouette exact. The product remains still while dust and light pause for one beat, then release into a precise commercial reveal. No deformation, no invented text.' },
+    { id: 'product-orbit', title: 'TACTILE ORBIT', titleKo: '택타일 오빗', description: 'A slow orbit makes material and form feel expensive.', descriptionKo: '느린 궤도 카메라로 소재와 형태를 고급스럽게 보여줍니다.', prompt: 'Preserve exact product geometry, branding, and material finish. Use one slow controlled orbit with tactile micro highlights and clean negative space. No shape changes, no extra product, no unreadable logo.' },
+    { id: 'product-macro', title: 'MATERIAL MACRO', titleKo: '머티리얼 매크로', description: 'A close material study resolves into the full product.', descriptionKo: '질감 클로즈업에서 완전한 제품 히어로 컷으로 이어집니다.', prompt: 'Preserve the exact product and its label. Begin on one honest material detail, then resolve into a stable hero product shot. Premium macro commercial, no label distortion, no added text.' }
+  ],
+  Food: [
+    { id: 'food-steam', title: 'STEAM REVEAL', titleKo: '스팀 리빌', description: 'Heat and steam introduce the unchanged plate.', descriptionKo: '온기와 김으로 음식의 첫인상을 살립니다.', prompt: 'Preserve the exact dish, plating, and ingredients. Start with natural steam and a crisp surface detail, then reveal the untouched plate in warm honest light. No melting food, no extra hands, no ingredient changes.' },
+    { id: 'food-pour', title: 'POUR MOMENT', titleKo: '푸어 모먼트', description: 'One controlled pour becomes the visual hook.', descriptionKo: '한 번의 절제된 푸어 동작으로 시선을 잡습니다.', prompt: 'Keep the dish, glassware, and serving exact. Use one physically believable controlled pour as the hook, then settle on the untouched final plate. No overflowing liquid, no changing ingredients, no extra hands.' },
+    { id: 'food-table', title: 'TABLE GLOW', titleKo: '테이블 글로우', description: 'A warm table scene with a quiet restaurant finish.', descriptionKo: '따뜻한 테이블 위에서 완성하는 조용한 레스토랑 무드입니다.', prompt: 'Preserve the exact menu, plating, and table setting. Use warm practical light, subtle environmental movement, and a composed restaurant-film finish. No ingredient changes, no distorted cutlery.' }
+  ],
+  Travel: [
+    { id: 'travel-pass', title: 'EDGE-OF-FRAME PASS', titleKo: '프레임 패스', description: 'One passing movement reveals a new destination.', descriptionKo: '프레임을 스치는 한 번의 동작으로 새로운 여행지를 엽니다.', prompt: 'Keep the person recognisable and preserve body proportions. One edge-of-frame pass continues naturally into a sunlit destination, with believable weather and location light. No portal graphics, no face changes.' },
+    { id: 'travel-postcard', title: 'MOVING POSTCARD', titleKo: '무빙 포스트카드', description: 'A destination opens with slow cinematic atmosphere.', descriptionKo: '느린 시네마틱 분위기로 여행지의 공기를 보여줍니다.', prompt: 'Keep the subject identity, pose, and clothing silhouette stable. Build a moving postcard with natural wind, distant depth, and one gentle travel-camera move. No body distortion, no sudden costume change.' },
+    { id: 'travel-night', title: 'NIGHT ROUTE', titleKo: '나이트 루트', description: 'Street lights and a measured walking rhythm create the hook.', descriptionKo: '도시의 불빛과 절제된 워킹 리듬으로 훅을 만듭니다.', prompt: 'Keep the person and outfit recognisable. Use a clean night-street tracking move with realistic reflections and controlled motion. No face change, no extra limbs, no random signage.' }
+  ],
+  Wedding: [
+    { id: 'wedding-veil', title: 'VEIL LIGHT', titleKo: '베일 라이트', description: 'Soft light passes the veil before a held expression.', descriptionKo: '베일을 스치는 빛 뒤로 깊은 표정을 남깁니다.', prompt: 'Preserve the couple or subject, clothing, and location. Soft light moves behind a veil or shoulder, revealing one deeper held expression. Quiet cinematic motion, believable fabric, no face changes, no invented guests.' },
+    { id: 'wedding-garden', title: 'GARDEN VOW', titleKo: '가든 바우', description: 'Natural foliage and fabric movement build a calm vow scene.', descriptionKo: '자연스러운 잎과 패브릭 움직임으로 차분한 서약 장면을 만듭니다.', prompt: 'Preserve identity, wedding attire, and venue. Use gentle garden air, natural fabric movement, and a composed cinematic push-in. No changed faces, no invented ceremony details.' },
+    { id: 'wedding-after', title: 'AFTERGLOW', titleKo: '애프터글로우', description: 'Warm evening light gives the portrait a final glow.', descriptionKo: '따뜻한 저녁빛으로 인물의 마지막 잔상을 남깁니다.', prompt: 'Keep the couple and wardrobe exact. Create a restrained evening afterglow with warm practical light and one slow camera move. No altered identity, no extra people, no fantasy effects.' }
+  ],
+  Custom: [
+    { id: 'custom-editorial', title: 'PORTRAIT EDITORIAL', titleKo: '포트레이트 에디토리얼', description: 'A calm portrait becomes a fashion-film still in motion.', descriptionKo: '차분한 인물 사진을 패션 필름의 한 장면으로 만듭니다.', prompt: 'Keep the subject identity and wardrobe silhouette. Begin on a calm close portrait, then use one clean shoulder pass into an editorial world already in motion. Believable hair and fabric, no face distortion.' },
+    { id: 'custom-memorial', title: 'MEMORY RETURN', titleKo: '메모리 리턴', description: 'Archival texture remains while only a small gesture returns.', descriptionKo: '사진의 시대감은 지키고 작은 움직임만 되살립니다.', prompt: 'Preserve identity, era, clothing, and original framing. Begin completely still, then return one natural breath, tiny blink, and subtle eye movement. Retain archival grain, no modern styling, no dramatic gesture.' },
+    { id: 'custom-performance', title: 'STAGE PULSE', titleKo: '스테이지 펄스', description: 'One musical accent drives a controlled performance moment.', descriptionKo: '하나의 음악적 악센트로 절제된 퍼포먼스를 만듭니다.', prompt: 'Preserve identity and outfit silhouette. One sharp dance accent reshapes practical stage lighting for a beat, then releases into a clean wide shot. Controlled camera rush, intentional anatomy, no violence, no extra limbs.' }
+  ]
+});
+
+const MOTION_GUIDES = Object.freeze([
+  { id: 'restrained', title: 'QUIET', titleKo: '차분하게', description: 'A subtle push-in keeps the source stable.', descriptionKo: '절제된 푸시인으로 원본의 안정감을 지킵니다.', prompt: 'Use only a restrained slow push-in with calm pacing; keep all source details stable.' },
+  { id: 'cinematic', title: 'CINEMATIC', titleKo: '시네마틱', description: 'One measured camera pass adds depth.', descriptionKo: '한 번의 카메라 패스로 깊이를 더합니다.', prompt: 'Use one measured cinematic lateral camera pass and a controlled focus transition; do not add cuts.' },
+  { id: 'impact', title: 'IMPACT', titleKo: '임팩트', description: 'A precise first-second hook, then control.', descriptionKo: '첫 1초에 훅을 만들고 이후에는 안정적으로 유지합니다.', prompt: 'Create one precise first-second visual hook, then resolve into stable premium motion with no chaotic camera movement.' }
+]);
+
+const PROMPT_LIBRARY = Object.freeze([
+  { id: 'watch-orbit', category: 'Product', title: 'WATCH · DIAL ORBIT', titleKo: '시계 · 다이얼 오빗', keywords: 'watch timepiece dial jewelry steel orbit 시계 주얼리 다이얼', prompt: 'Keep the exact watch, dial markers, crown, bracelet, brand mark, and proportions. A slow orbital camera catches a single travelling reflection across the crystal, then settles into a clean hero frame. Luxury product film, no altered numerals, no invented logos.' },
+  { id: 'jewelry-light', category: 'Product', title: 'JEWELRY · PRISM LIGHT', titleKo: '주얼리 · 프리즘 라이트', keywords: 'jewelry ring necklace gold diamond prism 주얼리 반지 목걸이 다이아', prompt: 'Preserve the exact jewelry design, stones, setting, and material. A narrow prism of light travels through the piece while the camera makes one precise macro move. High-end jewellery campaign, no changed gem cuts, no extra items.' },
+  { id: 'beauty-liquid-library', category: 'Beauty', title: 'BEAUTY · LIQUID LIGHT', titleKo: '뷰티 · 리퀴드 라이트', keywords: 'beauty skincare serum cosmetic liquid glass skin 뷰티 스킨케어 세럼 화장품', prompt: 'Keep the exact beauty product, cap, label, and colour. A controlled liquid-light reflection travels across the unchanged package, then resolves in clean macro focus. Premium skincare campaign, no package changes, no unreadable text.' },
+  { id: 'food-steam-library', category: 'Food', title: 'FOOD · HEAT DETAIL', titleKo: '푸드 · 히트 디테일', keywords: 'food restaurant dish steam dessert cafe menu 푸드 음식 레스토랑 디저트 카페', prompt: 'Preserve the exact dish, plating, and ingredients. Start with one appetising heat detail—steam, crisp surface, or bubbles—then reveal the unchanged plate in warm natural light. No melting food, no added ingredients, no extra hands.' },
+  { id: 'travel-portal-library', category: 'Travel', title: 'TRAVEL · ONE-TAKE ARRIVAL', titleKo: '여행 · 원테이크 도착', keywords: 'travel paris tokyo beach city holiday portal 여행 파리 도쿄 바다 도시', prompt: 'Keep the person recognisable, with stable proportions and clothing silhouette. A single natural edge-of-frame move continues into a new destination with believable location light. No portal graphics, no sudden face or body changes.' },
+  { id: 'wedding-veil-library', category: 'Wedding', title: 'WEDDING · VEIL LIGHT', titleKo: '웨딩 · 베일 라이트', keywords: 'wedding bride groom veil ceremony garden 웨딩 신부 신랑 베일', prompt: 'Preserve the couple, wardrobe, and venue. A soft passing veil of light reveals a held expression and believable fabric movement. Quiet wedding film, no changed faces, no invented guests.' },
+  { id: 'editorial-walk-library', category: 'Custom', title: 'PORTRAIT · EDITORIAL WALK', titleKo: '인물 · 에디토리얼 워크', keywords: 'portrait fashion editorial runway walk model 인물 패션 런웨이 모델', prompt: 'Keep the subject identity and wardrobe silhouette. A calm portrait becomes an editorial walk through one clean shoulder-level camera pass. Believable hair and fabric, no face distortion, no extra limbs.' },
+  { id: 'memorial-return-library', category: 'Custom', title: 'MEMORIAL · GENTLE RETURN', titleKo: '메모리얼 · 젠틀 리턴', keywords: 'memorial old photo family pet dog cat vintage memory 메모리얼 옛사진 가족 반려동물 강아지 고양이', prompt: 'Preserve identity, era, clothing, and original framing. Begin completely still, then return a tiny blink, breath, and gentle gaze. Retain archival texture, no modern styling, no dramatic gesture.' },
+  { id: 'music-stage-library', category: 'Custom', title: 'MUSIC · STAGE PULSE', titleKo: '뮤직 · 스테이지 펄스', keywords: 'music dance stage performance singer concert 뮤직 댄스 무대 가수', prompt: 'Preserve identity and outfit silhouette. One precise performance accent reshapes the practical stage light for a beat, then resolves into a stable wide frame. Controlled movement, no violence, no extra limbs.' },
+  { id: 'classic-film-library', category: 'Custom', title: 'CLASSIC · FILM GATE', titleKo: '고전 · 필름 게이트', keywords: 'classic old hollywood black white film vintage actor 고전 흑백 필름 배우', prompt: 'Keep the original era, monochrome grain, clothing, and framing. As if a film gate opens, restore only a natural blink, breath, and slight eye movement. No modern restyle, no altered identity.' }
+]);
+
+const guideState = { category: '', presetId: '', motionId: 'restrained' };
+
+function isKoreanOrderUi() {
+  return (localStorage.getItem('avvmLang') || 'ko') === 'ko';
+}
+
+function guidedText(item, key) {
+  return isKoreanOrderUi() ? (item[`${key}Ko`] || item[key]) : item[key];
+}
+
+function getActiveCategory() {
+  return $('.cat.active')?.dataset?.category || 'Beauty';
+}
+
+function getGuidedPreset(category = getActiveCategory()) {
+  const presets = STYLE_GUIDES[category] || STYLE_GUIDES.Custom;
+  return presets.find((preset) => preset.id === guideState.presetId) || presets[0];
+}
+
+function getGuidedMotion() {
+  return MOTION_GUIDES.find((motion) => motion.id === guideState.motionId) || MOTION_GUIDES[0];
+}
+
+function writeGuidedPrompt() {
+  const input = $('#moodInput');
+  const preset = getGuidedPreset();
+  const motion = getGuidedMotion();
+  if (input && preset && motion) input.value = `${preset.prompt} ${motion.prompt}`;
+}
+
+function renderPromptLibrary() {
+  const library = $('#customPromptLibrary');
+  const results = $('#promptLibraryResults');
+  const search = $('#promptSearch');
+  if (!library || !results) return;
+
+  const customSelected = getActiveCategory() === 'Custom';
+  library.hidden = !customSelected;
+  if (!customSelected) return;
+
+  const query = String(search?.value || '').trim().toLowerCase();
+  const matched = PROMPT_LIBRARY.filter((recipe) => {
+    if (!query) return true;
+    return [recipe.title, recipe.titleKo, recipe.category, recipe.keywords].join(' ').toLowerCase().includes(query);
+  }).slice(0, 6);
+  const useLabel = isKoreanOrderUi() ? '이 레시피 불러오기' : 'USE THIS RECIPE';
+  const empty = isKoreanOrderUi() ? '검색 결과가 없습니다. 원하는 장면을 직접 적어주세요.' : 'No recipe matched. Describe the scene in your own words.';
+
+  results.innerHTML = matched.length
+    ? matched.map((recipe) => `<article class="prompt-library-card"><span>${recipe.category.toUpperCase()}</span><b>${guidedText(recipe, 'title')}</b><button type="button" data-library-recipe="${recipe.id}">${useLabel} ↗</button></article>`).join('')
+    : `<p class="prompt-library-empty">${empty}</p>`;
+}
+
+function renderGuidedStyleFlow({ writePrompt = false } = {}) {
+  const category = getActiveCategory();
+  const presets = STYLE_GUIDES[category] || STYLE_GUIDES.Custom;
+  const presetRoot = $('#stylePresetOptions');
+  const motionRoot = $('#motionOptions');
+  const name = $('#selectedStyleName');
+  const description = $('#selectedStyleDescription');
+  if (!presetRoot || !motionRoot || !name || !description) return;
+
+  const categoryChanged = guideState.category !== category;
+  if (categoryChanged) {
+    guideState.category = category;
+    guideState.presetId = presets[0].id;
+    guideState.motionId = 'restrained';
+  }
+  const preset = getGuidedPreset(category);
+  const motion = getGuidedMotion();
+
+  presetRoot.innerHTML = presets.map((item) => `<button class="guided-style-option${item.id === preset.id ? ' active' : ''}" type="button" data-style-preset="${item.id}"><b>${guidedText(item, 'title')}</b><span>${guidedText(item, 'description')}</span></button>`).join('');
+  motionRoot.innerHTML = MOTION_GUIDES.map((item) => `<button class="guided-style-option guided-motion-option${item.id === motion.id ? ' active' : ''}" type="button" data-motion-style="${item.id}"><b>${guidedText(item, 'title')}</b><span>${guidedText(item, 'description')}</span></button>`).join('');
+  name.textContent = guidedText(preset, 'title');
+  description.textContent = `${guidedText(preset, 'description')} ${guidedText(motion, 'description')}`;
+
+  if (categoryChanged || writePrompt) writeGuidedPrompt();
+  renderPromptLibrary();
+}
+
+document.addEventListener('click', (event) => {
+  const presetButton = event.target.closest('[data-style-preset]');
+  if (presetButton) {
+    guideState.presetId = presetButton.dataset.stylePreset;
+    renderGuidedStyleFlow({ writePrompt: true });
+    return;
+  }
+  const motionButton = event.target.closest('[data-motion-style]');
+  if (motionButton) {
+    guideState.motionId = motionButton.dataset.motionStyle;
+    renderGuidedStyleFlow({ writePrompt: true });
+    return;
+  }
+  const libraryButton = event.target.closest('[data-library-recipe]');
+  if (libraryButton) {
+    const recipe = PROMPT_LIBRARY.find((item) => item.id === libraryButton.dataset.libraryRecipe);
+    if (!recipe) return;
+    selectCategory(recipe.category);
+    const input = $('#moodInput');
+    if (input) input.value = recipe.prompt;
+    toast(isKoreanOrderUi() ? '연출 레시피를 불러왔습니다. 원하는 내용을 덧붙여주세요.' : 'Recipe loaded. Add any detail you want.');
+  }
+});
+
+$('#promptSearch')?.addEventListener('input', renderPromptLibrary);
+document.addEventListener('avvm:languagechange', () => {
+  renderGuidedStyleFlow();
+  syncPlanOutput();
+});
+renderGuidedStyleFlow({ writePrompt: true });
 
 function makeVideoPrompt(order){
   const direction=String(order.mood||'').trim();

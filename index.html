@@ -135,6 +135,8 @@ window.addEventListener('error', function(e) {
 <option value="ko">KO</option><option value="en">EN</option><option value="ja">JA</option><option value="zh">ZH</option><option value="es">ES</option><option value="fr">FR</option><option value="de">DE</option><option value="pt">PT</option><option value="hi">HI</option><option value="ar">AR</option>
 </select>
 </div>
+<span aria-live="polite" class="auth-account-badge" hidden id="authAccountBadge"></span>
+<button class="auth-google-button auth-google-nav" data-auth-login hidden id="googleSignIn" type="button"><span aria-hidden="true" class="auth-google-mark">G</span><span data-i18n="authGoogleNav">GOOGLE LOGIN</span></button>
 <button class="btn" data-open=""><span data-i18n="startProject">START PROJECT ↗</span></button>
 </div>
 </div>
@@ -269,7 +271,7 @@ window.addEventListener('error', function(e) {
         <p data-i18n="proofProductCopy">평범한 제품 사진을 빛·카메라 무브먼트가 있는 광고 영상으로 제작합니다.</p>
         <div class="proof-pair">
           <figure class="proof-frame proof-input"><img src="sample-product-input-v2.png" alt="시계 제품 광고 입력 사진" loading="lazy"/><figcaption><b>INPUT</b><span data-i18n="proofProductInput">일반 제품 사진</span></figcaption></figure>
-          <figure class="proof-frame proof-output"><span class="proof-quality-badge">4K MASTER · WEB OPTIMIZED</span><video class="proof-video" autoplay loop muted playsinline preload="none" aria-label="시계 제품 광고 결과 영상"><source data-src="higgsfield-ultra-product.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofProductOutput">럭셔리 광고 영상</span></figcaption></figure>
+          <figure class="proof-frame proof-output"><span class="proof-quality-badge">PREMIUM MASTER · WEB OPTIMIZED</span><video class="proof-video" autoplay loop muted playsinline preload="none" aria-label="시계 제품 광고 결과 영상"><source data-src="higgsfield-ultra-product.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofProductOutput">럭셔리 광고 영상</span></figcaption></figure>
         </div>
       </article>
       <article class="proof-card">
@@ -333,7 +335,7 @@ window.addEventListener('error', function(e) {
     </div>
     <div class="prompt-recipe-grid" aria-label="AVVM prompt recipe library">
       <article class="prompt-recipe-card">
-        <div class="prompt-recipe-meta"><span>01</span><b>PRODUCT · 4K</b></div><h3>PHYSICS PAUSE</h3>
+        <div class="prompt-recipe-meta"><span>01</span><b>PRODUCT · PREMIUM</b></div><h3>PHYSICS PAUSE</h3>
         <p data-i18n-auto="autoRecipeProduct">제품은 완전히 정지한 채, 주변의 시간과 빛만 한 박자 멈춥니다. 형태를 지키면서도 첫 프레임부터 시선을 멈추게 하는 제품 훅입니다.</p>
         <code data-i18n-exempt>Keep the product still. Freeze the surrounding dust and light for one beat, then release into a precise micro push-in.</code>
         <div class="prompt-recipe-actions"><button type="button" data-copy-recipe="product-orbit">COPY PROMPT</button><button type="button" data-apply-recipe="product-orbit">APPLY TO MY PHOTO ↗</button></div>
@@ -692,7 +694,7 @@ window.addEventListener('error', function(e) {
 <tr><td>AI Voiceover</td><td>Option</td><td>Option</td><td class="spec-option">Consult</td></tr>
 <tr><td>Revision</td><td>None</td><td>1 round</td><td>2 rounds</td></tr>
 <tr><td>Aspect Ratio</td><td><span data-i18n-auto="autoKo16">9:16 / 16:9 / 1:1 선택</span></td><td><span data-i18n-auto="autoKo17">9:16 / 16:9 / 1:1 선택</span></td><td><span data-i18n-auto="autoKo18">9:16 / 16:9 / 1:1 선택</span></td></tr>
-<tr><td>Resolution</td><td><span data-i18n-auto="autoKo19">540p / 720p / 1080p 선택</span></td><td><span data-i18n-auto="autoKo20">720p / 1080p 선택</span></td><td><span data-i18n-auto="autoKo21">1080p / 4K 선택</span></td></tr>
+<tr><td>Resolution</td><td><span data-i18n-auto="autoKo19">HD · 720p 포함</span></td><td><span data-i18n-auto="autoKo20">Full HD · 1080p 포함</span></td><td><span data-i18n-auto="autoKo21">Full HD · 1080p 마스터 포함</span></td></tr>
 </tbody>
 </table>
 </div>
@@ -740,7 +742,7 @@ window.addEventListener('error', function(e) {
 <ul>
 <li><span data-duration="" data-seconds="10"><span data-i18n-auto="autoKo23">약 10초(9초)</span></span> <span data-i18n="starterItem1">시네마틱 영상 1편</span></li>
 <li data-i18n="starterItem2">비율 선택: 9:16 / 16:9 / 1:1</li>
-<li data-i18n="starterItem3">해상도 선택: 540p / 720p / 1080p</li>
+<li data-i18n="starterItem3">HD · 720p 제공</li>
 <li data-i18n="commercialUse">상업적 사용 가능</li>
 </ul>
 <button class="btn has-help" data-help="약 10초(9초) 숏폼 영상. 빠른 테스트와 SNS 광고에 적합합니다." data-help-key="help27" data-help-ko="약 10초(9초) 숏폼 영상. 빠른 테스트와 SNS 광고에 적합합니다." data-open="" data-plan="Starter"><span data-i18n="start">Start</span></button>
@@ -754,7 +756,7 @@ window.addEventListener('error', function(e) {
 <li><span data-duration="" data-seconds="15"><span data-i18n-auto="autoKo25">15초</span></span> <span data-i18n="proItem1">프리미엄 영상 1편</span></li>
 <li data-i18n="proItem2">비율 선택: 9:16 / 16:9 / 1:1</li>
 <li data-i18n="proItem3">1회 수정 포함</li>
-<li data-i18n="proItem4">해상도 선택: 720p / 1080p</li>
+<li data-i18n="proItem4">Full HD · 1080p 제공</li>
 <li data-i18n="priorityWork">우선 작업</li>
 </ul>
 <button class="btn btn-primary has-help" data-help="15초 프리미엄 영상. 브랜드와 제품 광고에 가장 추천합니다." data-help-key="help28" data-help-ko="15초 프리미엄 영상. 브랜드와 제품 광고에 가장 추천합니다." data-open="" data-plan="Pro"><span data-i18n="start">Start</span></button>
@@ -767,16 +769,16 @@ window.addEventListener('error', function(e) {
 <li><span data-duration="" data-seconds="30"><span data-i18n-auto="autoKo27">30초</span></span> <span data-i18n="signatureItem1">시그니처 영상 1편</span></li>
 <li data-i18n="signatureItem2">비율 선택: 9:16 / 16:9 / 1:1</li>
 <li data-i18n="signatureItem3">2회 수정 포함</li>
-<li data-i18n="signatureItem4">해상도 선택: 1080p / 4K</li>
+<li data-i18n="signatureItem4">Full HD · 1080p 마스터 제공</li>
 <li data-i18n="signatureItem5">디렉터 스타일 감수</li>
 </ul>
 <button class="btn has-help" data-help="30초 시그니처 영상. 쇼릴, 브랜드 필름, 고급 광고용입니다." data-help-key="help29" data-help-ko="30초 시그니처 영상. 쇼릴, 브랜드 필름, 고급 광고용입니다." data-open="" data-plan="Signature"><span data-i18n="start">Start</span></button>
 </article>
 </div>
 <div class="pricing-choice-note" data-i18n="sizeChoiceNote">
-<span data-i18n="sizeChoiceNote">비율은 9:16 / 16:9 / 1:1 중 선택 가능합니다. 해상도는 플랜별로 제공되며, 4K는 Signature 또는 Custom 플랜에서만 선택 가능합니다.</span>
+<span data-i18n="sizeChoiceNote">비율은 9:16 / 16:9 / 1:1 중 선택 가능합니다. 최종 제공 해상도는 각 플랜에 포함되어 고정됩니다.</span>
 </div>
-<div class="pricing-note" data-i18n="pricingNote"><span data-i18n="pricingNote">납품 일정: Starter 24~48시간, Pro 2~3영업일, Signature 3~5영업일 기준입니다. 이미지 품질, 수정 범위, 4K 여부에 따라 변동될 수 있습니다. 외화 표시는 참고용이며 실제 결제는 원화(KRW)로 진행됩니다.</span></div>
+<div class="pricing-note" data-i18n="pricingNote"><span data-i18n="pricingNote">납품 일정: Starter 24~48시간, Pro 2~3영업일, Signature 3~5영업일 기준입니다. 원본 이미지 품질과 수정 범위에 따라 변동될 수 있습니다. 외화 표시는 참고용이며 실제 결제는 원화(KRW)로 진행됩니다.</span></div>
 <div class="review-safe-note">
   ※ AVVM은 즉시 자동 생성툴이 아니라 고객 이미지 기반 맞춤형 디지털 콘텐츠 제작 서비스입니다. 결제 후 이미지 검토, AI 초안 생성, 품질 검수, 최종 납품 순서로 진행됩니다.
 </div>
@@ -962,7 +964,7 @@ window.addEventListener('error', function(e) {
 상호: 라라랜드맘 · 브랜드: AVVM.studio · 대표자: 윤동국<br/>
 사업자등록번호: 347-37-01807 · 통신판매업 신고번호: 제2026-경기파주-2862호<br/>
 대표 연락처: 0505-007-5221 · 이메일: airyoon72@naver.com · 도메인: avvm.studio<br/>
-사업장 주소: 경기도 파주시 미래로310번길 182-37 B동 2층 02호<br/>
+사업장 주소: 경기도 파주시 미래로310번길 182-37, B동 2층 02호(동패동, 보타닉)<br/>
 본 서비스는 실물 배송이 없는 맞춤형 디지털 콘텐츠 제작 서비스이며, 결제는 원화(KRW)로 처리됩니다.<br/>
 서비스 제공 기간: 결제 및 제작자료 접수가 모두 완료된 시점부터 Mini·Basic·Best Transform 상품은 영업일 기준 1~3일 이내, 3 Style Set은 영업일 기준 3~7일 이내, Starter는 24~48시간, Pro는 영업일 기준 2~3일, Signature는 영업일 기준 3~5일 이내 제공됩니다. Memorial 및 ID·Profile 상품은 각 상품 카드에 표시된 24~48시간의 제공 기간이 적용됩니다.<br/>
 결제대행 및 개인정보 처리 위탁: 주식회사 코리아포트원(전자결제 서비스 제공, 결제 처리, 결제 결과 확인 및 정산 업무)<br/>
@@ -1137,8 +1139,8 @@ window.addEventListener('error', function(e) {
 
   <!-- Step 2: Style Selection -->
   <div class="style-select-block" style="margin-top:24px">
-    <div class="order-form-section-title">2. 원하는 비디오 스타일 선택</div>
-    <p class="order-form-helper">첨부한 사진에 적용할 AI 연출 스타일 테마를 골라주세요.</p>
+    <div class="order-form-section-title" data-i18n="styleStepTitle">2. 원하는 비디오 스타일 선택</div>
+    <p class="order-form-helper" data-i18n="styleStepCopy">먼저 제작 분야를 고르고, 이어서 세부 무드와 움직임을 선택하세요.</p>
     <div class="cat-grid">
       <button class="cat active" data-category="Beauty" type="button"><span data-i18n="catBeauty">Beauty</span></button>
       <button class="cat" data-category="Product" type="button"><span data-i18n="catProduct">Product</span></button>
@@ -1146,15 +1148,45 @@ window.addEventListener('error', function(e) {
       <button class="cat" data-category="Travel" type="button"><span data-i18n="catTravel">Travel</span></button>
       <button class="cat" data-category="Wedding" type="button"><span data-i18n="catWedding">Wedding</span></button>
       <button class="cat" data-category="Custom" type="button"><span data-i18n="catCustom">Custom</span></button>
-      <button class="cat cat-btn" data-category="Personal Transform" type="button"><span data-i18n="catPersonal">Transform</span></button>
     </div>
-    <textarea class="field" id="moodInput" placeholder="추가 요구사항 또는 영상 설명 (선택사항)" rows="3" style="margin-top:14px"></textarea>
+
+    <div class="guided-style-flow" id="guidedStyleFlow" aria-live="polite">
+      <section class="guided-style-step">
+        <div class="guided-style-step-number">01</div>
+        <div class="guided-style-step-copy"><b data-i18n="styleDetailTitle">세부 무드 선택</b><span data-i18n="styleDetailCopy">선택한 분야에 맞는 연출만 보여드립니다.</span></div>
+        <div class="guided-style-options" id="stylePresetOptions" role="group" aria-label="세부 무드 선택"></div>
+      </section>
+      <section class="guided-style-step">
+        <div class="guided-style-step-number">02</div>
+        <div class="guided-style-step-copy"><b data-i18n="motionTitle">움직임의 밀도</b><span data-i18n="motionCopy">한 가지 카메라 동작만 골라 결과를 안정적으로 만듭니다.</span></div>
+        <div class="guided-style-options guided-motion-options" id="motionOptions" role="group" aria-label="움직임의 밀도"></div>
+      </section>
+      <div class="guided-style-preview">
+        <span data-i18n="styleDirectionLabel">SELECTED DIRECTION</span>
+        <strong id="selectedStyleName">LIQUID REFRACTION</strong>
+        <p id="selectedStyleDescription">제품의 형태와 라벨을 지키며 빛·질감·카메라 움직임만 설계합니다.</p>
+      </div>
+    </div>
+
+    <section class="custom-prompt-library" id="customPromptLibrary" hidden>
+      <div class="custom-prompt-library-head"><div><span data-i18n="promptLibraryKicker">AVVM CURATED RECIPES</span><b data-i18n="promptLibraryTitle">원하는 장면을 검색하세요</b></div><p data-i18n="promptLibraryCopy">검수 기준에 맞춘 연출 레시피를 불러온 뒤, 원하는 내용을 덧붙일 수 있습니다.</p></div>
+      <label class="prompt-search-field" for="promptSearch"><span aria-hidden="true">⌕</span><input id="promptSearch" type="search" autocomplete="off" data-i18n-placeholder="promptSearchPlaceholder" placeholder="예: 시계, 런웨이, 고전 사진, 여행, 반려동물"/></label>
+      <div class="prompt-library-results" id="promptLibraryResults"></div>
+      <p class="prompt-library-note" data-i18n="promptLibraryNote">레시피는 원본 보존과 자연스러운 움직임을 우선합니다. 결과는 원본 사진과 최종 검수에 따라 달라질 수 있습니다.</p>
+    </section>
+
+    <label class="prompt-edit-label" for="moodInput" data-i18n="promptEditLabel">연출 요청 추가하기 <span>(선택)</span></label>
+    <textarea class="field" id="moodInput" data-i18n-placeholder="moodPlaceholder" placeholder="선택한 방향에 추가하고 싶은 장면·색감·무드가 있다면 적어주세요." rows="3" style="margin-top:8px"></textarea>
   </div>
 
   <!-- Step 3: Contact & Delivery Details -->
   <div class="delivery-info-block" style="margin-top:28px">
     <div class="order-form-section-title">3. 완성본 수령 연락처 입력</div>
     <p class="order-form-helper">제작 완료된 영상을 다운로드할 수 있는 이메일, 카톡 또는 문자 링크를 보내드립니다.</p>
+    <aside class="auth-inline-panel" hidden id="authInlinePanel">
+      <div class="auth-inline-copy"><span class="auth-inline-kicker" data-i18n="authOptional">OPTIONAL</span><b data-i18n="authTitle">Google로 빠르게 시작하기</b><p data-i18n="authCopy">로그인하면 Google 계정의 이름과 이메일을 주문 정보에 미리 입력합니다. 로그인 없이도 그대로 주문할 수 있습니다.</p></div>
+      <div class="auth-inline-action"><button class="auth-google-button" data-auth-login type="button"><span aria-hidden="true" class="auth-google-mark">G</span><span data-i18n="authGoogle">Google로 계속하기</span></button><div class="auth-signed-in" id="authSignedInMessage"><span data-i18n="authSignedIn">로그인됨</span> · <strong id="authAccountEmail"></strong> <button data-auth-signout type="button"><span data-i18n="authSignOut">로그아웃</span></button></div></div>
+    </aside>
     
     <div class="input-row-group">
       <label class="order-input-label" for="brandInput">성함 / 브랜드명 <span>*</span></label>
@@ -1221,14 +1253,9 @@ window.addEventListener('error', function(e) {
 <input id="aspectRatio" name="aspectRatio" type="hidden" value="9:16"/>
 </div>
 <div class="order-option-group" id="resolutionGroup">
-<div class="order-option-title" data-i18n="resolutionTitle">Resolution</div>
-<div class="option-chips" data-option-group="resolution">
-<button class="option-chip" data-value="540p" type="button">540p</button>
-<button class="option-chip" data-value="720p" type="button">720p</button>
-<button class="option-chip active" data-value="1080p" type="button">1080p</button>
-<button class="option-chip disabled" data-value="4K" type="button" id="chip-4k" disabled title="4K는 Signature 또는 Custom 플랜에서만 선택 가능합니다.">4K</button>
-</div>
-<p class="order-form-helper" style="margin-top:8px">4K는 Signature 또는 Custom 플랜에서만 선택 가능합니다.</p>
+<div class="order-option-title" data-i18n="resolutionTitle">최종 제공 해상도</div>
+<div class="resolution-lock" aria-live="polite"><span data-i18n="resolutionIncluded">PLAN INCLUDED</span><strong id="resolutionIncludedValue">FULL HD · 1080P</strong><small id="resolutionIncludedPlan">Pro 플랜에 포함</small></div>
+<p class="order-form-helper" id="resolutionHelper" data-i18n="resolutionHelper">해상도는 플랜에 포함되어 있으며, 원본 사진 품질에 따라 최종 검수 시 안내드립니다.</p>
 <input id="resolution" name="resolution" type="hidden" value="1080p"/>
 </div>
 <button class="btn btn-primary has-help" data-help="입력한 주문 정보를 기반으로 KPN 테스트 카드 결제창을 호출합니다. 심사용 캡처 후 결제를 완료하지 말고 창을 닫아주세요." data-help-key="help30" data-help-ko="입력한 주문 정보를 기반으로 KPN 테스트 카드 결제창을 호출합니다. 심사용 캡처 후 결제를 완료하지 말고 창을 닫아주세요." id="submitOrder" style="width:100%;margin-top:14px" type="button" disabled>테스트 결제하기</button></div><div class="success-panel"><div class="success-icon">✓</div><h3>PROJECT<br/>STARTED.</h3><p><span data-i18n-auto="autoKo30">주문 흐름이 정상 작동합니다. 실제 결제 연결 전까지는 주문 초안이 브라우저에 저장되고, 주문 파일을 내려받을 수 있습니다.</span></p><div class="order-id" id="successOrderId">ORDER #AVVM-DEMO</div><p class="order-link-copy" id="orderLinkCopy"><span data-i18n-auto="autoFinal2">완성되면 카톡/문자로 알려드리고, 링크에서 바로 확인할 수 있습니다.</span></p><a class="btn btn-primary order-view-link" href="#" id="viewOrderLink" rel="noopener" target="_blank"><span data-i18n-auto="autoFinal3">주문 링크 열기</span></a><div class="status-mini"><div class="status-row"><div class="status-step on"><span data-i18n-auto="autoFinal4">접수됨</span></div><div class="status-step on"><span data-i18n-auto="autoFinal5">제작 대기</span></div><div class="status-step"><span data-i18n-auto="autoFinal6">검수 중</span></div><div class="status-step"><span data-i18n-auto="autoFinal7">완성</span></div></div></div><div class="success-actions"><button class="btn btn-primary" id="downloadOrder" type="button">DOWNLOAD ORDER</button><button class="btn" id="resetOrder" type="button">CREATE ANOTHER</button></div></div></div></div>
@@ -1478,17 +1505,13 @@ document.addEventListener('click', function (event) {
 </script>
 
 <script src="auto-translations.js?v=2"></script>
-<script src="locales.js?v=2"></script>
-<script src="i18n.js?v=9"></script>
-<script src="app.js?v=39"></script>
+<script src="locales.js?v=3"></script>
+<script src="i18n.js?v=11"></script>
+<script src="auth.js?v=1"></script>
+<script src="app.js?v=40"></script>
 <script>
-/* AVVM v31 index-only safeguards
-   - app.js를 바로 수정하지 않아도 새 필수동의(rightsConsent)를 결제 클릭 전에 검사합니다.
-   - 4K 옵션은 Signature / Custom 플랜에서만 활성화합니다.
-*/
+/* AVVM order safeguards: required consent and plan-locked delivery quality. */
 (function(){
-  const FOUR_K_PLAN_KEYWORDS = ['Signature', 'Custom'];
-
   function $(id){ return document.getElementById(id); }
 
   function toastSafe(message){
@@ -1513,43 +1536,9 @@ document.addEventListener('click', function (event) {
     return knownPlans.find(plan => summary.includes(plan)) || 'Pro';
   }
 
-  function isFourKAllowed(plan){
-    return FOUR_K_PLAN_KEYWORDS.some(keyword => String(plan || '').includes(keyword));
-  }
-
-  function activateResolution(value){
-    const group = $('resolutionGroup');
-    const hidden = $('resolution');
-    if (!group || !hidden) return;
-    group.querySelectorAll('.option-chip').forEach(btn => {
-      btn.classList.toggle('active', btn.getAttribute('data-value') === value);
-    });
-    hidden.value = value;
-  }
-
   function syncResolutionByPlan(){
-    const plan = getCurrentPlan();
-    const allow4k = isFourKAllowed(plan);
-    const chip4k = $('chip-4k');
-    const hidden = $('resolution');
-    const group = $('resolutionGroup');
-    if (!group || !hidden || !chip4k) return;
-
-    chip4k.style.display = allow4k ? '' : 'none';
-    chip4k.disabled = !allow4k;
-    chip4k.classList.toggle('disabled', !allow4k);
-    chip4k.title = allow4k ? '' : '4K는 Signature 또는 Custom 플랜에서만 선택 가능합니다.';
-
-    if (!allow4k && hidden.value === '4K') {
-      activateResolution('1080p');
-    }
-
-    if (String(plan).includes('Pro') && hidden.value === '540p') {
-      activateResolution('1080p');
-    }
-
-    if ((String(plan).includes('Signature') || String(plan).includes('Custom')) && !hidden.value) {
-      activateResolution('1080p');
+    if (typeof window.syncPlanOutput === 'function') {
+      window.syncPlanOutput(getCurrentPlan());
     }
   }
 

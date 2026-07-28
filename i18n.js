@@ -39,12 +39,12 @@
     tryNow: 'TRY NOW', startTransform: 'START TRANSFORM', chooseBest: 'CHOOSE BEST', getSet: 'GET SET',
     promptBoxTitle: 'Hot Transform Styles', promptBoxCopy: 'We made popular short-form transformation prompts easy to choose.',
     prompt1: 'Fashion Glow Up: transform an everyday look into a model-style outfit', prompt2: 'World Travel Transform: turn one photo into a global-destination reel', prompt3: 'Bag Flip Walk: flip a bag and turn your head for a full fashion change',
-    starterUse: 'Fast short-form advertising', starterItem1: 'One cinematic video', starterItem2: 'Choose ratio: 9:16 / 16:9 / 1:1', starterItem3: 'Choose resolution: 540p / 720p / 1080p',
-    proUse: 'For brand and product advertising', proItem1: 'One premium video', proItem2: 'Choose ratio: 9:16 / 16:9 / 1:1', proItem3: 'One revision included', proItem4: 'Choose resolution: 720p / 1080p',
-    signatureUse: 'For advertising, showreels, and brand films', signatureItem1: 'One signature video', signatureItem2: 'Choose ratio: 9:16 / 16:9 / 1:1', signatureItem3: 'Two revisions included', signatureItem4: 'Choose resolution: 1080p / 4K', signatureItem5: 'Director-style review',
+    starterUse: 'Fast short-form advertising', starterItem1: 'One cinematic video', starterItem2: 'Choose ratio: 9:16 / 16:9 / 1:1', starterItem3: 'HD · 720p delivery included',
+    proUse: 'For brand and product advertising', proItem1: 'One premium video', proItem2: 'Choose ratio: 9:16 / 16:9 / 1:1', proItem3: 'One revision included', proItem4: 'Full HD · 1080p delivery included',
+    signatureUse: 'For advertising, showreels, and brand films', signatureItem1: 'One signature video', signatureItem2: 'Choose ratio: 9:16 / 16:9 / 1:1', signatureItem3: 'Two revisions included', signatureItem4: 'Full HD · 1080p master delivery', signatureItem5: 'Director-style review',
     commercialUse: 'Commercial use allowed', priorityWork: 'Priority production', bestSeller: 'Best Seller', start: 'Start',
-    sizeChoiceNote: 'Choose 9:16, 16:9, or 1:1. Resolution is plan-dependent; 4K is available only for Signature or Custom.',
-    pricingNote: 'Delivery: Starter 24–48 hours, Pro 2–3 business days, Signature 3–5 business days. Timing may vary with image quality, revisions, and 4K. All payments are in KRW.',
+    sizeChoiceNote: 'Choose 9:16, 16:9, or 1:1. Delivery quality is included and locked to each plan.',
+    pricingNote: 'Delivery: Starter 24–48 hours, Pro 2–3 business days, Signature 3–5 business days. Timing may vary with source-image quality and revisions. All payments are in KRW.',
     catBeauty: 'Beauty', catProduct: 'Product', catFood: 'Food', catTravel: 'Travel', catWedding: 'Wedding', catCustom: 'Custom', catPersonal: 'Transform',
     modalEyebrow: 'START PROJECT', modalTitle: 'INSERT IMAGE.<br>PRESS START.', aspectTitle: 'Aspect Ratio', resolutionTitle: 'Resolution',
     autoKo1: 'AI creates the first draft; a specialist polishes it for commercial quality.', autoKo2: 'Includes review to reduce distortion of product shape, logos, and labels.', autoKo3: 'Payments are processed in Korean won (KRW).', autoKo4: 'The avvm.studio domain and business-information area are ready.',
@@ -53,7 +53,8 @@
     autoKo9: 'The biggest risk in AI video is broken logos, labels, and packaging. AVVM prioritizes product shape, color, brand impression, and label readability.',
     autoKo10: 'If a label or logo is seriously distorted, we regenerate or replace the cut.', autoKo11: 'We check that bottles, packages, food, and product silhouettes remain faithful to the source.', autoKo12: 'We prioritize the clarity and trust needed for a video that sells, not merely a pretty AI video.',
     autoKo13: 'A future preview space will let you upload a product image, see a quick low-resolution watermarked preview, and continue only when you like it.', autoKo14: 'The MVP starts with sample showreels and consultation-based orders. A free preview is planned next.', autoKo15: 'We clearly explain BGM, sound effects, subtitles, copy, and voice options alongside video length and quality.',
-    autoKo16: 'Choose 9:16 / 16:9 / 1:1', autoKo17: 'Choose 9:16 / 16:9 / 1:1', autoKo18: 'Choose 9:16 / 16:9 / 1:1', autoKo19: 'Choose 540p / 720p / 1080p', autoKo20: 'Choose 720p / 1080p', autoKo21: 'Choose 1080p / 4K',
+    autoKo16: 'Choose 9:16 / 16:9 / 1:1', autoKo17: 'Choose 9:16 / 16:9 / 1:1', autoKo18: 'Choose 9:16 / 16:9 / 1:1', autoKo19: 'HD · 720p included', autoKo20: 'Full HD · 1080p included', autoKo21: 'Full HD · 1080p master included',
+    styleStepTitle: '2. Choose your video direction', styleStepCopy: 'Choose a production field first, then narrow it down by mood and motion.', styleDetailTitle: 'Choose a detailed mood', styleDetailCopy: 'Only direction options that fit your selected field are shown.', motionTitle: 'Motion intensity', motionCopy: 'Choose one camera move to keep the result stable.', styleDirectionLabel: 'SELECTED DIRECTION', promptLibraryKicker: 'AVVM CURATED RECIPES', promptLibraryTitle: 'Search for the scene you want', promptLibraryCopy: 'Load a production-ready direction recipe, then add your own details.', promptSearchPlaceholder: 'e.g. watch, runway, classic photo, travel, pet', promptLibraryNote: 'Recipes prioritize source preservation and natural movement. Results vary with the photo and final review.', promptEditLabel: 'Add a direction request <span>(optional)</span>', moodPlaceholder: 'Add any scene, color, or mood you want to layer onto the selected direction.', resolutionIncluded: 'PLAN INCLUDED', resolutionHelper: 'Delivery quality is locked to your plan and confirmed through source-photo review.',
     autoKo22: 'About 10 seconds (9 seconds)', autoKo23: 'About 10 seconds (9 seconds)', autoKo24: '15 seconds', autoKo25: '15 seconds', autoKo26: '30 seconds', autoKo27: '30 seconds',
     autoKo30: 'Your order flow is ready. Until live payment is connected, the order draft is saved in this browser.', autoFinal2: 'We will notify you when the video is ready; you can also check it through the link.', autoFinal3: 'OPEN ORDER LINK', autoFinal4: 'Received', autoFinal5: 'Queued', autoFinal6: 'Under review', autoFinal7: 'Complete',
     paymentOpening: 'Opening payment window...', optimizingImage: 'Optimizing image...', attachPhoto: 'Attach photo', acceptedImageTypes: 'JPG, PNG, or WEBP image file', imageRequired: 'Please attach a photo for video generation.', imageType: 'Only JPG, PNG, or WEBP images are supported.', imageSize: 'Please choose an original image smaller than 15MB.',
@@ -103,7 +104,8 @@
     worksPetTitle: 'PET MEMORIAL',
     worksPetCopy: 'Restore a cherished pet photo into a memory that moves again.',
     worksResult: 'VIEW REAL RESULT ↗',
-    worksStart: 'MAKE MINE ↗'
+    worksStart: 'MAKE MINE ↗',
+    authGoogleNav: 'GOOGLE LOGIN', authOptional: 'OPTIONAL SIGN-IN', authTitle: 'Start faster with Google', authCopy: 'We prefill your Google name and email for the order. You can still order without logging in.', authGoogle: 'Continue with Google', authSignedIn: 'Signed in', authSignOut: 'Sign out', authSignedOut: 'Signed out. You can continue as a guest.', authUnavailable: 'Google sign-in is not available yet. Please continue as a guest.', authError: 'We could not complete that request. Please try again.'
   });
 
   const ko = {
@@ -111,7 +113,9 @@
     paymentOpening: '결제창을 여는 중...', optimizingImage: '사진 최적화 중...', attachPhoto: '사진 첨부하기', acceptedImageTypes: 'JPG, PNG, WEBP 등 이미지 파일', imageRequired: '영상 제작에 사용할 사진을 첨부해주세요.', imageType: 'JPG, PNG 또는 WEBP 형식의 사진만 사용할 수 있습니다.', imageSize: '사진 원본은 15MB 이하로 선택해주세요.',
     planContact: 'Custom 플랜은 상담 후 견적으로 진행됩니다.', amountError: '결제 금액을 확인할 수 없습니다.', paymentClosed: '결제창이 닫혔습니다. 다시 시도해주세요.', paymentFailed: '결제가 취소되었거나 실패했습니다.', paymentComplete: '결제가 완료되었습니다. 주문을 접수합니다.',
     orderStarting: '주문 접수 시작 ✓', orderComplete: '주문 접수 완료 ✓', uploadingImage: '서버 연결 및 이미지 업로드 중...', uploadingImageHint: 'Fal.ai CDN으로 사진 데이터를 전송하고 있습니다.', requestFailed: '영상 제작 요청 실패', retryGeneration: '재시도', retrying: '영상을 다시 요청하는 중...', statusQueued: '대기열 진입 중', statusProcessing: '영상 프레임 렌더링 중...', statusCompleted: '영상 제작 완료!', statusFailed: '영상 제작에 실패했습니다.',
-    orderReceived: '주문 접수 완료', orderProcessing: '영상 제작 중', orderCompleteStatus: '제작 완료', orderFailed: '제작 실패', backHome: '홈페이지로 돌아가기'
+    orderReceived: '주문 접수 완료', orderProcessing: '영상 제작 중', orderCompleteStatus: '제작 완료', orderFailed: '제작 실패', backHome: '홈페이지로 돌아가기',
+    authGoogleNav: 'GOOGLE 로그인', authOptional: '선택 로그인', authTitle: 'Google로 빠르게 시작하기', authCopy: '로그인하면 Google 계정의 이름과 이메일을 주문 정보에 미리 입력합니다. 로그인 없이도 그대로 주문할 수 있습니다.', authGoogle: 'Google로 계속하기', authSignedIn: '로그인됨', authSignOut: '로그아웃', authSignedOut: '로그아웃되었습니다. 비회원으로 계속 주문할 수 있습니다.', authUnavailable: 'Google 로그인이 아직 준비되지 않았습니다. 비회원으로 계속 주문해주세요.', authError: '요청을 완료하지 못했습니다. 잠시 후 다시 시도해주세요.',
+    styleStepTitle: '2. 원하는 비디오 스타일 선택', styleStepCopy: '먼저 제작 분야를 고르고, 이어서 세부 무드와 움직임을 선택하세요.', styleDetailTitle: '세부 무드 선택', styleDetailCopy: '선택한 분야에 맞는 연출만 보여드립니다.', motionTitle: '움직임의 밀도', motionCopy: '한 가지 카메라 동작만 골라 결과를 안정적으로 만듭니다.', styleDirectionLabel: '선택한 연출 방향', promptLibraryKicker: 'AVVM 검수 레시피', promptLibraryTitle: '원하는 장면을 검색하세요', promptLibraryCopy: '검수 기준에 맞춘 연출 레시피를 불러온 뒤, 원하는 내용을 덧붙일 수 있습니다.', promptSearchPlaceholder: '예: 시계, 런웨이, 고전 사진, 여행, 반려동물', promptLibraryNote: '레시피는 원본 보존과 자연스러운 움직임을 우선합니다. 결과는 원본 사진과 최종 검수에 따라 달라질 수 있습니다.', promptEditLabel: '연출 요청 추가하기 <span>(선택)</span>', moodPlaceholder: '선택한 방향에 추가하고 싶은 장면·색감·무드가 있다면 적어주세요.', resolutionTitle: '최종 제공 해상도', resolutionIncluded: '플랜 포함', resolutionHelper: '해상도는 플랜에 포함되어 있으며 원본 사진 검수 후 최종 안내됩니다.'
   };
 
   function isKorean() { return language === 'ko'; }
@@ -271,6 +275,11 @@
       if (!isKorean()) node.innerHTML = locale[key] || autoHtml(node.dataset.avvmKoHtml, en[key] || node.dataset.avvmKoHtml);
       else node.innerHTML = node.dataset.avvmKoHtml;
     });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(node => {
+      const key = node.dataset.i18nPlaceholder;
+      if (!node.dataset.avvmKoPlaceholder) node.dataset.avvmKoPlaceholder = node.getAttribute('placeholder') || '';
+      node.setAttribute('placeholder', isKorean() ? node.dataset.avvmKoPlaceholder : t(key, node.dataset.avvmKoPlaceholder));
+    });
   }
 
   function applyFooterAndCheckout() {
@@ -285,7 +294,7 @@
       Business name: Lalaland Mom · Brand: AVVM.studio · Representative: Dongkuk Yoon<br>
       Business registration no.: 347-37-01807 · Mail-order sales registration: 2026-Gyeonggi Paju-2862<br>
       Contact: 0505-007-5221 · Email: airyoon72@naver.com · Domain: avvm.studio<br>
-      Business address: 2F, Unit 02, Building B, 182-37 Miraero 310beon-gil, Paju-si, Gyeonggi-do, Republic of Korea<br>
+      Business address: 2F, Unit 02, Building B, 182-37 Miraero 310beon-gil, Dongpae-dong, Botanic, Paju-si, Gyeonggi-do, Republic of Korea<br>
       This is a made-to-order digital-content service with no physical delivery. Payments are processed in KRW.<br>
       Delivery begins after payment and production materials are received. Transform products take 1–3 business days; 3 Style Set takes 3–7 business days; Starter 24–48 hours; Pro 2–3 business days; Signature 3–5 business days. Memorial and ID/Profile products follow the 24–48 hour period shown on their cards.<br>
       Payment processing and personal-information handling are entrusted to PortOne Co., Ltd. for payment processing, payment-result confirmation, and settlement.<br>
@@ -329,7 +338,7 @@
       if (!node.dataset.avvmKoHtml) node.dataset.avvmKoHtml = node.innerHTML;
       node.innerHTML = !isKorean() ? consentCopy[index] : node.dataset.avvmKoHtml;
     });
-    localized('#resolutionGroup .order-form-helper', '4K is available only for Signature or Custom plans.');
+    localized('#resolutionGroup .order-form-helper', 'Delivery quality is included with the selected plan.');
     const submit = document.getElementById('submitOrder');
     if (submit && submit.getAttribute('aria-busy') !== 'true') setText(submit, !isKorean() ? 'TEST PAYMENT' : '테스트 결제하기');
     localized('#downloadOrder', 'DOWNLOAD VIDEO'); localized('#resetOrder', 'CREATE ANOTHER');
