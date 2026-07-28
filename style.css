@@ -6022,4 +6022,18 @@ body.modal-open{
   animation: avvmGlobeContinuousSpin 4.8s linear infinite !important;
   transform-origin: center;
   will-change: transform;
+  overflow: hidden !important;
+  background:
+    radial-gradient(circle at 67% 31%, rgba(255,255,255,.95) 0 7%, rgba(204,238,255,.92) 8% 20%, transparent 21%),
+    radial-gradient(circle at 36% 42%, rgba(131,214,182,.94) 0 15%, transparent 16%),
+    radial-gradient(circle at 68% 63%, rgba(124,204,170,.85) 0 18%, transparent 19%),
+    radial-gradient(circle at 50% 52%, #76c8df 0 49%, #174a72 50% 70%, #06111f 71%) !important;
+  border: 1px solid rgba(227,247,255,.78) !important;
+  box-shadow: inset 0 1px 4px rgba(255,255,255,.68), inset -5px -5px 9px rgba(0,0,0,.55), 0 0 11px rgba(128,222,255,.38) !important;
+  filter: none !important;
+  backface-visibility: hidden;
+}
+.lang-globe-icon::before,
+.lang-globe-icon::after {
+  display: block !important;
 }
