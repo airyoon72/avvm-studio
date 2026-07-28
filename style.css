@@ -5814,3 +5814,169 @@ body.modal-open{
     width:auto;
   }
 }
+
+/* Sketch + Logo Lab: the proof card is draggable, then continues into motion. */
+#proof-jewelry-design .proof-card-head{margin-bottom:8px}
+.jewelry-compare{
+  --jewelry-split:50%;
+  position:relative;
+  aspect-ratio:4/3;
+  overflow:hidden;
+  margin-top:18px;
+  border:1px solid rgba(216,242,51,.34);
+  border-radius:15px;
+  background:#f2efe7;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.42),0 16px 32px rgba(0,0,0,.22);
+  cursor:ew-resize;
+  touch-action:pan-y;
+  user-select:none;
+}
+.jewelry-compare-photo,
+.jewelry-compare-sketch,
+.jewelry-compare-sketch img{
+  position:absolute;
+  inset:0;
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+.jewelry-compare-sketch{
+  z-index:2;
+  clip-path:inset(0 calc(100% - var(--jewelry-split)) 0 0);
+}
+.jewelry-compare-label,
+.jewelry-compare-hint{
+  position:absolute;
+  z-index:3;
+  border:1px solid rgba(255,255,255,.38);
+  border-radius:999px;
+  padding:5px 8px;
+  background:rgba(5,5,5,.58);
+  color:#fff;
+  font:900 8px/1 Inter,system-ui,sans-serif;
+  letter-spacing:.1em;
+  pointer-events:none;
+}
+.jewelry-compare-label--sketch{top:11px;left:11px}
+.jewelry-compare-label--photo{top:11px;right:11px}
+.jewelry-compare-hint{
+  bottom:11px;
+  left:50%;
+  transform:translateX(-50%);
+  max-width:calc(100% - 24px);
+  border-color:rgba(216,242,51,.62);
+  color:var(--lime,#d8f233);
+  white-space:nowrap;
+}
+.jewelry-compare-control{
+  position:absolute;
+  z-index:5;
+  inset:0;
+  width:100%;
+  height:100%;
+  margin:0;
+  opacity:0;
+  cursor:ew-resize;
+}
+.jewelry-compare-divider{
+  position:absolute;
+  z-index:4;
+  top:0;
+  bottom:0;
+  left:var(--jewelry-split);
+  width:2px;
+  transform:translateX(-50%);
+  background:var(--lime,#d8f233);
+  box-shadow:0 0 18px rgba(216,242,51,.78);
+  pointer-events:none;
+}
+.jewelry-compare-divider i{
+  position:absolute;
+  top:50%;
+  left:50%;
+  display:grid;
+  width:32px;
+  height:32px;
+  place-items:center;
+  transform:translate(-50%,-50%);
+  border:1px solid rgba(0,0,0,.8);
+  border-radius:50%;
+  background:var(--lime,#d8f233);
+  color:#050505;
+  box-shadow:0 7px 18px rgba(0,0,0,.32);
+  font:950 15px/1 Inter,system-ui,sans-serif;
+  font-style:normal;
+}
+.jewelry-compare-control:focus-visible + .jewelry-compare-divider i{outline:3px solid #fff;outline-offset:3px}
+.jewelry-flow-label{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  margin:12px 0;
+  color:rgba(255,255,255,.58);
+  font-size:8px;
+  font-weight:950;
+  letter-spacing:.12em;
+}
+.jewelry-flow-label b{color:var(--lime,#d8f233);font-size:14px}
+.proof-jewelry-motion{margin-top:0!important}
+.proof-jewelry-motion>video{aspect-ratio:3/2!important;object-position:center}
+
+/* One commercial sector for physical sketches and text-led logo creation. */
+.w7{
+  background-image:linear-gradient(155deg,rgba(4,6,7,.18),rgba(4,4,4,.88)),url('portfolio-jewelry-ring.png');
+  background-position:center;
+}
+.works-strip{grid-template-columns:repeat(7,minmax(0,1fr))}
+.work-card--design .work-card-meta{color:var(--lime,#d8f233)}
+.design-lab-brief{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(260px,.94fr);
+  gap:13px;
+  margin:15px 0 2px;
+  padding:15px;
+  border:1px solid rgba(216,242,51,.31);
+  border-radius:17px;
+  background:linear-gradient(135deg,rgba(216,242,51,.1),rgba(255,255,255,.025) 54%,rgba(0,0,0,.18));
+}
+.design-lab-brief[hidden]{display:none!important}
+.design-lab-brief-head{grid-column:1/-1}
+.design-lab-brief-head>span{display:block;color:var(--lime,#d8f233);font-size:9px;font-weight:950;letter-spacing:.12em}
+.design-lab-brief-head>b{display:block;margin-top:6px;color:#fff;font-size:15px;letter-spacing:-.025em}
+.design-lab-brief-head>p{margin:5px 0 0;color:rgba(255,255,255,.68);font-size:11px;line-height:1.58;word-break:keep-all}
+.design-lab-type-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.design-lab-type{
+  min-width:0;
+  padding:12px;
+  border:1px solid rgba(255,255,255,.13);
+  border-radius:13px;
+  background:rgba(0,0,0,.2);
+  color:#fff;
+  text-align:left;
+  cursor:pointer;
+  transition:.2s ease;
+}
+.design-lab-type:hover,.design-lab-type.active{border-color:rgba(216,242,51,.66);background:rgba(216,242,51,.1);transform:translateY(-1px)}
+.design-lab-type>span{display:block;color:var(--lime,#d8f233);font-size:9px;font-weight:950;letter-spacing:.1em}
+.design-lab-type b{display:block;margin-top:7px;font-size:12px;letter-spacing:-.02em}
+.design-lab-type small{display:block;margin-top:5px;color:rgba(255,255,255,.63);font-size:10px;line-height:1.45;word-break:keep-all}
+.design-logo-word{display:grid;align-content:start;gap:7px}
+.design-logo-word:not(.is-required){display:none}
+.design-logo-word>span{color:#fff;font-size:11px;font-weight:850}
+.design-logo-word .field{min-height:46px;margin:0!important;background:rgba(0,0,0,.22)}
+.design-logo-word small{color:rgba(255,255,255,.55);font-size:10px;line-height:1.45;word-break:keep-all}
+@media(max-width:1020px){.works-strip{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:720px){
+  .design-lab-brief{grid-template-columns:1fr}
+  .design-lab-type-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:560px){
+  .jewelry-compare{border-radius:12px}
+  .jewelry-compare-hint{font-size:7px}
+  .jewelry-flow-label{gap:7px;font-size:7px}
+  .design-lab-brief{padding:13px}
+  .design-lab-type{padding:10px}
+  .design-lab-type small{font-size:9px}
+}

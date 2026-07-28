@@ -37,7 +37,7 @@ window.addEventListener('error', function(e) {
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=Inter:wght@400;500;600;700;800;900&amp;family=Cormorant+Garamond:ital,wght@1,700;1,900&amp;display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="style.css?v=40"/>
+<link rel="stylesheet" href="style.css?v=42"/>
 <style>
 /* AVVM v31 review-safe additions */
 .option-chip.disabled,
@@ -323,12 +323,19 @@ window.addEventListener('error', function(e) {
         </div>
       </article>
       <article class="proof-card" id="proof-jewelry-design">
-        <div class="proof-card-head"><span>10</span><h3 data-i18n="proofJewelryName">스케치 → 주얼리</h3></div>
-        <p data-i18n="proofJewelryCopy">한 장의 디자인 스케치를 실제 제품 시안과 럭셔리 매크로 필름으로 확장합니다.</p>
-        <div class="proof-pair">
-          <figure class="proof-frame proof-input"><img src="portfolio-jewelry-sketch.png" alt="주얼리 디자인 스케치" loading="lazy"/><figcaption><b>INPUT</b><span data-i18n="proofJewelryInput">솔리테어 링 스케치</span></figcaption></figure>
-          <figure class="proof-frame proof-output"><video class="proof-video" autoplay loop muted playsinline preload="none" poster="portfolio-jewelry-ring.png" aria-label="주얼리 디자인 매크로 영상"><source data-src="portfolio-jewelry-diamond.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofJewelryOutput">다이아몬드 매크로 필름</span></figcaption></figure>
+        <div class="proof-card-head"><span>10</span><h3 data-i18n="proofJewelryName">스케치 ↔ 주얼리</h3></div>
+        <p data-i18n="proofJewelryCopy">스케치와 실제 반지 사진을 좌우로 움직여 비교한 뒤, 반지 영상까지 이어서 확인하세요.</p>
+        <div class="jewelry-compare" data-jewelry-compare="" style="--jewelry-split:50%">
+          <img class="jewelry-compare-photo" src="portfolio-jewelry-ring.png" alt="실제 솔리테어 반지 사진" loading="lazy"/>
+          <div class="jewelry-compare-sketch"><img src="portfolio-jewelry-sketch.png" alt="솔리테어 반지 스케치" loading="lazy"/></div>
+          <span class="jewelry-compare-label jewelry-compare-label--sketch">SKETCH</span>
+          <span class="jewelry-compare-label jewelry-compare-label--photo">PHOTO</span>
+          <span class="jewelry-compare-hint" data-i18n="proofJewelryDrag">↔ 좌우로 움직여 비교</span>
+          <input class="jewelry-compare-control" type="range" min="0" max="100" value="50" aria-label="스케치와 반지 사진 비교 슬라이더"/>
+          <span class="jewelry-compare-divider" aria-hidden="true"><i>↔</i></span>
         </div>
+        <div class="jewelry-flow-label"><span>SKETCH ↔ PHOTO</span><b>→</b><span>RING MOTION</span></div>
+        <figure class="proof-frame proof-output proof-jewelry-motion"><video class="proof-video" autoplay loop muted playsinline preload="none" poster="portfolio-jewelry-ring.png" aria-label="주얼리 디자인 매크로 영상"><source data-src="portfolio-jewelry-diamond.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofJewelryOutput">다이아몬드 반지 영상</span></figcaption></figure>
       </article>
     </div>
     <p class="proof-lab-notice" data-i18n="proofLabNotice">샘플은 이해를 돕기 위한 실제 제작 예시입니다. 사진의 초점·조명·구도와 선택한 스타일에 따라 결과는 달라질 수 있으며, AVVM은 최종 전달 전 품질을 검수합니다.</p>
@@ -559,6 +566,7 @@ window.addEventListener('error', function(e) {
 <article class="work-card"><div class="bg w4"></div><div class="work-card-content"><small>04 · TRAVEL</small><h3 data-i18n="worksTravelTitle">여행 변신</h3><p data-i18n="worksTravelCopy">인물 사진 한 장을 여행지로 확장되는 짧은 변신 릴스로 만듭니다.</p><div class="work-card-meta">9 SEC · TRANSFORM</div></div><div class="work-card-actions"><a class="work-result-link" href="#proof-travel" data-i18n="worksResult">실제 결과 보기 ↗</a><button class="work-start" data-category="Travel" data-open="" data-plan="Basic Transform" type="button" data-i18n="worksStart">내 사진으로 만들기 ↗</button></div></article>
 <article class="work-card"><div class="bg w5"></div><div class="work-card-content"><small>05 · WEDDING</small><h3 data-i18n="worksWeddingTitle">웨딩 필름</h3><p data-i18n="worksWeddingCopy">한 장의 인물 사진으로 스타일·공간·빛을 완성한 웨딩 필름을 제작합니다.</p><div class="work-card-meta">15 SEC · PRO</div></div><div class="work-card-actions"><a class="work-result-link" href="#proof-wedding" data-i18n="worksResult">실제 결과 보기 ↗</a><button class="work-start" data-category="Wedding" data-open="" data-plan="Pro" type="button" data-i18n="worksStart">내 사진으로 만들기 ↗</button></div></article>
 <article class="work-card"><div class="bg w6"></div><div class="work-card-content"><small>06 · PET MEMORIAL</small><h3 data-i18n="worksPetTitle">반려동물 메모리얼</h3><p data-i18n="worksPetCopy">소중한 반려동물 사진을 다시 움직이는 추억 영상으로 복원합니다.</p><div class="work-card-meta">1 PHOTO · MEMORIAL</div></div><div class="work-card-actions"><a class="work-result-link" href="#memorial" data-i18n="worksResult">실제 결과 보기 ↗</a><button class="work-start" data-category="Custom" data-open="" data-plan="Memorial Basic" type="button" data-i18n="worksStart">내 사진으로 만들기 ↗</button></div></article>
+<article class="work-card work-card--design"><div class="bg w7"></div><div class="work-card-content"><small>07 · SKETCH + LOGO LAB</small><h3 data-i18n="worksDesignTitle">스케치 디자인 랩</h3><p data-i18n="worksDesignCopy">스케치·제품 디자인 또는 한 단어의 아이디어를 로고와 모션으로 확장합니다.</p><div class="work-card-meta" data-i18n="worksDesignMeta">FROM ₩59,900 · DESIGN MOTION</div></div><div class="work-card-actions"><a class="work-result-link" href="#proof-jewelry-design" data-i18n="worksResult">실제 결과 보기 ↗</a><button class="work-start" data-category="Design" data-open="" data-plan="Jewelry Motion" type="button" data-i18n="worksStart">내 디자인으로 만들기 ↗</button></div></article>
 </div>
 </div>
 </section>
@@ -1083,6 +1091,22 @@ window.addEventListener('error', function(e) {
         <small>취업/사원증/비즈니스 고급 보정</small>
       </button>
     </section>
+
+    <section class="plan-choice-section plan-choice-section--design">
+      <div class="plan-choice-kicker" data-i18n="designPlanKicker">스케치 · 로고 디자인</div>
+      <button type="button" class="plan-choice-card" data-plan-choice="Jewelry Motion" data-category="Design">
+        <span class="plan-choice-tag">SKETCH → JEWEL</span>
+        <b data-i18n="jewelryPlanName">Jewelry Motion</b>
+        <strong>₩59,900</strong>
+        <small data-i18n="jewelryPlanCopy">스케치·제품 사진 기반 / 6~10초 매크로 모션 / Full HD</small>
+      </button>
+      <button type="button" class="plan-choice-card recommended" data-plan-choice="Logo Lab" data-category="Design">
+        <span class="plan-choice-tag">WORD → LOGO</span>
+        <b data-i18n="logoPlanName">Logo Lab</b>
+        <strong>₩69,900</strong>
+        <small data-i18n="logoPlanCopy">로고 시안 3종 / 선택안 6초 모션 로고 / Full HD</small>
+      </button>
+    </section>
   </div>
 </div>
 
@@ -1152,8 +1176,18 @@ window.addEventListener('error', function(e) {
       <button class="cat" data-category="Food" type="button"><span data-i18n="catFood">Food</span></button>
       <button class="cat" data-category="Travel" type="button"><span data-i18n="catTravel">Travel</span></button>
       <button class="cat" data-category="Wedding" type="button"><span data-i18n="catWedding">Wedding</span></button>
+      <button class="cat" data-category="Design" type="button"><span data-i18n="catDesign">Design Lab</span></button>
       <button class="cat" data-category="Custom" type="button"><span data-i18n="catCustom">Custom</span></button>
     </div>
+
+    <section class="design-lab-brief" id="designLabBrief" hidden aria-live="polite">
+      <div class="design-lab-brief-head"><span>AVVM DESIGN LAB</span><b data-i18n="designLabTitle">스케치 또는 한 단어에서 시작하세요</b><p data-i18n="designLabCopy">주얼리는 스케치·제품 사진을, 로고는 스케치 또는 브랜드 단어를 사용합니다. 선택한 스타일로 시안을 만들고 모션까지 연결합니다.</p></div>
+      <div class="design-lab-type-grid" role="group" aria-label="디자인 종류 선택">
+        <button class="design-lab-type active" type="button" data-design-type="jewelry"><span>01</span><b data-i18n="designJewelryTitle">스케치 → 주얼리</b><small data-i18n="designJewelryCopy">스케치 또는 제품 사진으로 실제감 있는 매크로 필름</small></button>
+        <button class="design-lab-type" type="button" data-design-type="logo"><span>02</span><b data-i18n="designLogoTitle">단어·스케치 → 로고</b><small data-i18n="designLogoCopy">로고 시안 3종과 선택안 모션 로고</small></button>
+      </div>
+      <label class="design-logo-word" for="logoWordInput"><span data-i18n="logoWordLabel">로고에 넣을 단어 또는 브랜드명</span><input class="field" id="logoWordInput" maxlength="36" autocomplete="organization" data-i18n-placeholder="logoWordPlaceholder" placeholder="예: AVVM, LUMI, MY STUDIO"/><small data-i18n="logoWordNote">단어만 입력해도 기본 워드마크 시안을 만들어 모션 작업을 시작할 수 있습니다.</small></label>
+    </section>
 
     <div class="guided-style-flow" id="guidedStyleFlow" aria-live="polite">
       <section class="guided-style-step">
@@ -1322,7 +1356,9 @@ window.addEventListener('error', function(e) {
     'Memorial Duo': 49900,
     'ID Mini': 5900,
     'ID Set': 9900,
-    'Profile Pro': 29900
+    'Profile Pro': 29900,
+    'Jewelry Motion': 59900,
+    'Logo Lab': 69900
   });
 
   let paymentRequestInProgress = false;
@@ -1511,9 +1547,9 @@ document.addEventListener('click', function (event) {
 
 <script src="auto-translations.js?v=2"></script>
 <script src="locales.js?v=3"></script>
-<script src="i18n.js?v=11"></script>
+<script src="i18n.js?v=13"></script>
 <script src="auth.js?v=1"></script>
-<script src="app.js?v=41"></script>
+<script src="app.js?v=43"></script>
 <script>
 /* AVVM order safeguards: required consent and plan-locked delivery quality. */
 (function(){
@@ -1536,7 +1572,8 @@ document.addEventListener('click', function (event) {
     const knownPlans = [
       'Mini Transform','Basic Transform','Best Transform','3 Style Set',
       'Starter','Pro','Signature','Custom','Custom Project',
-      'Memorial Basic','Memorial Duo','ID Mini','ID Set','Profile Pro'
+      'Memorial Basic','Memorial Duo','ID Mini','ID Set','Profile Pro',
+      'Jewelry Motion','Logo Lab'
     ];
     return knownPlans.find(plan => summary.includes(plan)) || 'Pro';
   }

@@ -43,7 +43,9 @@ window.prices={
   'Memorial Duo':'₩49,900',
   'ID Mini':'₩5,900',
   'ID Set':'₩9,900',
-  'Profile Pro':'₩29,900'
+  'Profile Pro':'₩29,900',
+  'Jewelry Motion':'₩59,900',
+  'Logo Lab':'₩69,900'
 }; 
 window.selectedPlan='Pro';
 
@@ -62,7 +64,9 @@ const PLAN_OUTPUTS = Object.freeze({
   'Memorial Duo': { resolution: '1080p', label: 'FULL HD · 1080P' },
   'ID Mini': { resolution: '1080p', label: 'FILE DELIVERY' },
   'ID Set': { resolution: '1080p', label: 'FILE DELIVERY' },
-  'Profile Pro': { resolution: '1080p', label: 'FILE DELIVERY' }
+  'Profile Pro': { resolution: '1080p', label: 'FILE DELIVERY' },
+  'Jewelry Motion': { resolution: '1080p', label: 'FULL HD · 1080P' },
+  'Logo Lab': { resolution: '1080p', label: 'FULL HD · 1080P' }
 });
 window.AVVM_PLAN_OUTPUTS = PLAN_OUTPUTS;
 
@@ -349,13 +353,18 @@ function openPlanChooser(){
 
 function openOrder(plan){
   if(!plan){ openPlanChooser(); return; }
+  if(['Jewelry Motion','Logo Lab'].includes(plan)) selectCategory('Design');
   window.selectedPlan=plan||window.selectedPlan;
+  if(plan === 'Jewelry Motion') guideState.presetId='design-jewel-prism';
+  if(plan === 'Logo Lab') guideState.presetId='design-logo-minimal';
   if(modalCard){
     modalCard.classList.remove('done');
     modalCard.classList.remove('plan-choosing');
   }
   setOrderSummary();
   syncPlanOutput(plan);
+  updateDesignLabBrief();
+  if(['Jewelry Motion','Logo Lab'].includes(plan)) renderGuidedStyleFlow({writePrompt:true});
   
   const isIdProfile = plan.startsWith('ID') || plan.startsWith('Profile');
   const guide = $('#uploadGuideBox');
@@ -390,8 +399,48 @@ function selectCategory(category){
   if(!category) return;
   const target=$$('.cat').find(button=>button.dataset.category===category);
   if(!target) return;
+  if(category === 'Design' && !['Jewelry Motion','Logo Lab'].includes(window.selectedPlan)){
+    window.selectedPlan='Jewelry Motion';
+    setOrderSummary();
+    syncPlanOutput('Jewelry Motion');
+  }
   $$('.cat').forEach(button=>button.classList.toggle('active',button===target));
+  updateDesignLabBrief();
   renderGuidedStyleFlow();
+  updatePreflightOutput();
+}
+
+function isDesignLabSelected(){
+  return $('.cat.active')?.dataset?.category === 'Design';
+}
+
+function getDesignType(){
+  return $('#designLabBrief .design-lab-type.active')?.dataset?.designType || (window.selectedPlan === 'Logo Lab' ? 'logo' : 'jewelry');
+}
+
+function updateDesignLabBrief(){
+  const panel=$('#designLabBrief');
+  if(!panel) return;
+  const selected=isDesignLabSelected();
+  panel.hidden=!selected;
+  if(!selected) return;
+  const type=window.selectedPlan === 'Logo Lab' ? 'logo' : 'jewelry';
+  panel.querySelectorAll('[data-design-type]').forEach((button)=>button.classList.toggle('active',button.dataset.designType===type));
+  const word=$('#logoWordInput');
+  if(word) word.closest('.design-logo-word')?.classList.toggle('is-required',type==='logo');
+}
+
+function setDesignType(type){
+  if(type!=='logo' && type!=='jewelry') return;
+  const plan=type==='logo' ? 'Logo Lab' : 'Jewelry Motion';
+  window.selectedPlan=plan;
+  setOrderSummary();
+  syncPlanOutput(plan);
+  if(typeof guideState!=='undefined'){
+    guideState.presetId=type==='logo' ? 'design-logo-minimal' : 'design-jewel-prism';
+  }
+  updateDesignLabBrief();
+  renderGuidedStyleFlow({writePrompt:true});
   updatePreflightOutput();
 }
 
@@ -440,7 +489,14 @@ document.addEventListener('click',async(event)=>{
 document.addEventListener('click', function(e){
   const choice=e.target.closest('[data-plan-choice]');
   if(!choice) return;
+  if(choice.dataset.category) selectCategory(choice.dataset.category);
   openOrder(choice.getAttribute('data-plan-choice'));
+});
+
+document.addEventListener('click',function(event){
+  const choice=event.target.closest('[data-design-type]');
+  if(!choice) return;
+  setDesignType(choice.dataset.designType);
 });
 
 if($('#closeModal')) $('#closeModal').addEventListener('click',closeOrder); 
@@ -570,6 +626,14 @@ const STYLE_GUIDES = Object.freeze({
     { id: 'wedding-garden', title: 'GARDEN VOW', titleKo: '가든 바우', description: 'Natural foliage and fabric movement build a calm vow scene.', descriptionKo: '자연스러운 잎과 패브릭 움직임으로 차분한 서약 장면을 만듭니다.', prompt: 'Preserve identity, wedding attire, and venue. Use gentle garden air, natural fabric movement, and a composed cinematic push-in. No changed faces, no invented ceremony details.' },
     { id: 'wedding-after', title: 'AFTERGLOW', titleKo: '애프터글로우', description: 'Warm evening light gives the portrait a final glow.', descriptionKo: '따뜻한 저녁빛으로 인물의 마지막 잔상을 남깁니다.', prompt: 'Keep the couple and wardrobe exact. Create a restrained evening afterglow with warm practical light and one slow camera move. No altered identity, no extra people, no fantasy effects.' }
   ],
+  Design: [
+    { id: 'design-jewel-prism', designType: 'jewelry', title: 'JEWEL PRISM', titleKo: '주얼 프리즘', description: 'A precise macro light pass makes the design and stone setting legible.', descriptionKo: '스케치의 구조와 세팅을 지키며 프리즘 광으로 실제감을 더합니다.', prompt: 'Use the supplied authorized jewelry sketch or product photograph as the exact design reference. Preserve stone shape, setting, metal tone, and proportions. Translate it into a realistic premium jewelry hero image with a narrow prism-light reflection. No extra jewelry, no altered gem cut, no unreadable text.' },
+    { id: 'design-jewel-blueprint', designType: 'jewelry', title: 'BLUEPRINT TO OBJECT', titleKo: '블루프린트 투 오브젝트', description: 'A technical sketch resolves into one clean finished object.', descriptionKo: '치수와 실루엣을 지키며 스케치에서 완성 제품으로 이어집니다.', prompt: 'Respect the supplied design sketch, dimensions, and silhouette. Resolve it into one clean photoreal product on a neutral studio surface, with the same proportions and materials. No invented accessories, no extra logos, no changed design details.' },
+    { id: 'design-jewel-gallery', designType: 'jewelry', title: 'GALLERY METAL', titleKo: '갤러리 메탈', description: 'Quiet gallery light gives the finished design a collectible feel.', descriptionKo: '고요한 갤러리 빛으로 완성 디자인의 소장 가치를 보여줍니다.', prompt: 'Preserve the exact supplied jewelry or object design. Use soft gallery lighting, accurate material response, and a clean premium object frame. No changed geometry, no added product, no invented markings.' },
+    { id: 'design-logo-minimal', designType: 'logo', title: 'MINIMAL MARK', titleKo: '미니멀 마크', description: 'A confident typographic mark with clean negative space.', descriptionKo: '정돈된 여백과 자신감 있는 워드마크를 만듭니다.', prompt: 'Create a clean, original minimal logo direction from the supplied brand word or sketch. Keep the exact supplied word legible. Use a simple distinctive symbol and generous negative space. Do not imitate existing brands, do not invent extra words, and keep all typography readable.' },
+    { id: 'design-logo-symbolic', designType: 'logo', title: 'SYMBOLIC SYSTEM', titleKo: '심볼릭 시스템', description: 'An original emblem and wordmark system built from one idea.', descriptionKo: '하나의 아이디어로 심볼과 워드마크를 함께 설계합니다.', prompt: 'Create an original symbolic logo system from the supplied brand word or sketch. Keep the exact word readable and create one abstract, non-infringing emblem that supports it. Flat vector-like presentation, no existing brand resemblance, no extra text.' },
+    { id: 'design-logo-classic', designType: 'logo', title: 'CLASSIC SEAL', titleKo: '클래식 씰', description: 'A restrained heritage seal with a modern finish.', descriptionKo: '절제된 헤리티지 씰에 현대적인 마감을 더합니다.', prompt: 'Create an original classic logo direction from the supplied brand word or sketch. Keep the exact word readable. Use a restrained seal or crest geometry with clean contemporary spacing. No copied trademark, no extra words, no ornate unreadable lettering.' }
+  ],
   Custom: [
     { id: 'custom-editorial', title: 'PORTRAIT EDITORIAL', titleKo: '포트레이트 에디토리얼', description: 'A calm portrait becomes a fashion-film still in motion.', descriptionKo: '차분한 인물 사진을 패션 필름의 한 장면으로 만듭니다.', prompt: 'Keep the subject identity and wardrobe silhouette. Begin on a calm close portrait, then use one clean shoulder pass into an editorial world already in motion. Believable hair and fabric, no face distortion.' },
     { id: 'custom-memorial', title: 'MEMORY RETURN', titleKo: '메모리 리턴', description: 'Archival texture remains while only a small gesture returns.', descriptionKo: '사진의 시대감은 지키고 작은 움직임만 되살립니다.', prompt: 'Preserve identity, era, clothing, and original framing. Begin completely still, then return one natural breath, tiny blink, and subtle eye movement. Retain archival grain, no modern styling, no dramatic gesture.' },
@@ -624,8 +688,15 @@ function getActiveCategory() {
   return $('.cat.active')?.dataset?.category || 'Beauty';
 }
 
-function getGuidedPreset(category = getActiveCategory()) {
+function getStylePresets(category = getActiveCategory()) {
   const presets = STYLE_GUIDES[category] || STYLE_GUIDES.Custom;
+  if (category !== 'Design') return presets;
+  const type = window.selectedPlan === 'Logo Lab' ? 'logo' : 'jewelry';
+  return presets.filter((preset) => preset.designType === type);
+}
+
+function getGuidedPreset(category = getActiveCategory()) {
+  const presets = getStylePresets(category);
   return presets.find((preset) => preset.id === guideState.presetId) || presets[0];
 }
 
@@ -667,7 +738,7 @@ function renderPromptLibrary() {
 
 function renderGuidedStyleFlow({ writePrompt = false } = {}) {
   const category = getActiveCategory();
-  const presets = STYLE_GUIDES[category] || STYLE_GUIDES.Custom;
+  const presets = getStylePresets(category);
   const presetRoot = $('#stylePresetOptions');
   const motionRoot = $('#motionOptions');
   const name = $('#selectedStyleName');
@@ -722,6 +793,61 @@ document.addEventListener('avvm:languagechange', () => {
   syncPlanOutput();
 });
 renderGuidedStyleFlow({ writePrompt: true });
+
+function getDesignLabBrief(){
+  if(!isDesignLabSelected()) return '';
+  const mode=getDesignType();
+  const word=String($('#logoWordInput')?.value || '').trim().slice(0,36);
+  const preset=getGuidedPreset('Design');
+  const style=preset?.title || 'DESIGN LAB';
+  if(mode==='logo'){
+    return `DESIGN LAB LOGO BRIEF: Create an original logo direction for the exact word "${word || 'brand supplied in sketch'}". Selected style: ${style}. Deliver an original mark and a clean motion-logo-ready composition. Do not imitate or recreate an existing trademark.`;
+  }
+  return `DESIGN LAB JEWELRY BRIEF: Use the supplied authorized sketch or product image as the exact source design. Selected style: ${style}. Preserve dimensions, material, setting, and silhouette before creating the macro motion treatment.`;
+}
+
+function createLogoWordmarkSource(word, styleId){
+  const label=String(word || 'AVVM').trim().slice(0,36) || 'AVVM';
+  const canvas=document.createElement('canvas');
+  canvas.width=1536;
+  canvas.height=1024;
+  const ctx=canvas.getContext('2d');
+  const palettes={
+    'design-logo-minimal':['#f3f0e8','#111111','#d8f233'],
+    'design-logo-symbolic':['#07131b','#effcff','#5be9ff'],
+    'design-logo-classic':['#16110d','#f2e1b6','#b99042']
+  };
+  const [background,ink,accent]=palettes[styleId] || palettes['design-logo-minimal'];
+  ctx.fillStyle=background;
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.strokeStyle=accent;
+  ctx.lineWidth=18;
+  ctx.lineCap='round';
+
+  if(styleId==='design-logo-symbolic'){
+    ctx.beginPath(); ctx.arc(768,300,125,0,Math.PI*2); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(660,300); ctx.lineTo(768,188); ctx.lineTo(876,300); ctx.lineTo(768,412); ctx.closePath(); ctx.stroke();
+  }else if(styleId==='design-logo-classic'){
+    ctx.beginPath(); ctx.arc(768,306,136,Math.PI*.08,Math.PI*.92); ctx.stroke();
+    ctx.beginPath(); ctx.arc(768,306,136,Math.PI*1.08,Math.PI*1.92); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(704,306); ctx.lineTo(768,232); ctx.lineTo(832,306); ctx.lineTo(768,380); ctx.closePath(); ctx.stroke();
+  }else{
+    ctx.beginPath(); ctx.moveTo(647,414); ctx.lineTo(768,190); ctx.lineTo(889,414); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(689,340); ctx.lineTo(847,340); ctx.stroke();
+  }
+
+  let size=152;
+  ctx.font=`800 ${size}px Inter, Arial, sans-serif`;
+  while(ctx.measureText(label).width>1240 && size>54){ size-=4; ctx.font=`800 ${size}px Inter, Arial, sans-serif`; }
+  ctx.fillStyle=ink;
+  ctx.textAlign='center';
+  ctx.textBaseline='middle';
+  ctx.fillText(label,768,640);
+  ctx.fillStyle=accent;
+  ctx.font='900 24px Inter, Arial, sans-serif';
+  ctx.fillText('AVVM DESIGN LAB · ORIGINAL WORDMARK DIRECTION',768,765);
+  return canvas.toDataURL('image/png');
+}
 
 function makeVideoPrompt(order){
   const direction=String(order.mood||'').trim();
@@ -814,7 +940,7 @@ function updateProductionTracker(stage, progress, message){
   if(status) status.textContent=stage==='done'?'DELIVERED':stage==='attention'?'ACTION NEEDED':stage==='render'?'RENDERING':stage==='queue'?'IN QUEUE':'SOURCE SECURED';
 }
 
-async function proceedWithOrderCreation(orderId, brand, email, phone, privacyConsent, notifyConsent, refundConsent, rightsConsent, marketingConsent, category, mood, paymentResponse, totalAmount, imageData) {
+async function proceedWithOrderCreation(orderId, brand, email, phone, privacyConsent, notifyConsent, refundConsent, rightsConsent, marketingConsent, category, mood, paymentResponse, totalAmount, imageData, designMeta = {}) {
   if(modalCard) modalCard.classList.add('done');
   if($('#successOrderId')) $('#successOrderId').textContent='ORDER #' + orderId;
   toast(tr('orderStarting', '주문 접수 시작 ✓'));
@@ -867,11 +993,13 @@ async function proceedWithOrderCreation(orderId, brand, email, phone, privacyCon
     plan:window.selectedPlan,
     price:window.prices[window.selectedPlan]||window.prices.Pro,
     category, mood,
+    designMode:designMeta.designMode || '',
+    logoWord:designMeta.logoWord || '',
     duration: videoOptions.duration,
     aspectRatio: videoOptions.aspectRatio,
     resolution: videoOptions.resolution,
     idSpec:(document.getElementById("idSpec")?.value || ""),
-    imageName: imgFile ? imgFile.name : 'no_image',
+    imageName: imgFile ? imgFile.name : (designMeta.syntheticSource ? 'avvm-logo-wordmark.png' : 'no_image'),
     status:'payment_completed',
     statusKo:'결제 완료',
     payment:{
@@ -978,7 +1106,11 @@ async function createOrder(){
   const rightsConsent=!!($('#rightsConsent')?.checked);
   const marketingConsent=!!($('#marketingConsent')?.checked);
   const category=$('.cat.active')?.dataset?.category || 'Custom';
-  const mood=$('#moodInput')?.value?.trim() || '';
+  const designMode=category==='Design' ? getDesignType() : '';
+  const logoWord=category==='Design' ? String($('#logoWordInput')?.value || '').trim().slice(0,36) : '';
+  const baseMood=$('#moodInput')?.value?.trim() || '';
+  const designBrief=getDesignLabBrief();
+  const mood=[baseMood,designBrief].filter(Boolean).join(' ');
 
   if(!brand){toast('성함 / 브랜드명을 입력해주세요'); focusCustomerField('#brandInput','#brandInput2'); return;}
   if(email && !email.includes('@')){toast('이메일 형식을 확인해주세요'); focusCustomerField('#emailInput','#emailInput2'); return;}
@@ -990,12 +1122,20 @@ async function createOrder(){
   }
 
   const imageFile = $('#imageInput')?.files?.[0];
-  try {
-    validateImageFile(imageFile);
-  } catch(error) {
-    toast(error.message);
-    focusAndReveal('#photoUploadVisibleBlock');
+  const createTextLogo=category==='Design' && designMode==='logo' && !imageFile;
+  if(createTextLogo && !logoWord){
+    toast('로고에 넣을 단어 또는 브랜드명을 입력해주세요.');
+    focusAndReveal('#logoWordInput');
     return;
+  }
+  if(!createTextLogo){
+    try {
+      validateImageFile(imageFile);
+    } catch(error) {
+      toast(error.message);
+      focusAndReveal('#photoUploadVisibleBlock');
+      return;
+    }
   }
 
   const orderId=makeOrderId();
@@ -1010,7 +1150,9 @@ async function createOrder(){
 
   try{
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    const imageData = await compressImage(imageFile, isMobile ? 768 : 1024, isMobile ? 768 : 1024);
+    const imageData = imageFile
+      ? await compressImage(imageFile, isMobile ? 768 : 1024, isMobile ? 768 : 1024)
+      : createLogoWordmarkSource(logoWord, guideState.presetId);
     setPaymentButtonBusy(true, tr('paymentOpening', '결제창을 여는 중...'));
 
     const PortOne=await loadPortOneV2();
@@ -1048,7 +1190,7 @@ async function createOrder(){
     await proceedWithOrderCreation(
       orderId, brand, email, phone,
       privacyConsent, notifyConsent, refundConsent, rightsConsent, marketingConsent,
-      category, mood, response, totalAmount, imageData
+      category, mood, response, totalAmount, imageData, { designMode, logoWord, syntheticSource:createTextLogo }
     );
 
   }catch(error){
@@ -1361,4 +1503,59 @@ if($('#resetOrder')) {
   }, { rootMargin: '280px 0px' });
 
   videos.forEach((video) => observer.observe(video));
+})();
+
+/* The sketch/photo proof uses a native range input so it is draggable by mouse,
+   trackpad, keyboard, and touch without a fragile custom pointer handler. */
+(function(){
+  document.querySelectorAll('[data-jewelry-compare]').forEach((compare)=>{
+    const control=compare.querySelector('.jewelry-compare-control');
+    if(!control) return;
+    const setSplit=(value)=>{
+      const safe=Math.max(0,Math.min(100,Number(value)||0));
+      compare.style.setProperty('--jewelry-split',`${safe}%`);
+      control.setAttribute('aria-valuetext',`${safe}% sketch, ${100-safe}% photo`);
+    };
+    setSplit(control.value);
+    control.addEventListener('input',()=>setSplit(control.value));
+  });
+})();
+
+/* Some mobile browsers suspend muted videos while cards are off screen. Resume
+   only visible portfolio/proof clips so every sector remains alive on return. */
+(function(){
+  const videos=Array.from(document.querySelectorAll('.portfolio-card video,.proof-video'));
+  if(!videos.length) return;
+  const visible=new WeakMap();
+  const resume=(video)=>{
+    if(document.hidden || visible.get(video)===false) return;
+    video.muted=true;
+    video.defaultMuted=true;
+    video.loop=true;
+    video.playsInline=true;
+    const attempt=video.play();
+    if(attempt && typeof attempt.catch==='function') attempt.catch(()=>{});
+  };
+  const observe=(video)=>{
+    video.addEventListener('canplay',()=>resume(video));
+    video.addEventListener('loadeddata',()=>resume(video));
+    video.addEventListener('pause',()=>{
+      if(!document.hidden && visible.get(video)) window.setTimeout(()=>resume(video),120);
+    });
+  };
+  videos.forEach(observe);
+  if(!('IntersectionObserver' in window)){
+    videos.forEach((video)=>{visible.set(video,true);resume(video);});
+    return;
+  }
+  const observer=new IntersectionObserver((entries)=>{
+    entries.forEach((entry)=>{
+      visible.set(entry.target,entry.isIntersecting);
+      if(entry.isIntersecting) resume(entry.target);
+    });
+  },{rootMargin:'240px 0px',threshold:.05});
+  videos.forEach((video)=>observer.observe(video));
+  document.addEventListener('visibilitychange',()=>{
+    if(!document.hidden) videos.forEach((video)=>{if(visible.get(video)) resume(video);});
+  });
 })();
