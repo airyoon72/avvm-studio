@@ -5994,3 +5994,21 @@ body.modal-open{
   .design-lab-type{padding:10px}
   .design-lab-type small{font-size:9px}
 }
+
+/* Launch UI cleanup: the optional account flow stays fully hidden for now. */
+#googleSignIn[hidden],
+[data-auth-login][hidden] {
+  display: none !important;
+}
+
+/* The hero promise, Memorial notice, and CTA need equal visual spacing.
+   Earlier entrance rules left a 20px translate on only the first and last rows. */
+.hero-v5-sub,
+.hero-v5-actions {
+  transform: translateY(0) !important;
+}
+
+/* The jewelry motion is self-explanatory; keep the media frame clean. */
+#proof-jewelry-design .proof-jewelry-motion figcaption {
+  display: none !important;
+}
