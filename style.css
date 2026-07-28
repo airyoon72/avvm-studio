@@ -5744,3 +5744,72 @@ body.modal-open{
   .resolution-lock{align-items:flex-start;flex-direction:column;gap:4px}
   .resolution-lock small{margin-left:0;text-align:left}
 }
+
+/* Memorial and ID products: keep comparable choices on one visual line. */
+.memorial-ba-stage{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  align-items:stretch;
+}
+.memorial-ba-card{
+  min-width:0;
+  height:clamp(280px,31vw,380px);
+}
+.memorial-section .pricing-grid,
+.id-profile-grid{
+  align-items:stretch;
+}
+.memorial-section .price-card,
+.id-profile-grid .price-card{
+  display:flex;
+  min-width:0;
+  flex-direction:column;
+}
+.memorial-section .price-card>p,
+.id-profile-grid .price-card>p{
+  min-height:44px;
+}
+.memorial-section .price-card>ul,
+.id-profile-grid .price-card>ul{
+  flex:1;
+}
+.memorial-section .price-card>.btn,
+.id-profile-grid .price-card>.btn{
+  margin-top:auto!important;
+}
+@media (max-width:920px) and (min-width:561px){
+  .id-profile-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    max-width:840px;
+    margin-right:auto;
+    margin-left:auto;
+  }
+  .id-profile-grid .price-card:last-child{
+    grid-column:1/-1;
+    width:calc(50% - 8px);
+    justify-self:center;
+  }
+}
+@media(max-width:560px){
+  .memorial-ba-stage,
+  .memorial-section .pricing-grid{
+    gap:10px;
+  }
+  .memorial-ba-card{
+    height:230px;
+  }
+  .memorial-section .price-card{
+    padding:18px 12px;
+  }
+  .memorial-section .price-card>p{
+    min-height:50px;
+  }
+  .id-profile-grid{
+    grid-template-columns:1fr!important;
+    max-width:480px;
+    margin-right:auto;
+    margin-left:auto;
+  }
+  .id-profile-grid .price-card:last-child{
+    width:auto;
+  }
+}
