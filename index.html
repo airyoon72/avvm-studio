@@ -37,7 +37,7 @@ window.addEventListener('error', function(e) {
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=Inter:wght@400;500;600;700;800;900&amp;family=Cormorant+Garamond:ital,wght@1,700;1,900&amp;display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="style.css?v=39"/>
+<link rel="stylesheet" href="style.css?v=40"/>
 <style>
 /* AVVM v31 review-safe additions */
 .option-chip.disabled,
@@ -322,6 +322,14 @@ window.addEventListener('error', function(e) {
           <figure class="proof-frame proof-output"><video class="proof-video" autoplay loop muted playsinline preload="none" aria-label="고전 배우 복원 결과 영상"><source data-src="sample-classic-actress-output.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofClassicOutput">복원된 시네마틱 모션</span></figcaption></figure>
         </div>
       </article>
+      <article class="proof-card" id="proof-jewelry-design">
+        <div class="proof-card-head"><span>10</span><h3 data-i18n="proofJewelryName">스케치 → 주얼리</h3></div>
+        <p data-i18n="proofJewelryCopy">한 장의 디자인 스케치를 실제 제품 시안과 럭셔리 매크로 필름으로 확장합니다.</p>
+        <div class="proof-pair">
+          <figure class="proof-frame proof-input"><img src="portfolio-jewelry-sketch.png" alt="주얼리 디자인 스케치" loading="lazy"/><figcaption><b>INPUT</b><span data-i18n="proofJewelryInput">솔리테어 링 스케치</span></figcaption></figure>
+          <figure class="proof-frame proof-output"><video class="proof-video" autoplay loop muted playsinline preload="none" poster="portfolio-jewelry-ring.png" aria-label="주얼리 디자인 매크로 영상"><source data-src="portfolio-jewelry-diamond.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofJewelryOutput">다이아몬드 매크로 필름</span></figcaption></figure>
+        </div>
+      </article>
     </div>
     <p class="proof-lab-notice" data-i18n="proofLabNotice">샘플은 이해를 돕기 위한 실제 제작 예시입니다. 사진의 초점·조명·구도와 선택한 스타일에 따라 결과는 달라질 수 있으며, AVVM은 최종 전달 전 품질을 검수합니다.</p>
   </div>
@@ -428,7 +436,7 @@ window.addEventListener('error', function(e) {
 </div>
 </div>
 <div class="demo-card has-help" data-help="입력 이미지가 영화 장면으로 변환되는 대표 데모입니다." data-help-key="help11" data-help-ko="입력 이미지가 영화 장면으로 변환되는 대표 데모입니다.">
-<video autoplay="" loop="" muted="" playsinline="" preload="metadata" src="https://avvmstudio25.vercel.app/videos/demo-action.mp4?v=2"></video>
+<video autoplay="" loop="" muted="" playsinline="" poster="demo-warrior-refined.jpg" preload="metadata" src="demo-warrior-refined.mp4"></video>
 <div class="demo-card-caption">
 <div>
 <b>Transformation Demo</b>
@@ -635,7 +643,7 @@ window.addEventListener('error', function(e) {
 <div class="clarity-kicker" data-i18n="portfolioKicker">Portfolio expansion</div>
 <h2 data-i18n="portfolioTitle"><span data-i18n="portfolioTitle">9 SECTORS.<br/>ONE ENGINE.</span></h2>
 </div>
-<p data-i18n="portfolioCopy">AVVM은 뷰티, 자동차, 문화, 기업, 축제, 스토리, 주얼리 디자인, 뮤직비디오, 액션까지 9개 산업군의 영상 샘플로 확장됩니다.</p>
+<p data-i18n="portfolioCopy">AVVM은 뷰티, 자동차, 문화, 기업, 축제, 스토리, 메타버스, 뮤직비디오, 액션까지 9개 산업군의 영상 샘플로 확장됩니다.</p>
 </div>
 <div class="portfolio-grid">
 <article class="portfolio-card has-help" id="portfolio-automotive" data-help="F1 레이싱과 공중 추적 드라이브 샘플입니다. 자동차/스포츠 브랜드용입니다." data-help-key="help20" data-help-ko="F1 레이싱과 공중 추적 드라이브 샘플입니다. 자동차/스포츠 브랜드용입니다.">
@@ -662,20 +670,16 @@ window.addEventListener('error', function(e) {
 <video autoplay="" loop="" muted="" playsinline="" poster="https://avvmstudio25.vercel.app/assets/posters/videos_portfolio_story-lifestyle.jpg" preload="metadata" src="https://avvmstudio25.vercel.app/videos/portfolio/story-lifestyle.mp4"></video>
 <div class="portfolio-card-body"><small>STORY</small><h3>LIFESTYLE STORY</h3><p data-i18n="portStory"><span data-i18n="portStory">인물 감정과 분위기를 살린 라이프스타일/스토리형 영상 샘플입니다.</span></p></div>
 </article>
-<article class="portfolio-card portfolio-card--jewelry has-help" id="portfolio-jewelry" data-help="주얼리 스케치에서 실제 제품 시안과 럭셔리 매크로 영상으로 이어지는 맞춤 디자인 필름 샘플입니다." data-help-key="help25" data-help-ko="주얼리 스케치에서 실제 제품 시안과 럭셔리 매크로 영상으로 이어지는 맞춤 디자인 필름 샘플입니다.">
-<div class="jewelry-process-media">
-<video autoplay="" loop="" muted="" playsinline="" poster="portfolio-jewelry-ring.png" preload="metadata"><source src="portfolio-jewelry-sketch-reveal.mp4" type="video/mp4"/></video>
-<figure class="jewelry-source-inset"><img src="portfolio-jewelry-sketch.png" alt="솔리테어 링 디자인 스케치" loading="lazy"/><figcaption>01 · SKETCH</figcaption></figure>
-<figure class="jewelry-motion-inset"><video autoplay="" loop="" muted="" playsinline="" preload="metadata" aria-label="다이아몬드 반지 매크로 모션"><source src="portfolio-jewelry-diamond.mp4" type="video/mp4"/></video><figcaption>03 · MOTION</figcaption></figure>
-</div>
-<div class="portfolio-card-body"><small>JEWELRY / DESIGN</small><h3>SKETCH TO JEWEL</h3><p data-i18n="portJewelry">한 장의 디자인 스케치가 제품 시안과 다이아몬드 매크로 필름으로 이어지는 맞춤 주얼리 샘플입니다.</p></div>
+<article class="portfolio-card has-help" data-help="경북/첨성대/한반도 네트워크 같은 문화 메타버스 확장 샘플입니다." data-help-key="help25" data-help-ko="경북/첨성대/한반도 네트워크 같은 문화 메타버스 확장 샘플입니다.">
+<video autoplay="" loop="" muted="" playsinline="" poster="https://avvmstudio25.vercel.app/assets/posters/videos_portfolio_culture-metaverse.jpg" preload="metadata" src="https://avvmstudio25.vercel.app/videos/portfolio/culture-metaverse.mp4"></video>
+<div class="portfolio-card-body"><small>METAVERSE</small><h3>CULTURE NETWORK</h3><p data-i18n="portMetaverse"><span data-i18n="portMetaverse">지역 문화 상징이 디지털 네트워크와 결합되는 메타버스형 영상 샘플입니다.</span></p></div>
 </article>
 <article class="portfolio-card has-help" data-help="무대 퍼포먼스, 리듬감 있는 움직임, 조명 연출을 담은 뮤직비디오 샘플입니다." data-help-key="help26" data-help-ko="무대 퍼포먼스, 리듬감 있는 움직임, 조명 연출을 담은 뮤직비디오 샘플입니다.">
 <video autoplay="" loop="" muted="" playsinline="" poster="portfolio-action-dance.jpg" preload="metadata" src="portfolio-action-dance.mp4"></video>
 <div class="portfolio-card-body"><small>MUSIC VIDEO</small><h3>DANCE PERFORMANCE</h3><p data-i18n="portMusicVideo"><span data-i18n="portMusicVideo">무대 퍼포먼스와 리듬감 있는 카메라 무브먼트를 담은 뮤직비디오 샘플입니다.</span></p></div>
 </article>
-<article class="portfolio-card portfolio-card--action has-help" data-help="인물의 머리와 동작을 안전하게 유지한 액션 변신 샘플입니다." data-help-key="help27" data-help-ko="인물의 머리와 동작을 안전하게 유지한 액션 변신 샘플입니다.">
-<video autoplay="" loop="" muted="" playsinline="" poster="portfolio-action-woman.jpg" preload="metadata" src="portfolio-action-woman.mp4"></video>
+<article class="portfolio-card has-help" data-help="강한 액션감과 실험적인 장면 전환을 담은 격투·추격 영상 샘플입니다." data-help-key="help27" data-help-ko="강한 액션감과 실험적인 장면 전환을 담은 격투·추격 영상 샘플입니다.">
+<video autoplay="" loop="" muted="" playsinline="" poster="https://avvmstudio25.vercel.app/assets/posters/videos_portfolio_experimental-action.jpg" preload="metadata" src="https://avvmstudio25.vercel.app/videos/portfolio/experimental-action.mp4"></video>
 <div class="portfolio-card-body"><small>ACTION</small><h3>EXPERIMENTAL ACTION</h3><p data-i18n="portAction"><span data-i18n="portAction">격투, 추격, 긴장감 있는 전환을 보여주는 실험적 액션 영상 샘플입니다.</span></p></div>
 </article>
 </div>
