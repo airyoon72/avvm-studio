@@ -4,6 +4,9 @@
 
   const CONFIG_URL = '/api/auth-config';
   const SUPABASE_CDN = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+  // Keep guest checkout as the launch default. Set this to true in index.html
+  // only when the member experience (orders, re-downloads, subscriptions) is ready.
+  const AUTH_UI_ENABLED = window.AVVM_AUTH_UI_ENABLED === true;
   const state = { ready: false, enabled: false, client: null, user: null };
 
   const text = (key, fallback) => window.AVVM_I18N?.t?.(key, fallback) || fallback;
@@ -39,10 +42,10 @@
     const accountEmail = document.getElementById('authAccountEmail');
     const signedIn = Boolean(state.user);
 
-    if (navButton) navButton.hidden = !state.enabled || signedIn;
-    if (panel) panel.hidden = !state.enabled;
+    if (navButton) navButton.hidden = !AUTH_UI_ENABLED || !state.enabled || signedIn;
+    if (panel) panel.hidden = !AUTH_UI_ENABLED || !state.enabled;
     if (badge) {
-      badge.hidden = !state.enabled || !signedIn;
+      badge.hidden = !AUTH_UI_ENABLED || !state.enabled || !signedIn;
       badge.textContent = signedIn ? (state.user.email || text('authSignedIn', 'SIGNED IN')) : '';
       badge.title = signedIn ? text('authSignedIn', 'Signed in with Google') : '';
     }
