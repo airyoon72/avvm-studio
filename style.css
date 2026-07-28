@@ -6012,3 +6012,21 @@ body.modal-open{
 #proof-jewelry-design .proof-jewelry-motion figcaption {
   display: none !important;
 }
+
+/* A CSS globe avoids the visible pause at the end of the tiny MP4 loop. */
+@keyframes avvmGlobeContinuousSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.lang-globe-icon {
+  animation: avvmGlobeContinuousSpin 4.8s linear infinite !important;
+  transform-origin: center;
+  will-change: transform;
+}
+
+/* Crop the source edge so the generated jewelry sample's corner watermark
+   never enters the frame while preserving the ring as the focal point. */
+#proof-jewelry-design .proof-jewelry-motion > video {
+  transform: scale(1.18);
+  transform-origin: center;
+}
