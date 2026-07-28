@@ -6023,10 +6023,3 @@ body.modal-open{
   transform-origin: center;
   will-change: transform;
 }
-
-/* Crop the source edge so the generated jewelry sample's corner watermark
-   never enters the frame while preserving the ring as the focal point. */
-#proof-jewelry-design .proof-jewelry-motion > video {
-  transform: scale(1.18);
-  transform-origin: center;
-}
