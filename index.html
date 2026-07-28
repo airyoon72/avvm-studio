@@ -37,7 +37,7 @@ window.addEventListener('error', function(e) {
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=Inter:wght@400;500;600;700;800;900&amp;family=Cormorant+Garamond:ital,wght@1,700;1,900&amp;display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="style.css?v=43"/>
+<link rel="stylesheet" href="style.css?v=44"/>
 <style>
 /* AVVM v31 review-safe additions */
 .option-chip.disabled,
@@ -443,7 +443,7 @@ window.addEventListener('error', function(e) {
 </div>
 </div>
 <div class="demo-card has-help" data-help="입력 이미지가 영화 장면으로 변환되는 대표 데모입니다." data-help-key="help11" data-help-ko="입력 이미지가 영화 장면으로 변환되는 대표 데모입니다.">
-<video autoplay="" loop="" muted="" playsinline="" poster="demo-warrior-refined.jpg" preload="metadata" src="demo-warrior-refined.mp4"></video>
+<video autoplay="" class="demo-autoplay-video" id="demoWarriorVideo" loop="" muted="" playsinline="" poster="demo-warrior-refined.jpg" preload="auto" src="demo-warrior-refined.mp4"></video>
 <div class="demo-card-caption">
 <div>
 <b>Transformation Demo</b>
@@ -1550,7 +1550,7 @@ document.addEventListener('click', function (event) {
 <script src="i18n.js?v=13"></script>
 <script>window.AVVM_AUTH_UI_ENABLED = false;</script>
 <script src="auth.js?v=1"></script>
-<script src="app.js?v=44"></script>
+<script src="app.js?v=45"></script>
 <script>
 /* AVVM order safeguards: required consent and plan-locked delivery quality. */
 (function(){

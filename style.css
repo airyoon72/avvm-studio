@@ -5088,6 +5088,17 @@ body.modal-open{
   letter-spacing: -0.02em;
 }
 
+/* Keep the Memorial launch notice centered between the hero promise and CTA. */
+.hero-v5-sub {
+  margin-bottom: 0 !important;
+}
+.hero-teaser-wrapper {
+  margin: 26px 0 !important;
+}
+.hero-v5-actions {
+  margin-top: 0 !important;
+}
+
 @media(max-width:680px){
   .quick-nav-bar {
     top: 66px; /* below mobile nav header (height: 66px) */
@@ -5107,10 +5118,13 @@ body.modal-open{
   .hero-teaser-wrapper {
     align-self: center !important;
     text-align: center;
-    margin: 18px auto 0 !important;
+    margin: 20px auto !important;
     transform: translateY(20px);
     width: max-content;
     max-width: calc(100% - 32px);
+  }
+  .hero-v5-actions {
+    margin-top: 0 !important;
   }
   .hero-new-notice {
     padding: 8px 14px;

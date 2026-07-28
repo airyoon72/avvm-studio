@@ -1522,9 +1522,9 @@ if($('#resetOrder')) {
 })();
 
 /* Some mobile browsers suspend muted videos while cards are off screen. Resume
-   only visible portfolio/proof clips so every sector remains alive on return. */
+   visible samples, including the Image to Cinema warrior demo, on return. */
 (function(){
-  const videos=Array.from(document.querySelectorAll('.portfolio-card video,.proof-video'));
+  const videos=Array.from(document.querySelectorAll('.portfolio-card video,.proof-video,.demo-card video,.demo-autoplay-video'));
   if(!videos.length) return;
   const visible=new WeakMap();
   const resume=(video)=>{
@@ -1532,7 +1532,11 @@ if($('#resetOrder')) {
     video.muted=true;
     video.defaultMuted=true;
     video.loop=true;
+    video.autoplay=true;
     video.playsInline=true;
+    video.setAttribute('muted','');
+    video.setAttribute('playsinline','');
+    video.setAttribute('webkit-playsinline','');
     const attempt=video.play();
     if(attempt && typeof attempt.catch==='function') attempt.catch(()=>{});
   };
@@ -1542,6 +1546,7 @@ if($('#resetOrder')) {
     video.addEventListener('pause',()=>{
       if(!document.hidden && visible.get(video)) window.setTimeout(()=>resume(video),120);
     });
+    video.addEventListener('ended',()=>resume(video));
   };
   videos.forEach(observe);
   if(!('IntersectionObserver' in window)){
