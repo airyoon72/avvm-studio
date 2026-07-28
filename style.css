@@ -1445,6 +1445,7 @@
     .jewelry-source-inset img,.jewelry-motion-inset video{display:block;width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;background:#111}
     .jewelry-source-inset figcaption,.jewelry-motion-inset figcaption{padding:5px 6px;color:#0b0b0b;background:var(--lime);font:900 7px/1 Inter,sans-serif;letter-spacing:.08em;text-align:center}
     .portfolio-card--action>video{object-fit:cover;object-position:center center}
+    @media(max-width:560px){.portfolio-card--action>video{aspect-ratio:9/12!important}}
     .portfolio-card-body{padding:16px}
     .portfolio-card small{display:block;color:var(--lime);font-size:10px;font-weight:950;letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px}
     .portfolio-card h3{margin:0 0 8px;color:#fff;font-size:17px;line-height:1.15;text-transform:uppercase;letter-spacing:.02em}
