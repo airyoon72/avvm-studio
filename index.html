@@ -37,7 +37,8 @@ window.addEventListener('error', function(e) {
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=Bodoni+Moda:opsz,wght@6..96,400;6..96,500&amp;family=Inter:wght@400;500;600;700;800;900&amp;family=Cormorant+Garamond:ital,wght@1,700;1,900&amp;display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="style.css?v=60"/>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@latest/dist/web/variable/pretendardvariable-dynamic-subset.css" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css?v=61"/>
 <style>
 /* AVVM v31 review-safe additions */
 .option-chip.disabled,
@@ -188,11 +189,11 @@ window.addEventListener('error', function(e) {
 
 <!-- The hero promise remains as live text so it is visible on every device. -->
 <div id="hero-tagline-container">
-  <h1 class="hero-tagline-fallback" id="heroPromise" aria-label="ONE IMAGE. ONE CLICK. CINEMATIC. RESULTS.">
-    <span class="hero-tagline-line" style="--line-delay:0ms"><span class="hero-tagline-word">ONE IMAGE.</span></span>
-    <span class="hero-tagline-line" style="--line-delay:1500ms"><span class="hero-tagline-word">ONE CLICK.</span></span>
-    <span class="hero-tagline-line" style="--line-delay:3000ms"><span class="hero-tagline-word">CINEMATIC.</span></span>
-    <span class="hero-tagline-line" style="--line-delay:4500ms"><span class="hero-tagline-word">RESULTS.</span></span>
+  <h1 class="hero-tagline-fallback" id="heroPromise" aria-label="한 장의 사진. 한 번의 클릭. 시네마틱스. 결과.">
+    <span class="hero-tagline-line" style="--line-delay:0ms"><span class="hero-tagline-word">한 장의 사진.</span></span>
+    <span class="hero-tagline-line" style="--line-delay:1500ms"><span class="hero-tagline-word">한 번의 클릭.</span></span>
+    <span class="hero-tagline-line" style="--line-delay:3000ms"><span class="hero-tagline-word">시네마틱스.</span></span>
+    <span class="hero-tagline-line" style="--line-delay:4500ms"><span class="hero-tagline-word">결과.</span></span>
   </h1>
   <canvas aria-hidden="true" id="hero-tagline-canvas"></canvas>
 </div>
@@ -1698,14 +1699,26 @@ document.addEventListener('click', function (event) {
   if (!container || !promise || !canvas) return;
 
   const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-  const phrases = [...promise.querySelectorAll('.hero-tagline-word')].map((word) => word.textContent.trim());
+  const phraseSets = {
+    ko: ['한 장의 사진.', '한 번의 클릭.', '시네마틱스.', '결과.'],
+    en: ['ONE IMAGE.', 'ONE CLICK.', 'CINEMATIC.', 'RESULTS.'],
+    ja: ['一枚の写真。', 'ワンクリック。', 'シネマ。', '結果。'],
+    zh: ['一张照片。', '一次点击。', '电影感。', '结果。'],
+    es: ['UNA IMAGEN.', 'UN CLIC.', 'CINEMÁTICO.', 'RESULTADOS.'],
+    fr: ['UNE IMAGE.', 'UN CLIC.', 'CINÉMATIQUE.', 'RÉSULTATS.'],
+    de: ['EIN BILD.', 'EIN KLICK.', 'KINOREIF.', 'ERGEBNIS.'],
+    pt: ['UMA IMAGEM.', 'UM CLIQUE.', 'CINEMÁTICO.', 'RESULTADOS.'],
+    hi: ['एक छवि।', 'एक क्लिक।', 'सिनेमाई।', 'परिणाम।'],
+    ar: ['صورة واحدة.', 'نقرة واحدة.', 'سينمائي.', 'نتائج.']
+  };
+  let phrases = [...promise.querySelectorAll('.hero-tagline-word')].map((word) => word.textContent.trim());
   if (reduceMotion || !phrases.length) return;
 
   const context = canvas.getContext('2d');
   const pixels = document.createElement('canvas');
   const pixelContext = pixels.getContext('2d');
   const stageDuration = 1850;
-  const cycleDuration = stageDuration * phrases.length;
+  let cycleDuration = stageDuration * phrases.length;
   let width = 0;
   let height = 0;
   let frame = 0;
@@ -1756,13 +1769,16 @@ document.addEventListener('click', function (event) {
     if (measured > width - 4) fontSize *= (width - 4) / measured;
 
     const cell = state.pixel;
+    const rtl = document.documentElement.dir === 'rtl';
     pixels.width = Math.max(1, Math.ceil(width / cell));
     pixels.height = Math.max(1, Math.ceil(height / cell));
     pixelContext.clearRect(0, 0, pixels.width, pixels.height);
     pixelContext.font = `400 ${fontSize / cell}px ${family}`;
     pixelContext.textBaseline = 'alphabetic';
+    pixelContext.direction = rtl ? 'rtl' : 'ltr';
+    pixelContext.textAlign = rtl ? 'right' : 'left';
     pixelContext.fillStyle = color;
-    pixelContext.fillText(phrase, 0, (height * .5 + fontSize * .29) / cell);
+    pixelContext.fillText(phrase, rtl ? pixels.width : 0, (height * .5 + fontSize * .29) / cell);
 
     context.save();
     context.globalAlpha = state.alpha;
@@ -1788,8 +1804,21 @@ document.addEventListener('click', function (event) {
     frame = window.requestAnimationFrame(animate);
   }
 
+  function updatePhrases(nextLanguage) {
+    const nextPhrases = phraseSets[nextLanguage] || phraseSets.ko;
+    phrases = nextPhrases;
+    cycleDuration = stageDuration * phrases.length;
+    promise.setAttribute('aria-label', phrases.join(' '));
+    promise.innerHTML = phrases.map((phrase, index) =>
+      `<span class="hero-tagline-line" style="--line-delay:${index * 1500}ms"><span class="hero-tagline-word">${phrase}</span></span>`
+    ).join('');
+    startedAt = performance.now();
+    resizeCanvas();
+  }
+
   window.addEventListener('resize', resizeCanvas, { passive: true });
   document.fonts?.ready?.then(resizeCanvas);
+  document.addEventListener('avvm:languagechange', event => updatePhrases(event.detail?.language || 'ko'));
   document.addEventListener('avvm:hero-ready', () => window.setTimeout(startLoop, 980), { once: true });
   window.setTimeout(startLoop, 5200);
   window.addEventListener('pagehide', () => window.cancelAnimationFrame(frame), { once: true });

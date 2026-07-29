@@ -6147,6 +6147,15 @@ body.modal-open{
   text-transform: uppercase;
   text-shadow: 0 18px 62px rgba(0,0,0,.82), 0 2px 12px rgba(0,0,0,.5);
 }
+/* Keep the editorial serif treatment in Latin scripts, while giving the Korean
+   hero a sharper, contemporary display voice. */
+html[lang="ko"] .hero-tagline-fallback {
+  font-family: "Pretendard Variable", Pretendard, Inter, system-ui, sans-serif;
+  font-weight: 780;
+  line-height: .86;
+  letter-spacing: -.085em;
+  text-transform: none;
+}
 .hero-tagline-line {
   position: absolute;
   top: 50%;
