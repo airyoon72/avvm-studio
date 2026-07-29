@@ -1474,35 +1474,69 @@ if($('#resetOrder')) {
   });
 })();
 
-/* Detail samples are prepared near the viewport, but never auto-play. The
-   homepage keeps motion deliberately limited to the hero, warrior, and F1. */
+/* Every sample starts itself, loops silently, and has no native playback UI.
+   Samples are activated just before they enter the viewport, so mobile devices
+   do not download every film at once. Once started, each one keeps its place
+   and resumes after an iOS/browser pause. */
 (function(){
-  const videos = Array.from(document.querySelectorAll('.proof-video'));
+  const selector = [
+    '.ba-output-video',
+    '.proof-video',
+    '.sample-card > video',
+    '.portfolio-card > video',
+    '.memorial-ba-video-wrapper video',
+    '.web-studio-logo-motion video',
+    '.web-studio-film video'
+  ].join(',');
+  const videos = Array.from(document.querySelectorAll(selector));
   if (!videos.length) return;
 
-  const loadVideo = (video) => {
-    if (video.dataset.loaded) return;
-    const source = video.querySelector('source[data-src]');
-    if (!source) return;
-    source.src = source.dataset.src;
-    video.dataset.loaded = 'true';
-    video.load();
+  const started = new Set();
+  const play = (video) => {
+    video.muted = true;
+    video.defaultMuted = true;
+    video.loop = true;
+    video.autoplay = true;
+    video.controls = false;
+    video.playsInline = true;
+    video.setAttribute('muted', '');
+    video.setAttribute('playsinline', '');
+    video.removeAttribute('controls');
+    const attempt = video.play();
+    if (attempt && typeof attempt.catch === 'function') attempt.catch(() => {});
+  };
+
+  videos.forEach((video) => {
+    video.addEventListener('canplay', () => {
+      if (started.has(video) && !document.hidden) play(video);
+    });
+    video.addEventListener('pause', () => {
+      if (started.has(video) && !document.hidden) window.setTimeout(() => play(video), 120);
+    });
+    video.addEventListener('ended', () => play(video));
+  });
+
+  const activate = (video) => {
+    started.add(video);
+    if (!document.hidden) play(video);
   };
 
   if (!('IntersectionObserver' in window)) {
-    videos.forEach(loadVideo);
-    return;
+    videos.forEach(activate);
+  } else {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        activate(entry.target);
+        observer.unobserve(entry.target);
+      });
+    }, { rootMargin: '320px 0px', threshold: 0.01 });
+    videos.forEach((video) => observer.observe(video));
   }
 
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (!entry.isIntersecting) return;
-      loadVideo(entry.target);
-      observer.unobserve(entry.target);
-    });
-  }, { rootMargin: '280px 0px' });
-
-  videos.forEach((video) => observer.observe(video));
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) started.forEach(play);
+  });
 })();
 
 /* The sketch/photo proof uses a native range input so it is draggable by mouse,
