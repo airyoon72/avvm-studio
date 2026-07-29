@@ -37,7 +37,7 @@ window.addEventListener('error', function(e) {
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=Inter:wght@400;500;600;700;800;900&amp;family=Cormorant+Garamond:ital,wght@1,700;1,900&amp;display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="style.css?v=51"/>
+<link rel="stylesheet" href="style.css?v=52"/>
 <style>
 /* AVVM v31 review-safe additions */
 .option-chip.disabled,
@@ -178,10 +178,10 @@ window.addEventListener('error', function(e) {
 
 <!-- The hero promise remains as live text so it is visible on every device. -->
 <div id="hero-tagline-container">
-  <h1 class="hero-tagline-fallback" aria-label="ONE IMAGE. ONE CLICK. CINEMATIC RESULTS.">
-    <span>ONE IMAGE.</span>
-    <span>ONE CLICK.</span>
-    <span>CINEMATIC RESULTS.</span>
+  <h1 class="hero-tagline-fallback" id="heroPromise" aria-label="ONE IMAGE. ONE CLICK. CINEMATIC RESULTS.">
+    <span class="hero-tagline-line" style="--line-delay:0ms"><span class="hero-tagline-word">ONE IMAGE.</span></span>
+    <span class="hero-tagline-line" style="--line-delay:920ms"><span class="hero-tagline-word">ONE CLICK.</span></span>
+    <span class="hero-tagline-line" style="--line-delay:1840ms"><span class="hero-tagline-word">CINEMATIC RESULTS.</span></span>
   </h1>
   <canvas aria-hidden="true" id="hero-tagline-canvas"></canvas>
 </div>
@@ -1657,6 +1657,7 @@ document.addEventListener('click', function (event) {
 
     loader.classList.add('loaded');
     loader.setAttribute('aria-hidden', 'true');
+    document.dispatchEvent(new CustomEvent('avvm:hero-ready'));
     window.setTimeout(() => {
       loader.style.display = 'none';
     }, 950);
@@ -1677,6 +1678,43 @@ document.addEventListener('click', function (event) {
 
   // 외부 CDN이 멈춰도 로고 애니메이션을 끝까지 보여준 뒤 화면을 엽니다.
   window.setTimeout(scheduleDismiss, 5000);
+})();
+</script>
+
+<script>
+/* Reveal the hero promise in three living, letter-by-letter beats. */
+(function () {
+  const promise = document.getElementById('heroPromise');
+  if (!promise) return;
+
+  const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  const words = promise.querySelectorAll('.hero-tagline-word');
+
+  words.forEach((word) => {
+    const text = word.textContent.trim();
+    word.setAttribute('aria-label', text);
+    word.textContent = '';
+    Array.from(text).forEach((character, index) => {
+      const glyph = document.createElement('span');
+      glyph.className = 'hero-tagline-char';
+      glyph.style.setProperty('--glyph-delay', `${index * 42}ms`);
+      glyph.setAttribute('aria-hidden', 'true');
+      glyph.textContent = character === ' ' ? '\u00a0' : character;
+      word.appendChild(glyph);
+    });
+  });
+
+  if (reduceMotion) return;
+
+  let played = false;
+  function play() {
+    if (played) return;
+    played = true;
+    promise.classList.add('is-animated');
+  }
+
+  document.addEventListener('avvm:hero-ready', () => window.setTimeout(play, 560), { once: true });
+  window.setTimeout(play, 5200);
 })();
 </script>
 
