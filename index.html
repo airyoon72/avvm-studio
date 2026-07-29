@@ -37,7 +37,7 @@ window.addEventListener('error', function(e) {
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=Inter:wght@400;500;600;700;800;900&amp;family=Cormorant+Garamond:ital,wght@1,700;1,900&amp;display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="style.css?v=52"/>
+<link rel="stylesheet" href="style.css?v=53"/>
 <style>
 /* AVVM v31 review-safe additions */
 .option-chip.disabled,
@@ -1682,7 +1682,7 @@ document.addEventListener('click', function (event) {
 </script>
 
 <script>
-/* Reveal the hero promise in three living, letter-by-letter beats. */
+/* Reveal the hero promise as three digital typography beats. */
 (function () {
   const promise = document.getElementById('heroPromise');
   if (!promise) return;
@@ -1697,7 +1697,9 @@ document.addEventListener('click', function (event) {
     Array.from(text).forEach((character, index) => {
       const glyph = document.createElement('span');
       glyph.className = 'hero-tagline-char';
-      glyph.style.setProperty('--glyph-delay', `${index * 42}ms`);
+      // Keep each phrase whole: only a tiny three-phase digital ripple runs
+      // through its letters after the complete word has appeared.
+      glyph.style.setProperty('--glyph-delay', `${(index % 3) * 28}ms`);
       glyph.setAttribute('aria-hidden', 'true');
       glyph.textContent = character === ' ' ? '\u00a0' : character;
       word.appendChild(glyph);
@@ -1706,15 +1708,26 @@ document.addEventListener('click', function (event) {
 
   if (reduceMotion) return;
 
-  let played = false;
+  let started = false;
+  const cycleDuration = 5000;
   function play() {
-    if (played) return;
-    played = true;
+    promise.classList.remove('is-animated');
+    // Force a new animation timeline so every loop restarts at ONE IMAGE.
+    void promise.offsetWidth;
     promise.classList.add('is-animated');
   }
 
-  document.addEventListener('avvm:hero-ready', () => window.setTimeout(play, 560), { once: true });
-  window.setTimeout(play, 5200);
+  function startLoop() {
+    if (started) return;
+    started = true;
+    play();
+    window.setInterval(play, cycleDuration);
+  }
+
+  // Start only after the opening logo has fully cleared, so the first frame
+  // of the actual home page is always ONE IMAGE.
+  document.addEventListener('avvm:hero-ready', () => window.setTimeout(startLoop, 980), { once: true });
+  window.setTimeout(startLoop, 5200);
 })();
 </script>
 
