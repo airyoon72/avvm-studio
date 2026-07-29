@@ -1474,7 +1474,8 @@ if($('#resetOrder')) {
   });
 })();
 
-/* Sample videos are loaded only when their card approaches the viewport. */
+/* Detail samples are prepared near the viewport, but never auto-play. The
+   homepage keeps motion deliberately limited to the hero, warrior, and F1. */
 (function(){
   const videos = Array.from(document.querySelectorAll('.proof-video'));
   if (!videos.length) return;
@@ -1486,7 +1487,6 @@ if($('#resetOrder')) {
     source.src = source.dataset.src;
     video.dataset.loaded = 'true';
     video.load();
-    video.play().catch(() => {});
   };
 
   if (!('IntersectionObserver' in window)) {
@@ -1521,10 +1521,9 @@ if($('#resetOrder')) {
   });
 })();
 
-/* Some mobile browsers suspend muted videos while cards are off screen. Resume
-   visible samples, including the Image to Cinema warrior demo, on return. */
+/* Keep only the two selected showcase samples moving as they enter view. */
 (function(){
-  const videos=Array.from(document.querySelectorAll('.portfolio-card video,.proof-video,.demo-card video,.demo-autoplay-video'));
+  const videos=Array.from(document.querySelectorAll('[data-main-motion]'));
   if(!videos.length) return;
   const visible=new WeakMap();
   const resume=(video)=>{

@@ -1438,13 +1438,16 @@
     .portfolio-global p{color:rgba(255,255,255,.64);font-size:14px;line-height:1.75;margin:0}
     .portfolio-grid{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
     .portfolio-card{border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.035);border-radius:22px;overflow:hidden;min-height:360px;display:flex;flex-direction:column}
-    .portfolio-card video{width:100%;aspect-ratio:9/12;object-fit:cover;background:#111;display:block}
+    /* Most portfolio masters are delivered in native 16:9.  Keeping that
+       frame avoids enlarging/cropping a 960px source into a tall card. */
+    .portfolio-card video{width:100%;aspect-ratio:16/9;object-fit:cover;background:#111;display:block}
+    .portfolio-card--portrait video{aspect-ratio:3/4}
     .portfolio-card-body{padding:16px}
     .portfolio-card small{display:block;color:var(--lime);font-size:10px;font-weight:950;letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px}
     .portfolio-card h3{margin:0 0 8px;color:#fff;font-size:17px;line-height:1.15;text-transform:uppercase;letter-spacing:.02em}
     .portfolio-card p{font-size:12px;line-height:1.58;color:rgba(255,255,255,.58)}
     @media(max-width:900px){.portfolio-global{padding:76px 22px}.portfolio-global-head{grid-template-columns:1fr}.portfolio-grid{grid-template-columns:1fr 1fr}}
-    @media(max-width:560px){.portfolio-grid{grid-template-columns:1fr}.portfolio-card video{aspect-ratio:9/11}}
+    @media(max-width:560px){.portfolio-grid{grid-template-columns:1fr}.portfolio-card video{aspect-ratio:16/9}.portfolio-card--portrait video{aspect-ratio:3/4}}
 
 
     /* AVVM language layout fixed */
@@ -6135,11 +6138,12 @@ body.modal-open{
   width: 100%;
   margin: 0;
   color: #fff;
-  font-family: "Bebas Neue", Impact, sans-serif;
+  /* Keep the original, softer editorial display face for the hero. */
+  font-family: "Bodoni Moda", "Cormorant Garamond", Georgia, serif;
   font-size: clamp(76px, 13.2vw, 200px);
   font-weight: 400;
-  line-height: .8;
-  letter-spacing: .012em;
+  line-height: .78;
+  letter-spacing: -.045em;
   text-transform: uppercase;
   text-shadow: 0 18px 62px rgba(0,0,0,.82), 0 2px 12px rgba(0,0,0,.5);
 }
@@ -6265,4 +6269,201 @@ body.modal-open{
     opacity: 1 !important;
     transform: none !important;
   }
+}
+
+/* True mosaic type: only the letter pixels are enlarged. No mesh or grid panel
+   is ever drawn behind the word. The live heading remains as the safe fallback. */
+#hero-tagline-container {
+  position: relative;
+}
+#hero-tagline-canvas {
+  display: none !important;
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  image-rendering: pixelated;
+}
+#hero-tagline-container.is-mosaic-active #hero-tagline-canvas {
+  display: block !important;
+}
+#hero-tagline-container.is-mosaic-active .hero-tagline-fallback {
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+.hero-tagline-fallback .hero-tagline-line:not(:first-child) {
+  display: none;
+}
+.hero-tagline-fallback.is-animated .hero-tagline-line::before {
+  display: none !important;
+}
+
+/* With the duplicate bottom actions removed, the hero promise can sit lower
+   without competing with the scroll affordance. */
+.hero-v5-content {
+  padding-bottom: 72px !important;
+}
+@media (max-width: 780px) {
+  .hero-v5-content {
+    padding-bottom: 56px !important;
+  }
+}
+
+/* START stays the original button and order trigger. The canvas sits only
+   behind its label, so it cannot intercept clicks or affect navigation. */
+.hero-water-button {
+  position: relative !important;
+  isolation: isolate;
+  overflow: hidden !important;
+  min-width: 104px;
+  border-color: rgba(216, 242, 51, .72) !important;
+  background: rgba(6, 8, 4, .58) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.22),
+    inset 0 -1px 0 rgba(216,242,51,.20),
+    0 10px 28px rgba(0,0,0,.28),
+    0 0 22px rgba(216,242,51,.10) !important;
+  color: transparent !important;
+  -webkit-backdrop-filter: blur(18px) saturate(1.1);
+  backdrop-filter: blur(18px) saturate(1.1);
+  transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease;
+}
+.hero-water-button::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  right: -18%;
+  bottom: -48%;
+  left: -18%;
+  height: 108%;
+  border-radius: 46% 54% 0 0 / 22% 26% 0 0;
+  background:
+    radial-gradient(ellipse at 30% 20%, rgba(255,255,224,.68) 0 3%, transparent 15%),
+    linear-gradient(180deg, rgba(226,255,93,.84), rgba(151,193,28,.72) 55%, rgba(73,100,11,.78));
+  box-shadow: inset 0 2px 0 rgba(255,255,223,.72), 0 -2px 12px rgba(216,242,51,.28);
+  opacity: .72;
+  pointer-events: none;
+  animation: avvmWaterIdle 3.1s ease-in-out infinite alternate;
+}
+.hero-water-button::after {
+  content: attr(data-water-label);
+  position: relative;
+  z-index: 2;
+  display: block;
+  color: #f8f8f1;
+  font: inherit;
+  letter-spacing: inherit;
+  line-height: 1;
+  pointer-events: none;
+  text-shadow: 0 1px 9px rgba(0,0,0,.78);
+}
+.hero-water-button:hover {
+  border-color: rgba(239, 255, 130, .96) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.32),
+    inset 0 -1px 0 rgba(216,242,51,.36),
+    0 12px 34px rgba(0,0,0,.34),
+    0 0 30px rgba(216,242,51,.20) !important;
+}
+.hero-water-button:active { transform: scale(.97); }
+.hero-water-button__canvas {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+@keyframes avvmWaterIdle {
+  0% { transform: translate3d(-4%, 2%, 0) rotate(-1.5deg); }
+  100% { transform: translate3d(4%, -3%, 0) rotate(1.5deg); }
+}
+@media (max-width: 520px) {
+  .hero-water-button { min-width: 82px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-water-button { transition: none; }
+  .hero-water-button:active { transform: none; }
+  .hero-water-button::before { animation: none; }
+}
+
+/* Mobile has no room for the full desktop link row. Keep every primary
+   destination reachable from the opening hero without duplicating its logo. */
+.hero-mobile-menu-toggle,
+.mobile-primary-menu {
+  display: none;
+}
+@media (max-width: 780px) {
+  .hero-v5-top .hero-top-actions {
+    gap: 6px !important;
+  }
+  .hero-mobile-menu-toggle {
+    display: grid !important;
+    width: 34px;
+    height: 34px;
+    flex: 0 0 34px;
+    place-content: center;
+    gap: 4px;
+    padding: 0;
+    border: 1px solid rgba(255,255,255,.25);
+    border-radius: 999px;
+    background: rgba(8,8,8,.56);
+    color: #fff;
+    cursor: pointer;
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    transition: border-color .2s ease, background .2s ease, transform .2s ease;
+  }
+  .hero-mobile-menu-toggle span {
+    display: block;
+    width: 13px;
+    height: 1px;
+    background: currentColor;
+    transition: transform .2s ease, opacity .2s ease;
+  }
+  .hero-mobile-menu-toggle[aria-expanded="true"] {
+    border-color: rgba(216,242,51,.85);
+    background: rgba(216,242,51,.13);
+  }
+  .hero-mobile-menu-toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(5px) rotate(45deg); }
+  .hero-mobile-menu-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+  .hero-mobile-menu-toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-5px) rotate(-45deg); }
+  .mobile-primary-menu:not([hidden]) {
+    position: fixed;
+    top: 86px;
+    right: 14px;
+    left: 14px;
+    z-index: 1100;
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,.18);
+    border-radius: 18px;
+    background: rgba(6,7,6,.94);
+    box-shadow: 0 22px 56px rgba(0,0,0,.54), inset 0 1px 0 rgba(255,255,255,.08);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+  }
+  .mobile-primary-menu a {
+    display: flex;
+    align-items: center;
+    min-height: 50px;
+    padding: 0 15px;
+    border-right: 1px solid rgba(255,255,255,.08);
+    border-bottom: 1px solid rgba(255,255,255,.08);
+    color: rgba(255,255,255,.9);
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+  }
+  .mobile-primary-menu a:nth-child(2n) { border-right: 0; }
+  .mobile-primary-menu a:nth-last-child(-n + 2) { border-bottom: 0; }
+  .mobile-primary-menu a:active { color: var(--lime); background: rgba(216,242,51,.08); }
+}
+@media (max-width: 420px) {
+  .hero-mobile-menu-toggle { width: 30px; height: 30px; flex-basis: 30px; }
+  .mobile-primary-menu:not([hidden]) { top: 78px; }
 }

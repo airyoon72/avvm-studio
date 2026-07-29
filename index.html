@@ -36,8 +36,8 @@ window.addEventListener('error', function(e) {
 <meta content="AVVM.studio creates cinematic AI-assisted commercial videos from a single image." name="description"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=Inter:wght@400;500;600;700;800;900&amp;family=Cormorant+Garamond:ital,wght@1,700;1,900&amp;display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="style.css?v=54"/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=Bodoni+Moda:opsz,wght@6..96,400;6..96,500&amp;family=Inter:wght@400;500;600;700;800;900&amp;family=Cormorant+Garamond:ital,wght@1,700;1,900&amp;display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css?v=60"/>
 <style>
 /* AVVM v31 review-safe additions */
 .option-chip.disabled,
@@ -172,16 +172,27 @@ window.addEventListener('error', function(e) {
 <option value="ko">KO</option><option value="en">EN</option><option value="ja">JA</option><option value="zh">ZH</option><option value="es">ES</option><option value="fr">FR</option><option value="de">DE</option><option value="pt">PT</option><option value="hi">HI</option><option value="ar">AR</option>
 </select>
 </div>
+<button aria-controls="mobilePrimaryMenu" aria-expanded="false" aria-label="Open navigation" class="hero-mobile-menu-toggle" id="heroMobileMenuToggle" type="button"><span></span><span></span><span></span></button>
 <button aria-label="Start project" class="hero-menu-dot has-help" data-help="프로젝트 시작: 이미지 업로드와 주문 정보를 입력합니다." data-help-key="help1" data-help-ko="프로젝트 시작: 이미지 업로드와 주문 정보를 입력합니다." data-open="">START</button></div>
 </div>
+<nav aria-label="Mobile navigation" class="mobile-primary-menu" hidden id="mobilePrimaryMenu">
+  <a href="#works" data-i18n="navWorks">Works</a>
+  <a href="#one-photo-new-world" data-i18n="navTransform">Transform</a>
+  <a href="#pricing" data-i18n="navBusiness">Business</a>
+  <a href="#memorial" data-i18n="navMemorial">Memorial</a>
+  <a href="#id-profile" data-i18n="navProfile">ID·Profile</a>
+  <a href="https://web-studio-quiet.airyoon72.chatgpt.site" rel="noopener" target="_blank">WEB-STUDIO ↗</a>
+  <a href="#faq" data-i18n="navFaq">FAQ</a>
+</nav>
 <div class="hero-v5-content">
 
 <!-- The hero promise remains as live text so it is visible on every device. -->
 <div id="hero-tagline-container">
-  <h1 class="hero-tagline-fallback" id="heroPromise" aria-label="ONE IMAGE. ONE CLICK. CINEMATIC RESULTS.">
+  <h1 class="hero-tagline-fallback" id="heroPromise" aria-label="ONE IMAGE. ONE CLICK. CINEMATIC. RESULTS.">
     <span class="hero-tagline-line" style="--line-delay:0ms"><span class="hero-tagline-word">ONE IMAGE.</span></span>
-    <span class="hero-tagline-line" style="--line-delay:1750ms"><span class="hero-tagline-word">ONE CLICK.</span></span>
-    <span class="hero-tagline-line" style="--line-delay:3500ms"><span class="hero-tagline-word">CINEMATIC RESULTS.</span></span>
+    <span class="hero-tagline-line" style="--line-delay:1500ms"><span class="hero-tagline-word">ONE CLICK.</span></span>
+    <span class="hero-tagline-line" style="--line-delay:3000ms"><span class="hero-tagline-word">CINEMATIC.</span></span>
+    <span class="hero-tagline-line" style="--line-delay:4500ms"><span class="hero-tagline-word">RESULTS.</span></span>
   </h1>
   <canvas aria-hidden="true" id="hero-tagline-canvas"></canvas>
 </div>
@@ -194,10 +205,6 @@ window.addEventListener('error', function(e) {
   </a>
 </div>
 
-<div class="hero-v5-actions">
-<button class="btn btn-primary has-help" data-help="사진을 올리고 원하는 스타일을 선택하면 주문 흐름이 시작됩니다." data-help-key="help2" data-help-ko="사진을 올리고 원하는 스타일을 선택하면 주문 흐름이 시작됩니다." data-open=""><span data-i18n="startProject">START PROJECT ↗</span></button>
-<button class="play showreel-btn has-help" data-help="AVVM 샘플 영상을 크게 확인합니다." data-help-key="help3" data-help-ko="AVVM 샘플 영상을 크게 확인합니다." id="watchShowreel" type="button"><i>▶</i><span data-i18n="viewShowreel">VIEW SHOWREEL</span></button>
-</div>
 </div>
 <div class="hero-v5-bottom">
 <span class="mouse"></span>
@@ -233,7 +240,7 @@ window.addEventListener('error', function(e) {
 <div class="ba-status"><span data-i18n="baProcessTop">AI 메모리얼 리마스터</span><b data-i18n="baProcessBottom">정지된 과거 → 다시 달리는 기억</b></div>
 </div>
 <div class="ba-card ba-card--after">
-<video class="ba-output-video" autoplay loop muted playsinline preload="metadata" aria-label="Kkamsooni memorial restoration video">
+<video class="ba-output-video" controls loop muted playsinline preload="metadata" aria-label="Kkamsooni memorial restoration video">
   <source src="memorial-before-after.mp4" type="video/mp4"/>
 </video>
 <div class="ba-label" data-i18n="baOutputLabel">결과 · 깜순이가 다시 달려옵니다</div>
@@ -260,7 +267,7 @@ window.addEventListener('error', function(e) {
         <p data-i18n="proofPortraitCopy">평범한 인물 사진을 고급 패션 캠페인 무드의 짧은 영상으로 전환합니다.</p>
         <div class="proof-pair">
           <figure class="proof-frame proof-input"><img src="sample-editorial-input.png" alt="인물 에디토리얼 입력 사진" loading="lazy"/><figcaption><b>INPUT</b><span data-i18n="proofPortraitInput">평범한 인물 사진</span></figcaption></figure>
-          <figure class="proof-frame proof-output"><video class="proof-video" autoplay loop muted playsinline preload="none" aria-label="인물 에디토리얼 결과 영상"><source data-src="sample-editorial-output.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofPortraitOutput">패션 에디토리얼 영상</span></figcaption></figure>
+          <figure class="proof-frame proof-output"><video class="proof-video" controls loop muted playsinline preload="none" aria-label="인물 에디토리얼 결과 영상"><source data-src="sample-editorial-output.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofPortraitOutput">패션 에디토리얼 영상</span></figcaption></figure>
         </div>
       </article>
       <article class="proof-card" id="proof-memorial">
@@ -268,7 +275,7 @@ window.addEventListener('error', function(e) {
         <p data-i18n="proofMemorialCopy">오래된 사진 속 존재가 다시 움직이는 기억으로 이어집니다.</p>
         <div class="proof-pair">
           <figure class="proof-frame proof-input"><img src="memorial-before.jpg" alt="깜순이 메모리얼 입력 사진" loading="lazy"/><figcaption><b>INPUT</b><span data-i18n="proofMemorialInput">오래된 흑백 사진</span></figcaption></figure>
-          <figure class="proof-frame proof-output"><video class="proof-video" autoplay loop muted playsinline preload="none" aria-label="깜순이 메모리얼 복원 결과 영상"><source data-src="memorial-before-after.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofMemorialOutput">다시 움직이는 기억</span></figcaption></figure>
+          <figure class="proof-frame proof-output"><video class="proof-video" controls loop muted playsinline preload="none" aria-label="깜순이 메모리얼 복원 결과 영상"><source data-src="memorial-before-after.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofMemorialOutput">다시 움직이는 기억</span></figcaption></figure>
         </div>
       </article>
       <article class="proof-card" id="proof-product">
@@ -276,7 +283,7 @@ window.addEventListener('error', function(e) {
         <p data-i18n="proofProductCopy">평범한 제품 사진을 빛·카메라 무브먼트가 있는 광고 영상으로 제작합니다.</p>
         <div class="proof-pair">
           <figure class="proof-frame proof-input"><img src="sample-product-input-v2.png" alt="시계 제품 광고 입력 사진" loading="lazy"/><figcaption><b>INPUT</b><span data-i18n="proofProductInput">일반 제품 사진</span></figcaption></figure>
-          <figure class="proof-frame proof-output"><span class="proof-quality-badge">PREMIUM MASTER · WEB OPTIMIZED</span><video class="proof-video" autoplay loop muted playsinline preload="none" aria-label="시계 제품 광고 결과 영상"><source data-src="higgsfield-ultra-product.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofProductOutput">럭셔리 광고 영상</span></figcaption></figure>
+          <figure class="proof-frame proof-output"><span class="proof-quality-badge">PREMIUM MASTER · WEB OPTIMIZED</span><video class="proof-video" controls loop muted playsinline preload="none" aria-label="시계 제품 광고 결과 영상"><source data-src="higgsfield-ultra-product.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofProductOutput">럭셔리 광고 영상</span></figcaption></figure>
         </div>
       </article>
       <article class="proof-card">
@@ -292,7 +299,7 @@ window.addEventListener('error', function(e) {
         <p data-i18n="proofBeautyCopy">기본 제품 사진을 물성·빛·카메라 무브먼트가 있는 뷰티 필름으로 만듭니다.</p>
         <div class="proof-pair">
           <figure class="proof-frame proof-input"><img src="sample-beauty-input.jpg" alt="뷰티 광고 입력 사진" loading="lazy"/><figcaption><b>INPUT</b><span data-i18n="proofBeautyInput">기본 제품 사진</span></figcaption></figure>
-          <figure class="proof-frame proof-output"><video class="proof-video" autoplay loop muted playsinline preload="none" aria-label="뷰티 광고 결과 영상"><source data-src="sample-beauty-output-v2.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofBeautyOutput">리퀴드 뷰티 필름</span></figcaption></figure>
+          <figure class="proof-frame proof-output"><video class="proof-video" controls loop muted playsinline preload="none" aria-label="뷰티 광고 결과 영상"><source data-src="sample-beauty-output-v2.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofBeautyOutput">리퀴드 뷰티 필름</span></figcaption></figure>
         </div>
       </article>
       <article class="proof-card">
@@ -300,7 +307,7 @@ window.addEventListener('error', function(e) {
         <p data-i18n="proofFoodCopy">음식의 질감과 온도를 살린 짧은 메뉴·브랜드 필름을 제작합니다.</p>
         <div class="proof-pair">
           <figure class="proof-frame proof-input"><img src="sample-food-input.jpg" alt="푸드 광고 입력 사진" loading="lazy"/><figcaption><b>INPUT</b><span data-i18n="proofFoodInput">일반 음식 사진</span></figcaption></figure>
-          <figure class="proof-frame proof-output"><video class="proof-video" autoplay loop muted playsinline preload="none" aria-label="푸드 광고 결과 영상"><source data-src="sample-food-output.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofFoodOutput">시네마틱 푸드 필름</span></figcaption></figure>
+          <figure class="proof-frame proof-output"><video class="proof-video" controls loop muted playsinline preload="none" aria-label="푸드 광고 결과 영상"><source data-src="sample-food-output.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofFoodOutput">시네마틱 푸드 필름</span></figcaption></figure>
         </div>
       </article>
       <article class="proof-card" id="proof-travel">
@@ -308,7 +315,7 @@ window.addEventListener('error', function(e) {
         <p data-i18n="proofTravelCopy">인물 사진 한 장을 여행지와 스타일이 바뀌는 짧은 릴로 전환합니다.</p>
         <div class="proof-pair">
           <figure class="proof-frame proof-input"><img src="sample-editorial-input.png" alt="트래블 변신 입력 사진" loading="lazy"/><figcaption><b>INPUT</b><span data-i18n="proofTravelInput">일반 인물 사진</span></figcaption></figure>
-          <figure class="proof-frame proof-output"><video class="proof-video" autoplay loop muted playsinline preload="none" aria-label="트래블 변신 결과 영상"><source data-src="sample-travel-output.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofTravelOutput">여행 시네마 릴</span></figcaption></figure>
+          <figure class="proof-frame proof-output"><video class="proof-video" controls loop muted playsinline preload="none" aria-label="트래블 변신 결과 영상"><source data-src="sample-travel-output.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofTravelOutput">여행 시네마 릴</span></figcaption></figure>
         </div>
       </article>
       <article class="proof-card" id="proof-wedding">
@@ -316,7 +323,7 @@ window.addEventListener('error', function(e) {
         <p data-i18n="proofWeddingCopy">인물 사진을 바탕으로 의상·공간·빛을 정돈한 웨딩 무드 필름을 제작합니다.</p>
         <div class="proof-pair">
           <figure class="proof-frame proof-input"><img src="sample-editorial-input.png" alt="웨딩 필름 입력 사진" loading="lazy"/><figcaption><b>INPUT</b><span data-i18n="proofWeddingInput">일반 인물 사진</span></figcaption></figure>
-          <figure class="proof-frame proof-output"><video class="proof-video" autoplay loop muted playsinline preload="none" aria-label="웨딩 필름 결과 영상"><source data-src="sample-wedding-output.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofWeddingOutput">웨딩 에디토리얼 필름</span></figcaption></figure>
+          <figure class="proof-frame proof-output"><video class="proof-video" controls loop muted playsinline preload="none" aria-label="웨딩 필름 결과 영상"><source data-src="sample-wedding-output.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofWeddingOutput">웨딩 에디토리얼 필름</span></figcaption></figure>
         </div>
       </article>
       <article class="proof-card" id="proof-classic-restoration">
@@ -324,7 +331,7 @@ window.addEventListener('error', function(e) {
         <p data-i18n="proofClassicCopy">흑백 인물 사진의 질감과 표정을 살리고, 시대감은 유지한 채 움직임으로 되살립니다.</p>
         <div class="proof-pair">
           <figure class="proof-frame proof-input"><img src="sample-classic-actress-input.jpg" alt="고전 배우 복원 입력 사진" loading="lazy"/><figcaption><b>INPUT</b><span data-i18n="proofClassicInput">원본 고전 인물 사진</span></figcaption></figure>
-          <figure class="proof-frame proof-output"><video class="proof-video" autoplay loop muted playsinline preload="none" aria-label="고전 배우 복원 결과 영상"><source data-src="sample-classic-actress-output.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofClassicOutput">복원된 시네마틱 모션</span></figcaption></figure>
+          <figure class="proof-frame proof-output"><video class="proof-video" controls loop muted playsinline preload="none" aria-label="고전 배우 복원 결과 영상"><source data-src="sample-classic-actress-output.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofClassicOutput">복원된 시네마틱 모션</span></figcaption></figure>
         </div>
       </article>
       <article class="proof-card" id="proof-jewelry-design">
@@ -340,7 +347,7 @@ window.addEventListener('error', function(e) {
           <span class="jewelry-compare-divider" aria-hidden="true"><i>↔</i></span>
         </div>
         <div class="jewelry-flow-label"><span>SKETCH ↔ PHOTO</span><b>→</b><span>RING MOTION</span></div>
-        <figure class="proof-frame proof-output proof-jewelry-motion"><video class="proof-video" autoplay loop muted playsinline preload="none" poster="portfolio-jewelry-ring.png" aria-label="주얼리 디자인 매크로 영상"><source data-src="portfolio-jewelry-diamond.mp4?v=2" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofJewelryOutput">다이아몬드 반지 영상</span></figcaption></figure>
+        <figure class="proof-frame proof-output proof-jewelry-motion"><video class="proof-video" controls loop muted playsinline preload="none" poster="portfolio-jewelry-ring.png" aria-label="주얼리 디자인 매크로 영상"><source data-src="portfolio-jewelry-diamond.mp4?v=2" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofJewelryOutput">다이아몬드 반지 영상</span></figcaption></figure>
       </article>
     </div>
     <p class="proof-lab-notice" data-i18n="proofLabNotice">샘플은 이해를 돕기 위한 실제 제작 예시입니다. 사진의 초점·조명·구도와 선택한 스타일에 따라 결과는 달라질 수 있으며, AVVM은 최종 전달 전 품질을 검수합니다.</p>
@@ -448,7 +455,7 @@ window.addEventListener('error', function(e) {
 </div>
 </div>
 <div class="demo-card has-help" data-help="입력 이미지가 영화 장면으로 변환되는 대표 데모입니다." data-help-key="help11" data-help-ko="입력 이미지가 영화 장면으로 변환되는 대표 데모입니다.">
-<video autoplay="" class="demo-autoplay-video" id="demoWarriorVideo" loop="" muted="" playsinline="" poster="demo-warrior-refined.jpg" preload="auto" src="demo-warrior-refined.mp4"></video>
+<video autoplay="" class="demo-autoplay-video" data-main-motion="warrior" id="demoWarriorVideo" loop="" muted="" playsinline="" poster="demo-warrior-refined.jpg" preload="auto" src="demo-warrior-refined.mp4"></video>
 <div class="demo-card-caption">
 <div>
 <b>Transformation Demo</b>
@@ -499,7 +506,7 @@ window.addEventListener('error', function(e) {
 </div>
 </div>
 <div class="sample-card has-help" data-help="15초 뷰티 광고 샘플입니다. 물결, 제품, 피부 클로즈업 흐름을 확인하세요." data-help-key="help14" data-help-ko="15초 뷰티 광고 샘플입니다. 물결, 제품, 피부 클로즈업 흐름을 확인하세요.">
-<video autoplay="" loop="" muted="" playsinline="" poster="https://avvmstudio25.vercel.app/assets/posters/videos_sample-fancl-cleansing.jpg" preload="metadata" src="https://avvmstudio25.vercel.app/videos/sample-fancl-cleansing.mp4"></video>
+<video controls loop="" muted="" playsinline="" poster="https://avvmstudio25.vercel.app/assets/posters/videos_sample-fancl-cleansing.jpg" preload="metadata" src="https://avvmstudio25.vercel.app/videos/sample-fancl-cleansing.mp4"></video>
 <div class="sample-caption">
 <div>
 <b>Beauty Cleansing Oil</b>
@@ -660,39 +667,39 @@ window.addEventListener('error', function(e) {
 </div>
 <div class="portfolio-grid">
 <article class="portfolio-card has-help" id="portfolio-automotive" data-help="F1 레이싱과 공중 추적 드라이브 샘플입니다. 자동차/스포츠 브랜드용입니다." data-help-key="help20" data-help-ko="F1 레이싱과 공중 추적 드라이브 샘플입니다. 자동차/스포츠 브랜드용입니다.">
-<video autoplay="" loop="" muted="" playsinline="" poster="https://avvmstudio25.vercel.app/assets/posters/videos_portfolio_f1-aerial-drive.jpg" preload="metadata" src="https://avvmstudio25.vercel.app/videos/portfolio/f1-aerial-drive.mp4"></video>
+<video autoplay="" data-main-motion="f1" loop="" muted="" playsinline="" poster="https://avvmstudio25.vercel.app/assets/posters/videos_portfolio_f1-aerial-drive.jpg" preload="metadata" src="https://avvmstudio25.vercel.app/videos/portfolio/f1-aerial-drive.mp4"></video>
 <div class="portfolio-card-body"><small>AUTOMOTIVE</small><h3>F1 AERIAL DRIVE</h3><p data-i18n="portAuto"><span data-i18n="portAuto">공중 추적, 고속 코너링, 레이스 에너지를 보여주는 자동차 섹터 샘플입니다.</span></p></div>
 </article>
 <article class="portfolio-card has-help" data-help="전통 장인 이미지가 미래 도시 무드로 확장되는 문화/관광용 샘플입니다." data-help-key="help21" data-help-ko="전통 장인 이미지가 미래 도시 무드로 확장되는 문화/관광용 샘플입니다.">
-<video autoplay="" loop="" muted="" playsinline="" poster="https://avvmstudio25.vercel.app/assets/posters/videos_portfolio_heritage-future.jpg" preload="metadata" src="https://avvmstudio25.vercel.app/videos/portfolio/heritage-future.mp4"></video>
+<video controls loop="" muted="" playsinline="" poster="https://avvmstudio25.vercel.app/assets/posters/videos_portfolio_heritage-future.jpg" preload="metadata" src="https://avvmstudio25.vercel.app/videos/portfolio/heritage-future.mp4"></video>
 <div class="portfolio-card-body"><small>CULTURE</small><h3>HERITAGE TO FUTURE</h3><p data-i18n="portHeritage"><span data-i18n="portHeritage">전통 장인성과 미래 기술 이미지를 결합한 문화/관광 영상 샘플입니다.</span></p></div>
 </article>
 <article class="portfolio-card has-help" data-help="기업 홍보, 스타트업 소개, 서비스 소개 영상으로 활용할 수 있습니다." data-help-key="help22" data-help-ko="기업 홍보, 스타트업 소개, 서비스 소개 영상으로 활용할 수 있습니다.">
-<video autoplay="" loop="" muted="" playsinline="" poster="portfolio-business-film.jpg" preload="metadata" src="portfolio-business-film.mp4"></video>
+<video controls loop="" muted="" playsinline="" poster="portfolio-business-film.jpg" preload="metadata" src="portfolio-business-film.mp4"></video>
 <div class="portfolio-card-body"><small>BUSINESS</small><h3>CORPORATE FILM</h3><p data-i18n="portBusiness"><span data-i18n="portBusiness">기업, 서비스, 스타트업 소개에 맞는 짧은 비즈니스 영상 샘플입니다.</span></p></div>
 </article>
 <article class="portfolio-card has-help" data-help="인물의 표정, 피부 표현, 조명 무드를 활용한 뷰티 캠페인 영상 샘플입니다." data-help-key="help28" data-help-ko="인물의 표정, 피부 표현, 조명 무드를 활용한 뷰티 캠페인 영상 샘플입니다.">
-<video autoplay="" loop="" muted="" playsinline="" poster="portfolio-beauty-lifestyle.jpg" preload="metadata" src="portfolio-beauty-lifestyle.mp4"></video>
+<video controls loop="" muted="" playsinline="" poster="portfolio-beauty-lifestyle.jpg" preload="metadata" src="portfolio-beauty-lifestyle.mp4"></video>
 <div class="portfolio-card-body"><small>BEAUTY</small><h3>BEAUTY PERFORMANCE</h3><p data-i18n="portBeauty"><span data-i18n="portBeauty">인물의 표정·피부 표현·빛을 살린 뷰티 캠페인 영상 샘플입니다.</span></p></div>
 </article>
 <article class="portfolio-card has-help" data-help="축제, 지역행사, 이벤트 프로모션 샘플입니다." data-help-key="help23" data-help-ko="축제, 지역행사, 이벤트 프로모션 샘플입니다.">
-<video autoplay="" loop="" muted="" playsinline="" poster="https://avvmstudio25.vercel.app/assets/posters/videos_portfolio_festival-event.jpg" preload="metadata" src="https://avvmstudio25.vercel.app/videos/portfolio/festival-event.mp4"></video>
+<video controls loop="" muted="" playsinline="" poster="https://avvmstudio25.vercel.app/assets/posters/videos_portfolio_festival-event.jpg" preload="metadata" src="https://avvmstudio25.vercel.app/videos/portfolio/festival-event.mp4"></video>
 <div class="portfolio-card-body"><small>EVENT</small><h3>FESTIVAL FILM</h3><p data-i18n="portFestival"><span data-i18n="portFestival">불꽃, 야간 행사, 지역 축제 홍보에 맞는 이벤트 영상 샘플입니다.</span></p></div>
 </article>
 <article class="portfolio-card has-help" data-help="감성 드라마, 라이프스타일, 브랜드 스토리용 영상 샘플입니다." data-help-key="help24" data-help-ko="감성 드라마, 라이프스타일, 브랜드 스토리용 영상 샘플입니다.">
-<video autoplay="" loop="" muted="" playsinline="" poster="https://avvmstudio25.vercel.app/assets/posters/videos_portfolio_story-lifestyle.jpg" preload="metadata" src="https://avvmstudio25.vercel.app/videos/portfolio/story-lifestyle.mp4"></video>
+<video controls loop="" muted="" playsinline="" poster="https://avvmstudio25.vercel.app/assets/posters/videos_portfolio_story-lifestyle.jpg" preload="metadata" src="https://avvmstudio25.vercel.app/videos/portfolio/story-lifestyle.mp4"></video>
 <div class="portfolio-card-body"><small>STORY</small><h3>LIFESTYLE STORY</h3><p data-i18n="portStory"><span data-i18n="portStory">인물 감정과 분위기를 살린 라이프스타일/스토리형 영상 샘플입니다.</span></p></div>
 </article>
 <article class="portfolio-card has-help" data-help="경북/첨성대/한반도 네트워크 같은 문화 메타버스 확장 샘플입니다." data-help-key="help25" data-help-ko="경북/첨성대/한반도 네트워크 같은 문화 메타버스 확장 샘플입니다.">
-<video autoplay="" loop="" muted="" playsinline="" poster="https://avvmstudio25.vercel.app/assets/posters/videos_portfolio_culture-metaverse.jpg" preload="metadata" src="https://avvmstudio25.vercel.app/videos/portfolio/culture-metaverse.mp4"></video>
+<video controls loop="" muted="" playsinline="" poster="https://avvmstudio25.vercel.app/assets/posters/videos_portfolio_culture-metaverse.jpg" preload="metadata" src="https://avvmstudio25.vercel.app/videos/portfolio/culture-metaverse.mp4"></video>
 <div class="portfolio-card-body"><small>METAVERSE</small><h3>CULTURE NETWORK</h3><p data-i18n="portMetaverse"><span data-i18n="portMetaverse">지역 문화 상징이 디지털 네트워크와 결합되는 메타버스형 영상 샘플입니다.</span></p></div>
 </article>
-<article class="portfolio-card has-help" data-help="무대 퍼포먼스, 리듬감 있는 움직임, 조명 연출을 담은 뮤직비디오 샘플입니다." data-help-key="help26" data-help-ko="무대 퍼포먼스, 리듬감 있는 움직임, 조명 연출을 담은 뮤직비디오 샘플입니다.">
-<video autoplay="" loop="" muted="" playsinline="" poster="portfolio-action-dance.jpg" preload="metadata" src="portfolio-action-dance.mp4"></video>
+<article class="portfolio-card portfolio-card--portrait has-help" data-help="무대 퍼포먼스, 리듬감 있는 움직임, 조명 연출을 담은 뮤직비디오 샘플입니다." data-help-key="help26" data-help-ko="무대 퍼포먼스, 리듬감 있는 움직임, 조명 연출을 담은 뮤직비디오 샘플입니다.">
+<video controls loop="" muted="" playsinline="" poster="portfolio-action-dance.jpg" preload="metadata" src="portfolio-action-dance.mp4"></video>
 <div class="portfolio-card-body"><small>MUSIC VIDEO</small><h3>DANCE PERFORMANCE</h3><p data-i18n="portMusicVideo"><span data-i18n="portMusicVideo">무대 퍼포먼스와 리듬감 있는 카메라 무브먼트를 담은 뮤직비디오 샘플입니다.</span></p></div>
 </article>
 <article class="portfolio-card has-help" data-help="강한 액션감과 실험적인 장면 전환을 담은 격투·추격 영상 샘플입니다." data-help-key="help27" data-help-ko="강한 액션감과 실험적인 장면 전환을 담은 격투·추격 영상 샘플입니다.">
-<video autoplay="" loop="" muted="" playsinline="" poster="https://avvmstudio25.vercel.app/assets/posters/videos_portfolio_experimental-action.jpg" preload="metadata" src="https://avvmstudio25.vercel.app/videos/portfolio/experimental-action.mp4"></video>
+<video controls loop="" muted="" playsinline="" poster="https://avvmstudio25.vercel.app/assets/posters/videos_portfolio_experimental-action.jpg" preload="metadata" src="https://avvmstudio25.vercel.app/videos/portfolio/experimental-action.mp4"></video>
 <div class="portfolio-card-body"><small>ACTION</small><h3>EXPERIMENTAL ACTION</h3><p data-i18n="portAction"><span data-i18n="portAction">격투, 추격, 긴장감 있는 전환을 보여주는 실험적 액션 영상 샘플입니다.</span></p></div>
 </article>
 </div>
@@ -835,7 +842,7 @@ window.addEventListener('error', function(e) {
       </div>
       <div class="memorial-ba-card featured">
         <div class="memorial-ba-video-wrapper">
-          <video autoplay loop muted playsinline>
+          <video controls loop muted playsinline preload="metadata">
             <source src="memorial-kkamsooni.mp4" type="video/mp4">
           </video>
         </div>
@@ -944,7 +951,7 @@ window.addEventListener('error', function(e) {
       <div class="mini-eyebrow" data-i18n="webStudioEyebrow">SISTER BRAND · WEB-STUDIO</div>
       <h2 data-i18n="webStudioTitle">WATCH. JEWELRY.<br/>LIFESTYLE.</h2>
       <div class="web-studio-logo-motion">
-        <video autoplay loop muted playsinline preload="metadata" poster="web-studio-logo-original.jpg" aria-label="WEB-STUDIO logo transformation">
+        <video controls loop muted playsinline preload="metadata" poster="web-studio-logo-original.jpg" aria-label="WEB-STUDIO logo transformation">
           <source src="web-studio-logo-transform.mp4" type="video/mp4"/>
         </video>
         <span data-i18n="webStudioLogoTransform">기본 로고 → 크리스털 로고 변환</span>
@@ -954,13 +961,13 @@ window.addEventListener('error', function(e) {
     </div>
     <div class="web-studio-reels">
       <div class="web-studio-film">
-        <video autoplay controls loop muted playsinline preload="metadata" aria-label="WEB-STUDIO jewelry campaign film">
+        <video controls loop muted playsinline preload="metadata" aria-label="WEB-STUDIO jewelry campaign film">
           <source src="web-studio-jewelry.mp4" type="video/mp4"/>
         </video>
         <span class="web-studio-film-label" data-i18n="webStudioJewelryFilm">주얼리 캠페인 필름</span>
       </div>
       <div class="web-studio-film web-studio-hook-film">
-        <video autoplay controls loop muted playsinline preload="metadata" aria-label="WEB-STUDIO watch mechanism film">
+        <video controls loop muted playsinline preload="metadata" aria-label="WEB-STUDIO watch mechanism film">
           <source src="web-studio-watch.mp4" type="video/mp4"/>
         </video>
         <span class="web-studio-film-label" data-i18n="webStudioWatchFilm">시계 메커니즘 필름</span>
@@ -1682,52 +1689,110 @@ document.addEventListener('click', function (event) {
 </script>
 
 <script>
-/* Show one oversized phrase at a time, rebuilding it from a mosaic signal. */
+/* Each phrase grows from one-third scale through its own small mosaic pixels,
+   holds sharp for a beat, then breaks only its own pixels before the next one. */
 (function () {
+  const container = document.getElementById('hero-tagline-container');
   const promise = document.getElementById('heroPromise');
-  if (!promise) return;
+  const canvas = document.getElementById('hero-tagline-canvas');
+  if (!container || !promise || !canvas) return;
 
   const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-  const words = promise.querySelectorAll('.hero-tagline-word');
+  const phrases = [...promise.querySelectorAll('.hero-tagline-word')].map((word) => word.textContent.trim());
+  if (reduceMotion || !phrases.length) return;
 
-  words.forEach((word) => {
-    const text = word.textContent.trim();
-    word.setAttribute('aria-label', text);
-    word.textContent = '';
-    Array.from(text).forEach((character, index) => {
-      const glyph = document.createElement('span');
-      glyph.className = 'hero-tagline-char';
-      // Four short pixel phases make the complete phrase feel reconstructed,
-      // rather than typed one character at a time.
-      glyph.style.setProperty('--glyph-delay', `${(index % 4) * 36}ms`);
-      glyph.setAttribute('aria-hidden', 'true');
-      glyph.textContent = character === ' ' ? '\u00a0' : character;
-      word.appendChild(glyph);
-    });
-  });
-
-  if (reduceMotion) return;
-
+  const context = canvas.getContext('2d');
+  const pixels = document.createElement('canvas');
+  const pixelContext = pixels.getContext('2d');
+  const stageDuration = 1850;
+  const cycleDuration = stageDuration * phrases.length;
+  let width = 0;
+  let height = 0;
+  let frame = 0;
   let started = false;
-  const cycleDuration = 5600;
-  function play() {
-    promise.classList.remove('is-animated');
-    // Force a new animation timeline so every loop restarts at ONE IMAGE.
-    void promise.offsetWidth;
-    promise.classList.add('is-animated');
+  let startedAt = 0;
+
+  function resizeCanvas() {
+    const rect = container.getBoundingClientRect();
+    const density = Math.min(window.devicePixelRatio || 1, 2);
+    width = Math.max(1, Math.round(rect.width));
+    height = Math.max(1, Math.round(rect.height));
+    canvas.width = Math.round(width * density);
+    canvas.height = Math.round(height * density);
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
+    context.setTransform(density, 0, 0, density, 0, 0);
+    context.imageSmoothingEnabled = false;
+  }
+
+  function stageState(progress) {
+    // 1) a small pixelated arrival that grows clean, 2) a reading pause,
+    // 3) the letters alone pixelate and dissolve. No grid is painted behind.
+    if (progress < .30) {
+      const grow = progress / .30;
+      return { alpha: Math.min(1, grow * 1.7), pixel: Math.max(1, 12 - Math.round(grow * 11)), scale: .33 + grow * .67 };
+    }
+    if (progress < .54) return { alpha: 1, pixel: 1, scale: 1 };
+    if (progress < .87) {
+      const breakup = (progress - .54) / .33;
+      const stepped = Math.ceil(breakup * 12) / 12;
+      return { alpha: 1 - breakup * .30, pixel: 1 + Math.round(stepped * 17), scale: 1 };
+    }
+    const dissolve = (progress - .87) / .13;
+    return { alpha: .70 * (1 - dissolve), pixel: 18, scale: 1 };
+  }
+
+  function renderPhrase(phrase, phraseIndex, progress) {
+    if (!width || !height) return;
+    const state = stageState(progress);
+    const styles = getComputedStyle(promise);
+    let fontSize = (parseFloat(styles.fontSize) || 100) * (state.scale || 1);
+    const family = styles.fontFamily || 'Impact, sans-serif';
+    const color = phraseIndex === 1 ? '#d8f233' : '#f7f7f2';
+
+    context.clearRect(0, 0, width, height);
+    context.font = `400 ${fontSize}px ${family}`;
+    const measured = context.measureText(phrase).width;
+    if (measured > width - 4) fontSize *= (width - 4) / measured;
+
+    const cell = state.pixel;
+    pixels.width = Math.max(1, Math.ceil(width / cell));
+    pixels.height = Math.max(1, Math.ceil(height / cell));
+    pixelContext.clearRect(0, 0, pixels.width, pixels.height);
+    pixelContext.font = `400 ${fontSize / cell}px ${family}`;
+    pixelContext.textBaseline = 'alphabetic';
+    pixelContext.fillStyle = color;
+    pixelContext.fillText(phrase, 0, (height * .5 + fontSize * .29) / cell);
+
+    context.save();
+    context.globalAlpha = state.alpha;
+    context.imageSmoothingEnabled = false;
+    context.drawImage(pixels, 0, 0, width, height);
+    context.restore();
+  }
+
+  function animate(timestamp) {
+    if (!startedAt) startedAt = timestamp;
+    const elapsed = (timestamp - startedAt) % cycleDuration;
+    const phraseIndex = Math.floor(elapsed / stageDuration);
+    const progress = (elapsed % stageDuration) / stageDuration;
+    renderPhrase(phrases[phraseIndex], phraseIndex, progress);
+    frame = window.requestAnimationFrame(animate);
   }
 
   function startLoop() {
     if (started) return;
     started = true;
-    play();
-    window.setInterval(play, cycleDuration);
+    resizeCanvas();
+    container.classList.add('is-mosaic-active');
+    frame = window.requestAnimationFrame(animate);
   }
 
-  // Start only after the opening logo has fully cleared, so the first frame
-  // of the actual home page is always ONE IMAGE.
+  window.addEventListener('resize', resizeCanvas, { passive: true });
+  document.fonts?.ready?.then(resizeCanvas);
   document.addEventListener('avvm:hero-ready', () => window.setTimeout(startLoop, 980), { once: true });
   window.setTimeout(startLoop, 5200);
+  window.addEventListener('pagehide', () => window.cancelAnimationFrame(frame), { once: true });
 })();
 </script>
 
@@ -1821,6 +1886,34 @@ document.addEventListener('click', function (event) {
     }
   });
   resize();
+})();
+</script>
+
+<script>
+/* The desktop link row stays unchanged. On small screens this compact drawer
+   exposes the same destinations without squeezing the logo, language, or START. */
+(function () {
+  const toggle = document.getElementById('heroMobileMenuToggle');
+  const menu = document.getElementById('mobilePrimaryMenu');
+  if (!toggle || !menu) return;
+
+  function setMenu(open) {
+    menu.hidden = !open;
+    toggle.setAttribute('aria-expanded', String(open));
+  }
+
+  toggle.addEventListener('click', function () {
+    setMenu(menu.hidden);
+  });
+  menu.addEventListener('click', function (event) {
+    if (event.target.closest('a')) setMenu(false);
+  });
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape') setMenu(false);
+  });
+  window.addEventListener('resize', function () {
+    if (window.innerWidth > 780) setMenu(false);
+  }, { passive: true });
 })();
 </script>
 
