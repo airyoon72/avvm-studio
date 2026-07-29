@@ -189,10 +189,10 @@ window.addEventListener('error', function(e) {
 
 <!-- The hero promise remains as live text so it is visible on every device. -->
 <div id="hero-tagline-container">
-  <h1 class="hero-tagline-fallback" id="heroPromise" aria-label="한 장의 사진. 한 번의 클릭. 시네마틱스. 결과.">
+  <h1 class="hero-tagline-fallback" id="heroPromise" aria-label="한 장의 사진. 한 번의 클릭. 시네마틱. 결과.">
     <span class="hero-tagline-line" style="--line-delay:0ms"><span class="hero-tagline-word">한 장의 사진.</span></span>
     <span class="hero-tagline-line" style="--line-delay:1500ms"><span class="hero-tagline-word">한 번의 클릭.</span></span>
-    <span class="hero-tagline-line" style="--line-delay:3000ms"><span class="hero-tagline-word">시네마틱스.</span></span>
+    <span class="hero-tagline-line" style="--line-delay:3000ms"><span class="hero-tagline-word">시네마틱.</span></span>
     <span class="hero-tagline-line" style="--line-delay:4500ms"><span class="hero-tagline-word">결과.</span></span>
   </h1>
   <canvas aria-hidden="true" id="hero-tagline-canvas"></canvas>
@@ -1700,7 +1700,7 @@ document.addEventListener('click', function (event) {
 
   const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
   const phraseSets = {
-    ko: ['한 장의 사진.', '한 번의 클릭.', '시네마틱스.', '결과.'],
+    ko: ['한 장의 사진.', '한 번의 클릭.', '시네마틱.', '결과.'],
     en: ['ONE IMAGE.', 'ONE CLICK.', 'CINEMATIC.', 'RESULTS.'],
     ja: ['一枚の写真。', 'ワンクリック。', 'シネマ。', '結果。'],
     zh: ['一张照片。', '一次点击。', '电影感。', '结果。'],
