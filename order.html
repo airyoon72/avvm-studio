@@ -239,6 +239,13 @@
         document.getElementById('aspectVal').textContent = order.aspectRatio || '-';
         document.getElementById('resVal').textContent = order.resolution || '-';
 
+        const isIdPhotoOrder = order.fulfillmentType === 'id_photo' || ['ID Mini', 'ID Set', 'Profile Pro'].includes(order.plan);
+        if (isIdPhotoOrder) {
+          document.getElementById('styleName').textContent = 'ID PHOTO FILE';
+          document.getElementById('aspectVal').textContent = order.idSpec || '제출용 규격';
+          document.getElementById('resVal').textContent = 'JPG FILE · 24H DELIVERY';
+        }
+
         const statusLabel = document.getElementById('statusLabel');
         const localizedStatus = (status, fallback) => window.AVVM_I18N?.status?.(status) || fallback || status;
         if (order.status || order.statusKo) {
@@ -253,6 +260,19 @@
           const img = document.getElementById('orderImg');
           img.src = order.imageData;
           img.style.display = 'block';
+        }
+
+        if (isIdPhotoOrder) {
+          const delivery = document.createElement('section');
+          delivery.style.cssText = 'margin-top:24px; padding:18px; border:1px solid rgba(216,242,51,.28); border-radius:12px; background:rgba(216,242,51,.055); line-height:1.65;';
+          const title = document.createElement('div');
+          title.className = 'section-title';
+          title.textContent = '사진 파일 제작 접수';
+          const copy = document.createElement('p');
+          copy.style.cssText = 'font-size:12px; color:rgba(255,255,255,.72);';
+          copy.textContent = `${order.idSpec || '제출용'} 규격 JPG 파일을 검토·보정 후 24시간 내 전달합니다. 이 상품은 영상 생성 없이 사진 파일로 제작됩니다.`;
+          delivery.append(title, copy);
+          document.querySelector('.image-preview-section').insertAdjacentElement('afterend', delivery);
         }
 
         const videoSection = document.getElementById('videoPreviewSection');

@@ -1674,7 +1674,38 @@ function makeVideoPrompt(order){
   return `${direction || fallback} Source brand or owner: ${String(order.brand||'AVVM')}. Keep the result photorealistic, stable, and production-ready.`;
 }
 
+function isIdPhotoPlan(plan){
+  return ['ID Mini','ID Set','Profile Pro'].includes(String(plan || '').trim());
+}
+
+function renderIdPhotoDeliveryTracker(container, order){
+  if(!container) return;
+  const korean=isKoreanOrderUi();
+  const idSpec=escapeHtml(order.idSpec || (korean ? '제출용 규격' : 'ID photo specification'));
+  const title=korean ? '사진 파일 제작 접수' : 'ID PHOTO FILE REQUESTED';
+  const copy=korean
+    ? `${idSpec} 규격 JPG 파일을 검토·보정 후 24시간 내 전달합니다. 이 상품은 영상 생성 없이 사진 파일로 제작됩니다.`
+    : `Your ${idSpec} JPG file will be reviewed, prepared, and delivered within 24 hours. This product is a photo-file service, not a video generation.`;
+  container.innerHTML=`
+    <div class="production-tracker-head">
+      <span>ID PHOTO FILE</span>
+      <b>${korean ? 'FILE REVIEW' : 'FILE REVIEW'}</b>
+    </div>
+    <div class="production-tracker-line"><i style="width:38%"></i></div>
+    <div class="production-tracker-steps" aria-label="Photo file production progress">
+      <span class="is-complete">SOURCE</span>
+      <span class="is-active">SPEC CHECK</span>
+      <span>RETOUCH</span>
+      <span>DELIVERY</span>
+    </div>
+    <div id="videoProgressLabel" class="production-tracker-copy"><b>${title}</b><br/>${copy}</div>
+  `;
+}
+
 async function requestVideoGeneration(order){
+  if(isIdPhotoPlan(order?.plan)) {
+    throw new Error('ID·Profile 상품은 영상 생성 대상이 아닙니다. 사진 파일 제작으로 접수됩니다.');
+  }
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 60000);
   try {
@@ -1835,23 +1866,31 @@ async function proceedWithOrderCreation(orderId, brand, email, phone, privacyCon
       serverVerified:false
     },
     notificationMethod:'kakao_or_sms',
+    fulfillmentType:isIdPhotoPlan(window.selectedPlan) ? 'id_photo' : 'video',
     viewUrl: location.origin + '/order.html?t=' + token
   };
 
   let requestId = null, apiError = null;
+  const isIdPhotoOrder=isIdPhotoPlan(draft.plan);
 
-  try {
-    const dataGen = await requestVideoGeneration(draft);
-    requestId = dataGen.requestId;
-    draft.requestId = requestId;
-    draft.statusUrl = dataGen.statusUrl;
-    draft.responseUrl = dataGen.responseUrl;
-    draft.status = 'processing';
-    draft.statusKo = '영상 제작 중';
-    updateProductionTracker('queue',22,tr('statusQueued', 'AI 제작 대기열에 연결되었습니다.'));
-  } catch (err) {
-    apiError = err.message || '네트워크 요청이 실패했습니다.';
-    console.error('Failed to start video generation API:', err);
+  if(isIdPhotoOrder) {
+    draft.status='file_review';
+    draft.statusKo='사진 파일 제작 접수';
+    renderIdPhotoDeliveryTracker(progressDiv,draft);
+  } else {
+    try {
+      const dataGen = await requestVideoGeneration(draft);
+      requestId = dataGen.requestId;
+      draft.requestId = requestId;
+      draft.statusUrl = dataGen.statusUrl;
+      draft.responseUrl = dataGen.responseUrl;
+      draft.status = 'processing';
+      draft.statusKo = '영상 제작 중';
+      updateProductionTracker('queue',22,tr('statusQueued', 'AI 제작 대기열에 연결되었습니다.'));
+    } catch (err) {
+      apiError = err.message || '네트워크 요청이 실패했습니다.';
+      console.error('Failed to start video generation API:', err);
+    }
   }
 
   draft.viewUrl = location.origin + '/order.html?t=' + draft.token;
@@ -1859,8 +1898,13 @@ async function proceedWithOrderCreation(orderId, brand, email, phone, privacyCon
 
   if($('#successOrderId')) $('#successOrderId').textContent='ORDER #' + draft.orderId;
   const view=$('#viewOrderLink'); if(view){ view.href=draft.viewUrl; }
-  const copy=$('#orderLinkCopy'); if(copy){ copy.textContent='주문 및 결제가 완료되었습니다.'; copy.dataset.customized='1'; }
-  toast(tr('orderComplete', '주문 접수 완료 ✓'));
+  const copy=$('#orderLinkCopy'); if(copy){
+    copy.textContent=isIdPhotoOrder
+      ? tr('idPhotoOrderComplete', '사진 파일 제작이 접수되었습니다. 24시간 내 전달해 드립니다.')
+      : tr('orderCompleteCopy', '주문 및 결제가 완료되었습니다.');
+    copy.dataset.customized='1';
+  }
+  toast(isIdPhotoOrder ? tr('idPhotoOrderComplete', '사진 파일 제작 접수 ✓') : tr('orderComplete', '주문 접수 완료 ✓'));
 
   if (requestId) {
     startPolling(requestId, draft.token);
@@ -2065,6 +2109,14 @@ function showDetailedFailure(errorMessage, token, container) {
       </div>
     `;
     const order = JSON.parse(localStorage.getItem('avvmOrder_' + token) || '{}');
+    if(isIdPhotoPlan(order.plan)) {
+      order.requestId = '';
+      order.status = 'file_review';
+      order.statusKo = '사진 파일 제작 접수';
+      saveOrderUpdate(order);
+      renderIdPhotoDeliveryTracker(container, order);
+      return;
+    }
     if (order.imageData) {
       try {
         const dataGen = await requestVideoGeneration(order);
