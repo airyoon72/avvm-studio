@@ -6121,32 +6121,41 @@ body.modal-open{
 /* The main hero promise was previously rendered only through an empty canvas.
    Keep it as live type so it cannot disappear on mobile or after a reload. */
 #hero-tagline-container {
-  height: auto !important;
-  min-height: 180px;
+  height: clamp(160px, 16vw, 270px) !important;
+  min-height: 160px;
   margin-bottom: 20px;
 }
 #hero-tagline-canvas {
   display: none !important;
 }
 .hero-tagline-fallback {
-  display: grid;
-  gap: .035em;
+  position: relative;
+  display: block;
+  height: 100%;
   width: 100%;
   margin: 0;
   color: #fff;
   font-family: "Bebas Neue", Impact, sans-serif;
-  font-size: clamp(48px, 7.2vw, 104px);
+  font-size: clamp(76px, 13.2vw, 200px);
   font-weight: 400;
-  line-height: .84;
-  letter-spacing: .018em;
+  line-height: .8;
+  letter-spacing: .012em;
   text-transform: uppercase;
   text-shadow: 0 18px 62px rgba(0,0,0,.82), 0 2px 12px rgba(0,0,0,.5);
 }
 .hero-tagline-line {
-  position: relative;
+  position: absolute;
+  top: 50%;
+  left: 0;
   display: block;
   width: max-content;
   max-width: 100%;
+  translate: 0 -50%;
+  transform-origin: left center;
+}
+.hero-tagline-line:nth-child(3) {
+  font-size: .78em;
+  letter-spacing: .02em;
 }
 .hero-tagline-word {
   display: inline-flex;
@@ -6162,32 +6171,34 @@ body.modal-open{
   color: var(--lime, #d8f233);
 }
 .hero-tagline-fallback.is-animated .hero-tagline-char {
-  opacity: .22;
-  filter: brightness(2.8) blur(1.5px);
-  transform: translateY(.035em) scaleX(.92);
-  animation: avvmHeroGlyphBoot .66s steps(3, end) forwards;
+  opacity: 0;
+  filter: brightness(2.4) blur(2px);
+  transform: translate3d(0, .08em, 0) scale(.58);
+  animation: avvmHeroGlyphMosaic .66s steps(4, end) forwards;
   animation-delay: calc(var(--line-delay) + var(--glyph-delay));
 }
 .hero-tagline-fallback.is-animated .hero-tagline-line {
   opacity: 0;
-  transform: scaleX(.82);
-  transform-origin: left center;
-  filter: brightness(2.6) blur(2px);
-  animation: avvmHeroLineBoot .2s steps(2, end) forwards;
+  filter: brightness(2.8) contrast(1.7) blur(10px);
+  transform: scale(.84);
+  animation: avvmHeroPhraseMosaic 1.5s steps(4, end) both;
   animation-delay: var(--line-delay);
 }
 .hero-tagline-fallback.is-animated .hero-tagline-line::before {
   position: absolute;
   z-index: 2;
-  inset: -.13em -.08em;
+  inset: -.11em -.06em;
   content: "";
   pointer-events: none;
-  background: linear-gradient(90deg, transparent 0 34%, rgba(216,242,51,0) 41%, rgba(216,242,51,.88) 49%, rgba(255,255,255,.96) 50%, rgba(216,242,51,.88) 51%, rgba(216,242,51,0) 59%, transparent 66%);
+  background:
+    repeating-linear-gradient(90deg, rgba(216,242,51,.68) 0 10px, rgba(255,255,255,.08) 10px 19px, transparent 19px 28px),
+    repeating-linear-gradient(0deg, rgba(255,255,255,.42) 0 8px, transparent 8px 17px);
   mix-blend-mode: screen;
   opacity: 0;
-  transform: translateX(-115%) skewX(-16deg);
-  animation: avvmHeroSignalScan .58s linear forwards;
-  animation-delay: calc(var(--line-delay) + 72ms);
+  transform: scaleX(.12);
+  transform-origin: left center;
+  animation: avvmHeroMosaicSweep .78s steps(5, end) both;
+  animation-delay: calc(var(--line-delay) + 20ms);
 }
 .hero-tagline-fallback.is-animated .hero-tagline-line::after {
   position: absolute;
@@ -6201,24 +6212,26 @@ body.modal-open{
   background: currentColor;
   box-shadow: 0 0 14px currentColor;
   opacity: .72;
-  animation: avvmHeroLineIgnite .58s cubic-bezier(.16, 1, .3, 1) forwards;
-  animation-delay: calc(var(--line-delay) + 680ms);
+  animation: avvmHeroLineIgnite .62s steps(4, end) forwards;
+  animation-delay: calc(var(--line-delay) + 610ms);
 }
-@keyframes avvmHeroLineBoot {
-  0% { opacity: 0; transform: scaleX(.82); filter: brightness(2.6) blur(2px); }
-  100% { opacity: 1; transform: scaleX(1); filter: brightness(1) blur(0); }
+@keyframes avvmHeroPhraseMosaic {
+  0% { opacity: 0; filter: brightness(2.8) contrast(1.7) blur(10px); transform: scale(.84); }
+  13% { opacity: 1; filter: brightness(2.4) contrast(1.45) blur(3px); transform: scale(.97); }
+  30%, 70% { opacity: 1; filter: brightness(1) contrast(1) blur(0); transform: scale(1); }
+  100% { opacity: 0; filter: brightness(2.1) contrast(1.45) blur(7px); transform: scale(1.045); }
 }
-@keyframes avvmHeroGlyphBoot {
-  0% { opacity: .22; filter: brightness(2.8) blur(1.5px); transform: translateY(.035em) scaleX(.92); }
-  34% { opacity: 1; filter: brightness(1.9) blur(0); transform: translateY(-.025em) scaleX(1.055); }
-  68% { opacity: .75; filter: brightness(.86) blur(0); transform: translateY(.015em) scaleX(.98); }
-  100% { opacity: 1; filter: brightness(1) blur(0); transform: translateY(0) scaleX(1); }
+@keyframes avvmHeroGlyphMosaic {
+  0% { opacity: 0; filter: brightness(2.4) blur(2px); transform: translate3d(0, .08em, 0) scale(.58); }
+  40% { opacity: 1; filter: brightness(1.75) blur(0); transform: translate3d(0, -.035em, 0) scale(1.06); }
+  72% { opacity: .76; filter: brightness(.84) blur(0); transform: translate3d(0, .015em, 0) scale(.98); }
+  100% { opacity: 1; filter: brightness(1) blur(0); transform: translate3d(0, 0, 0) scale(1); }
 }
-@keyframes avvmHeroSignalScan {
-  0% { opacity: 0; transform: translateX(-115%) skewX(-16deg); }
-  12% { opacity: 1; }
-  78% { opacity: .72; }
-  100% { opacity: 0; transform: translateX(115%) skewX(-16deg); }
+@keyframes avvmHeroMosaicSweep {
+  0% { opacity: 0; transform: scaleX(.12); }
+  18% { opacity: .96; }
+  64% { opacity: .42; transform: scaleX(1); }
+  100% { opacity: 0; transform: scaleX(1); }
 }
 @keyframes avvmHeroLineIgnite {
   from { transform: scaleX(0); opacity: 0; }
@@ -6226,19 +6239,27 @@ body.modal-open{
 }
 @media (max-width: 780px) {
   #hero-tagline-container {
-    min-height: 126px;
+    height: 138px !important;
+    min-height: 138px;
     margin-bottom: 12px;
   }
   .hero-tagline-fallback {
-    gap: .06em;
-    font-size: clamp(36px, 9.4vw, 60px);
+    font-size: clamp(48px, 14.4vw, 58px);
     line-height: .86;
     letter-spacing: .01em;
   }
+  .hero-tagline-line:nth-child(3) { font-size: .88em; }
+}
+@media (max-width: 360px) {
+  .hero-tagline-fallback { font-size: 46px; }
+  .hero-tagline-line:nth-child(3) { font-size: .84em; }
 }
 @media (prefers-reduced-motion: reduce) {
+  .hero-tagline-fallback .hero-tagline-line:not(:first-child) { display: none; }
+  .hero-tagline-fallback .hero-tagline-line,
   .hero-tagline-fallback.is-animated .hero-tagline-char,
-  .hero-tagline-fallback.is-animated .hero-tagline-line::after {
+  .hero-tagline-fallback.is-animated .hero-tagline-line::after,
+  .hero-tagline-fallback.is-animated .hero-tagline-line::before {
     animation: none !important;
     filter: none !important;
     opacity: 1 !important;

@@ -37,7 +37,7 @@ window.addEventListener('error', function(e) {
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=Inter:wght@400;500;600;700;800;900&amp;family=Cormorant+Garamond:ital,wght@1,700;1,900&amp;display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="style.css?v=53"/>
+<link rel="stylesheet" href="style.css?v=54"/>
 <style>
 /* AVVM v31 review-safe additions */
 .option-chip.disabled,
@@ -180,8 +180,8 @@ window.addEventListener('error', function(e) {
 <div id="hero-tagline-container">
   <h1 class="hero-tagline-fallback" id="heroPromise" aria-label="ONE IMAGE. ONE CLICK. CINEMATIC RESULTS.">
     <span class="hero-tagline-line" style="--line-delay:0ms"><span class="hero-tagline-word">ONE IMAGE.</span></span>
-    <span class="hero-tagline-line" style="--line-delay:920ms"><span class="hero-tagline-word">ONE CLICK.</span></span>
-    <span class="hero-tagline-line" style="--line-delay:1840ms"><span class="hero-tagline-word">CINEMATIC RESULTS.</span></span>
+    <span class="hero-tagline-line" style="--line-delay:1750ms"><span class="hero-tagline-word">ONE CLICK.</span></span>
+    <span class="hero-tagline-line" style="--line-delay:3500ms"><span class="hero-tagline-word">CINEMATIC RESULTS.</span></span>
   </h1>
   <canvas aria-hidden="true" id="hero-tagline-canvas"></canvas>
 </div>
@@ -1682,7 +1682,7 @@ document.addEventListener('click', function (event) {
 </script>
 
 <script>
-/* Reveal the hero promise as three digital typography beats. */
+/* Show one oversized phrase at a time, rebuilding it from a mosaic signal. */
 (function () {
   const promise = document.getElementById('heroPromise');
   if (!promise) return;
@@ -1697,9 +1697,9 @@ document.addEventListener('click', function (event) {
     Array.from(text).forEach((character, index) => {
       const glyph = document.createElement('span');
       glyph.className = 'hero-tagline-char';
-      // Keep each phrase whole: only a tiny three-phase digital ripple runs
-      // through its letters after the complete word has appeared.
-      glyph.style.setProperty('--glyph-delay', `${(index % 3) * 28}ms`);
+      // Four short pixel phases make the complete phrase feel reconstructed,
+      // rather than typed one character at a time.
+      glyph.style.setProperty('--glyph-delay', `${(index % 4) * 36}ms`);
       glyph.setAttribute('aria-hidden', 'true');
       glyph.textContent = character === ' ' ? '\u00a0' : character;
       word.appendChild(glyph);
@@ -1709,7 +1709,7 @@ document.addEventListener('click', function (event) {
   if (reduceMotion) return;
 
   let started = false;
-  const cycleDuration = 5000;
+  const cycleDuration = 5600;
   function play() {
     promise.classList.remove('is-animated');
     // Force a new animation timeline so every loop restarts at ONE IMAGE.
