@@ -37,7 +37,7 @@ window.addEventListener('error', function(e) {
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=Inter:wght@400;500;600;700;800;900&amp;family=Cormorant+Garamond:ital,wght@1,700;1,900&amp;display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="style.css?v=50"/>
+<link rel="stylesheet" href="style.css?v=51"/>
 <style>
 /* AVVM v31 review-safe additions */
 .option-chip.disabled,
@@ -176,9 +176,14 @@ window.addEventListener('error', function(e) {
 </div>
 <div class="hero-v5-content">
 
-<!-- Interactive Canvas Tagline Reveal -->
+<!-- The hero promise remains as live text so it is visible on every device. -->
 <div id="hero-tagline-container">
-    <canvas id="hero-tagline-canvas"></canvas>
+  <h1 class="hero-tagline-fallback" aria-label="ONE IMAGE. ONE CLICK. CINEMATIC RESULTS.">
+    <span>ONE IMAGE.</span>
+    <span>ONE CLICK.</span>
+    <span>CINEMATIC RESULTS.</span>
+  </h1>
+  <canvas aria-hidden="true" id="hero-tagline-canvas"></canvas>
 </div>
 <p class="hero-v5-sub" id="heroSubText"><span data-i18n="heroSub">Premium commercial videos from a single image.</span></p>
 

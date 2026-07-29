@@ -6117,3 +6117,43 @@ body.modal-open{
     box-sizing: border-box !important;
   }
 }
+
+/* The main hero promise was previously rendered only through an empty canvas.
+   Keep it as live type so it cannot disappear on mobile or after a reload. */
+#hero-tagline-container {
+  height: auto !important;
+  min-height: 180px;
+  margin-bottom: 20px;
+}
+#hero-tagline-canvas {
+  display: none !important;
+}
+.hero-tagline-fallback {
+  display: grid;
+  gap: .035em;
+  width: 100%;
+  margin: 0;
+  color: #fff;
+  font-family: "Bebas Neue", Impact, sans-serif;
+  font-size: clamp(48px, 7.2vw, 104px);
+  font-weight: 400;
+  line-height: .84;
+  letter-spacing: .018em;
+  text-transform: uppercase;
+  text-shadow: 0 18px 62px rgba(0,0,0,.82), 0 2px 12px rgba(0,0,0,.5);
+}
+.hero-tagline-fallback span:nth-child(2) {
+  color: var(--lime, #d8f233);
+}
+@media (max-width: 780px) {
+  #hero-tagline-container {
+    min-height: 126px;
+    margin-bottom: 12px;
+  }
+  .hero-tagline-fallback {
+    gap: .06em;
+    font-size: clamp(36px, 9.4vw, 60px);
+    line-height: .86;
+    letter-spacing: .01em;
+  }
+}
