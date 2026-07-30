@@ -229,11 +229,43 @@ function updatePhotoUploadLabel(){
    touchpoint. Photo remains the best source for image-based plans; voice and
    typing create the same editable production brief without trapping the user
    in a separate flow. */
-const projectInputState = { mode: 'photo', recognition: null };
+const projectInputState = {
+  mode: 'photo',
+  recognition: null,
+  voiceTranscript: { state: 'idle', text: '' }
+};
 
 function projectSpeechLanguage(){
   const language = localStorage.getItem('avvmLang') || 'ko';
   return ({ ko:'ko-KR', en:'en-US', ja:'ja-JP', zh:'zh-CN', es:'es-ES', fr:'fr-FR', de:'de-DE', pt:'pt-PT', hi:'hi-IN', ar:'ar-SA' })[language] || 'en-US';
+}
+
+function renderProjectVoiceTranscript(){
+  const card = $('#voiceTranscriptCard');
+  if (!card) return;
+  const visible = projectInputState.mode === 'voice';
+  card.hidden = !visible;
+  if (!visible) return;
+
+  const status = $('#voiceTranscriptStatus');
+  const output = $('#voiceTranscriptText');
+  const voice = projectInputState.voiceTranscript || { state: 'idle', text: '' };
+  const copy = {
+    idle: ['inputMethodVoicePreparing', 'Your voice request is ready to start.'],
+    listening: ['inputMethodVoiceListening', 'Listening to your request now.'],
+    recognizing: ['inputMethodVoiceRecognized', 'Recognised request'],
+    complete: ['inputMethodVoiceAdded', 'Added to your production request'],
+    retry: ['inputMethodVoiceRetry', 'We could not hear a request. Try again or type it instead.']
+  }[voice.state] || ['inputMethodVoicePreparing', 'Your voice request is ready to start.'];
+
+  card.dataset.voiceState = voice.state;
+  if (status) status.textContent = tr(copy[0], copy[1]);
+  if (output) output.textContent = voice.text || tr('inputMethodVoiceTranscriptPlaceholder', 'What you say will appear here in real time.');
+}
+
+function setProjectVoiceTranscript(state, text = ''){
+  projectInputState.voiceTranscript = { state, text: String(text || '').trim() };
+  renderProjectVoiceTranscript();
 }
 
 function updateProjectInputMethod(){
@@ -247,6 +279,7 @@ function updateProjectInputMethod(){
   if (!note) return;
   const key = mode === 'typing' ? 'inputMethodNoteTyping' : mode === 'voice' ? 'inputMethodNoteVoice' : 'inputMethodNotePhoto';
   note.textContent = tr(key, 'Start your production request in the way that feels easiest.');
+  renderProjectVoiceTranscript();
 }
 
 function revealProjectBrief(){
@@ -256,15 +289,17 @@ function revealProjectBrief(){
   return field;
 }
 
-function finishProjectVoiceInput(hasTranscript){
+function finishProjectVoiceInput(transcript = ''){
   const button = $('.input-method-card[data-input-mode="voice"]');
   button?.classList.remove('is-listening');
   projectInputState.recognition = null;
   const note = $('#inputMethodNote');
   if (!note) return;
-  if (hasTranscript) {
+  if (transcript.trim()) {
+    setProjectVoiceTranscript('complete', transcript);
     note.textContent = tr('inputMethodVoiceComplete', 'Your voice request has been added.');
   } else if (projectInputState.mode === 'voice') {
+    setProjectVoiceTranscript('retry');
     note.textContent = tr('inputMethodVoiceRetry', 'We could not hear a request. Try again or type it instead.');
   }
 }
@@ -283,7 +318,9 @@ function startProjectVoiceInput(){
     return;
   }
 
-  const field = revealProjectBrief();
+  /* Keep the user at the voice card while they speak. The transcript below
+     appears in place, and the request field is filled silently in parallel. */
+  const field = $('#moodInput');
   if (!field) return;
   const recognition = new SpeechRecognition();
   const initialValue = String(field.value || '').trim();
@@ -292,6 +329,7 @@ function startProjectVoiceInput(){
   recognition.interimResults = true;
   recognition.continuous = false;
   recognition.maxAlternatives = 1;
+  setProjectVoiceTranscript('listening');
   recognition.onresult = event => {
     let finalText = '';
     let interimText = '';
@@ -304,6 +342,7 @@ function startProjectVoiceInput(){
     const current = `${transcript} ${interimText}`.trim();
     field.value = [initialValue, current].filter(Boolean).join(initialValue && current ? '\n' : '');
     field.dispatchEvent(new Event('input', { bubbles: true }));
+    setProjectVoiceTranscript(current ? 'recognizing' : 'listening', current);
   };
   recognition.onerror = event => {
     if (event.error !== 'aborted' && event.error !== 'no-speech') {
@@ -312,12 +351,12 @@ function startProjectVoiceInput(){
       toast(tr('inputMethodVoiceUnavailable', 'Voice input is not supported in this browser. Please type your request instead.'));
     }
   };
-  recognition.onend = () => finishProjectVoiceInput(Boolean(transcript));
+  recognition.onend = () => finishProjectVoiceInput(transcript);
   projectInputState.recognition = recognition;
   $('.input-method-card[data-input-mode="voice"]')?.classList.add('is-listening');
   updateProjectInputMethod();
   try { recognition.start(); }
-  catch(error) { finishProjectVoiceInput(false); }
+  catch(error) { finishProjectVoiceInput(); }
 }
 
 function setProjectInputMode(mode, options = {}){
@@ -339,6 +378,9 @@ function setProjectInputMode(mode, options = {}){
 
 $$('.input-method-card').forEach(button => {
   button.addEventListener('click', () => setProjectInputMode(button.dataset.inputMode, { openPicker: button.dataset.inputMode === 'photo' }));
+});
+$$('[data-voice-edit]').forEach(button => {
+  button.addEventListener('click', () => setProjectInputMode('typing'));
 });
 document.addEventListener('avvm:languagechange', updateProjectInputMethod);
 updateProjectInputMethod();

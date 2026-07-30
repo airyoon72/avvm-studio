@@ -187,6 +187,17 @@
     afterPromptTitle: 'Search for the AFTER you want', afterPromptHint: 'e.g. natural wedding editorial, hair change, atmospheric café, bright profile', afterPromptSearchPlaceholder: 'Describe the change, style, or scene you have in mind', afterPromptCreate: 'BUILD PROMPT', afterPromptModeLabel: 'DIRECTION', afterPromptModeCinematic: 'CINEMATIC', afterPromptModeCommercial: 'COMMERCIAL', afterPromptModeEmotional: 'EMOTIONAL', afterPromptQuickWedding: 'Wedding editorial', afterPromptQuickProfile: 'Profile upgrade', afterPromptQuickInterior: 'Space styling', afterPromptQuickPet: 'Pet portrait', afterPromptResultTitle: 'Generated production prompts', afterPromptImage: 'IMAGE PROMPT', afterPromptVideo: 'AUTO REEL PROMPT', afterPromptNegative: 'NEGATIVE / GUARDRAILS', afterPromptCopy: 'COPY', afterPromptApply: 'APPLY TO AI AFTER', afterPromptNeedIntent: 'Describe the change or scene you want first.', afterPromptApplied: 'Generated prompt applied to your AFTER request.', afterPromptCopied: 'COPIED ✓'
   });
 
+  Object.assign(en, {
+    inputMethodVoiceTranscript: 'VOICE TRANSCRIPT',
+    inputMethodVoicePreparing: 'Your voice request is ready to start.',
+    inputMethodVoiceListening: 'Listening to your request now.',
+    inputMethodVoiceTranscriptPlaceholder: 'What you say will appear here in real time.',
+    inputMethodVoiceRecognized: 'Recognised request',
+    inputMethodVoiceAdded: 'Added to your production request',
+    inputMethodVoiceSync: 'The same words are also added to the production-request field below.',
+    inputMethodVoiceEdit: 'EDIT REQUEST ↓'
+  });
+
   const ko = {
     footerService: '서비스', footerTerms: '이용약관', footerPrivacy: '개인정보처리방침', footerRefund: '환불정책', footerDelivery: '디지털 제공 안내', footerBusiness: '사업자 정보',
     paymentOpening: '결제창을 여는 중...', optimizingImage: '사진 최적화 중...', attachPhoto: '사진 첨부하기', acceptedImageTypes: 'JPG, PNG, WEBP 등 이미지 파일', imageRequired: '영상 제작에 사용할 사진을 첨부해주세요.', imageType: 'JPG, PNG 또는 WEBP 형식의 사진만 사용할 수 있습니다.', imageSize: '사진 원본은 15MB 이하로 선택해주세요.',
@@ -231,6 +242,17 @@
     baPreviewTitle: 'BEFORE와 AI AFTER 시안 확인', baPreviewCopy: '결제 전에는 워터마크가 포함된 저해상도 시안만 확인할 수 있습니다. 결제 후 워터마크 없는 AFTER 소스로 전환 영상을 제작합니다.', baPreviewWatermark: 'AVVM · AI CONCEPT PREVIEW · 결제 후 클린 소스 제공', baPreviewPlay: '전환 미리보기 ▶',
     afterPromptTitle: '원하는 애프터를 검색하세요', afterPromptHint: '예: 자연스러운 웨딩 화보, 헤어 변신, 분위기 있는 카페, 밝은 프로필', afterPromptSearchPlaceholder: '생각하는 변화·스타일·장면을 입력하세요', afterPromptCreate: '프롬프트 만들기', afterPromptModeLabel: '연출 톤', afterPromptModeCinematic: '시네마틱', afterPromptModeCommercial: '커머셜', afterPromptModeEmotional: '감성', afterPromptQuickWedding: '웨딩 화보', afterPromptQuickProfile: '프로필 업그레이드', afterPromptQuickInterior: '공간 스타일링', afterPromptQuickPet: '반려동물 포트레이트', afterPromptResultTitle: '생성된 제작 프롬프트', afterPromptImage: '이미지 프롬프트', afterPromptVideo: 'AUTO REEL 프롬프트', afterPromptNegative: '제한 / 가드레일', afterPromptCopy: '복사', afterPromptApply: 'AI AFTER에 적용', afterPromptNeedIntent: '원하는 변화나 장면을 먼저 입력해주세요.', afterPromptApplied: '생성된 프롬프트를 AFTER 요청에 적용했습니다.', afterPromptCopied: '복사 완료 ✓'
   };
+
+  Object.assign(ko, {
+    inputMethodVoiceTranscript: '음성 인식',
+    inputMethodVoicePreparing: '말씀하신 내용을 들을 준비가 되었습니다.',
+    inputMethodVoiceListening: '말씀하신 내용을 듣고 있습니다.',
+    inputMethodVoiceTranscriptPlaceholder: '말한 내용이 여기에 실시간으로 표시됩니다.',
+    inputMethodVoiceRecognized: '인식된 요청',
+    inputMethodVoiceAdded: '제작 요청에 반영했습니다.',
+    inputMethodVoiceSync: '같은 내용이 아래 제작 요청에도 자동 입력됩니다.',
+    inputMethodVoiceEdit: '제작 요청에서 수정하기 ↓'
+  });
 
   function isKorean() { return language === 'ko'; }
 
