@@ -252,6 +252,62 @@
     if (window.AVVM_LOCALES && window.AVVM_LOCALES[language]) Object.assign(window.AVVM_LOCALES[language], copy);
   });
 
+  /* The universal entry point is part of the product promise, so it must not
+     fall back to English when a customer changes language. */
+  const universalInputCopy = {
+    ja: {
+      heroSub: '写真一枚、短い文章、小さなアイデアから始めましょう。AVVMが演出・品質確認し、完成版をお届けします。',
+      inputMethodKicker: '入力方法を選ぶ', inputMethodTitle: '写真・入力・音声から、使いやすい方法で始めましょう。', inputMethodCopy: '写真は結果の基準となり、文章と音声は希望を明確な制作依頼にします。',
+      inputMethodPhoto: '写真を添付', inputMethodPhotoCopy: '素材・商品・スケッチ', inputMethodTyping: '入力する', inputMethodTypingCopy: '希望のシーンを記入', inputMethodVoice: '話して伝える', inputMethodVoiceCopy: '話した内容を依頼へ',
+      inputMethodNotePhoto: '元写真を添付すると、最も安定した制作方向を決められます。', inputMethodNoteTyping: '希望するシーン・変化・ムードを入力してください。参考写真はいつでも追加できます。', inputMethodNoteVoice: '聞き取り中です。話した内容が制作依頼欄に入力されます。', inputMethodVoiceUnavailable: 'このブラウザでは音声入力を利用できません。内容を入力してください。', inputMethodVoiceComplete: '音声の依頼内容を入力しました。必要に応じて整え、写真を追加してください。', inputMethodVoiceRetry: '音声を聞き取れませんでした。もう一度話すか、直接入力してください。'
+    },
+    zh: {
+      heroSub: '从一张照片、一句文字或一个小想法开始。AVVM 负责创意指导、质量审核并交付成片。',
+      inputMethodKicker: '选择输入方式', inputMethodTitle: '用照片、文字或语音开始。', inputMethodCopy: '照片决定结果基准；文字与语音会把您的想法变成清晰的制作需求。',
+      inputMethodPhoto: '上传照片', inputMethodPhotoCopy: '原图 · 商品 · 草图', inputMethodTyping: '文字输入', inputMethodTypingCopy: '写下想要的画面', inputMethodVoice: '语音描述', inputMethodVoiceCopy: '说出您的需求',
+      inputMethodNotePhoto: '先上传原图，可以获得最稳定的制作方向。', inputMethodNoteTyping: '请输入您想要的画面、变化或氛围。随时都可以添加参考图片。', inputMethodNoteVoice: '正在聆听。语音内容将写入制作需求栏。', inputMethodVoiceUnavailable: '此浏览器不支持语音输入，请直接输入需求。', inputMethodVoiceComplete: '已录入您的语音需求。您可继续调整或添加照片。', inputMethodVoiceRetry: '未能听清您的需求。请再说一次，或直接输入。'
+    },
+    es: {
+      heroSub: 'Empieza con una foto, una frase breve o una pequeña idea. AVVM dirige, revisa la calidad y entrega la pieza final.',
+      inputMethodKicker: 'ELIGE TU ENTRADA', inputMethodTitle: 'Empieza con una foto, texto o voz.', inputMethodCopy: 'La foto fija la referencia; el texto y la voz convierten tu intención en una solicitud de producción clara.',
+      inputMethodPhoto: 'AÑADIR FOTO', inputMethodPhotoCopy: 'Fuente · producto · boceto', inputMethodTyping: 'ESCRIBIR', inputMethodTypingCopy: 'Describe la escena', inputMethodVoice: 'DECIRLO', inputMethodVoiceCopy: 'Habla de tu idea',
+      inputMethodNotePhoto: 'Una foto de referencia da a AVVM la dirección de producción más estable.', inputMethodNoteTyping: 'Escribe la escena, el cambio o el ambiente que deseas. Puedes añadir una foto de referencia cuando quieras.', inputMethodNoteVoice: 'Escuchando. Tus palabras se añadirán al campo de solicitud de producción.', inputMethodVoiceUnavailable: 'La entrada por voz no está disponible en este navegador. Escribe tu solicitud.', inputMethodVoiceComplete: 'Tu solicitud por voz se ha añadido. Ajusta el texto o añade una foto cuando quieras.', inputMethodVoiceRetry: 'No hemos podido oír tu solicitud. Inténtalo de nuevo o escríbela.'
+    },
+    fr: {
+      heroSub: 'Commencez par une photo, une courte phrase ou une petite idée. AVVM assure la direction, le contrôle qualité et la livraison finale.',
+      inputMethodKicker: 'CHOISISSEZ VOTRE ENTRÉE', inputMethodTitle: 'Commencez avec une photo, du texte ou votre voix.', inputMethodCopy: 'La photo sert de référence ; le texte et la voix transforment votre intention en demande de production précise.',
+      inputMethodPhoto: 'AJOUTER UNE PHOTO', inputMethodPhotoCopy: 'Source · produit · croquis', inputMethodTyping: 'ÉCRIRE', inputMethodTypingCopy: 'Décrivez la scène', inputMethodVoice: 'LE DIRE', inputMethodVoiceCopy: 'Exprimez votre demande',
+      inputMethodNotePhoto: 'Une photo source donne à AVVM la direction de production la plus stable.', inputMethodNoteTyping: 'Écrivez la scène, la transformation ou l’ambiance souhaitée. Vous pouvez ajouter une photo de référence à tout moment.', inputMethodNoteVoice: 'Écoute en cours. Vos mots seront ajoutés au champ de demande de production.', inputMethodVoiceUnavailable: 'La saisie vocale n’est pas disponible dans ce navigateur. Veuillez écrire votre demande.', inputMethodVoiceComplete: 'Votre demande vocale a été ajoutée. Ajustez-la ou ajoutez une photo à tout moment.', inputMethodVoiceRetry: 'Nous n’avons pas entendu votre demande. Réessayez ou écrivez-la.'
+    },
+    de: {
+      heroSub: 'Starten Sie mit einem Foto, einem kurzen Satz oder einer kleinen Idee. AVVM führt Regie, prüft die Qualität und liefert das fertige Ergebnis.',
+      inputMethodKicker: 'EINGABE WÄHLEN', inputMethodTitle: 'Starten Sie mit Foto, Text oder Stimme.', inputMethodCopy: 'Das Foto gibt die Referenz vor; Text und Stimme machen aus Ihrer Idee einen klaren Produktionsauftrag.',
+      inputMethodPhoto: 'FOTO HINZUFÜGEN', inputMethodPhotoCopy: 'Quelle · Produkt · Skizze', inputMethodTyping: 'EINTIPPEN', inputMethodTypingCopy: 'Szene beschreiben', inputMethodVoice: 'SPRECHEN', inputMethodVoiceCopy: 'Wunsch laut sagen',
+      inputMethodNotePhoto: 'Ein Quellfoto gibt AVVM die stabilste Produktionsrichtung.', inputMethodNoteTyping: 'Beschreiben Sie die gewünschte Szene, Veränderung oder Stimmung. Sie können jederzeit ein Referenzfoto ergänzen.', inputMethodNoteVoice: 'Wir hören zu. Ihre Worte werden in das Produktionsfeld übernommen.', inputMethodVoiceUnavailable: 'Spracheingabe wird in diesem Browser nicht unterstützt. Bitte schreiben Sie Ihre Anfrage.', inputMethodVoiceComplete: 'Ihre Sprachanfrage wurde übernommen. Verfeinern Sie sie oder fügen Sie jederzeit ein Foto hinzu.', inputMethodVoiceRetry: 'Wir konnten Ihre Anfrage nicht hören. Sprechen Sie erneut oder schreiben Sie sie ein.'
+    },
+    pt: {
+      heroSub: 'Comece com uma foto, uma frase curta ou uma pequena ideia. A AVVM dirige, revisa a qualidade e entrega o resultado final.',
+      inputMethodKicker: 'ESCOLHA SUA ENTRADA', inputMethodTitle: 'Comece com uma foto, texto ou voz.', inputMethodCopy: 'A foto define a referência; texto e voz transformam sua intenção em um pedido de produção claro.',
+      inputMethodPhoto: 'ADICIONAR FOTO', inputMethodPhotoCopy: 'Origem · produto · esboço', inputMethodTyping: 'DIGITAR', inputMethodTypingCopy: 'Descreva a cena', inputMethodVoice: 'FALAR', inputMethodVoiceCopy: 'Diga o que deseja',
+      inputMethodNotePhoto: 'Uma foto de origem dá à AVVM a direção de produção mais estável.', inputMethodNoteTyping: 'Escreva a cena, a mudança ou o clima desejado. Você pode adicionar uma foto de referência a qualquer momento.', inputMethodNoteVoice: 'Ouvindo agora. Suas palavras serão adicionadas ao campo de pedido de produção.', inputMethodVoiceUnavailable: 'A entrada por voz não é suportada neste navegador. Digite sua solicitação.', inputMethodVoiceComplete: 'Sua solicitação por voz foi adicionada. Ajuste-a ou inclua uma foto quando quiser.', inputMethodVoiceRetry: 'Não conseguimos ouvir sua solicitação. Tente falar novamente ou digite.'
+    },
+    hi: {
+      heroSub: 'एक फोटो, छोटा वाक्य या छोटा-सा विचार लेकर शुरुआत करें। AVVM निर्देशन, गुणवत्ता जाँच और तैयार परिणाम की डिलीवरी करता है।',
+      inputMethodKicker: 'इनपुट चुनें', inputMethodTitle: 'फोटो, टाइपिंग या आवाज़ से शुरुआत करें।', inputMethodCopy: 'फोटो परिणाम का आधार बनती है; टेक्स्ट और आवाज़ आपके विचार को स्पष्ट निर्माण अनुरोध में बदलते हैं।',
+      inputMethodPhoto: 'फोटो जोड़ें', inputMethodPhotoCopy: 'स्रोत · उत्पाद · स्केच', inputMethodTyping: 'टाइप करें', inputMethodTypingCopy: 'मनचाहा दृश्य लिखें', inputMethodVoice: 'बोलकर बताएँ', inputMethodVoiceCopy: 'अपना अनुरोध बोलें',
+      inputMethodNotePhoto: 'स्रोत फोटो AVVM को सबसे स्थिर निर्माण दिशा देती है।', inputMethodNoteTyping: 'अपना मनचाहा दृश्य, बदलाव या मूड लिखें। आप कभी भी संदर्भ फोटो जोड़ सकते हैं।', inputMethodNoteVoice: 'सुन रहे हैं। आपके शब्द निर्माण अनुरोध क्षेत्र में जोड़े जाएंगे।', inputMethodVoiceUnavailable: 'इस ब्राउज़र में वॉइस इनपुट समर्थित नहीं है। कृपया अपना अनुरोध टाइप करें।', inputMethodVoiceComplete: 'आपका वॉइस अनुरोध जोड़ दिया गया है। उसे सुधारें या कभी भी फोटो जोड़ें।', inputMethodVoiceRetry: 'हम आपका अनुरोध नहीं सुन सके। फिर से बोलें या टाइप करें।'
+    },
+    ar: {
+      heroSub: 'ابدأ بصورة أو جملة قصيرة أو فكرة صغيرة. تتولى AVVM الإخراج وفحص الجودة وتسليم النتيجة النهائية.',
+      inputMethodKicker: 'اختر طريقة الإدخال', inputMethodTitle: 'ابدأ بصورة أو كتابة أو صوت.', inputMethodCopy: 'تحدد الصورة المرجع؛ وتحول الكتابة والصوت فكرتك إلى طلب إنتاج واضح.',
+      inputMethodPhoto: 'أضف صورة', inputMethodPhotoCopy: 'مصدر · منتج · رسم', inputMethodTyping: 'اكتبها', inputMethodTypingCopy: 'صف المشهد المطلوب', inputMethodVoice: 'قلها', inputMethodVoiceCopy: 'تحدث بطلبك',
+      inputMethodNotePhoto: 'تمنح الصورة المصدر AVVM أكثر اتجاه إنتاج استقراراً.', inputMethodNoteTyping: 'اكتب المشهد أو التغيير أو الأجواء التي تريدها. يمكنك إضافة صورة مرجعية في أي وقت.', inputMethodNoteVoice: 'نستمع الآن. ستضاف كلماتك إلى حقل طلب الإنتاج.', inputMethodVoiceUnavailable: 'الإدخال الصوتي غير مدعوم في هذا المتصفح. يرجى كتابة طلبك.', inputMethodVoiceComplete: 'تمت إضافة طلبك الصوتي. يمكنك تنقيحه أو إضافة صورة في أي وقت.', inputMethodVoiceRetry: 'لم نتمكن من سماع طلبك. تحدث مرة أخرى أو اكتبه.'
+    }
+  };
+  Object.entries(universalInputCopy).forEach(([language, copy]) => {
+    if (window.AVVM_LOCALES && window.AVVM_LOCALES[language]) Object.assign(window.AVVM_LOCALES[language], copy);
+  });
+
   /* Small but complete language pack for the AI AFTER prompt finder. */
   const promptFinderCopy = {
     ja: { afterPromptTitle: '作りたい AFTER を検索', afterPromptHint: '例：自然なウェディング、ヘアチェンジ、雰囲気のあるカフェ、明るいプロフィール', afterPromptSearchPlaceholder: '見たい変化・スタイル・シーンを入力', afterPromptCreate: 'プロンプトを作成', afterPromptQuickWedding: 'ウェディング', afterPromptQuickProfile: 'プロフィール', afterPromptQuickInterior: '空間スタイリング', afterPromptQuickPet: 'ペットポートレート', afterPromptResultTitle: '生成された演出プロンプト', afterPromptCopy: 'コピー', afterPromptApply: 'このプロンプトを適用', afterPromptNeedIntent: 'まず見たい変化やシーンを入力してください。', afterPromptApplied: '生成したプロンプトを AFTER リクエストに適用しました。', afterPromptCopied: 'コピー完了 ✓' },

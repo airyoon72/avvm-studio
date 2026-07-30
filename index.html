@@ -6,13 +6,13 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" name="viewport"/>
 <meta content="#050505" name="theme-color"/>
-<title>AVVM.studio — ONE IMAGE. ONE CLICK. CINEMATIC RESULTS.</title>
-<meta content="AVVM.studio creates cinematic AI-assisted commercial videos from a single image." name="description"/>
+<title>AVVM.studio — ONE CLICK. CINEMATIC RESULTS.</title>
+<meta content="AVVM.studio turns a photo, prompt, or idea into a cinematic AI-assisted commercial result." name="description"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=Bodoni+Moda:opsz,wght@6..96,400;6..96,500&amp;family=Inter:wght@400;500;600;700;800;900&amp;family=Cormorant+Garamond:ital,wght@1,700;1,900&amp;display=swap" rel="stylesheet"/>
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@latest/dist/web/variable/pretendardvariable-dynamic-subset.css" rel="stylesheet"/>
-<link rel="stylesheet" href="style.css?v=63"/>
+<link rel="stylesheet" href="style.css?v=64"/>
 <style>
 /* AVVM v31 review-safe additions */
 .option-chip.disabled,
@@ -74,7 +74,7 @@
         <path class="logo-path path-m" d="M 265 100 L 265 20 L 295 70 L 325 20 L 325 100" stroke="#ffffff" />
       </g>
     </svg>
-    <div class="loader-tagline">ONE CLICK. CINEMATIC.</div>
+    <div class="loader-tagline">ONE CLICK. CINEMATIC RESULTS.</div>
   </div>
 </div>
 <!-- Paintbrush mouse trail canvas -->
@@ -163,15 +163,14 @@
 
 <!-- The hero promise remains as live text so it is visible on every device. -->
 <div id="hero-tagline-container">
-  <h1 class="hero-tagline-fallback" id="heroPromise" aria-label="한 장의 사진. 한 번의 클릭. 시네마틱. 결과.">
-    <span class="hero-tagline-line" style="--line-delay:0ms"><span class="hero-tagline-word">한 장의 사진.</span></span>
-    <span class="hero-tagline-line" style="--line-delay:1500ms"><span class="hero-tagline-word">한 번의 클릭.</span></span>
-    <span class="hero-tagline-line" style="--line-delay:3000ms"><span class="hero-tagline-word">시네마틱.</span></span>
-    <span class="hero-tagline-line" style="--line-delay:4500ms"><span class="hero-tagline-word">결과.</span></span>
+  <h1 class="hero-tagline-fallback" id="heroPromise" aria-label="한 번의 클릭. 시네마틱. 결과.">
+    <span class="hero-tagline-line" style="--line-delay:0ms"><span class="hero-tagline-word">한 번의 클릭.</span></span>
+    <span class="hero-tagline-line" style="--line-delay:2200ms"><span class="hero-tagline-word">시네마틱.</span></span>
+    <span class="hero-tagline-line" style="--line-delay:4400ms"><span class="hero-tagline-word">결과.</span></span>
   </h1>
   <canvas aria-hidden="true" id="hero-tagline-canvas"></canvas>
 </div>
-<p class="hero-v5-sub" id="heroSubText"><span data-i18n="heroSub">사진 한 장을 올리면, AVVM이 연출하고 검수해 완성본을 전달합니다.</span></p>
+<p class="hero-v5-sub" id="heroSubText"><span data-i18n="heroSub">사진 한 장, 짧은 문장, 작은 아이디어에서 시작하세요. AVVM이 연출하고 검수해 완성본을 전달합니다.</span></p>
 
 <section class="hero-production-signal" aria-label="AVVM production system">
   <div class="hero-production-signal-topline">
@@ -228,7 +227,7 @@
 </div>
 <div class="ba-stage has-help" data-help="왼쪽의 오래된 사진이 오른쪽의 움직이는 영상으로 복원되는 실제 메모리얼 사례입니다." data-help-key="help4" data-help-ko="왼쪽의 오래된 사진이 오른쪽의 움직이는 영상으로 복원되는 실제 메모리얼 사례입니다.">
 <div class="ba-card ba-card--before">
-<div class="ba-media" style="background-image:url('memorial-before.jpg')"></div>
+<div class="ba-media" style="background-image:url('memorial-before-after-still.jpg')"></div>
 <div class="ba-label" data-i18n="baInputLabel">입력 · 30년 전 사진</div>
 </div>
 <div class="ba-center">
@@ -285,7 +284,7 @@
         <div class="proof-card-head"><span>02</span><h3 data-i18n="proofMemorialName">메모리얼 복원</h3></div>
         <p data-i18n="proofMemorialCopy">오래된 사진 속 존재가 다시 움직이는 기억으로 이어집니다.</p>
         <div class="proof-pair">
-          <figure class="proof-frame proof-input"><img src="memorial-before.jpg" alt="깜순이 메모리얼 입력 사진" loading="lazy"/><figcaption><b>INPUT</b><span data-i18n="proofMemorialInput">오래된 흑백 사진</span></figcaption></figure>
+          <figure class="proof-frame proof-input"><img src="memorial-before-after-still.jpg" alt="깜순이 메모리얼 입력 사진" loading="lazy"/><figcaption><b>INPUT</b><span data-i18n="proofMemorialInput">오래된 흑백 사진</span></figcaption></figure>
           <figure class="proof-frame proof-output"><video autoplay class="proof-video" loop muted playsinline preload="metadata" aria-label="깜순이 메모리얼 복원 결과 영상"><source src="memorial-before-after.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofMemorialOutput">다시 움직이는 기억</span></figcaption></figure>
         </div>
         <div class="proof-card-proof"><span data-i18n="proofSpecInput">INPUT</span><b data-i18n="proofSpecInputValue">1 IMAGE</b><i></i><span data-i18n="proofSpecOutput">SAMPLE OUTPUT</span><b data-i18n="proofSpecOutputValue">CINEMATIC RESULT</b><i></i><span data-i18n="proofSpecReview">FINAL CHECK</span><b data-i18n="proofSpecReviewValue">AVVM REVIEWED</b></div>
@@ -939,7 +938,7 @@
     <!-- Memorial Before / After Stage -->
     <div class="memorial-ba-stage">
       <div class="memorial-ba-card">
-        <div class="memorial-ba-media" style="background-image: url('memorial-before.jpg');"></div>
+        <div class="memorial-ba-media" style="background-image: url('memorial-kkamsooni-before.jpg');"></div>
         <div class="memorial-ba-label" data-i18n="kkamsooniPhoto">30년 전 깜순이 사진</div>
       </div>
       <div class="memorial-ba-card featured">
@@ -1237,9 +1236,36 @@
   <!-- Selected Plan Summary Card -->
   <div class="order-summary" id="orderSummary">Selected plan: Pro · ₩39,900</div>
 
-  <!-- Step 1: Photo Upload -->
+  <!-- Step 1: Start method -->
+  <section class="input-method-panel" id="inputMethodPanel" aria-label="Start method">
+    <div class="input-method-head">
+      <span data-i18n="inputMethodKicker">CHOOSE YOUR INPUT</span>
+      <b data-i18n="inputMethodTitle">사진·타이핑·음성 중 편한 방식으로 시작하세요.</b>
+      <p data-i18n="inputMethodCopy">사진은 결과의 기준이 되고, 글과 음성은 원하는 장면을 정확한 제작 요청으로 바꿉니다.</p>
+    </div>
+    <div class="input-method-grid" role="group" aria-label="Project input method">
+      <button class="input-method-card is-active" type="button" data-input-mode="photo">
+        <span class="input-method-icon" aria-hidden="true">▣</span>
+        <b data-i18n="inputMethodPhoto">사진 첨부</b>
+        <small data-i18n="inputMethodPhotoCopy">원본·상품·스케치</small>
+      </button>
+      <button class="input-method-card" type="button" data-input-mode="typing">
+        <span class="input-method-icon" aria-hidden="true">⌨</span>
+        <b data-i18n="inputMethodTyping">타이핑</b>
+        <small data-i18n="inputMethodTypingCopy">원하는 장면을 적기</small>
+      </button>
+      <button class="input-method-card" type="button" data-input-mode="voice">
+        <span class="input-method-icon" aria-hidden="true">◉</span>
+        <b data-i18n="inputMethodVoice">음성으로 말하기</b>
+        <small data-i18n="inputMethodVoiceCopy">말하면 요청 내용으로</small>
+      </button>
+    </div>
+    <p class="input-method-note" id="inputMethodNote" aria-live="polite">사진을 먼저 첨부하면 가장 안정적으로 제작 방향을 잡을 수 있습니다.</p>
+  </section>
+
+  <!-- Step 2: Photo Upload -->
   <div class="photo-upload-visible-block" id="photoUploadVisibleBlock">
-    <div class="order-form-section-title">1. 제작할 사진 업로드</div>
+    <div class="order-form-section-title">2. 제작할 사진 업로드 <span>(선택)</span></div>
     <p class="order-form-helper">고객님의 사진 또는 상품 이미지를 첨부해 주세요. 지금 첨부하지 않아도 결제 후 업로드할 수 있습니다.</p>
     <label class="photo-upload-drop" for="imageInput">
       <span class="photo-upload-icon">＋</span>
@@ -1295,9 +1321,10 @@
         <button type="button" data-ba-prompt="identity-locked contemporary editorial portrait, bright soft daylight, clear natural eyes, true skin texture, refined modern grooming, fresh premium campaign" data-i18n="baSample1">아이덴티티 루미너스</button>
         <button type="button" data-ba-prompt="identity-locked high-end studio campaign, clean beauty softbox, luminous but age-authentic complexion, contemporary wardrobe, precise polished finish" data-i18n="baSample2">클린 캠페인</button>
         <button type="button" data-ba-prompt="identity-locked cinematic portrait, controlled soft key light, subtle film depth, rich but natural colour grade, modern editorial confidence" data-i18n="baSample3">시네마 프레임</button>
-      </div>
-      <button type="button" class="before-after-generate" id="generateAfterImage"><span data-i18n="baGenerateAfter">AI AFTER 시안 만들기</span><i>↗</i></button>
-      <p class="before-after-ai-notice" data-i18n="baSimulationNotice">AI 시안은 실제 효능·체형·건강·공사 결과를 보장하지 않습니다. 원본의 인물·공간·반려동물 특징을 지키는 범위에서 생성합니다.</p>
+      </div>
+      <button type="button" class="before-after-generate" id="generateAfterImage"><span data-i18n="baGenerateAfter">AI AFTER 시안 만들기</span><i>↗</i></button>
+      <p class="before-after-generation-limit" id="beforeAfterGenerationLimit" aria-live="polite">결제 전 AI AFTER 시안은 최대 <b>2회</b> 만들 수 있습니다. <strong>남은 2회</strong></p>
+      <p class="before-after-ai-notice" data-i18n="baSimulationNotice">AI 시안은 실제 효능·체형·건강·공사 결과를 보장하지 않습니다. 원본의 인물·공간·반려동물 특징을 지키는 범위에서 생성합니다.</p>
       <label class="before-after-ai-consent"><input id="beforeAfterAiConsent" type="checkbox"/><span data-i18n="baAiConsent">본인은 사진 사용 권한이 있으며, AI AFTER 시안 생성을 위해 사진과 입력한 바람이 외부 AI 처리 서비스로 전송되는 것에 동의합니다.</span></label>
     </div>
     <section class="before-after-source-preview" id="beforeAfterSourcePreview" hidden aria-live="polite">
@@ -1733,11 +1760,11 @@ document.addEventListener('click', function (event) {
 </script>
 
 <script src="auto-translations.js?v=2"></script>
-<script src="locales.js?v=4"></script>
-<script src="i18n.js?v=15"></script>
+<script src="locales.js?v=5"></script>
+<script src="i18n.js?v=16"></script>
 <script>window.AVVM_AUTH_UI_ENABLED = false;</script>
 <script src="auth.js?v=1"></script>
-<script src="app.js?v=46"></script>
+<script src="app.js?v=47"></script>
 <script>
 /* AVVM order safeguards: required consent and plan-locked delivery quality. */
 (function(){
@@ -1875,16 +1902,16 @@ document.addEventListener('click', function (event) {
 
   const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
   const phraseSets = {
-    ko: ['한 장의 사진.', '한 번의 클릭.', '시네마틱.', '결과.'],
-    en: ['ONE IMAGE.', 'ONE CLICK.', 'CINEMATIC.', 'RESULTS.'],
-    ja: ['一枚の写真。', 'ワンクリック。', 'シネマ。', '結果。'],
-    zh: ['一张照片。', '一次点击。', '电影感。', '结果。'],
-    es: ['UNA IMAGEN.', 'UN CLIC.', 'CINEMÁTICO.', 'RESULTADOS.'],
-    fr: ['UNE IMAGE.', 'UN CLIC.', 'CINÉMATIQUE.', 'RÉSULTATS.'],
-    de: ['EIN BILD.', 'EIN KLICK.', 'KINOREIF.', 'ERGEBNIS.'],
-    pt: ['UMA IMAGEM.', 'UM CLIQUE.', 'CINEMÁTICO.', 'RESULTADOS.'],
-    hi: ['एक छवि।', 'एक क्लिक।', 'सिनेमाई।', 'परिणाम।'],
-    ar: ['صورة واحدة.', 'نقرة واحدة.', 'سينمائي.', 'نتائج.']
+    ko: ['한 번의 클릭.', '시네마틱.', '결과.'],
+    en: ['ONE CLICK.', 'CINEMATIC.', 'RESULTS.'],
+    ja: ['ワンクリック。', 'シネマティック。', '結果。'],
+    zh: ['一次点击。', '电影感。', '结果。'],
+    es: ['UN CLIC.', 'CINEMÁTICO.', 'RESULTADOS.'],
+    fr: ['UN CLIC.', 'CINÉMATIQUE.', 'RÉSULTATS.'],
+    de: ['EIN KLICK.', 'KINEMATISCH.', 'ERGEBNISSE.'],
+    pt: ['UM CLIQUE.', 'CINEMATOGRÁFICO.', 'RESULTADOS.'],
+    hi: ['एक क्लिक।', 'सिनेमाई।', 'परिणाम।'],
+    ar: ['نقرة واحدة.', 'سينمائي.', 'نتائج.']
   };
   let phrases = [...promise.querySelectorAll('.hero-tagline-word')].map((word) => word.textContent.trim());
 
@@ -1916,7 +1943,7 @@ document.addEventListener('click', function (event) {
   const context = canvas.getContext('2d');
   if (!context) return;
 
-  const stageDuration = 2200;
+  const stageDuration = 3100;
   let cycleDuration = stageDuration * phrases.length;
   let width = 0;
   let height = 0;
@@ -1970,81 +1997,38 @@ document.addEventListener('click', function (event) {
       total + context.measureText(character).width + (index ? letterSpacing : 0), 0);
   }
 
-  // Keep a deterministic random order: it feels spontaneous, but never flickers
-  // differently frame-to-frame. Each character enters and exits on its own beat.
-  function seeded(index, phraseIndex, salt) {
-    const value = Math.sin((index + 1) * 127.1 + (phraseIndex + 1) * 311.7 + salt * 74.3) * 43758.5453;
-    return value - Math.floor(value);
-  }
-
-  function glyphState(progress, index, count, fontSize, phraseIndex) {
-    const enterStart = .05 + seeded(index, phraseIndex, 1) * .12;
-    const exitStart = .64 + seeded(index, phraseIndex, 2) * .16;
-    const enter = smoothstep((progress - enterStart) / .115);
-    const leave = smoothstep((progress - exitStart) / .105);
-    // The reference clip builds a line from letters that begin in genuinely
-    // different places, then snap into a clean shared baseline.
-    const inX = (seeded(index, phraseIndex, 3) - .5) * fontSize * .92 * (1 - enter);
-    const inY = (seeded(index, phraseIndex, 4) - .5) * fontSize * .72 * (1 - enter);
-    const outX = (seeded(index, phraseIndex, 5) - .5) * fontSize * .96 * leave;
-    const outY = (seeded(index, phraseIndex, 6) - .5) * fontSize * .74 * leave;
+  // The promise now uses a deliberate typewriter rhythm: type in, read, erase,
+  // then move to the next part of the statement. This stays clean in every
+  // language rather than relying on a language-specific mosaic effect.
+  function glyphState(progress, index, count, fontSize) {
+    const typeStart = .10;
+    const typeEnd = .51;
+    const eraseStart = .78;
+    const eraseEnd = .94;
+    const typeSlot = (typeEnd - typeStart) / Math.max(1, count);
+    const eraseSlot = (eraseEnd - eraseStart) / Math.max(1, count);
+    const enter = smoothstep((progress - (typeStart + index * typeSlot)) / Math.max(.026, typeSlot * .54));
+    const erase = smoothstep((progress - (eraseStart + (count - 1 - index) * eraseSlot)) / Math.max(.022, eraseSlot * .56));
     return {
-      alpha: enter * (1 - leave),
-      scale: .62 + enter * .38 - leave * .13,
-      x: inX + outX,
-      y: inY + outY,
-      leave,
-      ghost: enter < 1 ? enter * (1 - enter) * .34 : 0
+      alpha: enter * (1 - erase),
+      scale: .975 + enter * .025,
+      x: 0,
+      y: (1 - enter) * fontSize * .055
     };
   }
 
-  const hangulInitial = ['ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
-  const hangulMedial = ['ㅏ', 'ㅐ', 'ㅑ', 'ㅒ', 'ㅓ', 'ㅔ', 'ㅕ', 'ㅖ', 'ㅗ', 'ㅘ', 'ㅙ', 'ㅚ', 'ㅛ', 'ㅜ', 'ㅝ', 'ㅞ', 'ㅟ', 'ㅠ', 'ㅡ', 'ㅢ', 'ㅣ'];
-  const hangulFinal = ['', 'ㄱ', 'ㄲ', 'ㄳ', 'ㄴ', 'ㄵ', 'ㄶ', 'ㄷ', 'ㄹ', 'ㄺ', 'ㄻ', 'ㄼ', 'ㄽ', 'ㄾ', 'ㄿ', 'ㅀ', 'ㅁ', 'ㅂ', 'ㅄ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
-
-  function splitHangul(character) {
-    const code = character.codePointAt(0);
-    if (code < 0xAC00 || code > 0xD7A3) return null;
-    const syllable = code - 0xAC00;
-    const finalIndex = syllable % 28;
-    const medialIndex = Math.floor(syllable / 28) % 21;
-    const initialIndex = Math.floor(syllable / (28 * 21));
-    return [hangulInitial[initialIndex], hangulMedial[medialIndex], hangulFinal[finalIndex]].filter(Boolean);
-  }
-
-  // Korean syllables briefly split into their consonant/vowel components as they
-  // leave. Other languages keep the same random per-letter dissolve, so every
-  // locale gets a stable, readable version of the effect.
-  function drawHangulDissolve(character, x, y, characterWidth, fontSize, phraseIndex, index, leave) {
-    const parts = splitHangul(character);
-    const burst = smoothstep((leave - .025) / .42);
-    if (!parts || !burst) return;
-    const anchors = [
-      [-characterWidth * .20, -fontSize * .03],
-      [characterWidth * .10, -fontSize * .03],
-      [-characterWidth * .01, fontSize * .23]
-    ];
+  function drawTypingCaret(x, baseline, fontSize, progress) {
+    const blink = Math.floor(progress * 14) % 2 === 0 ? 1 : .25;
     context.save();
-    context.font = `${Math.max(16, fontSize * .60)}px ${getComputedStyle(promise).fontFamily || 'sans-serif'}`;
-    context.textBaseline = 'alphabetic';
-    parts.forEach((part, partIndex) => {
-      const directionX = (seeded(index + partIndex * 11, phraseIndex, 7) - .5) * fontSize * 1.05;
-      const directionY = (seeded(index + partIndex * 13, phraseIndex, 8) - .5) * fontSize * .90;
-      const [anchorX, anchorY] = anchors[partIndex] || anchors[0];
-      context.save();
-      context.globalAlpha = burst * Math.pow(1 - leave, .55) * .95;
-      context.translate(x + anchorX + directionX * burst, y + anchorY + directionY * burst);
-      context.rotate((seeded(index + partIndex, phraseIndex, 9) - .5) * burst * .42);
-      context.fillText(part, 0, 0);
-      context.restore();
-    });
+    context.globalAlpha = blink;
+    context.fillRect(x + Math.max(2, fontSize * .035), baseline - fontSize * .79, Math.max(2, fontSize * .024), fontSize * .84);
     context.restore();
   }
 
   function renderPhrase(phrase, phraseIndex, progress) {
     if (!width || !height) return;
     const styles = getComputedStyle(promise);
-    const phraseScale = phraseIndex === 2 ? .82 : 1;
+    const phraseScale = 1;
     let fontSize = (parseFloat(styles.fontSize) || 100) * phraseScale;
     const family = styles.fontFamily || 'Impact, sans-serif';
     const weight = styles.fontWeight || '400';
@@ -2076,19 +2060,15 @@ document.addEventListener('click', function (event) {
     context.shadowColor = phraseIndex === 1 ? 'rgba(216,242,51,.26)' : 'rgba(255,255,255,.12)';
     context.shadowBlur = 14;
 
+    let caretX = 0;
+    let hasVisibleGlyph = false;
     characters.forEach((character, index) => {
       const characterWidth = context.measureText(character).width;
       if (rtl) cursor -= characterWidth + (index ? letterSpacing : 0);
-      const state = glyphState(progress, index, characters.length, fontSize, phraseIndex);
+      const state = glyphState(progress, index, characters.length, fontSize);
       const x = cursor + state.x;
       const y = baseline + state.y;
 
-      if (state.ghost > .002) {
-        context.save();
-        context.globalAlpha = state.ghost;
-        context.fillText(character, x - fontSize * .16, y + fontSize * .03);
-        context.restore();
-      }
       if (state.alpha > .002) {
         context.save();
         context.globalAlpha = state.alpha;
@@ -2096,10 +2076,12 @@ document.addEventListener('click', function (event) {
         context.scale(state.scale, state.scale);
         context.fillText(character, 0, 0);
         context.restore();
+        caretX = rtl ? x - characterWidth * Math.min(1, state.alpha) : x + characterWidth * Math.min(1, state.alpha);
+        hasVisibleGlyph = true;
       }
-      drawHangulDissolve(character, x, y, characterWidth, fontSize, phraseIndex, index, state.leave);
       if (!rtl) cursor += characterWidth + letterSpacing;
     });
+    if (hasVisibleGlyph) drawTypingCaret(caretX, baseline, fontSize, progress);
     context.restore();
   }
 

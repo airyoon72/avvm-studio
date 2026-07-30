@@ -132,7 +132,8 @@
   });
 
   Object.assign(en, {
-    heroSub: 'Upload one photo. AVVM directs, quality-checks, and delivers the finished film.',
+    heroSub: 'Start with one photo, a short prompt, or a small idea. AVVM directs, quality-checks, and delivers the finished film.',
+    inputMethodKicker: 'CHOOSE YOUR INPUT', inputMethodTitle: 'Start with a photo, typing, or your voice.', inputMethodCopy: 'A photo anchors the result; words and voice turn your intention into a clear production brief.', inputMethodPhoto: 'ADD A PHOTO', inputMethodPhotoCopy: 'Source · product · sketch', inputMethodTyping: 'TYPE IT', inputMethodTypingCopy: 'Describe the scene you want', inputMethodVoice: 'SAY IT', inputMethodVoiceCopy: 'Speak your request aloud', inputMethodNotePhoto: 'A source photo gives AVVM the most stable production direction.', inputMethodNoteTyping: 'Write the desired scene, change, or mood. You can add a reference photo at any time.', inputMethodNoteVoice: 'Listening now. Your words will be added to the production-request field.', inputMethodVoiceUnavailable: 'Voice input is not supported in this browser. Please type your request instead.', inputMethodVoiceComplete: 'Your voice request has been added. Refine it or add a photo whenever you are ready.', inputMethodVoiceRetry: 'We could not hear a request. Try speaking again, or type it instead.',
     heroSystemKicker: 'AVVM PRODUCTION SYSTEM',
     heroSignalLive: 'HUMAN-LED · AI-POWERED',
     heroSignalStep1: 'UPLOAD PHOTO', heroSignalStep1Meta: 'SOURCE CHECK',
@@ -194,7 +195,8 @@
     orderReceived: '주문 접수 완료', orderProcessing: '영상 제작 중', orderCompleteStatus: '제작 완료', orderFailed: '제작 실패', backHome: '홈페이지로 돌아가기',
     authGoogleNav: 'GOOGLE 로그인', authOptional: '선택 로그인', authTitle: 'Google로 빠르게 시작하기', authCopy: '로그인하면 Google 계정의 이름과 이메일을 주문 정보에 미리 입력합니다. 로그인 없이도 그대로 주문할 수 있습니다.', authGoogle: 'Google로 계속하기', authSignedIn: '로그인됨', authSignOut: '로그아웃', authSignedOut: '로그아웃되었습니다. 비회원으로 계속 주문할 수 있습니다.', authUnavailable: 'Google 로그인이 아직 준비되지 않았습니다. 비회원으로 계속 주문해주세요.', authError: '요청을 완료하지 못했습니다. 잠시 후 다시 시도해주세요.',
     styleStepTitle: '2. 원하는 비디오 스타일 선택', styleStepCopy: '먼저 제작 분야를 고르고, 이어서 세부 무드와 움직임을 선택하세요.', styleDetailTitle: '세부 무드 선택', styleDetailCopy: '선택한 분야에 맞는 연출만 보여드립니다.', motionTitle: '움직임의 밀도', motionCopy: '한 가지 카메라 동작만 골라 결과를 안정적으로 만듭니다.', styleDirectionLabel: '선택한 연출 방향', promptLibraryKicker: 'AVVM 검수 레시피', promptLibraryTitle: '원하는 장면을 검색하세요', promptLibraryCopy: '검수 기준에 맞춘 연출 레시피를 불러온 뒤, 원하는 내용을 덧붙일 수 있습니다.', promptSearchPlaceholder: '예: 시계, 런웨이, 고전 사진, 여행, 반려동물', promptLibraryNote: '레시피는 원본 보존과 자연스러운 움직임을 우선합니다. 결과는 원본 사진과 최종 검수에 따라 달라질 수 있습니다.', promptEditLabel: '연출 요청 추가하기 <span>(선택)</span>', moodPlaceholder: '선택한 방향에 추가하고 싶은 장면·색감·무드가 있다면 적어주세요.', resolutionTitle: '최종 제공 해상도', resolutionIncluded: '플랜 포함', resolutionHelper: '해상도는 플랜에 포함되어 있으며 원본 사진 검수 후 최종 안내됩니다.',
-    heroSub: '사진 한 장을 올리면, AVVM이 연출하고 검수해 완성본을 전달합니다.', heroSystemKicker: 'AVVM PRODUCTION SYSTEM', heroSignalLive: 'HUMAN-LED · AI-POWERED',
+    heroSub: '사진 한 장, 짧은 문장, 작은 아이디어에서 시작하세요. AVVM이 연출하고 검수해 완성본을 전달합니다.', heroSystemKicker: 'AVVM PRODUCTION SYSTEM', heroSignalLive: 'HUMAN-LED · AI-POWERED',
+    inputMethodKicker: 'CHOOSE YOUR INPUT', inputMethodTitle: '사진·타이핑·음성 중 편한 방식으로 시작하세요.', inputMethodCopy: '사진은 결과의 기준이 되고, 글과 음성은 원하는 장면을 정확한 제작 요청으로 바꿉니다.', inputMethodPhoto: '사진 첨부', inputMethodPhotoCopy: '원본 · 상품 · 스케치', inputMethodTyping: '타이핑', inputMethodTypingCopy: '원하는 장면을 적기', inputMethodVoice: '음성으로 말하기', inputMethodVoiceCopy: '말하면 요청 내용으로', inputMethodNotePhoto: '사진을 먼저 첨부하면 가장 안정적으로 제작 방향을 잡을 수 있습니다.', inputMethodNoteTyping: '원하는 장면·변화·무드를 적어주세요. 참고 사진은 언제든 함께 첨부할 수 있습니다.', inputMethodNoteVoice: '듣고 있습니다. 말한 내용이 제작 요청 칸에 입력됩니다.', inputMethodVoiceUnavailable: '이 브라우저는 음성 입력을 지원하지 않습니다. 요청 내용을 직접 입력해 주세요.', inputMethodVoiceComplete: '음성 요청이 입력되었습니다. 내용을 다듬거나 사진을 추가해 주세요.', inputMethodVoiceRetry: '음성 요청을 듣지 못했습니다. 다시 말하거나 직접 입력해 주세요.',
     heroSignalStep1: '사진 업로드', heroSignalStep1Meta: 'SOURCE CHECK', heroSignalStep2: '연출 선택', heroSignalStep2Meta: 'CURATED DIRECTION', heroSignalStep3: '검수 후 전달', heroSignalStep3Meta: 'AVVM QUALITY REVIEW',
     proofAssuranceKicker: 'REAL INPUT · REAL DELIVERY', proofAssuranceTitle: '사진을 먼저 보고, 결과를 확인하고, 검수 기준까지 확인하세요.', proofAssuranceCopy: 'AVVM은 버튼만 누르면 끝나는 자동 생성 화면이 아닙니다. 원본의 가능성을 확인하고, 목적에 맞는 연출을 정한 뒤, 전달 전 결과물을 한 번 더 살핍니다.',
     proofStandardInput: 'REAL INPUT', proofStandardInputMeta: '원본 사진 기반', proofStandardDirection: 'ART DIRECTION', proofStandardDirectionMeta: '산업별 연출 레시피', proofStandardReview: 'QUALITY REVIEW', proofStandardReviewMeta: '인물·제품·텍스트 확인', proofStandardDelivery: 'FINAL DELIVERY', proofStandardDeliveryMeta: '플랜별 규격 적용',
@@ -424,8 +426,8 @@
     };
     Object.entries(planCopy).forEach(([plan, value]) => localized(`[data-plan-choice="${plan}"] small`, value));
 
-    localized('#photoUploadVisibleBlock .order-form-section-title', '1. Upload the photo to produce');
-    localized('#photoUploadVisibleBlock .order-form-helper', 'Attach your photo or product image. A photo is required before payment to start video production.');
+    localized('#photoUploadVisibleBlock .order-form-section-title', '2. Add a reference photo (optional)');
+    localized('#photoUploadVisibleBlock .order-form-helper', 'Attach a photo, product image, or sketch when you have one. For photo-guided production, upload the source before payment.');
     localized('.photo-upload-drop b', 'Attach photo'); localized('.photo-upload-drop small', 'JPG, PNG, or WEBP image file');
     localized('#uploadGuideBox', '💡 <b>Passport guide:</b> Upload a front-facing photo with a plain background and visible ears.', true);
     localized('#idSpecGroup .order-option-title', 'Choose format');

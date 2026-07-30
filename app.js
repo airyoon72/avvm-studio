@@ -97,6 +97,49 @@ window.avvmGeneratedAfterImageUrl = '';
 window.avvmGeneratedAfterPreviewUrl = '';
 window.avvmBeforeAfterVideoDirection = '';
 
+/* An AI AFTER concept calls a paid image-generation endpoint. Keep a small,
+   clearly visible pre-payment allowance per browser session so a customer can
+   compare concepts without the preview flow becoming an open-ended cost. */
+const BEFORE_AFTER_CONCEPT_LIMIT = 2;
+const BEFORE_AFTER_CONCEPT_ATTEMPTS_KEY = 'avvm.beforeAfterConceptAttempts.v1';
+
+function getBeforeAfterConceptAttempts(){
+  try{
+    return Math.max(0, Math.min(
+      BEFORE_AFTER_CONCEPT_LIMIT,
+      Number.parseInt(sessionStorage.getItem(BEFORE_AFTER_CONCEPT_ATTEMPTS_KEY) || '0', 10) || 0
+    ));
+  }catch(error){
+    return Number(window.__avvmBeforeAfterConceptAttempts || 0);
+  }
+}
+
+function useBeforeAfterConceptAttempt(){
+  const next=Math.min(BEFORE_AFTER_CONCEPT_LIMIT,getBeforeAfterConceptAttempts()+1);
+  try{ sessionStorage.setItem(BEFORE_AFTER_CONCEPT_ATTEMPTS_KEY,String(next)); }
+  catch(error){ window.__avvmBeforeAfterConceptAttempts=next; }
+  return next;
+}
+
+function isKoreanBeforeAfterUi(){
+  return (localStorage.getItem('avvmLang') || 'ko') === 'ko';
+}
+
+function updateBeforeAfterConceptAllowance(){
+  const notice=$('#beforeAfterGenerationLimit');
+  if(!notice) return;
+  const remaining=Math.max(0,BEFORE_AFTER_CONCEPT_LIMIT-getBeforeAfterConceptAttempts());
+  const korean=isKoreanBeforeAfterUi();
+  notice.classList.toggle('is-exhausted',remaining===0);
+  notice.innerHTML=remaining
+    ? (korean
+      ? `결제 전 AI AFTER 시안은 최대 <b>${BEFORE_AFTER_CONCEPT_LIMIT}회</b> 만들 수 있습니다. <strong>남은 ${remaining}회</strong>`
+      : `Create up to <b>${BEFORE_AFTER_CONCEPT_LIMIT} AI AFTER concepts</b> before payment. <strong>${remaining} left</strong>`)
+    : (korean
+      ? `결제 전 AI AFTER 시안 <b>${BEFORE_AFTER_CONCEPT_LIMIT}회</b>를 모두 사용했습니다. 현재 시안으로 영상 제작을 진행해 주세요.`
+      : `You have used both pre-payment AI AFTER concepts. Continue to production with the current concept.`);
+}
+
 function isBeforeAfterPlan(plan = window.selectedPlan) {
   return String(plan) === 'Before / After Reel';
 }
@@ -182,19 +225,148 @@ function updatePhotoUploadLabel(){
   }
 }
 
+/* The brand can accept a photo, a written idea, or a spoken idea at the first
+   touchpoint. Photo remains the best source for image-based plans; voice and
+   typing create the same editable production brief without trapping the user
+   in a separate flow. */
+const projectInputState = { mode: 'photo', recognition: null };
+
+function projectSpeechLanguage(){
+  const language = localStorage.getItem('avvmLang') || 'ko';
+  return ({ ko:'ko-KR', en:'en-US', ja:'ja-JP', zh:'zh-CN', es:'es-ES', fr:'fr-FR', de:'de-DE', pt:'pt-PT', hi:'hi-IN', ar:'ar-SA' })[language] || 'en-US';
+}
+
+function updateProjectInputMethod(){
+  const mode = projectInputState.mode;
+  $$('.input-method-card').forEach(button => {
+    const active = button.dataset.inputMode === mode;
+    button.classList.toggle('is-active', active);
+    button.setAttribute('aria-pressed', String(active));
+  });
+  const note = $('#inputMethodNote');
+  if (!note) return;
+  const key = mode === 'typing' ? 'inputMethodNoteTyping' : mode === 'voice' ? 'inputMethodNoteVoice' : 'inputMethodNotePhoto';
+  note.textContent = tr(key, 'Start your production request in the way that feels easiest.');
+}
+
+function revealProjectBrief(){
+  const field = $('#moodInput');
+  focusAndReveal('#moodInput');
+  window.setTimeout(() => field?.focus({ preventScroll: true }), 180);
+  return field;
+}
+
+function finishProjectVoiceInput(hasTranscript){
+  const button = $('.input-method-card[data-input-mode="voice"]');
+  button?.classList.remove('is-listening');
+  projectInputState.recognition = null;
+  const note = $('#inputMethodNote');
+  if (!note) return;
+  if (hasTranscript) {
+    note.textContent = tr('inputMethodVoiceComplete', 'Your voice request has been added.');
+  } else if (projectInputState.mode === 'voice') {
+    note.textContent = tr('inputMethodVoiceRetry', 'We could not hear a request. Try again or type it instead.');
+  }
+}
+
+function startProjectVoiceInput(){
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    projectInputState.mode = 'typing';
+    updateProjectInputMethod();
+    toast(tr('inputMethodVoiceUnavailable', 'Voice input is not supported in this browser. Please type your request instead.'));
+    revealProjectBrief();
+    return;
+  }
+  if (projectInputState.recognition) {
+    projectInputState.recognition.abort();
+    return;
+  }
+
+  const field = revealProjectBrief();
+  if (!field) return;
+  const recognition = new SpeechRecognition();
+  const initialValue = String(field.value || '').trim();
+  let transcript = '';
+  recognition.lang = projectSpeechLanguage();
+  recognition.interimResults = true;
+  recognition.continuous = false;
+  recognition.maxAlternatives = 1;
+  recognition.onresult = event => {
+    let finalText = '';
+    let interimText = '';
+    for (let index = event.resultIndex; index < event.results.length; index += 1) {
+      const text = event.results[index][0]?.transcript || '';
+      if (event.results[index].isFinal) finalText += text;
+      else interimText += text;
+    }
+    transcript = `${transcript} ${finalText}`.trim();
+    const current = `${transcript} ${interimText}`.trim();
+    field.value = [initialValue, current].filter(Boolean).join(initialValue && current ? '\n' : '');
+    field.dispatchEvent(new Event('input', { bubbles: true }));
+  };
+  recognition.onerror = event => {
+    if (event.error !== 'aborted' && event.error !== 'no-speech') {
+      projectInputState.mode = 'typing';
+      updateProjectInputMethod();
+      toast(tr('inputMethodVoiceUnavailable', 'Voice input is not supported in this browser. Please type your request instead.'));
+    }
+  };
+  recognition.onend = () => finishProjectVoiceInput(Boolean(transcript));
+  projectInputState.recognition = recognition;
+  $('.input-method-card[data-input-mode="voice"]')?.classList.add('is-listening');
+  updateProjectInputMethod();
+  try { recognition.start(); }
+  catch(error) { finishProjectVoiceInput(false); }
+}
+
+function setProjectInputMode(mode, options = {}){
+  const next = ['photo', 'typing', 'voice'].includes(mode) ? mode : 'photo';
+  if (next !== 'voice' && projectInputState.recognition) projectInputState.recognition.abort();
+  projectInputState.mode = next;
+  updateProjectInputMethod();
+  if (next === 'photo') {
+    if (options.openPicker) $('#imageInput')?.click();
+    else focusAndReveal('#photoUploadVisibleBlock');
+    return;
+  }
+  if (next === 'typing') {
+    revealProjectBrief();
+    return;
+  }
+  startProjectVoiceInput();
+}
+
+$$('.input-method-card').forEach(button => {
+  button.addEventListener('click', () => setProjectInputMode(button.dataset.inputMode, { openPicker: button.dataset.inputMode === 'photo' }));
+});
+document.addEventListener('avvm:languagechange', updateProjectInputMethod);
+updateProjectInputMethod();
+
 function updateAfterPhotoUploadLabel(){
   const button=$('#generateAfterImage');
   const label=button?.querySelector('span');
   if(!button || !label) return;
   const ready=Boolean(window.avvmGeneratedAfterImageUrl);
   const busy=button.dataset.loading==='true';
+  const remaining=Math.max(0,BEFORE_AFTER_CONCEPT_LIMIT-getBeforeAfterConceptAttempts());
+  const exhausted=remaining===0;
+  const korean=isKoreanBeforeAfterUi();
   label.textContent=busy
     ? tr('baGeneratingAfter','AI AFTER 시안 생성 중…')
-    : ready
-      ? tr('baAfterReady','AI AFTER 시안 완료 ✓')
-      : tr('baGenerateAfter','AI AFTER 시안 만들기');
+    : exhausted
+      ? (korean ? `AI AFTER 시안 ${BEFORE_AFTER_CONCEPT_LIMIT}회 완료` : `${BEFORE_AFTER_CONCEPT_LIMIT} AI AFTER CONCEPTS USED`)
+      : ready
+        ? (korean ? `AI AFTER 시안 다시 만들기 · ${remaining}회 남음` : `REGENERATE AI AFTER · ${remaining} LEFT`)
+        : (korean ? `AI AFTER 시안 만들기 · ${remaining}회 남음` : `CREATE AI AFTER · ${remaining} LEFT`);
   button.classList.toggle('is-ready',ready);
-  button.disabled=busy;
+  button.classList.toggle('is-exhausted',exhausted);
+  button.disabled=busy || exhausted;
+  button.setAttribute('aria-disabled',String(busy || exhausted));
+  button.title=exhausted
+    ? (korean ? '결제 전 AI AFTER 시안 2회를 모두 사용했습니다.' : 'Both pre-payment AI AFTER concepts have been used.')
+    : '';
+  updateBeforeAfterConceptAllowance();
 }
 
 function clearBeforeAfterSourcePreview(){
@@ -295,6 +467,13 @@ async function pollAfterImageGeneration(requestId){
 
 async function generateAfterConcept(){
   if(!isBeforeAfterPlan()) return;
+  if(getBeforeAfterConceptAttempts() >= BEFORE_AFTER_CONCEPT_LIMIT){
+    toast(isKoreanBeforeAfterUi()
+      ? '결제 전 AI AFTER 시안 2회를 모두 사용했습니다. 현재 시안으로 제작을 진행해 주세요.'
+      : 'Both pre-payment AI AFTER concepts have been used. Continue with the current concept.');
+    updateAfterPhotoUploadLabel();
+    return;
+  }
   const file=$('#imageInput')?.files?.[0];
   const consent=$('#beforeAfterAiConsent')?.checked;
   try{ validateImageFile(file); }
@@ -324,6 +503,10 @@ async function generateAfterConcept(){
     });
     const data=await response.json().catch(()=>({}));
     if(!response.ok || !data.request_id) throw new Error(data.error || 'AFTER 시안 요청을 시작하지 못했습니다.');
+    // The generation provider has accepted this request, so it may incur cost
+    // even if the later status poll is interrupted.
+    useBeforeAfterConceptAttempt();
+    updateAfterPhotoUploadLabel();
     const imageUrl=await pollAfterImageGeneration(data.request_id);
     window.avvmGeneratedAfterImageUrl=imageUrl;
     window.avvmGeneratedAfterPreviewUrl=await makeAfterConceptPreview(imageUrl);
