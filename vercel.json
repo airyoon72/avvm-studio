@@ -2,6 +2,9 @@
   "functions": {
     "api/generate-video.js": {
       "maxDuration": 60
+    },
+    "api/generate-after-image.js": {
+      "maxDuration": 60
     }
   }
 }

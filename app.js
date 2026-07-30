@@ -45,7 +45,8 @@ window.prices={
   'ID Set':'₩9,900',
   'Profile Pro':'₩29,900',
   'Jewelry Motion':'₩59,900',
-  'Logo Lab':'₩69,900'
+  'Logo Lab':'₩69,900',
+  'Before / After Reel':'₩29,900'
 }; 
 window.selectedPlan='Pro';
 
@@ -66,9 +67,41 @@ const PLAN_OUTPUTS = Object.freeze({
   'ID Set': { resolution: '1080p', label: 'FILE DELIVERY' },
   'Profile Pro': { resolution: '1080p', label: 'FILE DELIVERY' },
   'Jewelry Motion': { resolution: '1080p', label: 'FULL HD · 1080P' },
-  'Logo Lab': { resolution: '1080p', label: 'FULL HD · 1080P' }
+  'Logo Lab': { resolution: '1080p', label: 'FULL HD · 1080P' },
+  'Before / After Reel': { resolution: '1080p', label: 'FULL HD · 1080P' }
 });
 window.AVVM_PLAN_OUTPUTS = PLAN_OUTPUTS;
+
+/* The customer authorises one original BEFORE photo. AVVM first creates an
+   explicitly labelled AI AFTER concept, then uses that verified pair for video. */
+const BEFORE_AFTER_ROUTES = Object.freeze({
+  beauty: {
+    category: 'Beauty', aspect: '9:16',
+    prompt: 'The reference contains a customer BEFORE photo on the left and an authorised AI AFTER styling concept on the right. Create one restrained beauty-editorial transition. Preserve the same person, facial identity, body proportions and natural texture. Never imply skin improvement, efficacy, cosmetic procedure, a different face, or an actual treatment result. No text or labels.'
+  },
+  fitness: {
+    category: 'Custom', aspect: '9:16',
+    prompt: 'The reference contains a customer BEFORE photo on the left and an authorised AI AFTER style concept on the right. Create one composed fashion-and-confidence transition while preserving the exact same person, face and body. Do not invent body changes, muscle definition, weight loss, health improvement, diet results, or performance claims. No text or labels.'
+  },
+  interior: {
+    category: 'Custom', aspect: '16:9',
+    prompt: 'The reference contains a customer BEFORE interior on the left and an authorised AI AFTER styling concept on the right. Make a clean architectural match-cut. Preserve real room geometry, walls, windows, doors, circulation and fixed structures. Do not present the concept as completed construction or invent a larger room, a new view, or unprovided structures. No text or labels.'
+  },
+  pet: {
+    category: 'Custom', aspect: '9:16',
+    prompt: 'The reference contains a customer BEFORE pet photo on the left and an authorised AI AFTER portrait concept on the right. Create one warm, gentle transition. Preserve the animal identity, coat pattern, face, size and anatomy. No new animal, altered markings, extra limbs, unsafe action, health claim, or human-like behavior. No text or labels.'
+  }
+});
+window.avvmBeforeAfterType = '';
+window.avvmGeneratedAfterImageUrl = '';
+
+function isBeforeAfterPlan(plan = window.selectedPlan) {
+  return String(plan) === 'Before / After Reel';
+}
+
+function getBeforeAfterRoute() {
+  return BEFORE_AFTER_ROUTES[window.avvmBeforeAfterType] || BEFORE_AFTER_ROUTES.beauty;
+}
 
 function getPlanOutput(plan = window.selectedPlan) {
   return PLAN_OUTPUTS[String(plan)] || PLAN_OUTPUTS.Pro;
@@ -115,6 +148,7 @@ function setOrderSummary(){
 document.addEventListener('avvm:languagechange', () => {
   setOrderSummary();
   updatePhotoUploadLabel();
+  if(isBeforeAfterPlan()) syncBeforeAfterOrderUi();
   updatePreflightOutput();
   if(!paymentInProgress) setPaymentButtonBusy(false);
 });
@@ -134,15 +168,179 @@ function updatePhotoUploadLabel(){
   if(!input || !box) return;
   const label=box.querySelector('.photo-upload-drop b');
   const small=box.querySelector('.photo-upload-drop small');
+  const isPair=isBeforeAfterPlan();
   if(input.files && input.files[0]){
-    if(label) label.textContent='첨부 완료 ✓';
+    if(label) label.textContent=isPair ? tr('baBeforeAttached','BEFORE 첨부 완료 ✓') : '첨부 완료 ✓';
     if(small) small.textContent=input.files[0].name;
     box.classList.add('has-file');
   }else{
-    if(label) label.textContent=tr('attachPhoto','사진 첨부하기');
-    if(small) small.textContent=tr('acceptedImageTypes','JPG, PNG, WEBP 등 이미지 파일');
+    if(label) label.textContent=isPair ? tr('baBeforeAttach','BEFORE 사진 첨부하기') : tr('attachPhoto','사진 첨부하기');
+    if(small) small.textContent=isPair ? tr('baBeforeAttachHint','같은 대상의 변화 전 실제 사진') : tr('acceptedImageTypes','JPG, PNG, WEBP 등 이미지 파일');
     box.classList.remove('has-file');
   }
+}
+
+function updateAfterPhotoUploadLabel(){
+  const button=$('#generateAfterImage');
+  const label=button?.querySelector('span');
+  if(!button || !label) return;
+  const ready=Boolean(window.avvmGeneratedAfterImageUrl);
+  const busy=button.dataset.loading==='true';
+  label.textContent=busy
+    ? tr('baGeneratingAfter','AI AFTER 시안 생성 중…')
+    : ready
+      ? tr('baAfterReady','AI AFTER 시안 완료 ✓')
+      : tr('baGenerateAfter','AI AFTER 시안 만들기');
+  button.classList.toggle('is-ready',ready);
+  button.disabled=busy;
+}
+
+function clearBeforeAfterSourcePreview(){
+  const preview=$('#beforeAfterSourcePreview');
+  const before=$('#beforeAfterPreviewBefore');
+  const after=$('#beforeAfterPreviewAfter');
+  const urls=window.__avvmBeforeAfterPreviewUrls || [];
+  urls.forEach((url)=>{ try{ URL.revokeObjectURL(url); }catch(error){} });
+  window.__avvmBeforeAfterPreviewUrls=[];
+  if(before) before.removeAttribute('src');
+  if(after) after.removeAttribute('src');
+  if(preview){ preview.hidden=true; preview.classList.remove('is-ready','is-playing'); }
+}
+
+function refreshBeforeAfterSourcePreview(){
+  const preview=$('#beforeAfterSourcePreview');
+  const beforeFile=$('#imageInput')?.files?.[0];
+  const afterUrl=window.avvmGeneratedAfterImageUrl;
+  if(!preview || !isBeforeAfterPlan() || !beforeFile || !afterUrl){
+    clearBeforeAfterSourcePreview();
+    return;
+  }
+  clearBeforeAfterSourcePreview();
+  const beforeUrl=URL.createObjectURL(beforeFile);
+  window.__avvmBeforeAfterPreviewUrls=[beforeUrl];
+  const before=$('#beforeAfterPreviewBefore');
+  const after=$('#beforeAfterPreviewAfter');
+  const range=$('#beforeAfterPreviewRange');
+  const stage=$('#beforeAfterSourceStage');
+  if(before) before.src=beforeUrl;
+  if(after) after.src=afterUrl;
+  if(range) range.value='50';
+  if(stage) stage.style.setProperty('--pair-split','50%');
+  preview.hidden=false;
+  requestAnimationFrame(()=>preview.classList.add('is-ready'));
+}
+
+function resetGeneratedAfterConcept(){
+  window.avvmGeneratedAfterImageUrl='';
+  clearBeforeAfterSourcePreview();
+  updateAfterPhotoUploadLabel();
+}
+
+function pause(ms){
+  return new Promise(resolve=>setTimeout(resolve,ms));
+}
+
+async function pollAfterImageGeneration(requestId){
+  for(let attempt=0;attempt<48;attempt+=1){
+    await pause(attempt ? 1500 : 700);
+    const response=await fetch(`${apiBase}/api/generate-after-image?id=${encodeURIComponent(requestId)}`,{
+      headers:{Accept:'application/json'}
+    });
+    const data=await response.json().catch(()=>({}));
+    if(!response.ok) throw new Error(data.error || 'AFTER 시안 상태를 확인하지 못했습니다.');
+    if(data.status==='COMPLETED' && data.imageUrl) return data.imageUrl;
+    if(['FAILED','CANCELLED','ERROR'].includes(String(data.status||'').toUpperCase())){
+      throw new Error(data.error || 'AFTER 시안 생성이 완료되지 않았습니다.');
+    }
+  }
+  throw new Error('AFTER 시안 생성 시간이 길어지고 있습니다. 잠시 후 다시 시도해주세요.');
+}
+
+async function generateAfterConcept(){
+  if(!isBeforeAfterPlan()) return;
+  const file=$('#imageInput')?.files?.[0];
+  const consent=$('#beforeAfterAiConsent')?.checked;
+  try{ validateImageFile(file); }
+  catch(error){ toast(error.message); focusAndReveal('#photoUploadVisibleBlock'); return; }
+  if(!consent){
+    toast('AI AFTER 시안 생성을 위한 사진 처리 동의를 확인해주세요.');
+    focusAndReveal('#beforeAfterAiConsent');
+    return;
+  }
+
+  const button=$('#generateAfterImage');
+  if(button?.dataset.loading==='true') return;
+  if(button) button.dataset.loading='true';
+  updateAfterPhotoUploadLabel();
+  try{
+    const mobile=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    const imageData=await compressImage(file,mobile ? 1024 : 1280,mobile ? 1280 : 1280);
+    const response=await fetch(`${apiBase}/api/generate-after-image`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        imageData,
+        transformationType:window.avvmBeforeAfterType || 'beauty',
+        aspectRatio:getBeforeAfterRoute().aspect,
+        brief:String($('#beforeAfterBrief')?.value || '').trim()
+      })
+    });
+    const data=await response.json().catch(()=>({}));
+    if(!response.ok || !data.request_id) throw new Error(data.error || 'AFTER 시안 요청을 시작하지 못했습니다.');
+    const imageUrl=await pollAfterImageGeneration(data.request_id);
+    window.avvmGeneratedAfterImageUrl=imageUrl;
+    refreshBeforeAfterSourcePreview();
+    toast(tr('baAfterReady','AI AFTER 시안 완료 ✓'));
+    $('#beforeAfterSourcePreview')?.scrollIntoView({behavior:'smooth',block:'center'});
+  }catch(error){
+    console.error('AI AFTER concept failed:',error);
+    toast(error?.message || 'AFTER 시안을 만들지 못했습니다. 잠시 후 다시 시도해주세요.');
+  }finally{
+    if(button) delete button.dataset.loading;
+    updateAfterPhotoUploadLabel();
+  }
+}
+
+function setBeforeAfterPreviewSplit(value){
+  const stage=$('#beforeAfterSourceStage');
+  if(stage) stage.style.setProperty('--pair-split',`${Math.max(0,Math.min(100,Number(value)||0))}%`);
+}
+
+function setBeforeAfterAspect(aspect){
+  const field=$('#aspectRatio');
+  if(field) field.value=aspect;
+  const group=$('[data-option-group="aspect"]');
+  if(group) group.querySelectorAll('.option-chip').forEach((button)=>button.classList.toggle('active',button.dataset.value===aspect));
+}
+
+function syncBeforeAfterOrderUi(plan = window.selectedPlan){
+  const isPair=isBeforeAfterPlan(plan);
+  const route=getBeforeAfterRoute();
+  const pairGroup=$('#beforeAfterUploadGroup');
+  const uploadBlock=$('#photoUploadVisibleBlock');
+  const title=uploadBlock?.querySelector('.order-form-section-title');
+  const helper=uploadBlock?.querySelector('.order-form-helper');
+  const styleBlock=$('.style-select-block');
+  const aspectGroup=$('#aspectGroup');
+  const resolutionGroup=$('#resolutionGroup');
+  if(title && !title.dataset.avvmDefaultText) title.dataset.avvmDefaultText=title.textContent;
+  if(helper && !helper.dataset.avvmDefaultText) helper.dataset.avvmDefaultText=helper.textContent;
+  if(pairGroup) pairGroup.hidden=!isPair;
+  if(isPair){
+    if(title) title.textContent=tr('baBeforeUploadTitle','1. BEFORE 사진 업로드');
+    if(helper) helper.textContent=tr('baBeforeUploadCopy','원본 사진을 먼저 첨부한 뒤, 보고 싶은 AFTER 장면을 적고 시안을 만드세요.');
+    if(styleBlock) styleBlock.style.display='none';
+    if(aspectGroup) aspectGroup.style.display='none';
+    if(resolutionGroup) resolutionGroup.style.display='block';
+    setBeforeAfterAspect(route.aspect);
+  }else{
+    if(title) title.textContent=title.dataset.avvmDefaultText || '1. 제작할 사진 업로드';
+    if(helper) helper.textContent=helper.dataset.avvmDefaultText || '고객님의 사진 또는 상품 이미지를 첨부해 주세요. 지금 첨부하지 않아도 결제 후 업로드할 수 있습니다.';
+  }
+  updatePhotoUploadLabel();
+  updateAfterPhotoUploadLabel();
+  if(isPair) refreshBeforeAfterSourcePreview();
+  else clearBeforeAfterSourcePreview();
 }
 
 let sourceQuality = null;
@@ -289,13 +487,38 @@ async function inspectSourceImage(file){
 }
 
 function handleSourceImageChange(){
+  if(isBeforeAfterPlan()) resetGeneratedAfterConcept();
   updatePhotoUploadLabel();
   inspectSourceImage($('#imageInput')?.files?.[0]);
+  refreshBeforeAfterSourcePreview();
 }
 
 if($('#imageInput')){
   $('#imageInput').addEventListener('change', handleSourceImageChange);
 }
+if($('#generateAfterImage')) $('#generateAfterImage').addEventListener('click',generateAfterConcept);
+$$('[data-ba-prompt]').forEach((button)=>button.addEventListener('click',()=>{
+  const field=$('#beforeAfterBrief');
+  if(!field) return;
+  field.value=button.dataset.baPrompt || '';
+  field.focus();
+  if(window.avvmGeneratedAfterImageUrl) resetGeneratedAfterConcept();
+}));
+if($('#beforeAfterBrief')) $('#beforeAfterBrief').addEventListener('input',()=>{
+  if(window.avvmGeneratedAfterImageUrl) resetGeneratedAfterConcept();
+});
+if($('#beforeAfterPreviewRange')) $('#beforeAfterPreviewRange').addEventListener('input',(event)=>{
+  const stage=$('#beforeAfterSourceStage');
+  if(stage) stage.classList.remove('is-playing');
+  setBeforeAfterPreviewSplit(event.target.value);
+});
+if($('#beforeAfterPreviewPlay')) $('#beforeAfterPreviewPlay').addEventListener('click',()=>{
+  const stage=$('#beforeAfterSourceStage');
+  if(!stage) return;
+  stage.classList.remove('is-playing');
+  setBeforeAfterPreviewSplit(0);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>stage.classList.add('is-playing')));
+});
 
 function syncCustomerInputs(){
   const pairs=[
@@ -353,7 +576,10 @@ function openPlanChooser(){
 
 function openOrder(plan){
   if(!plan){ openPlanChooser(); return; }
+  if(plan === 'Before / After Reel' && !window.avvmBeforeAfterType) window.avvmBeforeAfterType='beauty';
+  if(plan !== 'Before / After Reel') window.avvmBeforeAfterType='';
   if(['Jewelry Motion','Logo Lab'].includes(plan)) selectCategory('Design');
+  if(plan === 'Before / After Reel') selectCategory(getBeforeAfterRoute().category);
   window.selectedPlan=plan||window.selectedPlan;
   if(plan === 'Jewelry Motion') guideState.presetId='design-jewel-prism';
   if(plan === 'Logo Lab') guideState.presetId='design-logo-minimal';
@@ -367,16 +593,18 @@ function openOrder(plan){
   if(['Jewelry Motion','Logo Lab'].includes(plan)) renderGuidedStyleFlow({writePrompt:true});
   
   const isIdProfile = plan.startsWith('ID') || plan.startsWith('Profile');
+  const isBeforeAfter = isBeforeAfterPlan(plan);
   const guide = $('#uploadGuideBox');
   if (guide) guide.style.display = isIdProfile ? 'block' : 'none';
   const styleBlock = $('.style-select-block');
-  if (styleBlock) styleBlock.style.display = isIdProfile ? 'none' : 'block';
+  if (styleBlock) styleBlock.style.display = (isIdProfile || isBeforeAfter) ? 'none' : 'block';
   const aspectGroup = $('#aspectGroup');
-  if (aspectGroup) aspectGroup.style.display = isIdProfile ? 'none' : 'block';
+  if (aspectGroup) aspectGroup.style.display = (isIdProfile || isBeforeAfter) ? 'none' : 'block';
   const resolutionGroup = $('#resolutionGroup');
   if (resolutionGroup) resolutionGroup.style.display = isIdProfile ? 'none' : 'block';
   const idSpecGroup = $('#idSpecGroup');
   if (idSpecGroup) idSpecGroup.style.display = isIdProfile ? 'block' : 'none';
+  syncBeforeAfterOrderUi(plan);
   updatePreflightOutput();
 
   if(modal) modal.classList.add('on');
@@ -386,6 +614,16 @@ function openOrder(plan){
     scrollModalToTop();
     setTimeout(()=>{ syncCustomerInputs(); focusAndReveal('#photoUploadVisibleBlock'); },120);
   });
+}
+
+function openBeforeAfterOrder(type){
+  if(!BEFORE_AFTER_ROUTES[type]) return;
+  if(window.avvmBeforeAfterType && window.avvmBeforeAfterType!==type) resetGeneratedAfterConcept();
+  window.avvmBeforeAfterType=type;
+  selectCategory(BEFORE_AFTER_ROUTES[type].category);
+  const mood=$('#moodInput');
+  if(mood) mood.value='';
+  openOrder('Before / After Reel');
 }
 
 function closeOrder(){ 
@@ -448,6 +686,12 @@ $$('[data-open]').forEach(b=>b.addEventListener('click',()=>{
   selectCategory(b.dataset.category);
   openOrder(b.dataset.plan);
 }));
+
+document.addEventListener('click',(event)=>{
+  const trigger=event.target.closest('[data-before-after]');
+  if(!trigger) return;
+  openBeforeAfterOrder(trigger.dataset.beforeAfter);
+});
 
 async function copyRecipePrompt(prompt){
   try{
@@ -583,6 +827,69 @@ function compressImage(file, maxW = 1024, maxH = 1024) {
     reader.onerror = () => reject(new Error('사진 파일을 읽는 중 오류가 발생했습니다.'));
     reader.readAsDataURL(file);
   });
+}
+
+function readImageFile(file){
+  return new Promise((resolve,reject)=>{
+    const reader=new FileReader();
+    reader.onload=()=>{
+      const image=new Image();
+      image.onload=()=>resolve(image);
+      image.onerror=()=>reject(new Error('전·후 사진을 읽지 못했습니다. JPG, PNG 또는 WEBP 파일을 다시 선택해주세요.'));
+      image.src=reader.result;
+    };
+    reader.onerror=()=>reject(new Error('전·후 사진 파일을 읽는 중 오류가 발생했습니다.'));
+    reader.readAsDataURL(file);
+  });
+}
+
+function readImageSource(source){
+  if(typeof source!=='string') return readImageFile(source);
+  return new Promise((resolve,reject)=>{
+    const image=new Image();
+    image.crossOrigin='anonymous';
+    image.onload=()=>resolve(image);
+    image.onerror=()=>reject(new Error('AI AFTER 시안을 읽지 못했습니다. 시안을 다시 만들어주세요.'));
+    image.src=source;
+  });
+}
+
+function drawImageCover(ctx,image,x,y,width,height){
+  const scale=Math.max(width/image.naturalWidth,height/image.naturalHeight);
+  const drawWidth=Math.round(image.naturalWidth*scale);
+  const drawHeight=Math.round(image.naturalHeight*scale);
+  const drawX=Math.round(x+(width-drawWidth)/2);
+  const drawY=Math.round(y+(height-drawHeight)/2);
+  ctx.drawImage(image,drawX,drawY,drawWidth,drawHeight);
+}
+
+async function composeBeforeAfterSource(beforeFile,afterFile,type){
+  const [before,after]=await Promise.all([readImageSource(beforeFile),readImageSource(afterFile)]);
+  const route=BEFORE_AFTER_ROUTES[type] || BEFORE_AFTER_ROUTES.beauty;
+  const isLandscape=route.aspect==='16:9';
+  const width=isLandscape ? 1600 : 1080;
+  const height=isLandscape ? 900 : 1920;
+  const panelWidth=Math.floor(width/2);
+  const canvas=document.createElement('canvas');
+  canvas.width=width;
+  canvas.height=height;
+  const ctx=canvas.getContext('2d');
+  ctx.fillStyle='#070807';
+  ctx.fillRect(0,0,width,height);
+  drawImageCover(ctx,before,0,0,panelWidth,height);
+  drawImageCover(ctx,after,panelWidth,0,width-panelWidth,height);
+  const edge=ctx.createLinearGradient(panelWidth-14,0,panelWidth+14,0);
+  edge.addColorStop(0,'rgba(0,0,0,.38)');
+  edge.addColorStop(.47,'rgba(216,242,51,.86)');
+  edge.addColorStop(.53,'rgba(216,242,51,.86)');
+  edge.addColorStop(1,'rgba(0,0,0,.38)');
+  ctx.fillStyle=edge;
+  ctx.fillRect(panelWidth-14,0,28,height);
+  const dataUrl=canvas.toDataURL('image/jpeg',0.82);
+  if(dataUrl.length>MAX_IMAGE_DATA_URL_CHARS){
+    throw new Error('전·후 사진 조합이 너무 큽니다. 원본을 조금 잘라내거나 해상도가 낮은 사진으로 다시 선택해주세요.');
+  }
+  return dataUrl;
 }
 
 const PROMPT_RECIPES={
@@ -850,6 +1157,10 @@ function createLogoWordmarkSource(word, styleId){
 }
 
 function makeVideoPrompt(order){
+  if(order.beforeAfter){
+    const route=BEFORE_AFTER_ROUTES[order.beforeAfterType] || BEFORE_AFTER_ROUTES.beauty;
+    return `${route.prompt} The supplied image is a split pair: begin within the left BEFORE source, use one precise optical wipe or match-cut, and resolve into the right AI AFTER concept. Keep the transition elegant, stable, and clearly visual rather than evidentiary. Never show the split layout, divider, captions, or new claims. Deliver a premium, short vertical or horizontal before/after reel based only on the supplied pair.`;
+  }
   const direction=String(order.mood||'').trim();
   const category=String(order.category||'Custom');
   const fallback=`Create a polished ${category} image-to-video film. Preserve the source subject, its identity, proportions, product labels, and composition. Use a clear first-second visual hook, controlled cinematic camera movement, realistic light, and a premium final grade. No face distortion, no extra limbs, no unreadable text, no invented logos.`;
@@ -995,6 +1306,10 @@ async function proceedWithOrderCreation(orderId, brand, email, phone, privacyCon
     category, mood,
     designMode:designMeta.designMode || '',
     logoWord:designMeta.logoWord || '',
+    beforeAfter:!!designMeta.beforeAfter,
+    beforeAfterType:designMeta.beforeAfterType || '',
+    beforeImageName:designMeta.beforeImageName || '',
+    afterImageName:designMeta.afterImageName || '',
     duration: videoOptions.duration,
     aspectRatio: videoOptions.aspectRatio,
     resolution: videoOptions.resolution,
@@ -1106,6 +1421,8 @@ async function createOrder(){
   const rightsConsent=!!($('#rightsConsent')?.checked);
   const marketingConsent=!!($('#marketingConsent')?.checked);
   const category=$('.cat.active')?.dataset?.category || 'Custom';
+  const beforeAfter=isBeforeAfterPlan();
+  const beforeAfterType=beforeAfter ? (window.avvmBeforeAfterType || 'beauty') : '';
   const designMode=category==='Design' ? getDesignType() : '';
   const logoWord=category==='Design' ? String($('#logoWordInput')?.value || '').trim().slice(0,36) : '';
   const baseMood=$('#moodInput')?.value?.trim() || '';
@@ -1122,6 +1439,7 @@ async function createOrder(){
   }
 
   const imageFile = $('#imageInput')?.files?.[0];
+  const generatedAfterImageUrl = window.avvmGeneratedAfterImageUrl || '';
   const createTextLogo=category==='Design' && designMode==='logo' && !imageFile;
   if(createTextLogo && !logoWord){
     toast('로고에 넣을 단어 또는 브랜드명을 입력해주세요.');
@@ -1131,9 +1449,10 @@ async function createOrder(){
   if(!createTextLogo){
     try {
       validateImageFile(imageFile);
+      if(beforeAfter && !generatedAfterImageUrl) throw new Error(tr('baAfterNeeded','전환 영상을 만들기 전 AI AFTER 시안을 먼저 만들어 주세요.'));
     } catch(error) {
       toast(error.message);
-      focusAndReveal('#photoUploadVisibleBlock');
+      focusAndReveal(beforeAfter && !generatedAfterImageUrl ? '#beforeAfterUploadGroup' : '#photoUploadVisibleBlock');
       return;
     }
   }
@@ -1146,13 +1465,15 @@ async function createOrder(){
   }
 
   paymentInProgress=true;
-  setPaymentButtonBusy(true, tr('optimizingImage', '사진 최적화 중...'));
+  setPaymentButtonBusy(true, beforeAfter ? tr('baComposing','전·후 사진 정리 중...') : tr('optimizingImage', '사진 최적화 중...'));
 
   try{
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    const imageData = imageFile
-      ? await compressImage(imageFile, isMobile ? 768 : 1024, isMobile ? 768 : 1024)
-      : createLogoWordmarkSource(logoWord, guideState.presetId);
+    const imageData = beforeAfter
+      ? await composeBeforeAfterSource(imageFile, generatedAfterImageUrl, beforeAfterType)
+      : imageFile
+        ? await compressImage(imageFile, isMobile ? 768 : 1024, isMobile ? 768 : 1024)
+        : createLogoWordmarkSource(logoWord, guideState.presetId);
     setPaymentButtonBusy(true, tr('paymentOpening', '결제창을 여는 중...'));
 
     const PortOne=await loadPortOneV2();
@@ -1190,7 +1511,11 @@ async function createOrder(){
     await proceedWithOrderCreation(
       orderId, brand, email, phone,
       privacyConsent, notifyConsent, refundConsent, rightsConsent, marketingConsent,
-      category, mood, response, totalAmount, imageData, { designMode, logoWord, syntheticSource:createTextLogo }
+      category, mood, response, totalAmount, imageData, {
+        designMode, logoWord, syntheticSource:createTextLogo,
+        beforeAfter, beforeAfterType,
+        beforeImageName:imageFile?.name || '', afterImageName:beforeAfter ? 'AI AFTER concept' : ''
+      }
     );
 
   }catch(error){

@@ -189,4 +189,66 @@
   Object.entries(recipes).forEach(([language, copy]) => {
     if (window.AVVM_LOCALES && window.AVVM_LOCALES[language]) Object.assign(window.AVVM_LOCALES[language], copy);
   });
+
+  const experienceCopy = {
+    ja: {
+      heroSub: '写真を一枚アップロードすると、AVVMが演出・品質確認を行い、完成作品をお届けします。', heroSystemKicker: 'AVVM 制作システム', heroSignalLive: '人の演出 · AIの推進',
+      heroSignalStep1: '写真をアップロード', heroSignalStep1Meta: '素材チェック', heroSignalStep2: '演出を選択', heroSignalStep2Meta: '厳選ディレクション', heroSignalStep3: '確認して納品', heroSignalStep3Meta: 'AVVM 品質確認',
+      proofAssuranceKicker: '実際の入力 · 実際の納品', proofAssuranceTitle: '元画像、結果、その裏にある基準まで確認してください。', proofAssuranceCopy: 'AVVMはボタンだけで終わる自動生成画面ではありません。元画像を確認し、目的に合う演出を定め、納品前にもう一度結果を確認します。',
+      proofStandardInput: '実際の入力', proofStandardInputMeta: '元写真をベースに制作', proofStandardDirection: 'アートディレクション', proofStandardDirectionMeta: '業種別の演出レシピ', proofStandardReview: '品質確認', proofStandardReviewMeta: '人物・商品・文字を確認', proofStandardDelivery: '最終納品', proofStandardDeliveryMeta: 'プラン別の規格を適用',
+      proofSpecInput: '入力', proofSpecInputValue: '写真 1枚', proofSpecOutput: 'サンプル出力', proofSpecOutputValue: 'シネマティックな結果', proofSpecReview: '最終確認', proofSpecReviewValue: 'AVVM 確認済み'
+    },
+    zh: {
+      heroSub: '上传一张照片，AVVM 将负责创意指导、质量审核并交付成片。', heroSystemKicker: 'AVVM 制作系统', heroSignalLive: '人工主导 · AI 驱动',
+      heroSignalStep1: '上传照片', heroSignalStep1Meta: '素材检查', heroSignalStep2: '选择创意方向', heroSignalStep2Meta: '精选创意指导', heroSignalStep3: '审核后交付', heroSignalStep3Meta: 'AVVM 质量审核',
+      proofAssuranceKicker: '真实输入 · 真实交付', proofAssuranceTitle: '先看原图，再看结果，也看见背后的标准。', proofAssuranceCopy: 'AVVM 不是只需点击按钮的自动生成页面。我们评估原始素材，确定适合用途的创意方向，并在交付前再次检查结果。',
+      proofStandardInput: '真实输入', proofStandardInputMeta: '基于原始照片', proofStandardDirection: '创意指导', proofStandardDirectionMeta: '行业创意方案', proofStandardReview: '质量审核', proofStandardReviewMeta: '检查人物、产品与文字', proofStandardDelivery: '最终交付', proofStandardDeliveryMeta: '应用方案交付规格',
+      proofSpecInput: '输入', proofSpecInputValue: '1 张图片', proofSpecOutput: '样片输出', proofSpecOutputValue: '电影感结果', proofSpecReview: '最终检查', proofSpecReviewValue: 'AVVM 已审核'
+    },
+    es: {
+      heroSub: 'Sube una foto. AVVM dirige, revisa la calidad y entrega la pieza final.', heroSystemKicker: 'SISTEMA DE PRODUCCIÓN AVVM', heroSignalLive: 'DIRECCIÓN HUMANA · IMPULSO IA',
+      heroSignalStep1: 'SUBIR FOTO', heroSignalStep1Meta: 'REVISIÓN DE FUENTE', heroSignalStep2: 'ELEGIR DIRECCIÓN', heroSignalStep2Meta: 'DIRECCIÓN CURADA', heroSignalStep3: 'REVISAR Y ENTREGAR', heroSignalStep3Meta: 'REVISIÓN DE CALIDAD AVVM',
+      proofAssuranceKicker: 'ENTRADA REAL · ENTREGA REAL', proofAssuranceTitle: 'Ve primero la fuente. Ve el resultado. Ve el estándar que hay detrás.', proofAssuranceCopy: 'AVVM no es una pantalla de generación de un solo botón. Evaluamos la fuente, definimos una dirección para su propósito y revisamos el resultado otra vez antes de entregarlo.',
+      proofStandardInput: 'ENTRADA REAL', proofStandardInputMeta: 'Basado en foto fuente', proofStandardDirection: 'DIRECCIÓN DE ARTE', proofStandardDirectionMeta: 'Direcciones por sector', proofStandardReview: 'REVISIÓN DE CALIDAD', proofStandardReviewMeta: 'Rostro · producto · texto', proofStandardDelivery: 'ENTREGA FINAL', proofStandardDeliveryMeta: 'Especificación según plan',
+      proofSpecInput: 'ENTRADA', proofSpecInputValue: '1 IMAGEN', proofSpecOutput: 'SALIDA DE MUESTRA', proofSpecOutputValue: 'RESULTADO CINEMÁTICO', proofSpecReview: 'REVISIÓN FINAL', proofSpecReviewValue: 'REVISADO POR AVVM'
+    },
+    fr: {
+      heroSub: 'Ajoutez une photo. AVVM dirige, vérifie la qualité et livre le film final.', heroSystemKicker: 'SYSTÈME DE PRODUCTION AVVM', heroSignalLive: 'DIRECTION HUMAINE · IA AU SERVICE',
+      heroSignalStep1: 'AJOUTER LA PHOTO', heroSignalStep1Meta: 'VÉRIFICATION SOURCE', heroSignalStep2: 'CHOISIR LA DIRECTION', heroSignalStep2Meta: 'DIRECTION SÉLECTIONNÉE', heroSignalStep3: 'VÉRIFIER ET LIVRER', heroSignalStep3Meta: 'CONTRÔLE QUALITÉ AVVM',
+      proofAssuranceKicker: 'SOURCE RÉELLE · LIVRAISON RÉELLE', proofAssuranceTitle: 'Voyez la source, le résultat, puis le niveau d’exigence qui les relie.', proofAssuranceCopy: 'AVVM n’est pas un écran de génération à un clic. Nous évaluons la source, définissons une direction adaptée à son objectif, puis vérifions le résultat une dernière fois avant livraison.',
+      proofStandardInput: 'SOURCE RÉELLE', proofStandardInputMeta: 'Fondé sur la photo source', proofStandardDirection: 'DIRECTION ARTISTIQUE', proofStandardDirectionMeta: 'Directions par secteur', proofStandardReview: 'CONTRÔLE QUALITÉ', proofStandardReviewMeta: 'Visage · produit · texte', proofStandardDelivery: 'LIVRAISON FINALE', proofStandardDeliveryMeta: 'Spécifications selon le plan',
+      proofSpecInput: 'ENTRÉE', proofSpecInputValue: '1 IMAGE', proofSpecOutput: 'SORTIE EXEMPLE', proofSpecOutputValue: 'RÉSULTAT CINÉMATIQUE', proofSpecReview: 'VÉRIFICATION FINALE', proofSpecReviewValue: 'VÉRIFIÉ PAR AVVM'
+    },
+    de: {
+      heroSub: 'Laden Sie ein Foto hoch. AVVM führt Regie, prüft die Qualität und liefert den fertigen Film.', heroSystemKicker: 'AVVM PRODUKTIONSSYSTEM', heroSignalLive: 'MENSCHLICHE REGIE · KI-ANTRIEB',
+      heroSignalStep1: 'FOTO HOCHLADEN', heroSignalStep1Meta: 'QUELLENPRÜFUNG', heroSignalStep2: 'RICHTUNG WÄHLEN', heroSignalStep2Meta: 'KURATIERTE REGIE', heroSignalStep3: 'PRÜFEN & LIEFERN', heroSignalStep3Meta: 'AVVM QUALITÄTSPRÜFUNG',
+      proofAssuranceKicker: 'ECHTE QUELLE · ECHTE LIEFERUNG', proofAssuranceTitle: 'Sehen Sie zuerst die Quelle, dann das Ergebnis und den Maßstab dahinter.', proofAssuranceCopy: 'AVVM ist keine Ein-Klick-Generierungsseite. Wir prüfen das Ausgangsmaterial, definieren die passende Regie und kontrollieren das Ergebnis vor der Lieferung erneut.',
+      proofStandardInput: 'ECHTE QUELLE', proofStandardInputMeta: 'Auf Basis des Originalfotos', proofStandardDirection: 'ART DIRECTION', proofStandardDirectionMeta: 'Branchenfertige Regie', proofStandardReview: 'QUALITÄTSPRÜFUNG', proofStandardReviewMeta: 'Gesicht · Produkt · Text', proofStandardDelivery: 'FINALE LIEFERUNG', proofStandardDeliveryMeta: 'Spezifikation je Plan',
+      proofSpecInput: 'EINGABE', proofSpecInputValue: '1 BILD', proofSpecOutput: 'BEISPIELAUSGABE', proofSpecOutputValue: 'FILMISCHES ERGEBNIS', proofSpecReview: 'ENDPRÜFUNG', proofSpecReviewValue: 'VON AVVM GEPRÜFT'
+    },
+    pt: {
+      heroSub: 'Envie uma foto. A AVVM dirige, revisa a qualidade e entrega o filme final.', heroSystemKicker: 'SISTEMA DE PRODUÇÃO AVVM', heroSignalLive: 'DIREÇÃO HUMANA · IA POTENCIALIZADA',
+      heroSignalStep1: 'ENVIAR FOTO', heroSignalStep1Meta: 'CHECAGEM DA FONTE', heroSignalStep2: 'ESCOLHER DIREÇÃO', heroSignalStep2Meta: 'DIREÇÃO CURADA', heroSignalStep3: 'REVISAR E ENTREGAR', heroSignalStep3Meta: 'REVISÃO DE QUALIDADE AVVM',
+      proofAssuranceKicker: 'ENTRADA REAL · ENTREGA REAL', proofAssuranceTitle: 'Veja primeiro a fonte, o resultado e o padrão por trás dele.', proofAssuranceCopy: 'A AVVM não é uma tela de geração com um botão. Avaliamos a fonte, definimos uma direção para o objetivo e revisamos o resultado outra vez antes da entrega.',
+      proofStandardInput: 'ENTRADA REAL', proofStandardInputMeta: 'Baseado na foto de origem', proofStandardDirection: 'DIREÇÃO DE ARTE', proofStandardDirectionMeta: 'Direções por setor', proofStandardReview: 'REVISÃO DE QUALIDADE', proofStandardReviewMeta: 'Rosto · produto · texto', proofStandardDelivery: 'ENTREGA FINAL', proofStandardDeliveryMeta: 'Especificação por plano',
+      proofSpecInput: 'ENTRADA', proofSpecInputValue: '1 IMAGEM', proofSpecOutput: 'SAÍDA DE AMOSTRA', proofSpecOutputValue: 'RESULTADO CINEMATOGRÁFICO', proofSpecReview: 'CHECAGEM FINAL', proofSpecReviewValue: 'REVISADO PELA AVVM'
+    },
+    hi: {
+      heroSub: 'एक फोटो अपलोड करें। AVVM निर्देशन, गुणवत्ता जाँच और तैयार फिल्म की डिलीवरी करता है।', heroSystemKicker: 'AVVM प्रोडक्शन सिस्टम', heroSignalLive: 'मानवीय निर्देशन · AI की शक्ति',
+      heroSignalStep1: 'फोटो अपलोड करें', heroSignalStep1Meta: 'स्रोत जाँच', heroSignalStep2: 'दिशा चुनें', heroSignalStep2Meta: 'चुना हुआ निर्देशन', heroSignalStep3: 'जाँचें और डिलीवर करें', heroSignalStep3Meta: 'AVVM गुणवत्ता जाँच',
+      proofAssuranceKicker: 'वास्तविक इनपुट · वास्तविक डिलीवरी', proofAssuranceTitle: 'पहले स्रोत देखें, फिर परिणाम और उसके पीछे का मानक।', proofAssuranceCopy: 'AVVM केवल एक बटन वाला जनरेशन स्क्रीन नहीं है। हम स्रोत का आकलन करते हैं, उद्देश्य के अनुकूल निर्देशन तय करते हैं और डिलीवरी से पहले परिणाम को फिर से जाँचते हैं।',
+      proofStandardInput: 'वास्तविक इनपुट', proofStandardInputMeta: 'मूल फोटो पर आधारित', proofStandardDirection: 'आर्ट डायरेक्शन', proofStandardDirectionMeta: 'क्षेत्र-विशिष्ट निर्देशन', proofStandardReview: 'गुणवत्ता जाँच', proofStandardReviewMeta: 'चेहरा · उत्पाद · टेक्स्ट जाँच', proofStandardDelivery: 'अंतिम डिलीवरी', proofStandardDeliveryMeta: 'प्लान-विशिष्ट विनिर्देश',
+      proofSpecInput: 'इनपुट', proofSpecInputValue: '1 छवि', proofSpecOutput: 'नमूना आउटपुट', proofSpecOutputValue: 'सिनेमाई परिणाम', proofSpecReview: 'अंतिम जाँच', proofSpecReviewValue: 'AVVM द्वारा जाँचा गया'
+    },
+    ar: {
+      heroSub: 'ارفع صورة واحدة. تتولى AVVM الإخراج وفحص الجودة وتسليم الفيلم النهائي.', heroSystemKicker: 'نظام إنتاج AVVM', heroSignalLive: 'إخراج بشري · قوة الذكاء الاصطناعي',
+      heroSignalStep1: 'ارفع الصورة', heroSignalStep1Meta: 'فحص المصدر', heroSignalStep2: 'اختر الاتجاه', heroSignalStep2Meta: 'إخراج منتقى', heroSignalStep3: 'راجع وسلّم', heroSignalStep3Meta: 'فحص جودة AVVM',
+      proofAssuranceKicker: 'إدخال حقيقي · تسليم حقيقي', proofAssuranceTitle: 'شاهد المصدر أولاً، ثم النتيجة، ثم المعيار الذي يقف خلفها.', proofAssuranceCopy: 'AVVM ليست شاشة توليد بضغطة واحدة فقط. نقيّم المصدر ونحدد اتجاهاً يناسب غايته ونراجع النتيجة مرة أخرى قبل التسليم.',
+      proofStandardInput: 'إدخال حقيقي', proofStandardInputMeta: 'مبني على الصورة الأصلية', proofStandardDirection: 'إخراج فني', proofStandardDirectionMeta: 'اتجاهات جاهزة للقطاع', proofStandardReview: 'فحص الجودة', proofStandardReviewMeta: 'فحص الوجه والمنتج والنص', proofStandardDelivery: 'التسليم النهائي', proofStandardDeliveryMeta: 'مواصفات بحسب الخطة',
+      proofSpecInput: 'الإدخال', proofSpecInputValue: 'صورة واحدة', proofSpecOutput: 'مخرج نموذجي', proofSpecOutputValue: 'نتيجة سينمائية', proofSpecReview: 'الفحص النهائي', proofSpecReviewValue: 'مُراجع من AVVM'
+    }
+  };
+  Object.entries(experienceCopy).forEach(([language, copy]) => {
+    if (window.AVVM_LOCALES && window.AVVM_LOCALES[language]) Object.assign(window.AVVM_LOCALES[language], copy);
+  });
 })();
