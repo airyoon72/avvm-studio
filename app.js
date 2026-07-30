@@ -94,6 +94,7 @@ const BEFORE_AFTER_ROUTES = Object.freeze({
 });
 window.avvmBeforeAfterType = '';
 window.avvmGeneratedAfterImageUrl = '';
+window.avvmGeneratedAfterPreviewUrl = '';
 
 function isBeforeAfterPlan(plan = window.selectedPlan) {
   return String(plan) === 'Before / After Reel';
@@ -210,7 +211,7 @@ function clearBeforeAfterSourcePreview(){
 function refreshBeforeAfterSourcePreview(){
   const preview=$('#beforeAfterSourcePreview');
   const beforeFile=$('#imageInput')?.files?.[0];
-  const afterUrl=window.avvmGeneratedAfterImageUrl;
+  const afterUrl=window.avvmGeneratedAfterPreviewUrl || window.avvmGeneratedAfterImageUrl;
   if(!preview || !isBeforeAfterPlan() || !beforeFile || !afterUrl){
     clearBeforeAfterSourcePreview();
     return;
@@ -232,8 +233,43 @@ function refreshBeforeAfterSourcePreview(){
 
 function resetGeneratedAfterConcept(){
   window.avvmGeneratedAfterImageUrl='';
+  window.avvmGeneratedAfterPreviewUrl='';
   clearBeforeAfterSourcePreview();
   updateAfterPhotoUploadLabel();
+}
+
+async function makeAfterConceptPreview(imageUrl){
+  try{
+    const image=await readImageSource(imageUrl);
+    const longest=Math.max(image.naturalWidth,image.naturalHeight);
+    const scale=Math.min(1,720/longest);
+    const width=Math.max(2,Math.round(image.naturalWidth*scale));
+    const height=Math.max(2,Math.round(image.naturalHeight*scale));
+    const canvas=document.createElement('canvas');
+    canvas.width=width;
+    canvas.height=height;
+    const ctx=canvas.getContext('2d');
+    ctx.drawImage(image,0,0,width,height);
+    ctx.fillStyle='rgba(4,6,3,.20)';
+    ctx.fillRect(0,0,width,height);
+    ctx.save();
+    ctx.translate(width/2,height/2);
+    ctx.rotate(-Math.PI/7);
+    ctx.fillStyle='rgba(235,255,145,.76)';
+    ctx.font=`900 ${Math.max(11,Math.round(Math.min(width,height)/16))}px Inter,Arial,sans-serif`;
+    ctx.textAlign='center';
+    ctx.textBaseline='middle';
+    const mark='AVVM · AI CONCEPT PREVIEW';
+    const spacing=Math.max(76,Math.round(Math.min(width,height)/3));
+    for(let y=-height;y<=height;y+=spacing){
+      for(let x=-width;x<=width;x+=spacing*1.75) ctx.fillText(mark,x,y);
+    }
+    ctx.restore();
+    return canvas.toDataURL('image/jpeg',.68);
+  }catch(error){
+    console.warn('Could not prepare local AI AFTER preview:',error);
+    return imageUrl;
+  }
 }
 
 function pause(ms){
@@ -289,6 +325,7 @@ async function generateAfterConcept(){
     if(!response.ok || !data.request_id) throw new Error(data.error || 'AFTER 시안 요청을 시작하지 못했습니다.');
     const imageUrl=await pollAfterImageGeneration(data.request_id);
     window.avvmGeneratedAfterImageUrl=imageUrl;
+    window.avvmGeneratedAfterPreviewUrl=await makeAfterConceptPreview(imageUrl);
     refreshBeforeAfterSourcePreview();
     toast(tr('baAfterReady','AI AFTER 시안 완료 ✓'));
     $('#beforeAfterSourcePreview')?.scrollIntoView({behavior:'smooth',block:'center'});
