@@ -1913,19 +1913,69 @@ document.addEventListener('click', function (event) {
   const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
   const phraseSets = {
     ko: ['한번의 클릭.', '시네마틱 결과.'],
-    en: ['ONE CLICK.', 'CINEMATIC.', 'RESULTS.'],
-    ja: ['ワンクリック。', 'シネマティック。', '結果。'],
-    zh: ['一次点击。', '电影感。', '结果。'],
-    es: ['UN CLIC.', 'CINEMÁTICO.', 'RESULTADOS.'],
-    fr: ['UN CLIC.', 'CINÉMATIQUE.', 'RÉSULTATS.'],
-    de: ['EIN KLICK.', 'KINEMATISCH.', 'ERGEBNISSE.'],
-    pt: ['UM CLIQUE.', 'CINEMATOGRÁFICO.', 'RESULTADOS.'],
-    hi: ['एक क्लिक।', 'सिनेमाई।', 'परिणाम।'],
-    ar: ['نقرة واحدة.', 'سينمائي.', 'نتائج.']
+    en: ['ONE CLICK.', 'CINEMATIC RESULTS.'],
+    ja: ['ワンクリック。', 'シネマティックな結果。'],
+    zh: ['一次点击。', '电影级成果。'],
+    es: ['UN CLIC.', 'RESULTADOS CINEMATOGRÁFICOS.'],
+    fr: ['UN CLIC.', 'RÉSULTATS CINÉMATOGRAPHIQUES.'],
+    de: ['EIN KLICK.', 'KINEMATISCHE ERGEBNISSE.'],
+    pt: ['UM CLIQUE.', 'RESULTADOS CINEMATOGRÁFICOS.'],
+    hi: ['एक क्लिक।', 'सिनेमाई परिणाम।'],
+    ar: ['نقرة واحدة.', 'نتائج سينمائية.']
+  };
+  // Keep the action and the outcome dominant in every language: the small word
+  // introduces the promise, while CLICK / RESULTS carries the visual weight.
+  const compactHeroTokens = {
+    ko: ['한번의', '시네마틱'],
+    en: ['ONE', 'CINEMATIC'],
+    ja: ['ワン', 'シネマティック'],
+    zh: ['一次', '电影级'],
+    es: ['UN', 'CINEMATOGRÁFICOS'],
+    fr: ['UN', 'CINÉMATOGRAPHIQUES'],
+    de: ['EIN', 'KINEMATISCHE'],
+    pt: ['UM', 'CINEMATOGRÁFICOS'],
+    hi: ['एक', 'सिनेमाई'],
+    ar: ['نقرة', 'سينمائية']
   };
   let phrases = phraseSets[document.documentElement.lang] || phraseSets.ko;
 
+  function compactTokenFor(language, phraseIndex) {
+    return compactHeroTokens[language]?.[phraseIndex] || '';
+  }
+
+  function heroPhraseScale(language, phraseIndex) {
+    // The Portuguese result line is materially longer than the other locales.
+    // Keep its same hierarchy, with a little more breathing room on desktop
+    // and mobile instead of shrinking every translated hero.
+    return language === 'pt' && phraseIndex === 1 ? .84 : 1;
+  }
+
   function rebuildFallback(nextPhrases, language = document.documentElement.lang) {
+    const createCheck = () => {
+      const check = document.createElement('span');
+      check.className = 'hero-tagline-check';
+      check.setAttribute('aria-hidden', 'true');
+      check.innerHTML = '<svg viewBox="0 0 180 120"><path class="hero-check-body" d="M13 63 C24 73 35 84 48 95 C78 66 105 37 138 10"/><path class="hero-check-tip" d="M132 16 C148 9 158 5 172 2"/></svg>';
+      return check;
+    };
+
+    const appendCompactText = (target, phrase, token) => {
+      const tokenOffset = token ? phrase.indexOf(token) : -1;
+      if (tokenOffset < 0) {
+        target.textContent = phrase;
+        return;
+      }
+      const before = phrase.slice(0, tokenOffset);
+      const after = phrase.slice(tokenOffset + token.length);
+      if (before) target.append(document.createTextNode(before));
+      const compact = document.createElement('span');
+      compact.className = 'hero-tagline-prefix';
+      compact.textContent = token;
+      compact.style.marginRight = after ? '.12em' : '0';
+      target.append(compact);
+      if (after) target.append(document.createTextNode(after));
+    };
+
     const fragment = document.createDocumentFragment();
     nextPhrases.forEach((phrase, index) => {
       const line = document.createElement('span');
@@ -1933,29 +1983,19 @@ document.addEventListener('click', function (event) {
       line.className = 'hero-tagline-line';
       line.style.setProperty('--line-delay', `${index * 1500}ms`);
       word.className = 'hero-tagline-word';
-      if (language === 'ko' && index === 0 && phrase === '한번의 클릭.') {
-        const check = document.createElement('span');
-        const prefix = document.createElement('span');
+      const token = compactTokenFor(language, index);
+      const tokenOffset = token ? phrase.indexOf(token) : -1;
+      if (index === 0 && tokenOffset === 0) {
         const clickWrap = document.createElement('span');
-        const click = document.createElement('span');
-        prefix.className = 'hero-tagline-prefix';
-        prefix.textContent = '한번의';
         clickWrap.className = 'hero-tagline-click';
-        check.className = 'hero-tagline-check';
-        check.setAttribute('aria-hidden', 'true');
-        check.innerHTML = '<svg viewBox="0 0 180 120"><path class="hero-check-body" d="M13 63 C24 73 35 84 48 95 C78 66 105 37 138 10"/><path class="hero-check-tip" d="M132 16 C148 9 158 5 172 2"/></svg>';
-        click.textContent = '클릭.';
-        clickWrap.append(check, click);
-        word.append(prefix, clickWrap);
-      } else if (language === 'ko' && index === 1 && phrase === '시네마틱 결과.') {
         const prefix = document.createElement('span');
-        const emphasis = document.createElement('span');
         prefix.className = 'hero-tagline-prefix';
-        prefix.textContent = '시네마틱';
-        emphasis.textContent = ' 결과.';
-        word.append(prefix, emphasis);
+        prefix.textContent = token;
+        clickWrap.append(createCheck(), document.createTextNode(phrase.slice(token.length).trimStart()));
+        word.append(clickWrap);
+        word.prepend(prefix);
       } else {
-        word.textContent = phrase;
+        appendCompactText(word, phrase, token);
       }
       line.appendChild(word);
       fragment.appendChild(line);
@@ -2026,16 +2066,15 @@ document.addEventListener('click', function (event) {
   }
 
   function buildPhraseGlyphs(phrase, phraseIndex, fontSize) {
-    const compactKoreanClick = document.documentElement.lang === 'ko'
-      && phraseIndex === 0
-      && phrase === '한번의 클릭.';
-    const compactKoreanCinematic = document.documentElement.lang === 'ko'
-      && phraseIndex === 1
-      && phrase === '시네마틱 결과.';
+    const language = document.documentElement.lang;
+    const token = compactTokenFor(language, phraseIndex);
+    const tokenOffset = token ? phrase.indexOf(token) : -1;
+    const prefixLength = tokenOffset < 0 ? 0 : Array.from(phrase.slice(0, tokenOffset)).length;
+    const compactStart = prefixLength;
+    const compactEnd = prefixLength + Array.from(token).length;
 
     return Array.from(phrase).map((character, index) => {
-      const isCompactPrefix = (compactKoreanClick && index < 3)
-        || (compactKoreanCinematic && index < 4);
+      const isCompactPrefix = index >= compactStart && index < compactEnd;
       return {
         character,
         isCompactPrefix,
@@ -2083,36 +2122,53 @@ document.addEventListener('click', function (event) {
     context.restore();
   }
 
-  function getClickCenter(phrase, glyphs, phraseWidth, fontSize) {
-    let centerX = phraseWidth * .5;
-    if (phrase === '한번의 클릭.') {
-      const clickStart = glyphs.slice(0, 4).reduce((total, glyph) => total + glyph.width + glyph.gap, 0);
-      const clickWidth = glyphs.slice(4).reduce((total, glyph) => total + glyph.width + glyph.gap, 0);
-      centerX = clickStart + clickWidth * .5;
-    }
-    return Math.max(fontSize * .18, Math.min(width - fontSize * .18, centerX));
+  function getClickCenter(phrase, glyphs, phraseWidth) {
+    const token = compactTokenFor(document.documentElement.lang, 0);
+    const tokenOffset = token ? phrase.indexOf(token) : -1;
+    const isRtl = document.documentElement.dir === 'rtl';
+    if (tokenOffset !== 0) return isRtl ? width - phraseWidth * .5 : phraseWidth * .5;
+
+    let actionStart = Array.from(phrase.slice(0, token.length)).length;
+    while (glyphs[actionStart]?.character.trim() === '') actionStart += 1;
+    const introWidth = glyphs.slice(0, actionStart)
+      .reduce((total, glyph) => total + glyph.width + glyph.gap, 0);
+    const actionWidth = glyphs.slice(actionStart)
+      .reduce((total, glyph) => total + glyph.width + glyph.gap, 0);
+    if (!actionWidth) return isRtl ? width - phraseWidth * .5 : phraseWidth * .5;
+    return isRtl
+      ? width - introWidth - actionWidth * .5
+      : introWidth + actionWidth * .5;
   }
 
   function drawClickCheckmark(phrase, phraseIndex, progress, glyphs, phraseWidth, baseline, fontSize) {
-    if (document.documentElement.lang !== 'ko' || phraseIndex !== 0) return;
+    if (phraseIndex !== 0) return;
 
     /* The word finishes, then the tap is acknowledged, then the approval mark lands. */
     const reveal = easeOutCubic((progress - .655) / .13);
     const dismiss = smoothstep((progress - .80) / .10);
     if (reveal <= 0 || dismiss >= .998) return;
 
-    const centerX = getClickCenter(phrase, glyphs, phraseWidth, fontSize);
-    const centerY = baseline - fontSize * 1.02;
-    const start = { x: centerX - fontSize * .28, y: centerY + fontSize * .015 };
-    const middle = { x: centerX - fontSize * .09, y: centerY + fontSize * .22 };
+    // Size and place the mark inside the actual canvas, rather than the font
+    // box. On wide desktop heroes the old mark extended above the canvas and
+    // both brush tips were clipped.
+    const markSize = Math.max(26, Math.min(fontSize * .38, height * .17));
+    const rawCenterX = getClickCenter(phrase, glyphs, phraseWidth);
+    const centerX = clamp(rawCenterX, markSize * .36, width - markSize * .68);
+    const centerY = clamp(
+      baseline - fontSize * .92,
+      markSize * .62,
+      height - markSize * .30
+    );
+    const start = { x: centerX - markSize * .28, y: centerY + markSize * .015 };
+    const middle = { x: centerX - markSize * .09, y: centerY + markSize * .22 };
     // Keep the left stroke concise, then let the right arm rise long and high
     // like a confident hand-drawn approval mark.
-    const end = { x: centerX + fontSize * .60, y: centerY - fontSize * .54 };
+    const end = { x: centerX + markSize * .60, y: centerY - markSize * .54 };
     const firstStroke = Math.min(1, reveal / .38);
     const secondStroke = Math.max(0, (reveal - .38) / .62);
     const rightControl = {
-      x: middle.x + fontSize * .27,
-      y: middle.y - fontSize * .40
+      x: middle.x + markSize * .27,
+      y: middle.y - markSize * .40
     };
     const rightPoint = (amount) => {
       const inverse = 1 - amount;
@@ -2126,16 +2182,16 @@ document.addEventListener('click', function (event) {
     context.save();
     context.globalAlpha = reveal * (1 - dismiss);
     context.strokeStyle = '#d8f233';
-    context.lineWidth = Math.max(5, fontSize * .105);
+    context.lineWidth = Math.max(3, markSize * .105);
     context.lineCap = 'round';
     context.lineJoin = 'round';
     context.shadowColor = 'rgba(216,242,51,.28)';
-    context.shadowBlur = fontSize * .045;
+    context.shadowBlur = markSize * .045;
     context.beginPath();
     context.moveTo(start.x, start.y);
     context.quadraticCurveTo(
-      start.x + fontSize * .018,
-      start.y + fontSize * .08,
+      start.x + markSize * .018,
+      start.y + markSize * .08,
       start.x + (middle.x - start.x) * firstStroke,
       start.y + (middle.y - start.y) * firstStroke
     );
@@ -2161,7 +2217,7 @@ document.addEventListener('click', function (event) {
         const to = rightPoint(toAmount);
         const tailProgress = Math.max(0, Math.min(1, (toAmount - taperStart) / (1 - taperStart)));
         context.globalAlpha = reveal * (1 - dismiss) * (1 - tailProgress * .18);
-        context.lineWidth = Math.max(.8, fontSize * (.095 - tailProgress * .087));
+        context.lineWidth = Math.max(.8, markSize * (.095 - tailProgress * .087));
         context.beginPath();
         context.moveTo(from.x, from.y);
         context.lineTo(to.x, to.y);
@@ -2174,7 +2230,7 @@ document.addEventListener('click', function (event) {
   function renderPhrase(phrase, phraseIndex, progress) {
     if (!width || !height) return;
     const styles = getComputedStyle(promise);
-    const phraseScale = 1;
+    const phraseScale = heroPhraseScale(document.documentElement.lang, phraseIndex);
     let fontSize = (parseFloat(styles.fontSize) || 100) * phraseScale;
     const family = styles.fontFamily || 'Impact, sans-serif';
     const weight = styles.fontWeight || '400';
