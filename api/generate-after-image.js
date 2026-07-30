@@ -50,14 +50,15 @@ function compactBrief(value) {
 function promptFor(type, brief) {
   const shared = [
     "Create one premium editorial AFTER concept still from the supplied BEFORE photo.",
-    "Keep the same subject, viewpoint, perspective, proportions and recognisable identity unless the requested category explicitly changes the styling.",
-    "Photorealistic, refined commercial art direction, natural texture and light. No text, logo, watermark, collage, split-screen or before/after labels.",
+    "NON-NEGOTIABLE IDENTITY LOCK: the supplied reference is authoritative. Recreate the exact same subject, apparent age range, facial geometry, eye shape, nose, lips, teeth, jawline, hairline, body proportions, ethnicity and distinguishing features. Do not reinterpret the person.",
+    "Never age up, age down, mature, de-age, change facial anatomy, alter body shape, add wrinkles, erase natural texture, create porcelain skin, or replace the person with a lookalike. Keep the same viewpoint and perspective unless the customer explicitly requests a styling variation.",
+    "Photorealistic, contemporary premium commercial art direction with clean flattering light, crisp eyes, true-to-life texture and a polished high-end camera grade. No text, logo, watermark, collage, split-screen or before/after labels.",
     "This is an AI visual concept only, not evidence of an actual treatment, outcome, renovation, product performance or health result."
   ];
   const routes = {
     beauty: [
-      "Preserve the person's identity, face shape, age and body. Create only an editorial styling variation through makeup, hair, nails, wardrobe, pose and lighting.",
-      "Do not alter skin condition, facial structure, body size, weight, age, ethnicity or imply cosmetic, medical or skincare efficacy."
+      "Create a contemporary beauty-campaign restyle only: refined grooming, tasteful makeup, hair, wardrobe, pose and lighting. The result should feel fresh, luminous and current while remaining age-authentic and instantly recognisable.",
+      "Preserve natural skin texture, freckles, beauty marks and the original face. Do not alter skin condition, facial structure, body size, weight, age, ethnicity or imply cosmetic, medical or skincare efficacy. Avoid heavy mature glamour makeup, harsh under-eye shadows and dramatic age-inducing lighting."
     ],
     fitness: [
       "Preserve the person's identity, face and body exactly. Create a confident fashion, posture, wardrobe and lighting concept only.",
@@ -124,7 +125,9 @@ module.exports = async (req, res) => {
         prompt: promptFor(type, req.body?.brief),
         aspect_ratio: aspectRatio,
         output_format: "jpeg",
-        num_images: 1
+        num_images: 1,
+        guidance_scale: 5,
+        enhance_prompt: true
       }
     });
     return res.status(202).json({ request_id: request.request_id, status: "IN_QUEUE" });
