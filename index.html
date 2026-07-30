@@ -3,32 +3,6 @@
 
 <html lang="ko">
 <head>
-<script>
-window.addEventListener('error', function(e) {
-	const mountError = function() {
-    const div = document.createElement('div');
-    div.style.position = 'fixed';
-    div.style.top = '0';
-    div.style.left = '0';
-    div.style.width = '100%';
-    div.style.backgroundColor = 'red';
-    div.style.color = 'white';
-    div.style.zIndex = '999999';
-    div.style.padding = '10px';
-    div.style.fontSize = '12px';
-    div.style.fontFamily = 'monospace';
-    div.style.whiteSpace = 'pre-wrap';
-    div.innerText = 'JS Error: ' + e.message + '\nFile: ' + e.filename + '\nLine: ' + e.lineno + ':' + e.colno;
-    document.body.appendChild(div);
-	};
-
-	if (document.body) {
-		mountError();
-	} else {
-		document.addEventListener('DOMContentLoaded', mountError, { once: true });
-	}
-});
-</script>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" name="viewport"/>
 <meta content="#050505" name="theme-color"/>
@@ -38,7 +12,7 @@ window.addEventListener('error', function(e) {
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=Bodoni+Moda:opsz,wght@6..96,400;6..96,500&amp;family=Inter:wght@400;500;600;700;800;900&amp;family=Cormorant+Garamond:ital,wght@1,700;1,900&amp;display=swap" rel="stylesheet"/>
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@latest/dist/web/variable/pretendardvariable-dynamic-subset.css" rel="stylesheet"/>
-<link rel="stylesheet" href="style.css?v=61"/>
+<link rel="stylesheet" href="style.css?v=63"/>
 <style>
 /* AVVM v31 review-safe additions */
 .option-chip.disabled,
@@ -1280,6 +1254,43 @@ window.addEventListener('error', function(e) {
     <div class="before-after-ai-direction">
       <label for="beforeAfterBrief" data-i18n="baDirectionLabel">AFTER에 바라는 장면 <span>(선택)</span></label>
       <textarea id="beforeAfterBrief" maxlength="420" placeholder="예: 부드러운 자연광 아래, 고급스러운 웨딩 헤어와 새틴 드레스" data-i18n-placeholder="baDirectionPlaceholder"></textarea>
+      <section class="after-prompt-finder" aria-label="AI AFTER prompt finder">
+        <div class="after-prompt-finder-head"><span>AVVM PROMPT FINDER</span><b data-i18n="afterPromptTitle">원하는 애프터를 검색하세요</b><p data-i18n="afterPromptHint">예: 자연스러운 웨딩 화보, 헤어 변신, 분위기 있는 카페, 밝은 프로필</p></div>
+        <div class="after-prompt-search-row">
+          <input id="afterPromptSearch" type="search" maxlength="180" autocomplete="off" placeholder="생각하는 변화·스타일·장면을 입력하세요" data-i18n-placeholder="afterPromptSearchPlaceholder"/>
+          <button type="button" id="generateAfterPrompt"><span data-i18n="afterPromptCreate">프롬프트 만들기</span> <i>↗</i></button>
+        </div>
+        <div class="after-prompt-mode" role="group" aria-label="AFTER prompt direction">
+          <span data-i18n="afterPromptModeLabel">연출 톤</span>
+          <button type="button" class="is-active" data-after-prompt-mode="cinematic" data-i18n="afterPromptModeCinematic">시네마틱</button>
+          <button type="button" data-after-prompt-mode="commercial" data-i18n="afterPromptModeCommercial">커머셜</button>
+          <button type="button" data-after-prompt-mode="emotional" data-i18n="afterPromptModeEmotional">감성</button>
+        </div>
+        <div class="after-prompt-quick" aria-label="Prompt idea examples">
+          <button type="button" data-after-prompt-query="자연스러운 웨딩 화보, 부드러운 자연광, 새틴 드레스" data-i18n="afterPromptQuickWedding">웨딩 화보</button>
+          <button type="button" data-after-prompt-query="현대적인 헤어와 메이크업, 밝고 고급스러운 프로필" data-i18n="afterPromptQuickProfile">프로필 업그레이드</button>
+          <button type="button" data-after-prompt-query="포근한 조명, 정돈된 가구, 밝고 편안한 거실 스타일링" data-i18n="afterPromptQuickInterior">공간 스타일링</button>
+          <button type="button" data-after-prompt-query="다정한 낮은 산책, 따뜻한 시선, 반려동물 포트레이트" data-i18n="afterPromptQuickPet">반려동물 포트레이트</button>
+        </div>
+        <div class="after-prompt-result" id="afterPromptResult" hidden aria-live="polite">
+          <div class="after-prompt-result-meta"><span id="afterPromptResultType">AVVM DIRECTION</span><b data-i18n="afterPromptResultTitle">생성된 연출 프롬프트</b></div>
+          <div class="after-prompt-result-grid">
+            <article class="after-prompt-result-card">
+              <header><span data-i18n="afterPromptImage">IMAGE PROMPT</span><button type="button" data-after-prompt-copy="image" data-i18n="afterPromptCopy">복사</button></header>
+              <code id="afterPromptResultText"></code>
+            </article>
+            <article class="after-prompt-result-card">
+              <header><span data-i18n="afterPromptVideo">AUTO REEL PROMPT</span><button type="button" data-after-prompt-copy="video" data-i18n="afterPromptCopy">복사</button></header>
+              <code id="afterVideoPromptResult"></code>
+            </article>
+            <article class="after-prompt-result-card after-prompt-result-card--guardrail">
+              <header><span data-i18n="afterPromptNegative">NEGATIVE / GUARDRAILS</span><button type="button" data-after-prompt-copy="negative" data-i18n="afterPromptCopy">복사</button></header>
+              <code id="afterNegativePromptResult"></code>
+            </article>
+          </div>
+          <div class="after-prompt-result-actions"><button type="button" id="applyAfterPrompt"><span data-i18n="afterPromptApply">AI AFTER에 적용</span> ↗</button></div>
+        </div>
+      </section>
       <div class="before-after-prompt-samples" aria-label="AFTER prompt samples">
         <button type="button" data-ba-prompt="identity-locked contemporary editorial portrait, bright soft daylight, clear natural eyes, true skin texture, refined modern grooming, fresh premium campaign" data-i18n="baSample1">아이덴티티 루미너스</button>
         <button type="button" data-ba-prompt="identity-locked high-end studio campaign, clean beauty softbox, luminous but age-authentic complexion, contemporary wardrobe, precise polished finish" data-i18n="baSample2">클린 캠페인</button>
@@ -1722,11 +1733,11 @@ document.addEventListener('click', function (event) {
 </script>
 
 <script src="auto-translations.js?v=2"></script>
-<script src="locales.js?v=3"></script>
-<script src="i18n.js?v=14"></script>
+<script src="locales.js?v=4"></script>
+<script src="i18n.js?v=15"></script>
 <script>window.AVVM_AUTH_UI_ENABLED = false;</script>
 <script src="auth.js?v=1"></script>
-<script src="app.js?v=45"></script>
+<script src="app.js?v=46"></script>
 <script>
 /* AVVM order safeguards: required consent and plan-locked delivery quality. */
 (function(){
@@ -1853,8 +1864,9 @@ document.addEventListener('click', function (event) {
 </script>
 
 <script>
-/* Each phrase grows from one-third scale through its own small mosaic pixels,
-   holds sharp for a beat, then breaks only its own pixels before the next one. */
+/* AVVM kinetic hero type — live text stays underneath as a safe fallback.
+   The canvas adds a precise, letter-by-letter title treatment without a video
+   watermark, mesh panel, or baked-in language. */
 (function () {
   const container = document.getElementById('hero-tagline-container');
   const promise = document.getElementById('heroPromise');
@@ -1875,18 +1887,49 @@ document.addEventListener('click', function (event) {
     ar: ['صورة واحدة.', 'نقرة واحدة.', 'سينمائي.', 'نتائج.']
   };
   let phrases = [...promise.querySelectorAll('.hero-tagline-word')].map((word) => word.textContent.trim());
-  if (reduceMotion || !phrases.length) return;
+
+  function rebuildFallback(nextPhrases) {
+    const fragment = document.createDocumentFragment();
+    nextPhrases.forEach((phrase, index) => {
+      const line = document.createElement('span');
+      const word = document.createElement('span');
+      line.className = 'hero-tagline-line';
+      line.style.setProperty('--line-delay', `${index * 1500}ms`);
+      word.className = 'hero-tagline-word';
+      word.textContent = phrase;
+      line.appendChild(word);
+      fragment.appendChild(line);
+    });
+    promise.replaceChildren(fragment);
+  }
+
+  if (reduceMotion) {
+    document.addEventListener('avvm:languagechange', event => {
+      const nextPhrases = phraseSets[event.detail?.language] || phraseSets.ko;
+      promise.setAttribute('aria-label', nextPhrases.join(' '));
+      rebuildFallback(nextPhrases);
+    });
+    return;
+  }
+  if (!phrases.length) return;
 
   const context = canvas.getContext('2d');
-  const pixels = document.createElement('canvas');
-  const pixelContext = pixels.getContext('2d');
-  const stageDuration = 1850;
+  if (!context) return;
+
+  const stageDuration = 2200;
   let cycleDuration = stageDuration * phrases.length;
   let width = 0;
   let height = 0;
   let frame = 0;
   let started = false;
   let startedAt = 0;
+
+  function showLiveFallback() {
+    window.cancelAnimationFrame(frame);
+    started = false;
+    container.classList.remove('is-kinetic-active');
+    canvas.style.setProperty('display', 'none');
+  }
 
   function resizeCanvas() {
     const rect = container.getBoundingClientRect();
@@ -1901,82 +1944,215 @@ document.addEventListener('click', function (event) {
     context.imageSmoothingEnabled = false;
   }
 
-  function stageState(progress) {
-    // 1) a small pixelated arrival that grows clean, 2) a reading pause,
-    // 3) the letters alone pixelate and dissolve. No grid is painted behind.
-    if (progress < .30) {
-      const grow = progress / .30;
-      return { alpha: Math.min(1, grow * 1.7), pixel: Math.max(1, 12 - Math.round(grow * 11)), scale: .33 + grow * .67 };
-    }
-    if (progress < .54) return { alpha: 1, pixel: 1, scale: 1 };
-    if (progress < .87) {
-      const breakup = (progress - .54) / .33;
-      const stepped = Math.ceil(breakup * 12) / 12;
-      return { alpha: 1 - breakup * .30, pixel: 1 + Math.round(stepped * 17), scale: 1 };
-    }
-    const dissolve = (progress - .87) / .13;
-    return { alpha: .70 * (1 - dissolve), pixel: 18, scale: 1 };
+  function clamp(value, minimum, maximum) {
+    return Math.min(maximum, Math.max(minimum, value));
+  }
+
+  function easeOutCubic(value) {
+    return 1 - Math.pow(1 - clamp(value, 0, 1), 3);
+  }
+
+  function smoothstep(value) {
+    const t = clamp(value, 0, 1);
+    return t * t * (3 - 2 * t);
+  }
+
+  function getLetterSpacing(styles, fontSize) {
+    const raw = styles.letterSpacing;
+    if (!raw || raw === 'normal') return 0;
+    if (raw.endsWith('px')) return parseFloat(raw) || 0;
+    if (raw.endsWith('em')) return (parseFloat(raw) || 0) * fontSize;
+    return parseFloat(raw) || 0;
+  }
+
+  function measurePhrase(characters, letterSpacing) {
+    return characters.reduce((total, character, index) =>
+      total + context.measureText(character).width + (index ? letterSpacing : 0), 0);
+  }
+
+  // Keep a deterministic random order: it feels spontaneous, but never flickers
+  // differently frame-to-frame. Each character enters and exits on its own beat.
+  function seeded(index, phraseIndex, salt) {
+    const value = Math.sin((index + 1) * 127.1 + (phraseIndex + 1) * 311.7 + salt * 74.3) * 43758.5453;
+    return value - Math.floor(value);
+  }
+
+  function glyphState(progress, index, count, fontSize, phraseIndex) {
+    const enterStart = .05 + seeded(index, phraseIndex, 1) * .12;
+    const exitStart = .64 + seeded(index, phraseIndex, 2) * .16;
+    const enter = smoothstep((progress - enterStart) / .115);
+    const leave = smoothstep((progress - exitStart) / .105);
+    // The reference clip builds a line from letters that begin in genuinely
+    // different places, then snap into a clean shared baseline.
+    const inX = (seeded(index, phraseIndex, 3) - .5) * fontSize * .92 * (1 - enter);
+    const inY = (seeded(index, phraseIndex, 4) - .5) * fontSize * .72 * (1 - enter);
+    const outX = (seeded(index, phraseIndex, 5) - .5) * fontSize * .96 * leave;
+    const outY = (seeded(index, phraseIndex, 6) - .5) * fontSize * .74 * leave;
+    return {
+      alpha: enter * (1 - leave),
+      scale: .62 + enter * .38 - leave * .13,
+      x: inX + outX,
+      y: inY + outY,
+      leave,
+      ghost: enter < 1 ? enter * (1 - enter) * .34 : 0
+    };
+  }
+
+  const hangulInitial = ['ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
+  const hangulMedial = ['ㅏ', 'ㅐ', 'ㅑ', 'ㅒ', 'ㅓ', 'ㅔ', 'ㅕ', 'ㅖ', 'ㅗ', 'ㅘ', 'ㅙ', 'ㅚ', 'ㅛ', 'ㅜ', 'ㅝ', 'ㅞ', 'ㅟ', 'ㅠ', 'ㅡ', 'ㅢ', 'ㅣ'];
+  const hangulFinal = ['', 'ㄱ', 'ㄲ', 'ㄳ', 'ㄴ', 'ㄵ', 'ㄶ', 'ㄷ', 'ㄹ', 'ㄺ', 'ㄻ', 'ㄼ', 'ㄽ', 'ㄾ', 'ㄿ', 'ㅀ', 'ㅁ', 'ㅂ', 'ㅄ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
+
+  function splitHangul(character) {
+    const code = character.codePointAt(0);
+    if (code < 0xAC00 || code > 0xD7A3) return null;
+    const syllable = code - 0xAC00;
+    const finalIndex = syllable % 28;
+    const medialIndex = Math.floor(syllable / 28) % 21;
+    const initialIndex = Math.floor(syllable / (28 * 21));
+    return [hangulInitial[initialIndex], hangulMedial[medialIndex], hangulFinal[finalIndex]].filter(Boolean);
+  }
+
+  // Korean syllables briefly split into their consonant/vowel components as they
+  // leave. Other languages keep the same random per-letter dissolve, so every
+  // locale gets a stable, readable version of the effect.
+  function drawHangulDissolve(character, x, y, characterWidth, fontSize, phraseIndex, index, leave) {
+    const parts = splitHangul(character);
+    const burst = smoothstep((leave - .025) / .42);
+    if (!parts || !burst) return;
+    const anchors = [
+      [-characterWidth * .20, -fontSize * .03],
+      [characterWidth * .10, -fontSize * .03],
+      [-characterWidth * .01, fontSize * .23]
+    ];
+    context.save();
+    context.font = `${Math.max(16, fontSize * .60)}px ${getComputedStyle(promise).fontFamily || 'sans-serif'}`;
+    context.textBaseline = 'alphabetic';
+    parts.forEach((part, partIndex) => {
+      const directionX = (seeded(index + partIndex * 11, phraseIndex, 7) - .5) * fontSize * 1.05;
+      const directionY = (seeded(index + partIndex * 13, phraseIndex, 8) - .5) * fontSize * .90;
+      const [anchorX, anchorY] = anchors[partIndex] || anchors[0];
+      context.save();
+      context.globalAlpha = burst * Math.pow(1 - leave, .55) * .95;
+      context.translate(x + anchorX + directionX * burst, y + anchorY + directionY * burst);
+      context.rotate((seeded(index + partIndex, phraseIndex, 9) - .5) * burst * .42);
+      context.fillText(part, 0, 0);
+      context.restore();
+    });
+    context.restore();
   }
 
   function renderPhrase(phrase, phraseIndex, progress) {
     if (!width || !height) return;
-    const state = stageState(progress);
     const styles = getComputedStyle(promise);
-    let fontSize = (parseFloat(styles.fontSize) || 100) * (state.scale || 1);
+    const phraseScale = phraseIndex === 2 ? .82 : 1;
+    let fontSize = (parseFloat(styles.fontSize) || 100) * phraseScale;
     const family = styles.fontFamily || 'Impact, sans-serif';
+    const weight = styles.fontWeight || '400';
     const color = phraseIndex === 1 ? '#d8f233' : '#f7f7f2';
+    const characters = Array.from(phrase);
+    const rtl = document.documentElement.dir === 'rtl';
 
     context.clearRect(0, 0, width, height);
-    context.font = `400 ${fontSize}px ${family}`;
-    const measured = context.measureText(phrase).width;
-    if (measured > width - 4) fontSize *= (width - 4) / measured;
+    context.font = `${weight} ${fontSize}px ${family}`;
+    let letterSpacing = getLetterSpacing(styles, fontSize);
+    let phraseWidth = measurePhrase(characters, letterSpacing);
+    const maxWidth = Math.max(1, width - 8);
+    if (phraseWidth > maxWidth) {
+      const ratio = maxWidth / phraseWidth;
+      fontSize *= ratio;
+      letterSpacing *= ratio;
+      context.font = `${weight} ${fontSize}px ${family}`;
+      phraseWidth = measurePhrase(characters, letterSpacing);
+    }
 
-    const cell = state.pixel;
-    const rtl = document.documentElement.dir === 'rtl';
-    pixels.width = Math.max(1, Math.ceil(width / cell));
-    pixels.height = Math.max(1, Math.ceil(height / cell));
-    pixelContext.clearRect(0, 0, pixels.width, pixels.height);
-    pixelContext.font = `400 ${fontSize / cell}px ${family}`;
-    pixelContext.textBaseline = 'alphabetic';
-    pixelContext.direction = rtl ? 'rtl' : 'ltr';
-    pixelContext.textAlign = rtl ? 'right' : 'left';
-    pixelContext.fillStyle = color;
-    pixelContext.fillText(phrase, rtl ? pixels.width : 0, (height * .5 + fontSize * .29) / cell);
+    const baseline = height * .5 + fontSize * .30;
+    let cursor = rtl ? width : 0;
 
     context.save();
-    context.globalAlpha = state.alpha;
-    context.imageSmoothingEnabled = false;
-    context.drawImage(pixels, 0, 0, width, height);
+    context.font = `${weight} ${fontSize}px ${family}`;
+    context.textBaseline = 'alphabetic';
+    context.textAlign = rtl ? 'right' : 'left';
+    context.fillStyle = color;
+    context.shadowColor = phraseIndex === 1 ? 'rgba(216,242,51,.26)' : 'rgba(255,255,255,.12)';
+    context.shadowBlur = 14;
+
+    characters.forEach((character, index) => {
+      const characterWidth = context.measureText(character).width;
+      if (rtl) cursor -= characterWidth + (index ? letterSpacing : 0);
+      const state = glyphState(progress, index, characters.length, fontSize, phraseIndex);
+      const x = cursor + state.x;
+      const y = baseline + state.y;
+
+      if (state.ghost > .002) {
+        context.save();
+        context.globalAlpha = state.ghost;
+        context.fillText(character, x - fontSize * .16, y + fontSize * .03);
+        context.restore();
+      }
+      if (state.alpha > .002) {
+        context.save();
+        context.globalAlpha = state.alpha;
+        context.translate(x, y);
+        context.scale(state.scale, state.scale);
+        context.fillText(character, 0, 0);
+        context.restore();
+      }
+      drawHangulDissolve(character, x, y, characterWidth, fontSize, phraseIndex, index, state.leave);
+      if (!rtl) cursor += characterWidth + letterSpacing;
+    });
     context.restore();
   }
 
   function animate(timestamp) {
-    if (!startedAt) startedAt = timestamp;
-    const elapsed = (timestamp - startedAt) % cycleDuration;
-    const phraseIndex = Math.floor(elapsed / stageDuration);
-    const progress = (elapsed % stageDuration) / stageDuration;
-    renderPhrase(phrases[phraseIndex], phraseIndex, progress);
-    frame = window.requestAnimationFrame(animate);
+    try {
+      if (!startedAt) startedAt = timestamp;
+      const elapsed = (timestamp - startedAt) % cycleDuration;
+      const phraseIndex = Math.floor(elapsed / stageDuration);
+      const progress = (elapsed % stageDuration) / stageDuration;
+      renderPhrase(phrases[phraseIndex] || phrases[0], phraseIndex, progress);
+      frame = window.requestAnimationFrame(animate);
+    } catch (error) {
+      // A title effect must never blank the hero after a locale switch.
+      showLiveFallback();
+    }
   }
 
   function startLoop() {
     if (started) return;
-    started = true;
-    resizeCanvas();
-    container.classList.add('is-mosaic-active');
-    frame = window.requestAnimationFrame(animate);
+    try {
+      resizeCanvas();
+      if (width < 20 || height < 20 || !phrases.length) throw new Error('Hero title has no drawable area.');
+      // Draw a complete first frame before hiding the accessible live heading.
+      // This is particularly important on iPhone after Japanese/Chinese reflow.
+      renderPhrase(phrases[0], 0, .38);
+      canvas.style.removeProperty('display');
+      container.classList.add('is-kinetic-active');
+      started = true;
+      startedAt = performance.now();
+      frame = window.requestAnimationFrame(animate);
+    } catch (error) {
+      showLiveFallback();
+    }
   }
 
   function updatePhrases(nextLanguage) {
-    const nextPhrases = phraseSets[nextLanguage] || phraseSets.ko;
-    phrases = nextPhrases;
-    cycleDuration = stageDuration * phrases.length;
-    promise.setAttribute('aria-label', phrases.join(' '));
-    promise.innerHTML = phrases.map((phrase, index) =>
-      `<span class="hero-tagline-line" style="--line-delay:${index * 1500}ms"><span class="hero-tagline-word">${phrase}</span></span>`
-    ).join('');
-    startedAt = performance.now();
-    resizeCanvas();
+    try {
+      phrases = phraseSets[nextLanguage] || phraseSets.ko;
+      cycleDuration = stageDuration * phrases.length;
+      promise.setAttribute('aria-label', phrases.join(' '));
+      rebuildFallback(phrases);
+      // Make the newly translated live text visible immediately, then restart
+      // the canvas only after the browser has completed its text reflow.
+      const wasRunning = started;
+      showLiveFallback();
+      startedAt = 0;
+      if (wasRunning) window.requestAnimationFrame(startLoop);
+    } catch (error) {
+      // The title must never break a language switch. Keep the newly translated
+      // live heading visible if an older browser cannot run the canvas effect.
+      showLiveFallback();
+      rebuildFallback(phraseSets[nextLanguage] || phraseSets.ko);
+    }
   }
 
   window.addEventListener('resize', resizeCanvas, { passive: true });

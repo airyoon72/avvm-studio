@@ -95,6 +95,7 @@ const BEFORE_AFTER_ROUTES = Object.freeze({
 window.avvmBeforeAfterType = '';
 window.avvmGeneratedAfterImageUrl = '';
 window.avvmGeneratedAfterPreviewUrl = '';
+window.avvmBeforeAfterVideoDirection = '';
 
 function isBeforeAfterPlan(plan = window.selectedPlan) {
   return String(plan) === 'Before / After Reel';
@@ -538,12 +539,181 @@ $$('[data-ba-prompt]').forEach((button)=>button.addEventListener('click',()=>{
   const field=$('#beforeAfterBrief');
   if(!field) return;
   field.value=button.dataset.baPrompt || '';
+  window.avvmBeforeAfterVideoDirection='';
   field.focus();
   if(window.avvmGeneratedAfterImageUrl) resetGeneratedAfterConcept();
 }));
 if($('#beforeAfterBrief')) $('#beforeAfterBrief').addEventListener('input',()=>{
+  window.avvmBeforeAfterVideoDirection='';
   if(window.avvmGeneratedAfterImageUrl) resetGeneratedAfterConcept();
 });
+
+/* The finder deliberately creates a production direction rather than a treatment
+   promise. Search terms remain the customer's intent; the guardrails preserve
+   identity and keep the visual result clearly conceptual. */
+const AFTER_PROMPT_FINDER = Object.freeze({
+  portrait: {
+    label: 'IDENTITY · PORTRAIT',
+    tests: /portrait|profile|ceo|headshot|editorial|fashion|lookbook|\ud504\ub85c\ud544|\uc99d\uba85|\uc5d0\ub514\ud1a0\ub9ac\uc5bc|\ud328\uc158|\ud654\ubcf4|\uba54\uc774\ud06c\uc5c5|\ud5e4\uc5b4|\uc5fc\uc0c9|\uc2a4\ud0c0\uc77c/i,
+    direction: 'Create a contemporary premium portrait restyle through grooming, wardrobe, colour, and flattering light only. Keep the supplied person instantly recognisable, age-authentic, and naturally textured.',
+    request: 'Contemporary premium portrait styling, refined grooming, wardrobe and flattering light; age-authentic and naturally textured.'
+  },
+  wedding: {
+    label: 'WEDDING · EDITORIAL',
+    tests: /wedding|bridal|bride|groom|veil|anniversary|\uc6e8\ub529|\uc2e0\ubd80|\uc2e0\ub791|\ub4dc\ub808\uc2a4|\uae30\ub150\uc77c|\ud504\ub85c\ud3ec\uc988/i,
+    direction: 'Create an elegant, contemporary wedding editorial with refined hair, wardrobe, fabric texture, and soft directional light. Keep the supplied person recognisable and the mood believable, intimate, and timeless.',
+    request: 'Elegant contemporary wedding editorial with refined hair, wardrobe, fabric texture and soft directional light.'
+  },
+  interior: {
+    label: 'SPACE · NEXT',
+    tests: /interior|room|home|house|cafe|store|restaurant|kitchen|living|furniture|\uc778\ud14c\ub9ac\uc5b4|\ubc29|\uc9d1|\uac70\uc2e4|\uc8fc\ubc29|\uce74\ud398|\ub9e4\uc7a5|\uac00\uad6c|\uc870\uba85|\uacf5\uac04/i,
+    direction: 'Create a premium interior styling concept using furniture, lighting, colour, and atmosphere. Preserve the exact room geometry, walls, windows, doors, and fixed structures; do not imply completed construction.',
+    request: 'Premium interior styling through furnishings, lighting, colour and atmosphere while retaining the existing room structure.'
+  },
+  pet: {
+    label: 'PET · PORTRAIT',
+    tests: /pet|dog|cat|puppy|kitten|animal|\ubc18\ub824|\uac15\uc544\uc9c0|\uace0\uc591\uc774|\ubc18\ub824\ub3d9\ubb3c/i,
+    direction: 'Create a warm, premium pet portrait with a gentle setting, clean light, and natural grooming. Preserve the animal’s exact markings, face, scale, anatomy, and temperament; no human-like behaviour or health claim.',
+    request: 'Warm premium pet portrait with a gentle setting, clean light and natural grooming while preserving exact markings and anatomy.'
+  },
+  memory: {
+    label: 'MEMORY · RESTORE',
+    tests: /memory|old photo|vintage|archive|parents|family|memorial|black.?white|\uc62e\uc0ac\uc9c4|\uace0\uc804|\ud761\ubc31|\ubd80\ubaa8\ub2d8|\uac00\uc871|\uba54\ubaa8\ub9ac\uc5bc|\ucd94\uc5b5/i,
+    direction: 'Create a dignified restoration concept that retains the original era, expression, clothing, and framing. Improve clarity and gentle colour balance only; do not restyle, de-age, or replace any person.',
+    request: 'Dignified restoration that retains the original era, expression, clothing and framing with gentle clarity and colour balance.'
+  },
+  default: {
+    label: 'AVVM · CUSTOM DIRECTION',
+    tests: /.*/,
+    direction: 'Create a premium, contemporary visual concept that makes the requested change through art direction, light, colour, wardrobe, styling, and believable atmosphere while keeping the source authentic.',
+    request: 'Premium contemporary visual direction through art direction, light, colour, styling and believable atmosphere.'
+  }
+});
+
+const AFTER_PROMPT_MODES = Object.freeze({
+  cinematic: {
+    label: 'CINEMATIC',
+    image: 'Use restrained cinema-grade lighting, considered depth, a refined colour grade, and one memorable hero frame.',
+    video: 'Begin still, make one deliberate camera push or parallax move through the transition, then settle into a quiet hero hold.',
+    request: 'Cinematic light, controlled depth and a calm, precise transition.'
+  },
+  commercial: {
+    label: 'COMMERCIAL',
+    image: 'Use clean premium campaign light, polished detail, high clarity, and a confident presentation-ready composition.',
+    video: 'Lead with a clear first-second visual reveal, use one precise optical match-cut, then resolve into a stable campaign hero frame.',
+    request: 'Clean premium campaign light, polished detail and a precise optical reveal.'
+  },
+  emotional: {
+    label: 'EMOTIONAL',
+    image: 'Use intimate natural light, gentle atmosphere, truthful texture, and a warm, personally meaningful editorial frame.',
+    video: 'Begin with a brief still pause, let natural light or atmosphere carry one soft transition, then hold on a warm, believable final frame.',
+    request: 'Warm natural light, intimate atmosphere and a gentle, believable transition.'
+  }
+});
+
+let afterPromptMode = 'cinematic';
+let generatedAfterPrompt = '';
+let generatedAfterRequestBrief = '';
+let generatedAfterVideoPrompt = '';
+let generatedAfterNegativePrompt = '';
+let generatedAfterIntent = '';
+
+function normaliseAfterPromptIntent(query) {
+  const compact = String(query || '').replace(/\s+/g, ' ').trim();
+  if (!compact) return '';
+  return compact.replace(/[<>]/g, '').slice(0, 180);
+}
+
+function getAfterPromptDirection(intent) {
+  return Object.values(AFTER_PROMPT_FINDER).find((item) => item !== AFTER_PROMPT_FINDER.default && item.tests.test(intent)) || AFTER_PROMPT_FINDER.default;
+}
+
+function buildAfterPrompt(intent) {
+  const direction = getAfterPromptDirection(intent);
+  const route = getBeforeAfterRoute();
+  const mode = AFTER_PROMPT_MODES[afterPromptMode] || AFTER_PROMPT_MODES.cinematic;
+  const shared = 'NON-NEGOTIABLE IDENTITY LOCK: use the supplied BEFORE photo as the authoritative reference. Preserve the same subject, apparent age range, facial geometry, eye shape, nose, lips, jawline, hairline, body proportions, ethnicity, and distinctive features. Never age up, age down, change anatomy, replace the subject, make a treatment claim, or create a lookalike.';
+  const quality = 'Photorealistic, high-end commercial art direction, crisp focus, natural texture, clean contemporary colour grade, no text, no logo, no watermark, no split screen.';
+  const safety = route.category === 'Custom' && window.avvmBeforeAfterType === 'interior'
+    ? 'This is a visual styling concept only, not a construction, property, or furnishing guarantee.'
+    : route.category === 'Custom' && window.avvmBeforeAfterType === 'pet'
+      ? 'This is a portrait styling concept only, not a health, age, or behaviour result.'
+      : 'This is a styling concept only, not a medical, cosmetic, body, fitness, or treatment result.';
+  return {
+    label: `${direction.label} · ${mode.label}`,
+    prompt: `Customer intent: ${intent}. ${shared} ${direction.direction} ${mode.image} ${quality} ${safety}`,
+    videoPrompt: `Customer-approved ${mode.label.toLowerCase()} art direction: ${mode.video} Preserve the approved BEFORE and AI AFTER pair exactly. The motion must be a visual styling transition only, never evidence of a health, cosmetic, body, construction, or behavioural result. Keep the image stable, photorealistic, and free of text, logos, split screens, dividers, or watermarks.`,
+    negativePrompt: 'No identity drift, face replacement, age change, anatomy change, body transformation, invented treatment result, health claim, altered pet markings, changed room geometry, new structures, text, logo, watermark, split-screen layout, divider, flicker, unstable details, extra limbs, or distorted hands.',
+    // The API adds the full identity and safety guardrails on every request.
+    // Keep the customer-facing field compact so its 420-character server limit
+    // always retains the requested direction instead of truncating it.
+    requestBrief: `Customer intent: ${intent}. ${direction.request} ${mode.request}`.slice(0, 420)
+  };
+}
+
+function renderGeneratedAfterPrompt(intent) {
+  const cleanIntent = normaliseAfterPromptIntent(intent);
+  if (!cleanIntent) {
+    toast(tr('afterPromptNeedIntent', 'Describe the change or scene you want first.'));
+    $('#afterPromptSearch')?.focus();
+    return;
+  }
+  const result = buildAfterPrompt(cleanIntent);
+  generatedAfterIntent = cleanIntent;
+  generatedAfterPrompt = result.prompt;
+  generatedAfterRequestBrief = result.requestBrief;
+  generatedAfterVideoPrompt = result.videoPrompt;
+  generatedAfterNegativePrompt = result.negativePrompt;
+  const root = $('#afterPromptResult');
+  const type = $('#afterPromptResultType');
+  const text = $('#afterPromptResultText');
+  const video = $('#afterVideoPromptResult');
+  const negative = $('#afterNegativePromptResult');
+  if (type) type.textContent = result.label;
+  if (text) text.textContent = result.prompt;
+  if (video) video.textContent = result.videoPrompt;
+  if (negative) negative.textContent = result.negativePrompt;
+  if (root) root.hidden = false;
+}
+
+function applyGeneratedAfterPrompt() {
+  if (!generatedAfterPrompt || !generatedAfterRequestBrief) return;
+  const field = $('#beforeAfterBrief');
+  if (!field) return;
+  field.value = generatedAfterRequestBrief;
+  field.dispatchEvent(new Event('input', { bubbles: true }));
+  window.avvmBeforeAfterVideoDirection = generatedAfterVideoPrompt;
+  field.focus();
+  toast(tr('afterPromptApplied', 'Generated prompt applied to your AFTER request.'));
+}
+
+$('#generateAfterPrompt')?.addEventListener('click', () => renderGeneratedAfterPrompt($('#afterPromptSearch')?.value));
+$('#afterPromptSearch')?.addEventListener('keydown', (event) => {
+  if (event.key === 'Enter') { event.preventDefault(); renderGeneratedAfterPrompt(event.currentTarget.value); }
+});
+$$('[data-after-prompt-query]').forEach((button) => button.addEventListener('click', () => {
+  const input = $('#afterPromptSearch');
+  if (input) input.value = button.dataset.afterPromptQuery || '';
+  renderGeneratedAfterPrompt(input?.value);
+}));
+$$('[data-after-prompt-mode]').forEach((button) => button.addEventListener('click', () => {
+  const nextMode = button.dataset.afterPromptMode;
+  if (!AFTER_PROMPT_MODES[nextMode]) return;
+  afterPromptMode = nextMode;
+  $$('[data-after-prompt-mode]').forEach((item) => item.classList.toggle('is-active', item === button));
+  if (generatedAfterIntent) renderGeneratedAfterPrompt(generatedAfterIntent);
+}));
+$('#applyAfterPrompt')?.addEventListener('click', applyGeneratedAfterPrompt);
+$$('[data-after-prompt-copy]').forEach((copyButton) => copyButton.addEventListener('click', async (event) => {
+  const type = event.currentTarget.dataset.afterPromptCopy;
+  const value = type === 'video' ? generatedAfterVideoPrompt : type === 'negative' ? generatedAfterNegativePrompt : generatedAfterPrompt;
+  if (!value) return;
+  await copyRecipePrompt(value);
+  const button = event.currentTarget;
+  const original = button.textContent;
+  button.textContent = tr('afterPromptCopied', 'COPIED ✓');
+  setTimeout(() => { if (button.isConnected) button.textContent = original; }, 1600);
+}));
 if($('#beforeAfterPreviewRange')) $('#beforeAfterPreviewRange').addEventListener('input',(event)=>{
   const stage=$('#beforeAfterSourceStage');
   if(stage) stage.classList.remove('is-playing');
@@ -655,7 +825,10 @@ function openOrder(plan){
 
 function openBeforeAfterOrder(type){
   if(!BEFORE_AFTER_ROUTES[type]) return;
-  if(window.avvmBeforeAfterType && window.avvmBeforeAfterType!==type) resetGeneratedAfterConcept();
+  if(window.avvmBeforeAfterType && window.avvmBeforeAfterType!==type){
+    resetGeneratedAfterConcept();
+    window.avvmBeforeAfterVideoDirection='';
+  }
   window.avvmBeforeAfterType=type;
   selectCategory(BEFORE_AFTER_ROUTES[type].category);
   const mood=$('#moodInput');
@@ -1196,7 +1369,8 @@ function createLogoWordmarkSource(word, styleId){
 function makeVideoPrompt(order){
   if(order.beforeAfter){
     const route=BEFORE_AFTER_ROUTES[order.beforeAfterType] || BEFORE_AFTER_ROUTES.beauty;
-    return `${route.prompt} The supplied image is a split pair: begin within the left BEFORE source, use one precise optical wipe or match-cut, and resolve into the right AI AFTER concept. Keep the transition elegant, stable, and clearly visual rather than evidentiary. Never show the split layout, divider, captions, or new claims. Deliver a premium, short vertical or horizontal before/after reel based only on the supplied pair.`;
+    const customerDirection=String(order.beforeAfterVideoDirection || '').trim().slice(0,1600);
+    return `${route.prompt}${customerDirection ? ` ${customerDirection}` : ''} The supplied image is a split pair: begin within the left BEFORE source, use one precise optical wipe or match-cut, and resolve into the right AI AFTER concept. Keep the transition elegant, stable, and clearly visual rather than evidentiary. Never show the split layout, divider, captions, or new claims. Deliver a premium, short vertical or horizontal before/after reel based only on the supplied pair.`;
   }
   const direction=String(order.mood||'').trim();
   const category=String(order.category||'Custom');
@@ -1345,6 +1519,7 @@ async function proceedWithOrderCreation(orderId, brand, email, phone, privacyCon
     logoWord:designMeta.logoWord || '',
     beforeAfter:!!designMeta.beforeAfter,
     beforeAfterType:designMeta.beforeAfterType || '',
+    beforeAfterVideoDirection:designMeta.beforeAfterVideoDirection || '',
     beforeImageName:designMeta.beforeImageName || '',
     afterImageName:designMeta.afterImageName || '',
     duration: videoOptions.duration,
@@ -1551,6 +1726,7 @@ async function createOrder(){
       category, mood, response, totalAmount, imageData, {
         designMode, logoWord, syntheticSource:createTextLogo,
         beforeAfter, beforeAfterType,
+        beforeAfterVideoDirection:beforeAfter ? window.avvmBeforeAfterVideoDirection : '',
         beforeImageName:imageFile?.name || '', afterImageName:beforeAfter ? 'AI AFTER concept' : ''
       }
     );
