@@ -182,7 +182,7 @@
     baBeforeUploadTitle: '1. UPLOAD BEFORE PHOTO', baBeforeUploadCopy: 'Attach the original photo first. Then write the AFTER scene you would like to see and create a concept.', baBeforeAttach: 'ATTACH BEFORE PHOTO', baBeforeAttachHint: 'The original photo to use as the visual reference', baBeforeAttached: 'BEFORE ATTACHED ✓',
     baDirectionLabel: 'DESCRIBE THE AFTER YOU WANT <span>(OPTIONAL)</span>', baDirectionPlaceholder: 'e.g. soft natural light, polished wedding hair, a satin dress', baSample1: 'PREMIUM EDITORIAL', baSample2: 'WARM CINEMA MOOD', baSample3: 'MINIMAL LUXURY', baGenerateAfter: 'CREATE AI AFTER CONCEPT', baGeneratingAfter: 'CREATING AI AFTER CONCEPT…', baAfterReady: 'AI AFTER CONCEPT READY ✓', baAfterNeeded: 'Create the AI AFTER concept before continuing.', baComposing: 'PREPARING BEFORE / AFTER…',
     baSimulationNotice: 'The AI concept does not promise an actual efficacy, body, health, or construction result. It is generated while preserving the supplied person, space, or pet within the allowed direction.', baAiConsent: 'I confirm I have the right to use this photo and agree that the photo and direction are sent to an external AI processing service to create an AI AFTER concept.',
-    baPreviewTitle: 'CHECK BEFORE + AI AFTER', baPreviewCopy: 'Before payment, this is a watermarked low-resolution concept preview only. Payment unlocks the clean AFTER source and the transformation reel.', baPreviewWatermark: 'AVVM · AI CONCEPT PREVIEW · PAYMENT UNLOCKS CLEAN SOURCE', baPreviewPlay: 'PREVIEW TRANSITION ▶'
+    baPreviewTitle: 'CHECK BEFORE + AI AFTER', baPreviewCopy: 'Before payment, this is a watermarked low-resolution concept preview only. After payment, AVVM creates the transformation reel from the clean AFTER source.', baPreviewWatermark: 'AVVM · AI CONCEPT PREVIEW · PAYMENT UNLOCKS CLEAN SOURCE', baPreviewPlay: 'PREVIEW TRANSITION ▶'
   });
 
   const ko = {
@@ -225,7 +225,7 @@
     baBeforeUploadTitle: '1. BEFORE 사진 업로드', baBeforeUploadCopy: '원본 사진을 먼저 첨부한 뒤, 보고 싶은 AFTER 장면을 적고 시안을 만드세요.', baBeforeAttach: 'BEFORE 사진 첨부하기', baBeforeAttachHint: 'AI AFTER 시안의 기준이 될 원본 사진', baBeforeAttached: 'BEFORE 첨부 완료 ✓',
     baDirectionLabel: 'AFTER에 바라는 장면 <span>(선택)</span>', baDirectionPlaceholder: '예: 부드러운 자연광 아래, 고급스러운 웨딩 헤어와 새틴 드레스', baSample1: '프리미엄 에디토리얼', baSample2: '따뜻한 시네마 무드', baSample3: '미니멀 럭셔리', baGenerateAfter: 'AI AFTER 시안 만들기', baGeneratingAfter: 'AI AFTER 시안 생성 중…', baAfterReady: 'AI AFTER 시안 완료 ✓', baAfterNeeded: '전환 영상을 만들기 전 AI AFTER 시안을 먼저 만들어 주세요.', baComposing: 'BEFORE / AFTER 준비 중...',
     baSimulationNotice: 'AI 시안은 실제 효능·체형·건강·공사 결과를 보장하지 않습니다. 원본의 인물·공간·반려동물 특징을 지키는 범위에서 생성합니다.', baAiConsent: '본인은 사진 사용 권한이 있으며, AI AFTER 시안 생성을 위해 사진과 입력한 바람이 외부 AI 처리 서비스로 전송되는 것에 동의합니다.',
-    baPreviewTitle: 'BEFORE와 AI AFTER 시안 확인', baPreviewCopy: '결제 전에는 워터마크가 포함된 저해상도 시안만 확인할 수 있습니다. 결제 후 클린 AFTER와 전환 영상을 제작합니다.', baPreviewWatermark: 'AVVM · AI CONCEPT PREVIEW · 결제 후 클린 소스 제공', baPreviewPlay: '전환 미리보기 ▶'
+    baPreviewTitle: 'BEFORE와 AI AFTER 시안 확인', baPreviewCopy: '결제 전에는 워터마크가 포함된 저해상도 시안만 확인할 수 있습니다. 결제 후 워터마크 없는 AFTER 소스로 전환 영상을 제작합니다.', baPreviewWatermark: 'AVVM · AI CONCEPT PREVIEW · 결제 후 클린 소스 제공', baPreviewPlay: '전환 미리보기 ▶'
   };
 
   function isKorean() { return language === 'ko'; }
