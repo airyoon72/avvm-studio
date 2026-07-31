@@ -6353,7 +6353,7 @@ html[lang="ko"] .hero-tagline-fallback {
 .hero-tagline-prefix {
   align-self: baseline;
   margin-right: .12em;
-  font-size: .56em;
+  font-size: .58em;
   letter-spacing: -.055em;
   line-height: 1;
 }
@@ -6375,6 +6375,13 @@ html[lang="ko"] .hero-tagline-fallback {
   transform-origin: 50% 80%;
   opacity: 0;
   animation: avvmHeroFallbackCheck 3.1s cubic-bezier(.16,1,.3,1) infinite;
+}
+/* In the Korean promise the action phrase is deliberately smaller. Keep its
+   confirmation mark decisively larger than the compact letters. */
+.hero-tagline-prefix .hero-tagline-check {
+  top: -1.56em;
+  width: 2.6em;
+  height: 1.7em;
 }
 .hero-tagline-check svg {
   display: block;

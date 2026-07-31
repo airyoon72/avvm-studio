@@ -164,7 +164,7 @@
 <!-- The hero promise remains as live text so it is visible on every device. -->
 <div id="hero-tagline-container">
   <h1 class="hero-tagline-fallback" id="heroPromise" aria-label="원 클릭 비디오." data-i18n-aria="ariaHeroPromise">
-    <span class="hero-tagline-line" style="--line-delay:0ms"><span class="hero-tagline-word"><span class="hero-tagline-click"><span aria-hidden="true" class="hero-tagline-check"><svg viewBox="0 0 180 120"><path class="hero-check-body" d="M13 63 C24 73 35 84 48 95 C78 66 105 37 138 10"/><path class="hero-check-tip" d="M132 16 C148 9 158 5 172 2"/></svg></span><span>원 클릭 비디오.</span></span></span></span>
+    <span class="hero-tagline-line" style="--line-delay:0ms"><span class="hero-tagline-word"><span class="hero-tagline-prefix">원 <span class="hero-tagline-click"><span aria-hidden="true" class="hero-tagline-check"><svg viewBox="0 0 180 120"><path class="hero-check-body" d="M13 63 C24 73 35 84 48 95 C78 66 105 37 138 10"/><path class="hero-check-tip" d="M132 16 C148 9 158 5 172 2"/></svg></span><span>클릭</span></span></span><span> 비디오.</span></span></span>
   </h1>
   <canvas aria-hidden="true" id="hero-tagline-canvas"></canvas>
 </div>
@@ -1930,7 +1930,9 @@ document.addEventListener('click', function (event) {
   let phrases = phraseSets[heroLanguageKey()] || phraseSets.ko;
 
   function compactTokenFor(language, phraseIndex) {
-    return '';
+    // Korean keeps the action phrase understated so the deliverable—video,
+    // website, or business—owns the hierarchy. The check still lands on 클릭.
+    return language === 'ko' ? '원 클릭' : '';
   }
 
   function heroPhraseScale(language, phraseIndex) {
@@ -1949,7 +1951,7 @@ document.addEventListener('click', function (event) {
       return check;
     };
 
-    const appendCompactText = (target, phrase, token) => {
+    const appendCompactText = (target, phrase, token, language) => {
       const tokenOffset = token ? phrase.indexOf(token) : -1;
       if (tokenOffset < 0) {
         target.textContent = phrase;
@@ -1960,7 +1962,19 @@ document.addEventListener('click', function (event) {
       if (before) target.append(document.createTextNode(before));
       const compact = document.createElement('span');
       compact.className = 'hero-tagline-prefix';
-      compact.textContent = token;
+      const clickToken = clickHeroTokens[language] || '';
+      const clickOffset = clickToken ? token.indexOf(clickToken) : -1;
+      if (clickOffset < 0) {
+        compact.textContent = token;
+      } else {
+        const clickWrap = document.createElement('span');
+        clickWrap.className = 'hero-tagline-click';
+        if (clickOffset) compact.append(document.createTextNode(token.slice(0, clickOffset)));
+        clickWrap.append(createCheck(), document.createTextNode(clickToken));
+        compact.append(clickWrap);
+        const compactAfter = token.slice(clickOffset + clickToken.length);
+        if (compactAfter) compact.append(document.createTextNode(compactAfter));
+      }
       compact.style.marginRight = after ? '.12em' : '0';
       target.append(compact);
       if (after) target.append(document.createTextNode(after));
@@ -1974,19 +1988,7 @@ document.addEventListener('click', function (event) {
       line.style.setProperty('--line-delay', `${index * 1500}ms`);
       word.className = 'hero-tagline-word';
       const token = compactTokenFor(language, index);
-      const tokenOffset = token ? phrase.indexOf(token) : -1;
-      if (index === 0 && tokenOffset === 0) {
-        const clickWrap = document.createElement('span');
-        clickWrap.className = 'hero-tagline-click';
-        const prefix = document.createElement('span');
-        prefix.className = 'hero-tagline-prefix';
-        prefix.textContent = token;
-        clickWrap.append(createCheck(), document.createTextNode(phrase.slice(token.length).trimStart()));
-        word.append(clickWrap);
-        word.prepend(prefix);
-      } else {
-        appendCompactText(word, phrase, token);
-      }
+      appendCompactText(word, phrase, token, language);
       line.appendChild(word);
       fragment.appendChild(line);
     });
@@ -2140,13 +2142,13 @@ document.addEventListener('click', function (event) {
     // Size and place the mark inside the actual canvas, rather than the font
     // box. On wide desktop heroes the old mark extended above the canvas and
     // both brush tips were clipped.
-    const markSize = Math.max(26, Math.min(fontSize * .38, height * .17));
+    const markSize = Math.max(34, Math.min(fontSize * .58, height * .25));
     const rawCenterX = getClickCenter(phrase, glyphs, phraseWidth);
-    const centerX = clamp(rawCenterX, markSize * .36, width - markSize * .68);
+    const centerX = clamp(rawCenterX, markSize * .42, width - markSize * .70);
     const centerY = clamp(
       baseline - fontSize * .92,
-      markSize * .62,
-      height - markSize * .30
+      markSize * .74,
+      height - markSize * .36
     );
     const start = { x: centerX - markSize * .28, y: centerY + markSize * .015 };
     const middle = { x: centerX - markSize * .09, y: centerY + markSize * .22 };
