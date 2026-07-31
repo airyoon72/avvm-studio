@@ -9,6 +9,19 @@
   const savedLanguage = localStorage.getItem(STORAGE_KEY);
   let language = LANGUAGE_META[savedLanguage] ? savedLanguage : 'ko';
 
+  const footerLabels = {
+    ko: ['서비스', '이용약관', '개인정보처리방침', '환불정책', '디지털 제공 안내', '사업자 정보'],
+    en: ['Service', 'Terms', 'Privacy', 'Refund', 'Digital delivery', 'Business information'],
+    ja: ['サービス', '利用規約', 'プライバシーポリシー', '返金ポリシー', 'デジタル提供案内', '事業者情報'],
+    zh: ['服务', '使用条款', '隐私政策', '退款政策', '数字交付说明', '商家信息'],
+    es: ['Servicio', 'Términos', 'Privacidad', 'Reembolsos', 'Entrega digital', 'Información comercial'],
+    fr: ['Service', 'Conditions', 'Confidentialité', 'Remboursement', 'Livraison numérique', 'Informations commerciales'],
+    de: ['Service', 'Nutzungsbedingungen', 'Datenschutz', 'Rückerstattung', 'Digitale Bereitstellung', 'Unternehmensinformationen'],
+    pt: ['Serviço', 'Termos', 'Privacidade', 'Reembolso', 'Entrega digital', 'Informações comerciais'],
+    hi: ['सेवा', 'नियम व शर्तें', 'गोपनीयता', 'रिफंड', 'डिजिटल डिलीवरी', 'व्यावसायिक जानकारी'],
+    ar: ['الخدمة', 'الشروط والأحكام', 'الخصوصية', 'الاسترداد', 'التسليم الرقمي', 'معلومات الأعمال']
+  };
+
   const en = {
     heroEyebrow: 'THE AI VIDEO VENDING MACHINE', heroSub: 'Premium commercial videos from a single image.', baInputLabel: 'INPUT · 30-YEAR-OLD PHOTO', baOutputLabel: 'OUTPUT · KKAMSOONI RUNS AGAIN', baProcessTop: 'AI MEMORIAL REMASTER', baProcessBottom: 'STILL PAST → RUNNING MEMORY', baCaseNote: 'One frozen photo. A memory running back to you.', kkamsooniPhoto: 'KKAMSOONI · 30 YEARS AGO', kkamsooniMotion: '🐕 KKAMSOONI, NOW IN MOTION', webStudioEyebrow: 'SISTER BRAND · WEB-STUDIO', webStudioTitle: 'WATCH. JEWELRY.<br>LIFESTYLE.', webStudioCopy: 'WEB-STUDIO curates watches, jewelry, and elevated lifestyle objects through one clear point of view. Discover the sister brand’s promotional film here.', webStudioPending: 'VISIT WEB-STUDIO ↗', proofLabEyebrow: 'RESULT PREVIEW LIBRARY', proofLabTitle: 'YOUR PHOTO,<br>WITH PROOF.', proofLabCopy: 'See the result range first. Every example places a real input image next to its AVVM production result.', proofPortraitName: 'PORTRAIT EDITORIAL', proofPortraitCopy: 'Turn an everyday portrait into a short luxury fashion-campaign film.', proofPortraitInput: 'Everyday portrait', proofPortraitOutput: 'Fashion editorial film', proofMemorialName: 'MEMORIAL RESTORATION', proofMemorialCopy: 'Let a presence in an old photograph move again as a living memory.', proofMemorialInput: 'Old black-and-white photo', proofMemorialOutput: 'A memory in motion', proofProductName: 'PRODUCT ADVERTISING', proofProductCopy: 'Produce an advertising film with light and camera movement from a simple product photo.', proofProductInput: 'Standard product photo', proofProductOutput: 'Luxury advertising film', proofProfileName: 'ID · PROFILE', proofProfileCopy: 'Keep the person’s identity while refining background, wardrobe, and lighting for the right profile use.', proofProfileInput: 'Everyday portrait', proofProfileOutput: 'Refined profile photo', proofBeautyName: 'BEAUTY ADVERTISING', proofBeautyCopy: 'Turn a basic product photo into a beauty film with texture, light, and camera movement.', proofBeautyInput: 'Basic product photo', proofBeautyOutput: 'Liquid beauty film', proofFoodName: 'FOOD ADVERTISING', proofFoodCopy: 'Create a short menu or brand film that brings out food texture and warmth.', proofFoodInput: 'Everyday food photo', proofFoodOutput: 'Cinematic food film', proofTravelName: 'TRAVEL TRANSFORM', proofTravelCopy: 'Turn one portrait into a short reel with a new destination and style.', proofTravelInput: 'Everyday portrait', proofTravelOutput: 'Travel cinema reel', proofWeddingName: 'WEDDING FILM', proofWeddingCopy: 'Build a wedding mood film from one portrait by refining wardrobe, space, and light.', proofWeddingInput: 'Everyday portrait', proofWeddingOutput: 'Wedding editorial film', proofLabNotice: 'These are real production examples for reference. Results vary with the source photo’s focus, light, composition, and selected style; AVVM reviews quality before final delivery.',
     startProject: 'START PROJECT ↗', viewShowreel: 'VIEW SHOWREEL', scrollExplore: 'SCROLL TO EXPLORE',
@@ -254,18 +267,123 @@
     inputMethodVoiceEdit: '제작 요청에서 수정하기 ↓'
   });
 
+  Object.assign(en, {
+    autoRecipeTitle: 'ONE IMAGE, THE OPENING SCENE OF A FILM.',
+    autoRecipeCopy: 'Copy a direction proven in the examples, or apply it in the order window and begin with your own photo. Every recipe is designed to preserve the original person, product, and composition first.',
+    autoRecipeProduct: 'The product remains completely still while the surrounding time and light pause for one beat. It is a product hook that preserves its form and stops the eye from the first frame.',
+    autoRecipeBeauty: 'A single line of light moving over the product refracts the space around it. It creates a tactile beauty mood without flooding the frame with liquid.',
+    autoRecipeMemorial: 'Rather than exaggerated movement, a gaze, breath, and subtle head motion safely revive the feeling of an old photograph.',
+    autoRecipeEditorial: 'In a single camera pass across the shoulder, the same person feels as though they are already entering an entirely new editorial world.',
+    autoRecipeTravel: 'A travel transition where changes in place and atmosphere flow naturally while preserving the person’s identity.',
+    autoRecipeMusic: 'We compress a strong beat and movement into one moment while keeping the face and clothing silhouette stable.',
+    autoRecipeFood: 'Show one texture—steam, bubbles, or a crisp surface—in an extreme close-up, then return to the whole plate. The food looks more appetizing and the film feels less exaggerated.',
+    autoRecipeWedding: 'Natural light brushing a veil or shoulder briefly covers the frame, then reveals a deeper expression and space. It lingers more quietly than forced slow motion.',
+    autoRecipeClassic: 'Preserve the grain and period feeling of a classic photograph, letting only a tiny gaze and breath move as if a film gate has opened. No modern filter covers the image.',
+    autoRecipeProfile: 'For photos that need trust more than transformation, movement stays minimal. The gaze, skin, and silhouette remain stable for a short profile motion.',
+    autoRecipeNote: 'Recipes are a starting point. Please upload only photos you have permission to use. Actual results may vary depending on source quality, selected options, and final review.'
+  });
+
+  Object.assign(en, {
+    ariaHeroPromise: 'One click. Cinematic results.',
+    ariaPortraitVideo: 'Portrait editorial result video', ariaMemorialVideo: 'Kkamsooni memorial restoration result video',
+    ariaProductVideo: 'Watch product advertising result video', ariaBeautyVideo: 'Beauty advertising result video',
+    ariaFoodVideo: 'Food advertising result video', ariaTravelVideo: 'Travel transformation result video',
+    ariaWeddingVideo: 'Wedding film result video', ariaClassicVideo: 'Classic portrait restoration result video',
+    ariaJewelryComparison: 'Sketch and ring photo comparison slider', ariaJewelryVideo: 'Jewelry design macro video',
+    ariaRestaurantVideo: 'Restaurant opening promotion video sample', ariaBeautyFlow: 'Beauty advertising direction flow',
+    ariaPlanChooser: 'Plan selection', ariaDesignType: 'Design type selection', ariaMoodSelection: 'Detailed mood selection', ariaMotionIntensity: 'Motion intensity'
+  });
+
+  /* Runtime copy is used by UI that is created or refreshed after page load
+     (plan state, prompt library, and the paid AFTER-concept flow). Keeping it
+     in the same locale source prevents those live controls falling back to
+     English while the rest of a selected language is already translated. */
+  const runtimeUiCopy = {
+    ko: {
+      photoAttached: '첨부 완료 ✓', customDeliverySpec: '상담 후 납품 사양 확정', planIncluded: '{plan} 플랜에 포함', customScopeNote: '추가 장면·특수 연출·제작 범위는 상담 견적으로 확정합니다.', resolutionPlanNote: '해상도는 플랜에 포함되어 있으며, 원본 사진 품질에 따라 최종 검수 시 안내드립니다.', promptLibraryUse: '이 레시피 불러오기', promptLibraryEmpty: '검색 결과가 없습니다. 원하는 장면을 직접 적어주세요.', promptLibraryLoaded: '연출 레시피를 불러왔습니다. 원하는 내용을 덧붙여주세요.', testPayment: '테스트 결제하기', baConceptRemaining: '결제 전 AI AFTER 시안은 최대 <b>{limit}회</b> 만들 수 있습니다. <strong>남은 {remaining}회</strong>', baConceptExhausted: '결제 전 AI AFTER 시안 <b>{limit}회</b>를 모두 사용했습니다. 현재 시안으로 영상 제작을 진행해 주세요.'
+    },
+    en: {
+      photoAttached: 'ATTACHED ✓', customDeliverySpec: 'Delivery specification confirmed after consultation', planIncluded: 'Included with {plan}', customScopeNote: 'Extra scenes, special direction, and production scope are confirmed by custom quote.', resolutionPlanNote: 'Delivery quality is included with your plan; final guidance depends on the source-photo review.', promptLibraryUse: 'USE THIS RECIPE', promptLibraryEmpty: 'No recipe matched. Describe the scene in your own words.', promptLibraryLoaded: 'Recipe loaded. Add any detail you want.', testPayment: 'TEST PAYMENT', baConceptRemaining: 'Create up to <b>{limit} AI AFTER concepts</b> before payment. <strong>{remaining} left</strong>', baConceptExhausted: 'You have used all <b>{limit}</b> pre-payment AI AFTER concepts. Continue with the current concept.'
+    },
+    ja: {
+      photoAttached: '添付完了 ✓', customDeliverySpec: '納品仕様はご相談後に確定', planIncluded: '{plan} プランに含む', customScopeNote: '追加シーン・特殊演出・制作範囲は個別見積もりで確定します。', resolutionPlanNote: '納品品質はプランに含まれ、元画像の確認後に最終案内します。', promptLibraryUse: 'このレシピを使う', promptLibraryEmpty: '一致するレシピがありません。希望のシーンを直接入力してください。', promptLibraryLoaded: '演出レシピを読み込みました。詳細を追加してください。', testPayment: 'テスト決済', baConceptRemaining: '決済前にAI AFTER案を最大<b>{limit}回</b>作成できます。<strong>残り{remaining}回</strong>', baConceptExhausted: '決済前のAI AFTER案を<b>{limit}回</b>すべて使いました。現在の案で映像制作を進めてください。'
+    },
+    zh: {
+      photoAttached: '已添加 ✓', customDeliverySpec: '咨询后确认交付规格', planIncluded: '已包含在 {plan} 方案中', customScopeNote: '额外场景、特殊创意和制作范围将通过定制报价确认。', resolutionPlanNote: '交付质量已包含在方案内，将在审核原始照片后最终确认。', promptLibraryUse: '使用此配方', promptLibraryEmpty: '没有匹配的配方。请直接描述您想要的画面。', promptLibraryLoaded: '已载入创意配方。请补充任何细节。', testPayment: '测试付款', baConceptRemaining: '付款前最多可创建 <b>{limit} 个 AI AFTER 方案</b>。<strong>还剩 {remaining} 个</strong>', baConceptExhausted: '您已用完付款前的 <b>{limit} 个 AI AFTER 方案</b>。请使用当前方案继续制作视频。'
+    },
+    es: {
+      photoAttached: 'ADJUNTADO ✓', customDeliverySpec: 'La especificación de entrega se confirma tras la consulta', planIncluded: 'Incluido con el plan {plan}', customScopeNote: 'Las escenas extra, la dirección especial y el alcance se confirman mediante presupuesto personalizado.', resolutionPlanNote: 'La calidad de entrega está incluida en tu plan y se confirma tras revisar la foto original.', promptLibraryUse: 'USAR ESTA RECETA', promptLibraryEmpty: 'No hay recetas coincidentes. Describe la escena con tus propias palabras.', promptLibraryLoaded: 'Receta cargada. Añade cualquier detalle que quieras.', testPayment: 'PAGO DE PRUEBA', baConceptRemaining: 'Antes del pago puedes crear hasta <b>{limit} conceptos AI AFTER</b>. <strong>Quedan {remaining}</strong>', baConceptExhausted: 'Ya has usado los <b>{limit}</b> conceptos AI AFTER previos al pago. Continúa con el concepto actual.'
+    },
+    fr: {
+      photoAttached: 'AJOUTÉ ✓', customDeliverySpec: 'Les spécifications de livraison sont confirmées après consultation', planIncluded: 'Inclus dans le plan {plan}', customScopeNote: 'Les scènes supplémentaires, la direction spéciale et le périmètre sont confirmés par devis personnalisé.', resolutionPlanNote: 'La qualité de livraison est incluse dans votre plan et confirmée après examen de la photo source.', promptLibraryUse: 'UTILISER CETTE RECETTE', promptLibraryEmpty: 'Aucune recette correspondante. Décrivez directement la scène souhaitée.', promptLibraryLoaded: 'Recette chargée. Ajoutez les détails souhaités.', testPayment: 'PAIEMENT TEST', baConceptRemaining: 'Avant le paiement, créez jusqu’à <b>{limit} concepts AI AFTER</b>. <strong>Il en reste {remaining}</strong>', baConceptExhausted: 'Vous avez utilisé les <b>{limit}</b> concepts AI AFTER avant paiement. Continuez avec le concept actuel.'
+    },
+    de: {
+      photoAttached: 'ANGEHÄNGT ✓', customDeliverySpec: 'Lieferspezifikation wird nach Beratung bestätigt', planIncluded: 'Im Plan {plan} enthalten', customScopeNote: 'Zusatzszenen, Spezialregie und Produktionsumfang werden per individuellem Angebot bestätigt.', resolutionPlanNote: 'Die Lieferqualität ist im Plan enthalten und wird nach Prüfung des Quellfotos bestätigt.', promptLibraryUse: 'DIESES REZEPT NUTZEN', promptLibraryEmpty: 'Kein passendes Rezept gefunden. Beschreiben Sie die gewünschte Szene direkt.', promptLibraryLoaded: 'Regie-Rezept geladen. Ergänzen Sie die gewünschten Details.', testPayment: 'TESTZAHLUNG', baConceptRemaining: 'Vor der Zahlung können Sie bis zu <b>{limit} AI-AFTER-Konzepte</b> erstellen. <strong>Noch {remaining} verfügbar</strong>', baConceptExhausted: 'Sie haben alle <b>{limit}</b> AI-AFTER-Konzepte vor der Zahlung verwendet. Fahren Sie mit dem aktuellen Konzept fort.'
+    },
+    pt: {
+      photoAttached: 'ANEXADO ✓', customDeliverySpec: 'A especificação de entrega é confirmada após a consulta', planIncluded: 'Incluído no plano {plan}', customScopeNote: 'Cenas extras, direção especial e escopo de produção são confirmados por orçamento personalizado.', resolutionPlanNote: 'A qualidade de entrega está incluída no plano e é confirmada após a revisão da foto de origem.', promptLibraryUse: 'USAR ESTA RECEITA', promptLibraryEmpty: 'Nenhuma receita encontrada. Descreva a cena desejada com suas palavras.', promptLibraryLoaded: 'Receita carregada. Adicione os detalhes que quiser.', testPayment: 'PAGAMENTO DE TESTE', baConceptRemaining: 'Antes do pagamento, crie até <b>{limit} conceitos AI AFTER</b>. <strong>Restam {remaining}</strong>', baConceptExhausted: 'Você usou todos os <b>{limit}</b> conceitos AI AFTER pré-pagamento. Continue com o conceito atual.'
+    },
+    hi: {
+      photoAttached: 'संलग्न ✓', customDeliverySpec: 'डिलीवरी विनिर्देश परामर्श के बाद तय होंगे', planIncluded: '{plan} प्लान में शामिल', customScopeNote: 'अतिरिक्त दृश्य, विशेष निर्देशन और उत्पादन दायरा कस्टम कोटेशन से तय होगा।', resolutionPlanNote: 'डिलीवरी गुणवत्ता आपके प्लान में शामिल है और स्रोत फोटो समीक्षा के बाद तय होगी।', promptLibraryUse: 'यह रेसिपी इस्तेमाल करें', promptLibraryEmpty: 'कोई मिलती-जुलती रेसिपी नहीं मिली। अपनी पसंद का दृश्य सीधे लिखें।', promptLibraryLoaded: 'निर्देशन रेसिपी लोड हो गई। अपनी पसंद का विवरण जोड़ें।', testPayment: 'टेस्ट भुगतान', baConceptRemaining: 'भुगतान से पहले अधिकतम <b>{limit} AI AFTER कॉन्सेप्ट</b> बनाए जा सकते हैं। <strong>{remaining} शेष</strong>', baConceptExhausted: 'आपने भुगतान से पहले के सभी <b>{limit}</b> AI AFTER कॉन्सेप्ट इस्तेमाल कर लिए हैं। मौजूदा कॉन्सेप्ट से आगे बढ़ें।'
+    },
+    ar: {
+      photoAttached: 'تم الإرفاق ✓', customDeliverySpec: 'تُؤكَّد مواصفات التسليم بعد الاستشارة', planIncluded: 'مشمول في خطة {plan}', customScopeNote: 'تُؤكَّد المشاهد الإضافية والإخراج الخاص ونطاق الإنتاج عبر عرض سعر مخصص.', resolutionPlanNote: 'جودة التسليم مشمولة في خطتك وتُؤكَّد بعد مراجعة الصورة الأصلية.', promptLibraryUse: 'استخدم هذه الوصفة', promptLibraryEmpty: 'لا توجد وصفة مطابقة. صف المشهد الذي تريده بكلماتك.', promptLibraryLoaded: 'تم تحميل وصفة الإخراج. أضف أي تفاصيل تريدها.', testPayment: 'دفع تجريبي', baConceptRemaining: 'يمكن إنشاء ما يصل إلى <b>{limit} تصوّرات AI AFTER</b> قبل الدفع. <strong>المتبقي {remaining}</strong>', baConceptExhausted: 'استخدمت كل تصوّرات AI AFTER قبل الدفع وعددها <b>{limit}</b>. تابع بالتصوّر الحالي.'
+    }
+  };
+  Object.entries(runtimeUiCopy).forEach(([locale, copy]) => {
+    if (locale === 'ko') Object.assign(ko, copy);
+    else if (locale === 'en') Object.assign(en, copy);
+    else Object.assign(((window.AVVM_LOCALES || {})[locale] || {}), copy);
+  });
+
   function isKorean() { return language === 'ko'; }
 
   function t(key, fallback) {
     if (isKorean()) return ko[key] || fallback || key;
     const locale = (window.AVVM_LOCALES || {})[language] || {};
-    return locale[key] || en[key] || fallback || key;
+    if (locale[key]) return locale[key];
+    // Most of the long-form page copy is kept in the Korean source markup and
+    // is translated by the locale-specific text map. Prefer that map for the
+    // eight non-English languages before falling back to the English UI copy.
+    // This prevents a missing hand-written key from quietly leaving Japanese,
+    // Chinese, Spanish, etc. in English.
+    if (language !== 'en' && fallback) {
+      const translated = autoText(fallback, '');
+      if (translated && translated !== fallback) return translated;
+    }
+    return en[key] || fallback || key;
   }
 
   function setText(node, value) { if (node && value != null) node.textContent = value; }
   function setHtml(node, value) { if (node && value != null) node.innerHTML = value; }
 
   const autoTextNodes = [];
+  const autoAttributes = [];
+  const englishAttributeFallbacks = Object.freeze({
+    '한번의 클릭. 시네마틱 결과.': 'One click. Cinematic results.',
+    '인물 에디토리얼 입력 사진': 'Portrait editorial input photo',
+    '깜순이 메모리얼 입력 사진': 'Kkamsooni memorial input photo',
+    '시계 제품 광고 입력 사진': 'Watch product-ad input photo',
+    '프로필 입력 사진': 'Profile input photo',
+    '프로필 보정 결과 사진': 'Refined profile result photo',
+    '뷰티 광고 입력 사진': 'Beauty-ad input photo',
+    '푸드 광고 입력 사진': 'Food-ad input photo',
+    '트래블 변신 입력 사진': 'Travel-transform input photo',
+    '웨딩 필름 입력 사진': 'Wedding-film input photo',
+    '고전 배우 복원 입력 사진': 'Classic-portrait restoration input photo',
+    '실제 솔리테어 반지 사진': 'Real solitaire ring photo',
+    '솔리테어 반지 스케치': 'Solitaire ring sketch',
+    '업로드한 원본 사진 미리보기': 'Uploaded source photo preview',
+    '스케치와 반지 사진 비교 슬라이더': 'Sketch and ring-photo comparison slider',
+    '예: 부드러운 자연광 아래, 고급스러운 웨딩 헤어와 새틴 드레스': 'e.g. elegant wedding hair and a satin dress in soft natural light',
+    '생각하는 변화·스타일·장면을 입력하세요': 'Describe the change, style, or scene you want',
+    '예: AVVM, LUMI, MY STUDIO': 'e.g. AVVM, LUMI, MY STUDIO',
+    '선택한 방향에 추가하고 싶은 장면·색감·무드가 있다면 적어주세요.': 'Add any scene, colour, or mood you want to layer onto this direction.',
+    '성함 또는 브랜드명을 입력하세요': 'Enter your name or brand',
+    '이메일로 영상 다운로드 링크 수령': 'Email for the video download link',
+    '휴대폰 번호 (카톡/문자로 영상 다운로드 링크 수령)': 'Mobile number for KakaoTalk/SMS delivery',
+    '카톡/문자 알림용 휴대폰 번호': 'Mobile number for KakaoTalk/SMS notifications'
+  });
 
   function normalizeTranslationKey(value) {
     return String(value || '')
@@ -327,6 +445,34 @@
       const trailing = (original.match(/\s*$/) || [''])[0];
       const value = original.slice(leading.length, original.length - trailing.length);
       node.nodeValue = `${leading}${autoText(value, value)}${trailing}`;
+    });
+  }
+
+  function captureAutoAttributes() {
+    if (autoAttributes.length || !document.body) return;
+    document.querySelectorAll('img, video, input, textarea, [aria-label], [title]').forEach(node => {
+      ['alt', 'aria-label', 'placeholder', 'title'].forEach(attribute => {
+        // Dedicated i18n attributes remain the source of truth.
+        if ((attribute === 'aria-label' && node.dataset.i18nAria) ||
+            (attribute === 'placeholder' && node.dataset.i18nPlaceholder)) return;
+        const original = node.getAttribute(attribute);
+        if (!normalizeTranslationKey(original)) return;
+        autoAttributes.push({ node, attribute, original });
+      });
+    });
+  }
+
+  function applyAutoAttributes() {
+    autoAttributes.forEach(({ node, attribute, original }) => {
+      if (!node.isConnected) return;
+      if (isKorean()) {
+        node.setAttribute(attribute, original);
+        return;
+      }
+      // If a native string exists in the generated language map, use it. The
+      // English fallback also makes every remaining label understandable rather
+      // than exposing Korean accessibility or form copy in another locale.
+      node.setAttribute(attribute, autoText(original, englishAttributeFallbacks[original] || original));
     });
   }
 
@@ -418,12 +564,19 @@
     });
   }
 
+  function applyAriaLabels() {
+    document.querySelectorAll('[data-i18n-aria]').forEach(node => {
+      const key = node.dataset.i18nAria;
+      if (!node.dataset.avvmKoAria) node.dataset.avvmKoAria = node.getAttribute('aria-label') || '';
+      node.setAttribute('aria-label', isKorean() ? node.dataset.avvmKoAria : t(key, node.dataset.avvmKoAria));
+    });
+  }
+
   function applyFooterAndCheckout() {
-    const footerLinks = ['Service', 'Terms', 'Privacy', 'Refund', 'Delivery', 'Business'];
-    const footerKeys = ['footerService', 'footerTerms', 'footerPrivacy', 'footerRefund', 'footerDelivery', 'footerBusiness'];
+    const labels = footerLabels[language] || footerLabels.en;
     document.querySelectorAll('.footer-links a').forEach((node, index) => {
       if (!node.dataset.avvmKoText) node.dataset.avvmKoText = node.textContent;
-      setText(node, isKorean() ? t(footerKeys[index], node.dataset.avvmKoText) : autoText(node.dataset.avvmKoText, footerLinks[index]));
+      setText(node, labels[index] || node.dataset.avvmKoText);
     });
     localized('.business-info', `
       <b>AVVM.studio business information</b><br>
@@ -435,6 +588,7 @@
       Delivery begins after payment and production materials are received. Transform products take 1–3 business days; 3 Style Set takes 3–7 business days; Starter 24–48 hours; Pro 2–3 business days; Signature 3–5 business days. Memorial and ID/Profile products follow the 24–48 hour period shown on their cards.<br>
       Payment processing and personal-information handling are entrusted to PortOne Co., Ltd. for payment processing, payment-result confirmation, and settlement.<br>
       <a href="#" data-legal="service">Service / product information</a> · <a href="#" data-legal="delivery">Digital-delivery guide</a> · <a href="#" data-legal="terms">Terms</a> · <a href="#" data-legal="privacy">Privacy policy</a> · <a href="#" data-legal="refund">Refund policy</a> · <a href="#" data-legal="pg">PG review information</a>`, true);
+    localizedKey('.business-address', 'businessAddress', 'Business address: 2F, Unit 02, Building B, 182-37 Miraero 310beon-gil, Dongpae-dong, Botanic, Paju-si, Gyeonggi-do, Republic of Korea');
 
     localized('.plan-chooser-head .mini-eyebrow', 'CHOOSE YOUR START');
     localized('.plan-chooser-head h3', 'Choose the type of production you want first.');
@@ -558,6 +712,8 @@
     document.documentElement.dir = meta.dir === 'rtl' ? 'rtl' : 'ltr';
     document.body?.setAttribute('dir-text', meta.dir === 'rtl' ? 'rtl' : 'ltr');
     applyMarkedText();
+    applyAriaLabels();
+    applyAutoAttributes();
     applyStaticPageCopy();
     applyFooterAndCheckout();
     applyLowerPageSections();
@@ -573,13 +729,14 @@
 
   function init() {
     captureAutoTextNodes();
+    captureAutoAttributes();
     document.querySelectorAll('[data-avvm-language-select], #nativeLangSelect, #heroNativeLangSelect').forEach(select => {
       select.addEventListener('change', event => apply(event.target.value));
     });
     apply(language);
   }
 
-  window.AVVM_I18N = { t, apply, status, languages: LANGUAGE_META, get language() { return language; } };
+  window.AVVM_I18N = { t, apply, status, localize: autoText, languages: LANGUAGE_META, get language() { return language; } };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
   else init();
 })();

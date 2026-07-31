@@ -13,6 +13,7 @@
 const $=(s,root=document)=>root.querySelector(s);
 const $$=(s,root=document)=>Array.from(root.querySelectorAll(s));
 const tr=(key,fallback)=>window.AVVM_I18N?.t?.(key,fallback)||fallback;
+const trTemplate=(key,fallback,values={})=>String(tr(key,fallback)).replace(/\{(\w+)\}/g,(_,name)=>values[name] ?? `{${name}}`);
 
 const nav=$('#nav'); 
 if(nav) addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>40));
@@ -129,15 +130,10 @@ function updateBeforeAfterConceptAllowance(){
   const notice=$('#beforeAfterGenerationLimit');
   if(!notice) return;
   const remaining=Math.max(0,BEFORE_AFTER_CONCEPT_LIMIT-getBeforeAfterConceptAttempts());
-  const korean=isKoreanBeforeAfterUi();
   notice.classList.toggle('is-exhausted',remaining===0);
   notice.innerHTML=remaining
-    ? (korean
-      ? `결제 전 AI AFTER 시안은 최대 <b>${BEFORE_AFTER_CONCEPT_LIMIT}회</b> 만들 수 있습니다. <strong>남은 ${remaining}회</strong>`
-      : `Create up to <b>${BEFORE_AFTER_CONCEPT_LIMIT} AI AFTER concepts</b> before payment. <strong>${remaining} left</strong>`)
-    : (korean
-      ? `결제 전 AI AFTER 시안 <b>${BEFORE_AFTER_CONCEPT_LIMIT}회</b>를 모두 사용했습니다. 현재 시안으로 영상 제작을 진행해 주세요.`
-      : `You have used both pre-payment AI AFTER concepts. Continue to production with the current concept.`);
+    ? trTemplate('baConceptRemaining', '결제 전 AI AFTER 시안은 최대 <b>{limit}회</b> 만들 수 있습니다. <strong>남은 {remaining}회</strong>', { limit: BEFORE_AFTER_CONCEPT_LIMIT, remaining })
+    : trTemplate('baConceptExhausted', '결제 전 AI AFTER 시안 <b>{limit}회</b>를 모두 사용했습니다. 현재 시안으로 영상 제작을 진행해 주세요.', { limit: BEFORE_AFTER_CONCEPT_LIMIT });
 }
 
 function isBeforeAfterPlan(plan = window.selectedPlan) {
@@ -158,19 +154,17 @@ function syncPlanOutput(plan = window.selectedPlan) {
   const value = $('#resolutionIncludedValue');
   const planLabel = $('#resolutionIncludedPlan');
   const helper = $('#resolutionHelper');
-  const korean = (localStorage.getItem('avvmLang') || 'ko') === 'ko';
-
   if (hidden) hidden.value = output.resolution;
   if (value) value.textContent = output.label;
   if (planLabel) {
     planLabel.textContent = String(plan) === 'Custom'
-      ? (korean ? '상담 후 납품 사양 확정' : 'Delivery specification confirmed after consultation')
-      : (korean ? `${plan} 플랜에 포함` : `Included with ${plan}`);
+      ? tr('customDeliverySpec', '상담 후 납품 사양 확정')
+      : trTemplate('planIncluded', '{plan} 플랜에 포함', { plan });
   }
   if (helper) {
     helper.textContent = String(plan) === 'Custom'
-      ? (korean ? '추가 장면·특수 연출·제작 범위는 상담 견적으로 확정합니다.' : 'Extra scenes, special direction, and the production scope are confirmed by custom quote.')
-      : (korean ? '해상도는 플랜에 포함되어 있으며, 원본 사진 품질에 따라 최종 검수 시 안내드립니다.' : 'Delivery quality is included with your plan; final guidance depends on the source-photo review.');
+      ? tr('customScopeNote', '추가 장면·특수 연출·제작 범위는 상담 견적으로 확정합니다.')
+      : tr('resolutionPlanNote', '해상도는 플랜에 포함되어 있으며, 원본 사진 품질에 따라 최종 검수 시 안내드립니다.');
   }
   updatePreflightOutput();
 }
@@ -215,7 +209,7 @@ function updatePhotoUploadLabel(){
   const small=box.querySelector('.photo-upload-drop small');
   const isPair=isBeforeAfterPlan();
   if(input.files && input.files[0]){
-    if(label) label.textContent=isPair ? tr('baBeforeAttached','BEFORE 첨부 완료 ✓') : '첨부 완료 ✓';
+    if(label) label.textContent=isPair ? tr('baBeforeAttached','BEFORE 첨부 완료 ✓') : tr('photoAttached','첨부 완료 ✓');
     if(small) small.textContent=input.files[0].name;
     box.classList.add('has-file');
   }else{
@@ -1423,7 +1417,9 @@ function isKoreanOrderUi() {
 }
 
 function guidedText(item, key) {
-  return isKoreanOrderUi() ? (item[`${key}Ko`] || item[key]) : item[key];
+  const korean = item[`${key}Ko`] || item[key] || '';
+  const english = item[key] || korean;
+  return isKoreanOrderUi() ? korean : (window.AVVM_I18N?.localize?.(korean, english) || english);
 }
 
 function getActiveCategory() {
@@ -1470,8 +1466,8 @@ function renderPromptLibrary() {
       ...PROMPT_LIBRARY.filter((recipe) => recipe.category === getActiveCategory()),
       ...PROMPT_LIBRARY.filter((recipe) => recipe.category !== getActiveCategory())
     ].slice(0, 6);
-  const useLabel = isKoreanOrderUi() ? '이 레시피 불러오기' : 'USE THIS RECIPE';
-  const empty = isKoreanOrderUi() ? '검색 결과가 없습니다. 원하는 장면을 직접 적어주세요.' : 'No recipe matched. Describe the scene in your own words.';
+  const useLabel = tr('promptLibraryUse', '이 레시피 불러오기');
+  const empty = tr('promptLibraryEmpty', '검색 결과가 없습니다. 원하는 장면을 직접 적어주세요.');
 
   results.innerHTML = matched.length
     ? matched.map((recipe) => `<article class="prompt-library-card"><span>${recipe.category.toUpperCase()}</span><b>${guidedText(recipe, 'title')}</b><button type="button" data-library-recipe="${recipe.id}">${useLabel} ↗</button></article>`).join('')
@@ -1525,7 +1521,7 @@ document.addEventListener('click', (event) => {
     selectCategory(recipe.category);
     const input = $('#moodInput');
     if (input) input.value = recipe.prompt;
-    toast(isKoreanOrderUi() ? '연출 레시피를 불러왔습니다. 원하는 내용을 덧붙여주세요.' : 'Recipe loaded. Add any detail you want.');
+    toast(tr('promptLibraryLoaded', '연출 레시피를 불러왔습니다. 원하는 내용을 덧붙여주세요.'));
   }
 });
 
@@ -1842,7 +1838,7 @@ function setPaymentButtonBusy(busy, busyLabel){
     $('#refundConsent')?.checked &&
     $('#rightsConsent')?.checked
   );
-  button.textContent=busy ? (busyLabel || tr('paymentOpening', '결제창을 여는 중...')) : (window.AVVM_I18N?.language !== 'ko' ? 'TEST PAYMENT' : '테스트 결제하기');
+  button.textContent=busy ? (busyLabel || tr('paymentOpening', '결제창을 여는 중...')) : tr('testPayment', '테스트 결제하기');
   button.setAttribute('aria-busy', busy ? 'true' : 'false');
 }
 

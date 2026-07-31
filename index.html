@@ -43,7 +43,7 @@
   color: #fff;
 }
 </style>
-<link rel="preload" as="video" href="https://avvmstudio25.vercel.app/videos/hero-original-then-loop.mp4?v=8" type="video/mp4"/>
+<link rel="preload" as="video" href="hero-one-click-v2.mp4?v=1" type="video/mp4"/>
 <!-- AVVM V10 Scroll Stable -->
 <!-- PortOne V2 Browser SDK: KPN test payment window -->
 <script src="https://cdn.portone.io/v2/browser-sdk.js"></script>
@@ -117,7 +117,7 @@
 </div>
 </nav>
 <header class="hero hero-v5" id="hero">
-<video autoplay="" class="hero-video" loop="" muted="" playsinline="" preload="auto" src="https://avvmstudio25.vercel.app/videos/hero-original-then-loop.mp4?v=8" poster="https://avvmstudio25.vercel.app/assets/hero-original-then-loop-poster.jpg"></video>
+<video autoplay="" class="hero-video" loop="" muted="" playsinline="" preload="auto" src="hero-one-click-v2.mp4?v=1" poster="hero-one-click-v2.jpg"></video>
 <div class="hero-v5-overlay"></div>
 <!-- Background wave bars (equalizer) -->
 <div id="hero-wave-bars">
@@ -163,9 +163,8 @@
 
 <!-- The hero promise remains as live text so it is visible on every device. -->
 <div id="hero-tagline-container">
-  <h1 class="hero-tagline-fallback" id="heroPromise" aria-label="한번의 클릭. 시네마틱 결과.">
-    <span class="hero-tagline-line" style="--line-delay:0ms"><span class="hero-tagline-word"><span class="hero-tagline-prefix">한번의</span><span class="hero-tagline-click"><span aria-hidden="true" class="hero-tagline-check"><svg viewBox="0 0 180 120"><path class="hero-check-body" d="M13 63 C24 73 35 84 48 95 C78 66 105 37 138 10"/><path class="hero-check-tip" d="M132 16 C148 9 158 5 172 2"/></svg></span><span>클릭.</span></span></span></span>
-    <span class="hero-tagline-line" style="--line-delay:2200ms"><span class="hero-tagline-word"><span class="hero-tagline-prefix">시네마틱</span><span> 결과.</span></span></span>
+  <h1 class="hero-tagline-fallback" id="heroPromise" aria-label="원 클릭 비디오." data-i18n-aria="ariaHeroPromise">
+    <span class="hero-tagline-line" style="--line-delay:0ms"><span class="hero-tagline-word"><span class="hero-tagline-click"><span aria-hidden="true" class="hero-tagline-check"><svg viewBox="0 0 180 120"><path class="hero-check-body" d="M13 63 C24 73 35 84 48 95 C78 66 105 37 138 10"/><path class="hero-check-tip" d="M132 16 C148 9 158 5 172 2"/></svg></span><span>원 클릭 비디오.</span></span></span></span>
   </h1>
   <canvas aria-hidden="true" id="hero-tagline-canvas"></canvas>
 </div>
@@ -275,7 +274,7 @@
         <p data-i18n="proofPortraitCopy">평범한 인물 사진을 고급 패션 캠페인 무드의 짧은 영상으로 전환합니다.</p>
         <div class="proof-pair">
           <figure class="proof-frame proof-input"><img src="sample-editorial-input.png" alt="인물 에디토리얼 입력 사진" loading="lazy"/><figcaption><b>INPUT</b><span data-i18n="proofPortraitInput">평범한 인물 사진</span></figcaption></figure>
-          <figure class="proof-frame proof-output"><video autoplay class="proof-video" loop muted playsinline preload="metadata" aria-label="인물 에디토리얼 결과 영상"><source src="sample-editorial-output.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofPortraitOutput">패션 에디토리얼 영상</span></figcaption></figure>
+          <figure class="proof-frame proof-output"><video autoplay class="proof-video" loop muted playsinline preload="metadata" aria-label="인물 에디토리얼 결과 영상" data-i18n-aria="ariaPortraitVideo"><source src="sample-editorial-output.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofPortraitOutput">패션 에디토리얼 영상</span></figcaption></figure>
         </div>
         <div class="proof-card-proof"><span data-i18n="proofSpecInput">INPUT</span><b data-i18n="proofSpecInputValue">1 IMAGE</b><i></i><span data-i18n="proofSpecOutput">SAMPLE OUTPUT</span><b data-i18n="proofSpecOutputValue">CINEMATIC RESULT</b><i></i><span data-i18n="proofSpecReview">FINAL CHECK</span><b data-i18n="proofSpecReviewValue">AVVM REVIEWED</b></div>
       </article>
@@ -284,7 +283,7 @@
         <p data-i18n="proofMemorialCopy">오래된 사진 속 존재가 다시 움직이는 기억으로 이어집니다.</p>
         <div class="proof-pair">
           <figure class="proof-frame proof-input"><img src="memorial-before-after-still.jpg" alt="깜순이 메모리얼 입력 사진" loading="lazy"/><figcaption><b>INPUT</b><span data-i18n="proofMemorialInput">오래된 흑백 사진</span></figcaption></figure>
-          <figure class="proof-frame proof-output"><video autoplay class="proof-video" loop muted playsinline preload="metadata" aria-label="깜순이 메모리얼 복원 결과 영상"><source src="memorial-before-after.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofMemorialOutput">다시 움직이는 기억</span></figcaption></figure>
+          <figure class="proof-frame proof-output"><video autoplay class="proof-video" loop muted playsinline preload="metadata" aria-label="깜순이 메모리얼 복원 결과 영상" data-i18n-aria="ariaMemorialVideo"><source src="memorial-before-after.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofMemorialOutput">다시 움직이는 기억</span></figcaption></figure>
         </div>
         <div class="proof-card-proof"><span data-i18n="proofSpecInput">INPUT</span><b data-i18n="proofSpecInputValue">1 IMAGE</b><i></i><span data-i18n="proofSpecOutput">SAMPLE OUTPUT</span><b data-i18n="proofSpecOutputValue">CINEMATIC RESULT</b><i></i><span data-i18n="proofSpecReview">FINAL CHECK</span><b data-i18n="proofSpecReviewValue">AVVM REVIEWED</b></div>
       </article>
@@ -293,7 +292,7 @@
         <p data-i18n="proofProductCopy">평범한 제품 사진을 빛·카메라 무브먼트가 있는 광고 영상으로 제작합니다.</p>
         <div class="proof-pair">
           <figure class="proof-frame proof-input"><img src="sample-product-input-v2.png" alt="시계 제품 광고 입력 사진" loading="lazy"/><figcaption><b>INPUT</b><span data-i18n="proofProductInput">일반 제품 사진</span></figcaption></figure>
-          <figure class="proof-frame proof-output"><span class="proof-quality-badge">PREMIUM MASTER · WEB OPTIMIZED</span><video autoplay class="proof-video" loop muted playsinline preload="metadata" aria-label="시계 제품 광고 결과 영상"><source src="higgsfield-ultra-product.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofProductOutput">럭셔리 광고 영상</span></figcaption></figure>
+          <figure class="proof-frame proof-output"><span class="proof-quality-badge">PREMIUM MASTER · WEB OPTIMIZED</span><video autoplay class="proof-video" loop muted playsinline preload="metadata" aria-label="시계 제품 광고 결과 영상" data-i18n-aria="ariaProductVideo"><source src="higgsfield-ultra-product.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofProductOutput">럭셔리 광고 영상</span></figcaption></figure>
         </div>
         <div class="proof-card-proof"><span data-i18n="proofSpecInput">INPUT</span><b data-i18n="proofSpecInputValue">1 IMAGE</b><i></i><span data-i18n="proofSpecOutput">SAMPLE OUTPUT</span><b data-i18n="proofSpecOutputValue">CINEMATIC RESULT</b><i></i><span data-i18n="proofSpecReview">FINAL CHECK</span><b data-i18n="proofSpecReviewValue">AVVM REVIEWED</b></div>
       </article>
@@ -311,7 +310,7 @@
         <p data-i18n="proofBeautyCopy">기본 제품 사진을 물성·빛·카메라 무브먼트가 있는 뷰티 필름으로 만듭니다.</p>
         <div class="proof-pair">
           <figure class="proof-frame proof-input"><img src="sample-beauty-input.jpg" alt="뷰티 광고 입력 사진" loading="lazy"/><figcaption><b>INPUT</b><span data-i18n="proofBeautyInput">기본 제품 사진</span></figcaption></figure>
-          <figure class="proof-frame proof-output"><video autoplay class="proof-video" loop muted playsinline preload="metadata" aria-label="뷰티 광고 결과 영상"><source src="sample-beauty-output-v2.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofBeautyOutput">리퀴드 뷰티 필름</span></figcaption></figure>
+          <figure class="proof-frame proof-output"><video autoplay class="proof-video" loop muted playsinline preload="metadata" aria-label="뷰티 광고 결과 영상" data-i18n-aria="ariaBeautyVideo"><source src="sample-beauty-output-v2.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofBeautyOutput">리퀴드 뷰티 필름</span></figcaption></figure>
         </div>
         <div class="proof-card-proof"><span data-i18n="proofSpecInput">INPUT</span><b data-i18n="proofSpecInputValue">1 IMAGE</b><i></i><span data-i18n="proofSpecOutput">SAMPLE OUTPUT</span><b data-i18n="proofSpecOutputValue">CINEMATIC RESULT</b><i></i><span data-i18n="proofSpecReview">FINAL CHECK</span><b data-i18n="proofSpecReviewValue">AVVM REVIEWED</b></div>
       </article>
@@ -320,7 +319,7 @@
         <p data-i18n="proofFoodCopy">음식의 질감과 온도를 살린 짧은 메뉴·브랜드 필름을 제작합니다.</p>
         <div class="proof-pair">
           <figure class="proof-frame proof-input"><img src="sample-food-input.jpg" alt="푸드 광고 입력 사진" loading="lazy"/><figcaption><b>INPUT</b><span data-i18n="proofFoodInput">일반 음식 사진</span></figcaption></figure>
-          <figure class="proof-frame proof-output"><video autoplay class="proof-video" loop muted playsinline preload="metadata" aria-label="푸드 광고 결과 영상"><source src="sample-food-output.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofFoodOutput">시네마틱 푸드 필름</span></figcaption></figure>
+          <figure class="proof-frame proof-output"><video autoplay class="proof-video" loop muted playsinline preload="metadata" aria-label="푸드 광고 결과 영상" data-i18n-aria="ariaFoodVideo"><source src="sample-food-output.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofFoodOutput">시네마틱 푸드 필름</span></figcaption></figure>
         </div>
         <div class="proof-card-proof"><span data-i18n="proofSpecInput">INPUT</span><b data-i18n="proofSpecInputValue">1 IMAGE</b><i></i><span data-i18n="proofSpecOutput">SAMPLE OUTPUT</span><b data-i18n="proofSpecOutputValue">CINEMATIC RESULT</b><i></i><span data-i18n="proofSpecReview">FINAL CHECK</span><b data-i18n="proofSpecReviewValue">AVVM REVIEWED</b></div>
       </article>
@@ -329,7 +328,7 @@
         <p data-i18n="proofTravelCopy">인물 사진 한 장을 여행지와 스타일이 바뀌는 짧은 릴로 전환합니다.</p>
         <div class="proof-pair">
           <figure class="proof-frame proof-input"><img src="sample-editorial-input.png" alt="트래블 변신 입력 사진" loading="lazy"/><figcaption><b>INPUT</b><span data-i18n="proofTravelInput">일반 인물 사진</span></figcaption></figure>
-          <figure class="proof-frame proof-output"><video autoplay class="proof-video" loop muted playsinline preload="metadata" aria-label="트래블 변신 결과 영상"><source src="sample-travel-output.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofTravelOutput">여행 시네마 릴</span></figcaption></figure>
+          <figure class="proof-frame proof-output"><video autoplay class="proof-video" loop muted playsinline preload="metadata" aria-label="트래블 변신 결과 영상" data-i18n-aria="ariaTravelVideo"><source src="sample-travel-output.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofTravelOutput">여행 시네마 릴</span></figcaption></figure>
         </div>
         <div class="proof-card-proof"><span data-i18n="proofSpecInput">INPUT</span><b data-i18n="proofSpecInputValue">1 IMAGE</b><i></i><span data-i18n="proofSpecOutput">SAMPLE OUTPUT</span><b data-i18n="proofSpecOutputValue">CINEMATIC RESULT</b><i></i><span data-i18n="proofSpecReview">FINAL CHECK</span><b data-i18n="proofSpecReviewValue">AVVM REVIEWED</b></div>
       </article>
@@ -338,7 +337,7 @@
         <p data-i18n="proofWeddingCopy">인물 사진을 바탕으로 의상·공간·빛을 정돈한 웨딩 무드 필름을 제작합니다.</p>
         <div class="proof-pair">
           <figure class="proof-frame proof-input"><img src="sample-editorial-input.png" alt="웨딩 필름 입력 사진" loading="lazy"/><figcaption><b>INPUT</b><span data-i18n="proofWeddingInput">일반 인물 사진</span></figcaption></figure>
-          <figure class="proof-frame proof-output"><video autoplay class="proof-video" loop muted playsinline preload="metadata" aria-label="웨딩 필름 결과 영상"><source src="sample-wedding-output.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofWeddingOutput">웨딩 에디토리얼 필름</span></figcaption></figure>
+          <figure class="proof-frame proof-output"><video autoplay class="proof-video" loop muted playsinline preload="metadata" aria-label="웨딩 필름 결과 영상" data-i18n-aria="ariaWeddingVideo"><source src="sample-wedding-output.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofWeddingOutput">웨딩 에디토리얼 필름</span></figcaption></figure>
         </div>
         <div class="proof-card-proof"><span data-i18n="proofSpecInput">INPUT</span><b data-i18n="proofSpecInputValue">1 IMAGE</b><i></i><span data-i18n="proofSpecOutput">SAMPLE OUTPUT</span><b data-i18n="proofSpecOutputValue">CINEMATIC RESULT</b><i></i><span data-i18n="proofSpecReview">FINAL CHECK</span><b data-i18n="proofSpecReviewValue">AVVM REVIEWED</b></div>
       </article>
@@ -347,7 +346,7 @@
         <p data-i18n="proofClassicCopy">흑백 인물 사진의 질감과 표정을 살리고, 시대감은 유지한 채 움직임으로 되살립니다.</p>
         <div class="proof-pair">
           <figure class="proof-frame proof-input"><img src="sample-classic-actress-input.jpg" alt="고전 배우 복원 입력 사진" loading="lazy"/><figcaption><b>INPUT</b><span data-i18n="proofClassicInput">원본 고전 인물 사진</span></figcaption></figure>
-          <figure class="proof-frame proof-output"><video autoplay class="proof-video" loop muted playsinline preload="metadata" aria-label="고전 배우 복원 결과 영상"><source src="sample-classic-actress-output.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofClassicOutput">복원된 시네마틱 모션</span></figcaption></figure>
+          <figure class="proof-frame proof-output"><video autoplay class="proof-video" loop muted playsinline preload="metadata" aria-label="고전 배우 복원 결과 영상" data-i18n-aria="ariaClassicVideo"><source src="sample-classic-actress-output.mp4" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofClassicOutput">복원된 시네마틱 모션</span></figcaption></figure>
         </div>
         <div class="proof-card-proof"><span data-i18n="proofSpecInput">INPUT</span><b data-i18n="proofSpecInputValue">1 IMAGE</b><i></i><span data-i18n="proofSpecOutput">SAMPLE OUTPUT</span><b data-i18n="proofSpecOutputValue">CINEMATIC RESULT</b><i></i><span data-i18n="proofSpecReview">FINAL CHECK</span><b data-i18n="proofSpecReviewValue">AVVM REVIEWED</b></div>
       </article>
@@ -360,11 +359,11 @@
           <span class="jewelry-compare-label jewelry-compare-label--sketch">SKETCH</span>
           <span class="jewelry-compare-label jewelry-compare-label--photo">PHOTO</span>
           <span class="jewelry-compare-hint" data-i18n="proofJewelryDrag">↔ 좌우로 움직여 비교</span>
-          <input class="jewelry-compare-control" type="range" min="0" max="100" value="50" aria-label="스케치와 반지 사진 비교 슬라이더"/>
+          <input class="jewelry-compare-control" type="range" min="0" max="100" value="50" aria-label="스케치와 반지 사진 비교 슬라이더" data-i18n-aria="ariaJewelryComparison"/>
           <span class="jewelry-compare-divider" aria-hidden="true"><i>↔</i></span>
         </div>
         <div class="jewelry-flow-label"><span>SKETCH ↔ PHOTO</span><b>→</b><span>RING MOTION</span></div>
-        <figure class="proof-frame proof-output proof-jewelry-motion"><video autoplay class="proof-video" loop muted playsinline preload="metadata" poster="portfolio-jewelry-ring.png" aria-label="주얼리 디자인 매크로 영상"><source src="portfolio-jewelry-diamond.mp4?v=2" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofJewelryOutput">다이아몬드 반지 영상</span></figcaption></figure>
+        <figure class="proof-frame proof-output proof-jewelry-motion"><video autoplay class="proof-video" loop muted playsinline preload="metadata" poster="portfolio-jewelry-ring.png" aria-label="주얼리 디자인 매크로 영상" data-i18n-aria="ariaJewelryVideo"><source src="portfolio-jewelry-diamond.mp4?v=2" type="video/mp4"/></video><figcaption><b>OUTPUT</b><span data-i18n="proofJewelryOutput">다이아몬드 반지 영상</span></figcaption></figure>
         <div class="proof-card-proof"><span data-i18n="proofSpecInput">INPUT</span><b data-i18n="proofSpecInputValue">1 IMAGE</b><i></i><span data-i18n="proofSpecOutput">SAMPLE OUTPUT</span><b data-i18n="proofSpecOutputValue">CINEMATIC RESULT</b><i></i><span data-i18n="proofSpecReview">FINAL CHECK</span><b data-i18n="proofSpecReviewValue">AVVM REVIEWED</b></div>
       </article>
     </div>
@@ -383,7 +382,7 @@
 
     <div class="commerce-spotlight">
       <div class="commerce-spotlight-media">
-        <video autoplay class="proof-video" loop muted playsinline preload="metadata" aria-label="식당 개업 홍보 영상 샘플"><source src="sample-food-output.mp4" type="video/mp4"/></video>
+        <video autoplay class="proof-video" loop muted playsinline preload="metadata" aria-label="식당 개업 홍보 영상 샘플" data-i18n-aria="ariaRestaurantVideo"><source src="sample-food-output.mp4" type="video/mp4"/></video>
         <div class="commerce-spotlight-scan" aria-hidden="true"></div>
         <span class="commerce-spotlight-badge">LIVE DEMO · 01</span>
       </div>
@@ -555,7 +554,7 @@
 </div>
 </div>
 <div class="demo-card has-help" data-help="입력 이미지가 영화 장면으로 변환되는 대표 데모입니다." data-help-key="help11" data-help-ko="입력 이미지가 영화 장면으로 변환되는 대표 데모입니다.">
-<video autoplay="" class="demo-autoplay-video" data-main-motion="warrior" id="demoWarriorVideo" loop="" muted="" playsinline="" poster="demo-warrior-refined.jpg" preload="auto" src="demo-warrior-refined.mp4"></video>
+<video autoplay="" class="demo-autoplay-video" data-main-motion="warrior" id="demoWarriorVideo" loop="" muted="" playsinline="" poster="demo-warrior-v2.jpg" preload="auto" src="demo-warrior-v2.mp4"></video>
 <div class="demo-card-caption">
 <div>
 <b>Transformation Demo</b>
@@ -581,7 +580,7 @@
 <div style="margin-top:30px">
 <button class="btn btn-primary show-fancl-btn has-help" data-help="뷰티/스킨케어 광고 샘플 영상을 재생합니다." data-help-key="help13" data-help-ko="뷰티/스킨케어 광고 샘플 영상을 재생합니다." type="button">WATCH SAMPLE ↗</button>
 </div>
-<div class="sample-board beauty-direction-flow" aria-label="뷰티 광고 연출 플로우">
+<div class="sample-board beauty-direction-flow" aria-label="뷰티 광고 연출 플로우" data-i18n-aria="ariaBeautyFlow">
 <div class="beauty-flow-head">
 <span data-i18n="beautyFlowKicker">DIRECTION FLOW</span>
 <b data-i18n="beautyFlowTitle">세련된 연출로 완성하는 15초 뷰티 광고</b>
@@ -1089,7 +1088,7 @@
 상호: 라라랜드맘 · 브랜드: AVVM.studio · 대표자: 윤동국<br/>
 사업자등록번호: 347-37-01807 · 통신판매업 신고번호: 제2026-경기파주-2862호<br/>
 대표 연락처: 0505-007-5221 · 이메일: airyoon72@naver.com · 도메인: avvm.studio<br/>
-사업장 주소: 경기도 파주시 미래로310번길 182-37, B동 2층 02호(동패동, 보타닉)<br/>
+<span class="business-address">사업장 주소: 경기도 파주시 미래로310번길 182-37, B동 2층 02호(동패동, 보타닉)</span><br/>
 본 서비스는 실물 배송이 없는 맞춤형 디지털 콘텐츠 제작 서비스이며, 결제는 원화(KRW)로 처리됩니다.<br/>
 서비스 제공 기간: 결제 및 제작자료 접수가 모두 완료된 시점부터 Mini·Basic·Best Transform 상품은 영업일 기준 1~3일 이내, 3 Style Set은 영업일 기준 3~7일 이내, Starter는 24~48시간, Pro는 영업일 기준 2~3일, Signature는 영업일 기준 3~5일 이내 제공됩니다. Memorial 및 ID·Profile 상품은 각 상품 카드에 표시된 24~48시간의 제공 기간이 적용됩니다.<br/>
 결제대행 및 개인정보 처리 위탁: 주식회사 코리아포트원(전자결제 서비스 제공, 결제 처리, 결제 결과 확인 및 정산 업무)<br/>
@@ -1100,7 +1099,7 @@
 
 </footer>
 <div class="modal" id="orderModal" data-lenis-prevent><div class="modal-card" id="modalCard"><div class="modal-head"><div><div class="mini-eyebrow" data-i18n="modalEyebrow" style="margin-bottom:8px">START PROJECT</div><h2 data-i18n="modalTitle" style="font-family:Bebas Neue;font-size:48px;line-height:.92">INSERT IMAGE.<br/>PRESS START.</h2></div><button class="close" id="closeModal" type="button">×</button></div>
-<div class="plan-chooser" id="planChooser" aria-label="요금제 선택">
+<div class="plan-chooser" id="planChooser" aria-label="요금제 선택" data-i18n-aria="ariaPlanChooser">
   <div class="plan-chooser-head">
     <div>
       <div class="mini-eyebrow">CHOOSE YOUR START</div>
@@ -1406,7 +1405,7 @@
 
     <section class="design-lab-brief" id="designLabBrief" hidden aria-live="polite">
       <div class="design-lab-brief-head"><span>AVVM DESIGN LAB</span><b data-i18n="designLabTitle">스케치 또는 한 단어에서 시작하세요</b><p data-i18n="designLabCopy">주얼리는 스케치·제품 사진을, 로고는 스케치 또는 브랜드 단어를 사용합니다. 선택한 스타일로 시안을 만들고 모션까지 연결합니다.</p></div>
-      <div class="design-lab-type-grid" role="group" aria-label="디자인 종류 선택">
+      <div class="design-lab-type-grid" role="group" aria-label="디자인 종류 선택" data-i18n-aria="ariaDesignType">
         <button class="design-lab-type active" type="button" data-design-type="jewelry"><span>01</span><b data-i18n="designJewelryTitle">스케치 → 주얼리</b><small data-i18n="designJewelryCopy">스케치 또는 제품 사진으로 실제감 있는 매크로 필름</small></button>
         <button class="design-lab-type" type="button" data-design-type="logo"><span>02</span><b data-i18n="designLogoTitle">단어·스케치 → 로고</b><small data-i18n="designLogoCopy">로고 시안 3종과 선택안 모션 로고</small></button>
       </div>
@@ -1417,12 +1416,12 @@
       <section class="guided-style-step">
         <div class="guided-style-step-number">01</div>
         <div class="guided-style-step-copy"><b data-i18n="styleDetailTitle">세부 무드 선택</b><span data-i18n="styleDetailCopy">선택한 분야에 맞는 연출만 보여드립니다.</span></div>
-        <div class="guided-style-options" id="stylePresetOptions" role="group" aria-label="세부 무드 선택"></div>
+        <div class="guided-style-options" id="stylePresetOptions" role="group" aria-label="세부 무드 선택" data-i18n-aria="ariaMoodSelection"></div>
       </section>
       <section class="guided-style-step">
         <div class="guided-style-step-number">02</div>
         <div class="guided-style-step-copy"><b data-i18n="motionTitle">움직임의 밀도</b><span data-i18n="motionCopy">한 가지 카메라 동작만 골라 결과를 안정적으로 만듭니다.</span></div>
-        <div class="guided-style-options guided-motion-options" id="motionOptions" role="group" aria-label="움직임의 밀도"></div>
+        <div class="guided-style-options guided-motion-options" id="motionOptions" role="group" aria-label="움직임의 밀도" data-i18n-aria="ariaMotionIntensity"></div>
       </section>
       <div class="guided-style-preview">
         <span data-i18n="styleDirectionLabel">SELECTED DIRECTION</span>
@@ -1770,11 +1769,11 @@ document.addEventListener('click', function (event) {
 </script>
 
 <script src="auto-translations.js?v=2"></script>
-<script src="locales.js?v=6"></script>
-<script src="i18n.js?v=17"></script>
+<script src="locales.js?v=7"></script>
+<script src="i18n.js?v=21"></script>
 <script>window.AVVM_AUTH_UI_ENABLED = false;</script>
 <script src="auth.js?v=1"></script>
-<script src="app.js?v=48"></script>
+<script src="app.js?v=49"></script>
 <script>
 /* AVVM order safeguards: required consent and plan-locked delivery quality. */
 (function(){
@@ -1912,45 +1911,36 @@ document.addEventListener('click', function (event) {
 
   const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
   const phraseSets = {
-    ko: ['한번의 클릭.', '시네마틱 결과.'],
-    en: ['ONE CLICK.', 'CINEMATIC RESULTS.'],
-    ja: ['ワンクリック。', 'シネマティックな結果。'],
-    zh: ['一次点击。', '电影级成果。'],
-    es: ['UN CLIC.', 'RESULTADOS CINEMATOGRÁFICOS.'],
-    fr: ['UN CLIC.', 'RÉSULTATS CINÉMATOGRAPHIQUES.'],
-    de: ['EIN KLICK.', 'KINEMATISCHE ERGEBNISSE.'],
-    pt: ['UM CLIQUE.', 'RESULTADOS CINEMATOGRÁFICOS.'],
-    hi: ['एक क्लिक।', 'सिनेमाई परिणाम।'],
-    ar: ['نقرة واحدة.', 'نتائج سينمائية.']
+    ko: ['원 클릭 비디오.', '원 클릭 홈페이지.', '원 클릭 비지니스.'],
+    en: ['ONE CLICK VIDEO.', 'ONE CLICK WEBSITE.', 'ONE CLICK BUSINESS.'],
+    ja: ['ワンクリック動画。', 'ワンクリックWebサイト。', 'ワンクリックビジネス。'],
+    zh: ['一键视频。', '一键网站。', '一键商业。'],
+    es: ['VÍDEO CON UN CLIC.', 'SITIO WEB CON UN CLIC.', 'NEGOCIO CON UN CLIC.'],
+    fr: ['VIDÉO EN UN CLIC.', 'SITE WEB EN UN CLIC.', 'ENTREPRISE EN UN CLIC.'],
+    de: ['VIDEO MIT EINEM KLICK.', 'WEBSITE MIT EINEM KLICK.', 'BUSINESS MIT EINEM KLICK.'],
+    pt: ['VÍDEO EM UM CLIQUE.', 'WEBSITE EM UM CLIQUE.', 'NEGÓCIO EM UM CLIQUE.'],
+    hi: ['एक क्लिक वीडियो।', 'एक क्लिक वेबसाइट।', 'एक क्लिक बिज़नेस।'],
+    ar: ['فيديو بنقرة واحدة.', 'موقع ويب بنقرة واحدة.', 'عمل بنقرة واحدة.']
   };
-  // Keep the action and the outcome dominant in every language: the small word
-  // introduces the promise, while CLICK / RESULTS carries the visual weight.
-  const compactHeroTokens = {
-    ko: ['한번의', '시네마틱'],
-    en: ['ONE', 'CINEMATIC'],
-    ja: ['ワン', 'シネマティック'],
-    zh: ['一次', '电影级'],
-    es: ['UN', 'CINEMATOGRÁFICOS'],
-    fr: ['UN', 'CINÉMATOGRAPHIQUES'],
-    de: ['EIN', 'KINEMATISCHE'],
-    pt: ['UM', 'CINEMATOGRÁFICOS'],
-    hi: ['एक', 'सिनेमाई'],
-    ar: ['نقرة', 'سينمائية']
+  const clickHeroTokens = {
+    ko: '클릭', en: 'CLICK', ja: 'クリック', zh: '点击', es: 'CLIC', fr: 'CLIC',
+    de: 'KLICK', pt: 'CLIQUE', hi: 'क्लिक', ar: 'نقرة'
   };
-  let phrases = phraseSets[document.documentElement.lang] || phraseSets.ko;
+  const heroLanguageKey = (value = document.documentElement.lang) => String(value || 'ko').toLowerCase().split('-')[0];
+  let phrases = phraseSets[heroLanguageKey()] || phraseSets.ko;
 
   function compactTokenFor(language, phraseIndex) {
-    return compactHeroTokens[language]?.[phraseIndex] || '';
+    return '';
   }
 
   function heroPhraseScale(language, phraseIndex) {
     // The Portuguese result line is materially longer than the other locales.
     // Keep its same hierarchy, with a little more breathing room on desktop
     // and mobile instead of shrinking every translated hero.
-    return language === 'pt' && phraseIndex === 1 ? .84 : 1;
+    return language === 'pt' ? .88 : 1;
   }
 
-  function rebuildFallback(nextPhrases, language = document.documentElement.lang) {
+  function rebuildFallback(nextPhrases, language = heroLanguageKey()) {
     const createCheck = () => {
       const check = document.createElement('span');
       check.className = 'hero-tagline-check';
@@ -2005,9 +1995,10 @@ document.addEventListener('click', function (event) {
 
   if (reduceMotion) {
     document.addEventListener('avvm:languagechange', event => {
-      const nextPhrases = phraseSets[event.detail?.language] || phraseSets.ko;
+      const language = heroLanguageKey(event.detail?.language);
+      const nextPhrases = phraseSets[language] || phraseSets.ko;
       promise.setAttribute('aria-label', nextPhrases.join(' '));
-      rebuildFallback(nextPhrases, event.detail?.language);
+      rebuildFallback(nextPhrases, language);
     });
     return;
   }
@@ -2066,7 +2057,7 @@ document.addEventListener('click', function (event) {
   }
 
   function buildPhraseGlyphs(phrase, phraseIndex, fontSize) {
-    const language = document.documentElement.lang;
+    const language = heroLanguageKey();
     const token = compactTokenFor(language, phraseIndex);
     const tokenOffset = token ? phrase.indexOf(token) : -1;
     const prefixLength = tokenOffset < 0 ? 0 : Array.from(phrase.slice(0, tokenOffset)).length;
@@ -2123,16 +2114,16 @@ document.addEventListener('click', function (event) {
   }
 
   function getClickCenter(phrase, glyphs, phraseWidth) {
-    const token = compactTokenFor(document.documentElement.lang, 0);
+    const token = clickHeroTokens[heroLanguageKey()] || '';
     const tokenOffset = token ? phrase.indexOf(token) : -1;
     const isRtl = document.documentElement.dir === 'rtl';
-    if (tokenOffset !== 0) return isRtl ? width - phraseWidth * .5 : phraseWidth * .5;
+    if (tokenOffset < 0) return isRtl ? width - phraseWidth * .5 : phraseWidth * .5;
 
-    let actionStart = Array.from(phrase.slice(0, token.length)).length;
-    while (glyphs[actionStart]?.character.trim() === '') actionStart += 1;
-    const introWidth = glyphs.slice(0, actionStart)
+    const clickStart = Array.from(phrase.slice(0, tokenOffset)).length;
+    const clickEnd = clickStart + Array.from(token).length;
+    const introWidth = glyphs.slice(0, clickStart)
       .reduce((total, glyph) => total + glyph.width + glyph.gap, 0);
-    const actionWidth = glyphs.slice(actionStart)
+    const actionWidth = glyphs.slice(clickStart, clickEnd)
       .reduce((total, glyph) => total + glyph.width + glyph.gap, 0);
     if (!actionWidth) return isRtl ? width - phraseWidth * .5 : phraseWidth * .5;
     return isRtl
@@ -2141,8 +2132,6 @@ document.addEventListener('click', function (event) {
   }
 
   function drawClickCheckmark(phrase, phraseIndex, progress, glyphs, phraseWidth, baseline, fontSize) {
-    if (phraseIndex !== 0) return;
-
     /* The word finishes, then the tap is acknowledged, then the approval mark lands. */
     const reveal = easeOutCubic((progress - .655) / .13);
     const dismiss = smoothstep((progress - .80) / .10);
@@ -2230,11 +2219,11 @@ document.addEventListener('click', function (event) {
   function renderPhrase(phrase, phraseIndex, progress) {
     if (!width || !height) return;
     const styles = getComputedStyle(promise);
-    const phraseScale = heroPhraseScale(document.documentElement.lang, phraseIndex);
+    const phraseScale = heroPhraseScale(heroLanguageKey(), phraseIndex);
     let fontSize = (parseFloat(styles.fontSize) || 100) * phraseScale;
     const family = styles.fontFamily || 'Impact, sans-serif';
     const weight = styles.fontWeight || '400';
-    const color = phraseIndex === 1 ? '#d8f233' : '#f7f7f2';
+    const color = '#f7f7f2';
     const rtl = document.documentElement.dir === 'rtl';
 
     context.clearRect(0, 0, width, height);
@@ -2322,10 +2311,11 @@ document.addEventListener('click', function (event) {
 
   function updatePhrases(nextLanguage) {
     try {
-      phrases = phraseSets[nextLanguage] || phraseSets.ko;
+      const language = heroLanguageKey(nextLanguage);
+      phrases = phraseSets[language] || phraseSets.ko;
       cycleDuration = stageDuration * phrases.length;
       promise.setAttribute('aria-label', phrases.join(' '));
-      rebuildFallback(phrases, nextLanguage);
+      rebuildFallback(phrases, language);
       // Make the newly translated live text visible immediately, then restart
       // the canvas only after the browser has completed its text reflow.
       const wasRunning = started;
@@ -2336,7 +2326,8 @@ document.addEventListener('click', function (event) {
       // The title must never break a language switch. Keep the newly translated
       // live heading visible if an older browser cannot run the canvas effect.
       showLiveFallback();
-      rebuildFallback(phraseSets[nextLanguage] || phraseSets.ko, nextLanguage);
+      const language = heroLanguageKey(nextLanguage);
+      rebuildFallback(phraseSets[language] || phraseSets.ko, language);
     }
   }
 

@@ -6193,10 +6193,55 @@ body.modal-open{
   pointer-events: none;
 }
 
+/* The active Chinese document language is zh-CN. Match the language prefix so
+   the CJK safety rules also apply on iPhone, rather than only matching `zh`. */
+html[lang^="zh"] body,
+html[lang^="zh"] *{
+  min-width:0!important;
+}
+html[lang^="zh"] [data-i18n],
+html[lang^="zh"] [data-i18n-auto],
+html[lang^="zh"] .consumer-copy,
+html[lang^="zh"] .clarity-copy,
+html[lang^="zh"] .demo-copy,
+html[lang^="zh"] .pricing-note,
+html[lang^="zh"] .pricing-choice-note{
+  max-width:100%!important;
+  overflow-wrap:anywhere!important;
+  word-break:break-all!important;
+  line-break:anywhere!important;
+  white-space:normal!important;
+}
+
 /* CJK mobile safety: Japanese and Chinese legal/order copy can be a single
    continuous run of characters. Desktop keep-all rules must not widen the
    document on iPhone. */
 @media (max-width: 780px) {
+  html[lang^="zh"] .business-info,
+  html[lang^="zh"] .legal-visible-footer,
+  html[lang^="zh"] .portone-privacy-note,
+  html[lang^="zh"] .memorial-copy,
+  html[lang^="zh"] .id-copy,
+  html[lang^="zh"] .memorial-bottom-notice,
+  html[lang^="zh"] .id-bottom-notice,
+  html[lang^="zh"] .test-mode-note,
+  html[lang^="zh"] .order-form-helper,
+  html[lang^="zh"] .consumer-mode-card p,
+  html[lang^="zh"] .consumer-price-card p,
+  html[lang^="zh"] .web-studio-copy p,
+  html[lang^="zh"] .work-card p,
+  html[lang^="zh"] .service-card p,
+  html[lang^="zh"] .design-lab-brief-head > p,
+  html[lang^="zh"] .design-lab-type small,
+  html[lang^="zh"] .design-logo-word small{
+    min-width:0!important;
+    max-width:100%!important;
+    overflow-wrap:anywhere!important;
+    word-break:break-all!important;
+    line-break:anywhere!important;
+    white-space:normal!important;
+  }
+
   html[lang="ja"] .business-info,
   html[lang="zh"] .business-info,
   html[lang="ja"] .legal-visible-footer,
