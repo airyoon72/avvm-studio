@@ -267,6 +267,34 @@
     inputMethodVoiceEdit: '제작 요청에서 수정하기 ↓'
   });
 
+  /* Korean must not fall back to the source-language label. These entries are
+     intentionally short so the same hierarchy works on mobile as well. */
+  Object.assign(ko, {
+    heroEyebrow: 'AI 비디오 자판기', navWorks: '작업물', navTransform: '변신', navBusiness: '비즈니스', navMemorial: '메모리얼', navProfile: '프로필', navFaq: '자주 묻는 질문', startProject: '프로젝트 시작 ↗',
+    memorialLaunchNotice: '[신규] <b>소중한 추억 복원</b> 런칭! 오래된 사진과 반려동물 사진을 다시 움직이게 하세요 ↗', scrollExplore: '스크롤하여 보기', memorialNavTag: '추억 복원', beforeAfterCopy: '사진 한 장을 업로드하면, AVVM이 광고급 시네마틱 결과물로 전환합니다.',
+    baInputLabel: '입력 · 30년 전 사진', baProcessTop: 'AI 메모리얼 리마스터', baProcessBottom: '정지된 과거 → 다시 달리는 기억', baOutputLabel: '결과 · 깜순이가 다시 달려옵니다', viewShowreel: '쇼릴 보기', baCaseNote: '멈춘 한 장의 사진, 다시 달려오는 기억.',
+    proofLabEyebrow: '결과 미리보기 라이브러리', proofLabTitle: '내 사진으로,<br/>결과를 먼저 확인하세요.', proofLabCopy: '어떤 결과를 기대할 수 있는지 먼저 확인하세요. 모든 예시는 실제 입력 이미지와 AVVM 제작 결과를 나란히 보여줍니다.',
+    proofPortraitName: '인물 에디토리얼', proofPortraitCopy: '평범한 인물 사진을 고급 패션 캠페인 무드의 짧은 영상으로 전환합니다.', proofPortraitInput: '평범한 인물 사진', proofPortraitOutput: '패션 에디토리얼 영상',
+    proofMemorialName: '메모리얼 복원', proofMemorialCopy: '오래된 사진 속 존재가 다시 움직이는 기억으로 이어집니다.', proofMemorialInput: '오래된 흑백 사진', proofMemorialOutput: '다시 움직이는 기억',
+    proofProductName: '제품 광고', proofProductCopy: '평범한 제품 사진을 빛과 카메라 움직임이 있는 광고 영상으로 제작합니다.', proofProductInput: '제품 사진', proofProductOutput: '럭셔리 광고 영상',
+    proofProfileName: '프로필 보정', proofProfileCopy: '신뢰가 필요한 프로필 사진을 자연스럽고 선명한 이미지로 정리합니다.', proofProfileInput: '원본 프로필 사진', proofProfileOutput: '정돈된 프로필 사진',
+    proofBeautyName: '뷰티 광고', proofBeautyCopy: '제품의 질감과 빛을 살린 짧은 뷰티 광고 영상을 제작합니다.', proofBeautyInput: '뷰티 제품 사진', proofBeautyOutput: '뷰티 광고 영상',
+    proofFoodName: '푸드 광고', proofFoodCopy: '음식의 김과 질감을 살려 더 맛있어 보이는 장면으로 만듭니다.', proofFoodInput: '메뉴 사진', proofFoodOutput: '푸드 광고 영상',
+    proofTravelName: '여행 변신', proofTravelCopy: '인물의 정체성을 지키며 장소와 분위기를 자연스럽게 전환합니다.', proofTravelInput: '여행 인물 사진', proofTravelOutput: '여행 변신 영상',
+    proofWeddingName: '웨딩 필름', proofWeddingCopy: '자연광과 표정을 살린 조용하고 고급스러운 웨딩 필름입니다.', proofWeddingInput: '웨딩 인물 사진', proofWeddingOutput: '웨딩 필름 영상',
+    proofClassicName: '고전 배우 복원', proofClassicCopy: '고전 사진의 시대감은 유지하고 아주 작은 시선과 숨만 되살립니다.', proofClassicInput: '고전 인물 사진', proofClassicOutput: '고전 사진 복원 영상',
+    proofJewelryName: '스케치 → 주얼리', proofJewelryCopy: '스케치를 실제 제품 사진으로 확인하고, 매크로 제품 영상까지 이어갑니다.', proofJewelryDrag: '좌우로 움직여 비교', proofJewelryOutput: '다이아몬드 반지 영상', proofLabNotice: '원본 사진의 품질과 구도, 선택한 연출에 따라 실제 결과는 달라질 수 있습니다.',
+    heroSystemKicker: 'AVVM 제작 시스템', heroSignalLive: '사람의 연출 · AI의 속도', inputMethodKicker: '입력 방식 선택', heroSignalStep1Meta: '원본 확인', heroSignalStep2Meta: '검수된 연출', heroSignalStep3Meta: 'AVVM 품질 검수',
+    proofAssuranceKicker: '실제 원본 · 실제 납품', proofStandardInput: '실제 원본', proofStandardDirection: '연출 설계', proofStandardReview: '품질 검수', proofStandardDelivery: '최종 납품', proofSpecInput: '입력', proofSpecOutput: '결과 예시', proofSpecReview: '최종 확인',
+    commerceEyebrow: 'AVVM 소상공인 광고 스튜디오', commerceSpotlightKicker: '동네 가게 오픈 · 식당', commerceRouteKicker: '업종별 제작 방식 선택', commerceRouteMeta: '사진 → 연출 → 숏폼', commerceRouteStart: '스타터로 시작 ↗', commerceRouteStartPro: '프로로 시작 ↗',
+    commerceBaKicker: 'AI 전후 전환 릴', commerceBaTitle: '한 장의 원본에서, 원하는<br/>결과 시안을 먼저 만듭니다.', commerceBaCopy: '원본 사진 한 장에 바라는 장면을 적으면 AI가 원본을 기준으로 결과 시안을 만듭니다. 시안을 확인한 뒤 두 장면을 하나의 절제된 전환 릴로 제작합니다.', commerceBaProcess1: '원본', commerceBaProcess2: 'AI 결과 시안', commerceBaProcess3: '자동 전환 릴', commerceBaProcess4: '품질 검수',
+    commerceBaBeautyCopy: '한 장의 사진에 원하는 메이크업·헤어·네일 무드를 더한 AI 결과 시안부터 확인합니다.', commerceBaInteriorCopy: '현재 공간의 구조를 지키면서 원하는 가구·조명·톤의 결과 시안을 만듭니다.', commerceBaPetCopy: '반려동물의 특징을 유지한 채 그루밍·포트레이트·추억 무드의 결과 시안을 만듭니다.', commerceBaStart: 'AI 결과 시안 만들기', commerceBaNote: '원본 사진과 입력한 바람은 AI 결과 시안을 만들기 위해 처리됩니다. 시안은 실제 효능·공사·건강 결과를 보장하지 않으며, 원본의 정체성과 과장 표현을 다시 확인한 뒤 제공합니다.',
+    baPlanKicker: 'AI 전후 변화 릴', baPlanName: '전후 자동 전환 릴', baPlanCopy: '원본 1장 / AI 결과 시안 / 5초 전환 릴 / 풀 HD / 검수 포함', baUploadTitle: '원하는 결과를 적고, AI 시안을 먼저 확인하세요.', baUploadCopy: '원본 사진을 기준으로 AI 결과 시안을 한 장 만듭니다. 시안이 마음에 들면 그 두 장면으로 전환 릴을 제작합니다.', baBeforeUploadTitle: '1. 원본 사진 업로드', baBeforeUploadCopy: '원본 사진을 먼저 첨부한 뒤, 보고 싶은 결과 장면을 적고 시안을 만드세요.', baBeforeAttach: '원본 사진 첨부하기', baBeforeAttachHint: 'AI 결과 시안의 기준이 될 원본 사진', baBeforeAttached: '원본 첨부 완료 ✓',
+    baDirectionLabel: '원하는 결과 장면 <span>(선택)</span>', baGenerateAfter: 'AI 결과 시안 만들기', baGeneratingAfter: 'AI 결과 시안 생성 중…', baAfterReady: 'AI 결과 시안 완료 ✓', baAfterNeeded: '전환 영상을 만들기 전 AI 결과 시안을 먼저 만들어 주세요.', baComposing: '원본 / 결과 시안 준비 중...', baAiConsent: '본인은 사진 사용 권한이 있으며, AI 결과 시안 생성을 위해 사진과 입력한 바람이 외부 AI 처리 서비스로 전송되는 것에 동의합니다.', baPreviewTitle: '원본과 AI 결과 시안 확인', baPreviewCopy: '결제 전에는 워터마크가 포함된 저해상도 시안만 확인할 수 있습니다. 결제 후 워터마크 없는 결과 소스로 전환 영상을 제작합니다.', baPreviewWatermark: 'AVVM · AI 시안 미리보기 · 결제 후 워터마크 없는 소스 제공', baPreviewPlay: '전환 미리보기 ▶',
+    afterPromptTitle: '원하는 결과를 검색하세요', afterPromptImage: '이미지 제작 프롬프트', afterPromptVideo: '전환 영상 프롬프트', afterPromptApply: '결과 시안에 적용', afterPromptApplied: '생성된 프롬프트를 결과 요청에 적용했습니다.',
+    authGoogleNav: '구글 로그인', authTitle: '구글로 빠르게 시작하기', authCopy: '로그인하면 구글 계정의 이름과 이메일을 주문 정보에 미리 입력합니다. 로그인 없이도 그대로 주문할 수 있습니다.', authGoogle: '구글로 계속하기', styleStepTitle: '2. 원하는 영상 스타일 선택'
+  });
+
   Object.assign(en, {
     autoRecipeTitle: 'ONE IMAGE, THE OPENING SCENE OF A FILM.',
     autoRecipeCopy: 'Copy a direction proven in the examples, or apply it in the order window and begin with your own photo. Every recipe is designed to preserve the original person, product, and composition first.',
@@ -385,6 +413,53 @@
     '카톡/문자 알림용 휴대폰 번호': 'Mobile number for KakaoTalk/SMS notifications'
   });
 
+  /* Customer-facing labels which are deliberately written as compact English
+     in the source receive a Korean surface label when Korean is selected.
+     Prompt code itself remains English: it is sent to the video model and is
+     not marketing/UI copy. */
+  const koreanTextFallbacks = Object.freeze({
+    'AVVM.studio — ONE CLICK. CINEMATIC RESULTS.': 'AVVM.studio — 원 클릭. 시네마틱 결과.',
+    'ONE CLICK. CINEMATIC RESULTS.': '원 클릭. 시네마틱 결과.',
+    'THE AI VIDEO VENDING MACHINE': 'AI 비디오 자판기',
+    'Works': '작업물', 'Transform': '변신', 'Business': '비즈니스', 'Memorial': '메모리얼', 'ID·Profile': '프로필', 'FAQ': '자주 묻는 질문',
+    'GOOGLE LOGIN': '구글 로그인', 'START PROJECT ↗': '프로젝트 시작 ↗', 'START PROJECT': '프로젝트 시작', 'START': '시작',
+    'AVVM PRODUCTION SYSTEM': 'AVVM 제작 시스템', 'HUMAN-LED · AI-POWERED': '사람의 연출 · AI의 속도', 'SOURCE CHECK': '원본 확인', 'CURATED DIRECTION': '검수된 연출', 'AVVM QUALITY REVIEW': 'AVVM 품질 검수', 'SCROLL TO EXPLORE': '스크롤하여 보기',
+    '⚡️ Transform': '⚡️ 변신', '💼 Business': '💼 비즈니스', '🐶 Memorial': '🐶 메모리얼', '🪪 ID·Profile': '🪪 프로필',
+    'Before / After': '전후 변화', 'FROM STILL TO': '멈춘 사진에서', 'STUNNING.': '눈을 뗄 수 없는 결과로.', 'VIEW SHOWREEL': '쇼릴 보기',
+    'RESULT PREVIEW LIBRARY': '결과 미리보기 라이브러리', 'YOUR PHOTO,': '내 사진으로,', 'WITH PROOF.': '결과를 먼저 확인하세요.',
+    'REAL INPUT · REAL DELIVERY': '실제 원본 · 실제 납품', 'REAL INPUT': '실제 원본', 'ART DIRECTION': '연출 설계', 'QUALITY REVIEW': '품질 검수', 'FINAL DELIVERY': '최종 납품',
+    'INPUT': '입력', 'OUTPUT': '결과', '1 IMAGE': '사진 1장', 'SAMPLE OUTPUT': '결과 예시', 'CINEMATIC RESULT': '시네마틱 결과', 'FINAL CHECK': '최종 확인', 'AVVM REVIEWED': 'AVVM 검수 완료',
+    'PREMIUM MASTER · WEB OPTIMIZED': '프리미엄 마스터 · 웹 최적화', 'SKETCH': '스케치', 'PHOTO': '사진', 'SKETCH ↔ PHOTO': '스케치 ↔ 사진', 'RING MOTION': '반지 모션',
+    'AVVM COMMERCE LAB': 'AVVM 소상공인 광고 스튜디오', 'LIVE DEMO · 01': '실시간 예시 · 01', 'LOCAL LAUNCH / RESTAURANT': '동네 가게 오픈 · 식당', 'CHOOSE YOUR BUSINESS ROUTE': '업종별 제작 방식 선택', 'PHOTO → DIRECTION → SHORTFORM': '사진 → 연출 → 숏폼',
+    'FOOD · CAFE · BAKERY': '푸드 · 카페 · 베이커리', 'SHOP · PRODUCT · RETAIL': '상점 · 상품 · 리테일', 'BEAUTY · WELLNESS': '뷰티 · 웰니스', 'SPACE · STAY · INTERIOR': '공간 · 숙소 · 인테리어', 'FASHION · LOOKBOOK': '패션 · 룩북', 'LOCAL BRAND · FOUNDER': '로컬 브랜드 · 대표',
+    'PRODUCT PHOTO → SALES PAGE → AD VIDEO': '제품 사진 → 상세페이지 → 광고 영상', 'YOUR PRODUCT': '내 상품', 'PRODUCT STORY': '상품 이야기',
+    'BEFORE / AFTER AUTO REEL': '전후 자동 전환 릴', 'BEFORE': '원본', 'AFTER': '결과', 'AI AFTER': 'AI 결과 시안', 'AUTO REEL': '자동 전환 릴',
+    'BEAUTY · HAIR · NAIL': '뷰티 · 헤어 · 네일', 'FITNESS · STYLE CHANGE': '스타일 · 분위기 전환', 'INTERIOR · SPACE': '인테리어 · 공간', 'PET · MEMORY · GROOMING': '반려동물 · 추억 · 그루밍',
+    "DIRECTOR'S PROMPT RECIPES": '디렉터의 프롬프트 레시피', 'PRODUCT · PREMIUM': '제품 · 프리미엄', 'PHYSICS PAUSE': '순간 정지', 'COPY PROMPT': '프롬프트 복사', 'APPLY TO MY PHOTO ↗': '내 사진에 적용 ↗',
+    'BEAUTY · MACRO': '뷰티 · 매크로', 'REFRACTION NOTE': '빛의 굴절', 'MEMORIAL · GENTLE': '메모리얼 · 섬세한 움직임', 'ARCHIVE BREATH': '기억의 숨결', 'EDITORIAL · PORTRAIT': '에디토리얼 · 인물', 'FRAME PASS': '프레임 전환',
+    'TRAVEL · TRANSFORM': '여행 · 변신', 'EDGE CUT': '장면 전환', 'MUSIC VIDEO · PULSE': '뮤직비디오 · 비트', 'BEAT FOLD': '비트 폴드', 'FOOD · TACTILE': '푸드 · 질감', 'HEAT INDEX': '열감 지수',
+    'WEDDING · FILM': '웨딩 · 필름', 'BORROWED LIGHT': '스치는 빛', 'CLASSIC · RESTORATION': '고전 사진 · 복원', 'FILM GATE': '필름 게이트', 'ID · PROFILE': '프로필 · 신원 보존', 'IDENTITY LOCK': '정체성 유지',
+    'AI Draft + Human Polish': 'AI 초안 · 전문가 보정', 'Product Consistency Check': '제품 일관성 검수', 'KRW Payment': '원화 결제', 'Launch Ready': '오픈 준비 완료',
+    'IMAGE TO CINEMA': '이미지에서 시네마로', 'FROM ONE IMAGE': '한 장의 사진에서', 'TO A COMMERCIAL VIDEO.': '상업용 영상으로.', 'IMAGE BASED': '사진 기반', 'CINEMATIC MOTION': '시네마틱 모션', 'COMMERCIAL READY': '상업용 준비', 'WATCH TRANSFORMATION ↗': '변환 결과 보기 ↗',
+    'Sample Work 02 · Beauty': '작업 예시 02 · 뷰티', 'CLEAN': '클린', 'WATER FILM.': '워터 필름.', '15s Beauty Ad': '15초 뷰티 광고', 'Water Texture': '물의 질감', 'Clean Premium': '클린 프리미엄', 'Product Film': '제품 필름', 'WATCH SAMPLE ↗': '예시 보기 ↗',
+    'DIRECTION FLOW': '연출 흐름', 'TIME 00:00–00:05': '시간 00:00–00:05', 'SCENE / CONTENT': '장면 / 내용', 'VIDEO PROMPT': '영상 프롬프트', 'TIME 00:05–00:10': '시간 00:05–00:10', 'TIME 00:10–00:15': '시간 00:10–00:15', 'Beauty Cleansing Oil': '뷰티 클렌징 오일', 'Water, skin, product and clean premium mood.': '물, 피부, 제품, 클린 프리미엄 무드.',
+    'Our Services': '서비스', '4 CORE AI STUDIOS': '4가지 핵심 AI 스튜디오', 'Commercial Video': '상업용 영상', 'Starter / Pro / Signature': '스타터 / 프로 / 시그니처', 'Personal Transform': '개인 변신', 'Travel / Fashion / Walking': '여행 / 패션 / 워킹', 'Memory Video': '추억 영상', 'Memorial Basic / Duo': '메모리얼 베이직 / 듀오', 'ID / Profile File': '프로필 파일', 'Profile Mini / Set / Profile Pro': '프로필 미니 / 세트 / 프로',
+    'CHOOSE A PRODUCTION TYPE': '제작 유형 선택', 'VIEW VERIFIED RESULTS ↗': '실제 결과 보기 ↗', '01 · PRODUCT AD': '01 · 제품 광고', '15 SEC · PRO': '15초 · 프로', '02 · AUTOMOTIVE': '02 · 자동차', '30 SEC · SIGNATURE': '30초 · 시그니처', '03 · BEAUTY': '03 · 뷰티', '04 · TRAVEL': '04 · 여행', '9 SEC · TRANSFORM': '9초 · 변신', '05 · WEDDING': '05 · 웨딩', '06 · PET MEMORIAL': '06 · 펫 메모리얼', '1 PHOTO · MEMORIAL': '사진 1장 · 메모리얼', '07 · SKETCH + LOGO LAB': '07 · 스케치 + 로고 연구소', 'FROM ₩59,900 · DESIGN MOTION': '₩59,900부터 · 디자인 모션',
+    'AI VIDEO VENDING MACHINE': 'AI 비디오 자판기', 'AS EASY AS': '이토록 쉬운', 'ONE CLICK': '원 클릭', 'Insert your image, choose the mood, and get a cinematic video. It’s that simple.': '사진을 넣고, 무드를 고르면, 시네마틱 영상으로 완성됩니다.', 'HOW IT WORKS ↗': '이용 방법 ↗', 'Insert Image': '사진 넣기', 'Upload the image you want to bring to life.': '움직이고 싶은 사진을 올리세요.', 'Choose Mood': '무드 선택', 'Select a mood and style that fits your story.': '이야기에 맞는 무드와 스타일을 고르세요.', 'Press Start': '시작 누르기', 'One click is all it takes. We handle the rest.': '한 번의 클릭이면 충분합니다. 나머지는 AVVM이 합니다.', 'Get Cinematic Film': '시네마틱 영상 받기', 'Your premium video is ready.': '프리미엄 영상이 준비됩니다.',
+    'Beta Service Open': '베타 서비스 오픈', 'BETA OPEN': '베타 오픈', '1-Click': '원 클릭', 'Simple Video Order': '간편 영상 주문', 'AI Engine': 'AI 엔진', 'Cinematic Video Generation': '시네마틱 영상 생성', 'Quality': '품질', 'Expert Final Review': '전문가 최종 검수',
+    'Not instant automation. Better than that.': '단순 자동 생성이 아닙니다. 더 완성도 있게.', 'AI SPEED.': 'AI의 속도.', 'HUMAN FINISH.': '사람의 완성도.', 'Why “Vending Machine”?': '왜 “비디오 자판기”인가요?', 'Delivery Guide': '제공 안내', 'Realistic Expectation': '현실적인 기대 기준', 'Commerce owners care about this most': '소상공인이 가장 중요하게 보는 기준', 'KEEP THE': '지키는 것', 'PRODUCT RIGHT.': '제품의 정확성.', 'Logo & Label Check': '로고 · 라벨 확인', 'Shape Preservation': '형태 보존', 'Commerce First': '상업용 우선', 'LIVE PRE-FLIGHT': '실시간 사전 점검', 'YOUR SOURCE.': '내 원본을', 'CHECKED FIRST.': '먼저 확인하세요.', 'CHECK MY PHOTO ↗': '내 사진 확인 ↗', 'Show before payment': '결제 전 미리보기', 'TRY BEFORE': '주문 전', 'FULL ORDER.': '먼저 확인.',
+    'Portfolio expansion': '포트폴리오 확장', '9 SECTORS.': '9개 분야.', 'ONE ENGINE.': '하나의 엔진.', 'AUTOMOTIVE': '자동차', 'F1 AERIAL DRIVE': 'F1 공중 추적 드라이브', 'CULTURE': '문화', 'HERITAGE TO FUTURE': '전통에서 미래로', 'BUSINESS': '비즈니스', 'CORPORATE FILM': '기업 필름', 'BEAUTY': '뷰티', 'BEAUTY PERFORMANCE': '뷰티 퍼포먼스', 'EVENT': '이벤트', 'FESTIVAL FILM': '축제 필름', 'STORY': '스토리', 'LIFESTYLE STORY': '라이프스타일 스토리', 'METAVERSE': '메타버스', 'CULTURE NETWORK': '문화 네트워크', 'MUSIC VIDEO': '뮤직비디오', 'DANCE PERFORMANCE': '댄스 퍼포먼스', 'ACTION': '액션', 'EXPERIMENTAL ACTION': '실험적 액션',
+    'Pricing details': '가격 안내', 'WHAT IS': '포함', 'INCLUDED?': '내용', 'Feature': '항목', 'Starter': '스타터', 'Pro': '프로', 'Signature': '시그니처', 'Length': '길이', 'approx. 10s (9s)': '약 10초 (9초)', '15s': '15초', '30s': '30초', 'Commercial use': '상업적 사용', 'Included': '포함', 'BGM / SFX': '배경음 / 효과음', 'Basic': '기본', 'Premium': '프리미엄', 'Caption / Copy': '자막 / 문구', 'AI Voiceover': 'AI 보이스오버', 'Option': '선택', 'Consult': '상담', 'Revision': '수정', 'None': '없음', '1 round': '1회', '2 rounds': '2회', 'Aspect Ratio': '화면 비율', 'Resolution': '해상도',
+    'For everyone · sticker-photo price': '누구나 · 스티커 사진 가격부터', 'ONE PHOTO,': '사진 한 장,', 'NEW WORLD.': '새로운 세계.', '01 · Travel Jump': '01 · 여행 점프', '02 · Fashion Switch': '02 · 패션 전환', '03 · Walk Transform': '03 · 워킹 변신', 'TRY': '체험', 'Mini': '미니', 'TRY NOW': '지금 체험', 'BEST': '추천', 'START TRANSFORM': '변신 시작', 'PLUS': '플러스', 'Best': '베스트', 'CHOOSE BEST': '베스트 선택', 'SET': '세트', '3 Style Set': '3가지 스타일 세트', 'GET SET': '세트 선택', 'Hot Transform Styles': '인기 변신 스타일', 'PRICING': '가격', 'KRW / USD / JPY READY': 'KRW / USD / JPY 지원',
+    'SISTER BRAND · WEB-STUDIO': '자매 브랜드 · WEB-STUDIO', 'WATCH. JEWELRY.': '시계. 주얼리.', 'LIFESTYLE.': '라이프스타일.', 'The AI Video Vending Machine': 'AI 비디오 자판기', 'Service': '서비스', 'Terms': '이용약관', 'Privacy': '개인정보처리방침', 'Refund': '환불정책', 'Delivery': '디지털 제공 안내',
+    'INSERT IMAGE.': '사진을 넣으세요.', 'PRESS START.': '시작을 누르세요.', 'CHOOSE YOUR START': '시작 방식 선택', 'Mini Transform': '미니 변신', 'Basic Transform': '베이직 변신', 'Best Transform': '베스트 변신', 'RECOMMENDED': '추천', 'PREMIUM': '프리미엄', 'CUSTOM': '맞춤', 'Custom Project': '맞춤 프로젝트', 'DUO': '듀오', 'MINI': '미니', 'PRO': '프로', 'SKETCH → JEWEL': '스케치 → 주얼리', 'Jewelry Motion': '주얼리 모션', 'WORD → LOGO': '단어 → 로고', 'Logo Lab': '로고 연구소', 'AI AFTER PREVIEW': 'AI 결과 시안 미리보기', 'Before / After Auto Reel': '전후 자동 전환 릴', 'Selected plan: Pro · ₩39,900': '선택 플랜: 프로 · ₩39,900',
+    'CHOOSE YOUR INPUT': '입력 방식 선택', 'AI AFTER / AUTO REEL': 'AI 결과 시안 / 자동 전환 릴', '01 · BEFORE': '01 · 원본', '02 · AI AFTER': '02 · AI 결과 시안', '03 · AUTO REEL': '03 · 자동 전환 릴', 'AVVM PROMPT FINDER': 'AVVM 프롬프트 찾기', 'AVVM DIRECTION': 'AVVM 연출', 'IMAGE PROMPT': '이미지 프롬프트', 'AUTO REEL PROMPT': '자동 전환 릴 프롬프트', 'NEGATIVE / GUARDRAILS': '제한 사항 / 가드레일', 'AI AFTER READY · PREVIEW': 'AI 결과 시안 완료 · 미리보기', 'AVVM PRE-FLIGHT': 'AVVM 사전 점검', 'YOUR SOURCE': '내 원본', 'ANALYZING': '분석 중', 'PIXELS': '화소', 'LIGHT': '빛', 'DETAIL': '디테일', 'BEAUTY · 9:16 · 1080P': '뷰티 · 9:16 · 1080P', 'Beauty': '뷰티', 'Product': '제품', 'Food': '푸드', 'Travel': '여행', 'Wedding': '웨딩', 'Design Lab': '디자인 연구소', 'Custom': '맞춤', 'AVVM DESIGN LAB': 'AVVM 디자인 연구소', 'SELECTED DIRECTION': '선택한 연출', 'LIQUID REFRACTION': '액체 굴절', 'AVVM CURATED RECIPES': 'AVVM 검수 레시피', 'OPTIONAL': '선택', 'PLAN INCLUDED': '플랜 포함', 'FULL HD · 1080P': '풀 HD · 1080P', 'PROJECT': '프로젝트', 'STARTED.': '시작됨.', 'ORDER #AVVM-DEMO': '주문 #AVVM-DEMO', 'DOWNLOAD ORDER': '주문 다운로드', 'CREATE ANOTHER': '새로 만들기', 'AVVM SHOWREEL': 'AVVM 쇼릴', 'Ready': '준비 완료'
+  });
+
+  function koreanText(source) {
+    return koreanTextFallbacks[normalizeTranslationKey(source)] || source;
+  }
+
   function normalizeTranslationKey(value) {
     return String(value || '')
       .replace(/&nbsp;/gi, ' ')
@@ -440,10 +515,10 @@
   function applyAutoTextNodes() {
     autoTextNodes.forEach(({ node, original }) => {
       if (!node.isConnected) return;
-      if (isKorean()) { node.nodeValue = original; return; }
       const leading = (original.match(/^\s*/) || [''])[0];
       const trailing = (original.match(/\s*$/) || [''])[0];
       const value = original.slice(leading.length, original.length - trailing.length);
+      if (isKorean()) { node.nodeValue = `${leading}${koreanText(value)}${trailing}`; return; }
       node.nodeValue = `${leading}${autoText(value, value)}${trailing}`;
     });
   }
@@ -554,8 +629,11 @@
       const key = node.dataset.i18n || node.dataset.i18nAuto;
       if (!node.dataset.avvmKoHtml) node.dataset.avvmKoHtml = node.innerHTML;
       const locale = (window.AVVM_LOCALES || {})[language] || {};
+      // Korean is a locale too. Previously it always restored the source HTML,
+      // which left source-language (mostly English) labels scattered through
+      // the Korean experience even when a Korean UI value existed.
       if (!isKorean()) node.innerHTML = locale[key] || autoHtml(node.dataset.avvmKoHtml, en[key] || node.dataset.avvmKoHtml);
-      else node.innerHTML = node.dataset.avvmKoHtml;
+      else node.innerHTML = ko[key] || node.dataset.avvmKoHtml;
     });
     document.querySelectorAll('[data-i18n-placeholder]').forEach(node => {
       const key = node.dataset.i18nPlaceholder;
