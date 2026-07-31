@@ -6959,3 +6959,31 @@ html[lang="ko"] .hero-tagline-fallback {
   transform-origin:center center;
 }
 .before-after-preview-watermark{position:absolute;z-index:5;right:-27%;bottom:22%;width:154%;transform:rotate(-23deg);pointer-events:none;user-select:none;color:rgba(239,255,153,.73);text-align:center;text-shadow:0 1px 8px rgba(0,0,0,.95);font:950 clamp(8px,1.45vw,13px)/1.1 Inter,system-ui,sans-serif;letter-spacing:.14em}
+
+/* Raised language globe: a slim outer ring creates separation from the moving globe. */
+.lang-globe-icon{
+  overflow:hidden!important;
+  box-sizing:border-box;
+  isolation:isolate;
+  background:linear-gradient(135deg,rgba(233,255,255,.96),rgba(55,113,121,.96) 46%,rgba(5,18,25,.98))!important;
+  border:1px solid rgba(222,255,253,.92)!important;
+  box-shadow:0 1px 0 rgba(255,255,255,.8),0 3px 7px rgba(0,0,0,.62),0 0 9px rgba(56,255,220,.42),inset 0 0 0 1px rgba(0,16,21,.72)!important;
+}
+.lang-globe-icon > .lang-globe-video{
+  inset:1.5px!important;
+  width:calc(100% - 3px)!important;
+  height:calc(100% - 3px)!important;
+  border-radius:50%;
+  transform:scale(1.28)!important;
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.36);
+}
+.lang-globe-icon::after{
+  content:""!important;
+  position:absolute;
+  z-index:2;
+  inset:1.5px;
+  display:block!important;
+  border-radius:50%;
+  background:linear-gradient(138deg,rgba(255,255,255,.3),transparent 28%,transparent 70%,rgba(0,0,0,.22));
+  pointer-events:none;
+}
