@@ -2431,3 +2431,36 @@ if($('#resetOrder')) {
     if(!document.hidden) videos.forEach((video)=>{if(visible.get(video)) resume(video);});
   });
 })();
+
+/* The classic-restoration proof is a key comparison: play it eagerly instead
+   of depending on its scroll observer, which some mobile browsers can pause
+   after rendering the matching poster frame. */
+(function(){
+  const video=document.querySelector('#proof-classic-restoration .proof-video');
+  if(!video) return;
+  const resume=()=>{
+    if(document.hidden) return;
+    video.muted=true;
+    video.defaultMuted=true;
+    video.loop=true;
+    video.autoplay=true;
+    video.playsInline=true;
+    video.setAttribute('muted','');
+    video.setAttribute('playsinline','');
+    video.setAttribute('webkit-playsinline','');
+    const attempt=video.play();
+    if(attempt && typeof attempt.catch==='function') attempt.catch(()=>{});
+  };
+  ['loadedmetadata','loadeddata','canplay','canplaythrough'].forEach((event)=>{
+    video.addEventListener(event,resume,{once:false});
+  });
+  video.addEventListener('pause',()=>{
+    if(!document.hidden) window.setTimeout(resume,80);
+  });
+  video.addEventListener('ended',resume);
+  window.addEventListener('pageshow',resume);
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden) resume();});
+  resume();
+  window.setTimeout(resume,300);
+  window.setTimeout(resume,1200);
+})();
