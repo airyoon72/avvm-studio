@@ -537,7 +537,7 @@
     localizedKey('.service-card:nth-of-type(1) p', 'serviceCommercialCopy', 'High-resolution brand advertising and product-showreel videos from one photo.');
     localizedKey('.service-card:nth-of-type(2) p', 'servicePersonalCopy', 'Turn everyday photos into travel short-form reels or trend-forward fashion films.');
     localizedKey('.service-card:nth-of-type(3) p', 'serviceMemorialCopy', 'Restore memories of family, parents, and beloved pets as moving video.');
-    localizedKey('.service-card:nth-of-type(4) p', 'serviceIdCopy', 'High-quality digital photos for passports, licences, employee IDs, and profiles without a studio visit.');
+    localizedKey('.service-card:nth-of-type(4) p', 'serviceIdCopy', 'High-quality digital profile files for employment, social, and staff use without a studio visit.');
     localizedKey('[data-plan-choice="Custom"] strong', 'customQuote', 'Custom quote');
     localizedKey('[data-plan-choice="Memorial Basic"] .plan-choice-tag, [data-plan-choice="ID Set"] .plan-choice-tag', 'recommended', 'Recommended');
   }
@@ -598,16 +598,16 @@
       'Mini Transform': '5 seconds / 1 style / easy first try', 'Basic Transform': '9 seconds / basic SNS transformation', 'Best Transform': 'About 10 seconds (9 seconds) / travel + fashion mood',
       '3 Style Set': 'Travel, fashion, and walking transformation set', 'Starter': 'About 10 seconds (9 seconds) / fast short-form ad', 'Pro': '15 seconds / brand-product ad / one revision',
       'Signature': '30 seconds / showreel-brand film / two revisions', 'Custom': 'Contest, film-festival, and large-brand videos', 'Memorial Basic': 'Restore one photo / one regeneration',
-      'Memorial Duo': 'Two-photo video set / one regeneration', 'ID Mini': 'One of passport, resident ID, licence, or résumé', 'ID Set': 'All four formats: passport, resident ID, licence, résumé', 'Profile Pro': 'Premium retouching for employment, ID, and business profiles'
+      'Memorial Duo': 'Two-photo video set / one regeneration', 'ID Mini': 'One employment, staff, social, or official-spec profile file', 'ID Set': 'Three practical profile crops for different uses', 'Profile Pro': 'Premium retouching for employment, staff, social, and business profiles'
     };
     Object.entries(planCopy).forEach(([plan, value]) => localized(`[data-plan-choice="${plan}"] small`, value));
 
     localized('#photoUploadVisibleBlock .order-form-section-title', '2. Add a reference photo (optional)');
     localized('#photoUploadVisibleBlock .order-form-helper', 'Attach a photo, product image, or sketch when you have one. For photo-guided production, upload the source before payment.');
     localized('.photo-upload-drop b', 'Attach photo'); localized('.photo-upload-drop small', 'JPG, PNG, or WEBP image file');
-    localized('#uploadGuideBox', '💡 <b>Passport guide:</b> Upload a front-facing photo with a plain background and visible ears.', true);
-    localized('#idSpecGroup .order-option-title', 'Choose format');
-    [['여권', 'Passport'], ['주민등록증', 'Resident ID'], ['운전면허', 'Driver licence'], ['이력서', 'Résumé']].forEach(([value, copy]) => localized(`#idSpecGroup [data-value="${value}"]`, copy));
+    localized('#uploadGuideBox', '💡 <b>Profile and official-submission guide:</b> Upload a clear front-facing photo of yourself. Official-submission files preserve facial contours and features; we only adjust the required crop, dimensions, and file size.', true);
+    localized('#idSpecGroup .order-option-title', 'Choose file use');
+    [['취업 프로필', 'Employment profile'], ['사원 프로필', 'Staff profile'], ['SNS 프로필', 'Social profile'], ['공식 제출용 규격', 'Official-submission specification']].forEach(([value, copy]) => localized(`#idSpecGroup [data-value="${value}"]`, copy));
     localized('.style-select-block .order-form-section-title', '2. Choose a video style'); localized('.style-select-block .order-form-helper', 'Choose the AI direction and style to apply to your photo.');
     localized('.delivery-info-block .order-form-section-title', '3. Enter delivery contact details'); localized('.delivery-info-block .order-form-helper', 'We will send the completed-video download link by email, KakaoTalk, or SMS.');
     localized('label[for="brandInput"]', 'Name / brand <span>*</span>', true); localized('label[for="emailInput"]', 'Email address'); localized('label[for="phoneInput"]', 'Mobile number <span>*</span>', true);
@@ -616,12 +616,12 @@
       if (!node.dataset.avvmKoPlaceholder) node.dataset.avvmKoPlaceholder = node.placeholder;
       node.placeholder = !isKorean() ? value : node.dataset.avvmKoPlaceholder;
     });
-    localized('.checkout-notice', `<p class="test-mode-note"><b>PG review test mode is currently active.</b><br>This button opens the KPN test payment window. Live payment completion is enabled only after PG approval and server verification are connected.</p><b>Before payment</b><p>This product is made-to-order digital content based on your image. Cancellation or refund for a change of mind may be limited after production starts.</p><p><b>Service period:</b> Delivery begins after payment and production materials are received. Transform products take 1–3 business days; 3 Style Set takes 3–7 business days; Starter 24–48 hours; Pro 2–3 business days; Signature 3–5 business days. Memorial and ID/Profile products follow the period shown on their cards.</p><p>You must have rights to use uploaded photos, logos, product images, and portraits. We do not accept impersonation, identity deception, or unauthorized commercial-use requests.</p>`, true);
+    localized('.checkout-notice', `<p class="test-mode-note"><b>PG review test mode is currently active.</b><br>This button opens the KPN test payment window. Live payment completion is enabled only after PG approval and server verification are connected.</p><b>Before payment</b><p>This product is made-to-order digital content based on your image. Cancellation or refund for a change of mind may be limited after production starts.</p><p><b>Profile-file notice:</b> AVVM focuses on employment, staff, social, and business profiles. Official-submission files only match crop, size, and file requirements from the original image; an institution may reject the file, and AVVM does not guarantee acceptance. Facial contours and features are not changed.</p><p>You must have rights to use every uploaded photo, logo, product image, and portrait. Uploading another person’s photo is prohibited; a minor or another person requires confirmed authority from the individual or legal guardian. Production files are retained for up to 30 days after delivery for re-download support, then deleted.</p>`, true);
     const consentCopy = [
       '<b>[Required] Consent to collect and use personal information</b><br>I consent to the collection and use of my name, phone number, email, uploaded image, and order information for order handling and delivery.',
       '<b>[Required] Consent to receive order updates</b><br>I consent to receive transaction-related notices, including order receipt, production updates, and completion notices, by KakaoTalk, SMS, or email.',
       '<b>[Required] Custom digital-content and refund-limit acknowledgement</b><br>I understand this is made-to-order digital content based on my image and request, and cancellation or refund for a change of mind may be limited once production starts.',
-      '<b>[Required] Image-use rights and portrait/copyright confirmation</b><br>I confirm that I have the rights to use uploaded photos, logos, product images, and portraits, and that I am not requesting impersonation, identity deception, or unauthorized commercial use.',
+      '<b>[Required] Image-use rights and portrait/copyright confirmation</b><br>I confirm that I have rights to use all uploaded photos, logos, product images, and portraits. I will not upload another person’s photo without authority, and I am not requesting impersonation, identity deception, or unauthorized commercial use.',
       '<b>[Optional] Marketing consent</b><br>I agree to receive events, discounts, new samples, and other marketing information by KakaoTalk, SMS, or email.'
     ];
     document.querySelectorAll('#consentGroup .consent-row span').forEach((node, index) => {
@@ -657,28 +657,58 @@
     ].forEach((copy, index) => localized(`#memorial [data-plan="Memorial Duo"] li:nth-child(${index + 1})`, copy, true));
     localized('.memorial-bottom-notice', '💡 AI restoration may differ from the original appearance. If you are not satisfied, we will support one regeneration according to the plan. Results are delivered after review.<br>You must have rights to use uploaded family, pet, and memorial photographs. Requests that infringe a third party’s portrait rights, copyright, or reputation may be declined.', true);
 
-    localized('#id-profile .section-bar .view-all', 'ID and profile-photo file production');
-    localized('#id-profile .id-copy', 'Prepare a submission-ready photo file from an existing photo, without visiting a photo studio.<br>We make JPG files tailored for passports, resident IDs, driver licences, résumés, employee IDs, and profiles.', true);
-    localized('#id-profile [data-plan="ID Mini"] > p', 'One file in one selected format');
+    localized('#id-profile .section-bar .view-all', 'Employment, social, and staff profile files');
+    localized('#id-profile .id-copy', 'Start with an employment, staff, social, or business profile from an existing photograph.<br>For official submission, we provide only crop, dimension, and file-size matching while preserving original facial contours and features.', true);
+    localized('#id-profile [data-plan="ID Mini"] > h3', 'Profile Mini');
+    localized('#id-profile [data-plan="ID Mini"] > p', 'One employment or social profile file');
     [
       'A source-based file tailored to the selected specification',
-      'Choose one: passport, resident ID, driver licence, or résumé',
+      'Choose employment, staff, social, or official-submission use',
       'Delivery: <b>within 24 hours</b>'
     ].forEach((copy, index) => localized(`#id-profile [data-plan="ID Mini"] li:nth-child(${index + 1})`, copy, true));
     localized('#id-profile [data-plan="ID Set"] > .badge', 'Recommended');
-    localized('#id-profile [data-plan="ID Set"] > p', 'Passport, resident ID, driver licence, and résumé format set');
+    localized('#id-profile [data-plan="ID Set"] > h3', 'Profile Set');
+    localized('#id-profile [data-plan="ID Set"] > p', 'Three practical profile crops for different uses');
     [
       'A source-based file tailored to each specification',
-      'Complete package of all four major submission formats',
+      'Complete set of three practical profile crops',
       'Delivery: <b>within 24 hours</b>'
     ].forEach((copy, index) => localized(`#id-profile [data-plan="ID Set"] li:nth-child(${index + 1})`, copy, true));
-    localized('#id-profile [data-plan="Profile Pro"] > p', 'Premium retouching for employment, ID, and business profiles');
+    localized('#id-profile [data-plan="Profile Pro"] > p', 'Premium retouching for employment, staff, social, and business profiles');
     [
       'A source-based file tailored to the selected specification',
-      'One-to-one detail retouching for skin, symmetry, lighting, and more',
+      'Detail refinement for skin, lighting, and background — no facial-feature changes',
       'Delivery: <b>within 48 hours</b>'
     ].forEach((copy, index) => localized(`#id-profile [data-plan="Profile Pro"] li:nth-child(${index + 1})`, copy, true));
-    localized('.id-bottom-notice', '💡 Official passport, resident-ID, and driver-licence photographs may be accepted differently by each institution. AVVM supports specification matching, cropping, file-size adjustment, and natural retouching from the source image, but cannot guarantee final acceptance.<br>We do not process impersonation, identity deception, age alteration, face replacement, or creation of an identity different from a real person. If the source image is substantially below the required standard for focus, lighting, or background, production may not be possible; in that case, a full refund is provided.', true);
+    localized('.id-bottom-notice', '💡 AVVM focuses on employment, social, staff, and business profiles. Official-submission files only match the original image to required crop, dimensions, and file size; individual institutions may reject a file, and AVVM does not guarantee acceptance.<br>We do not change facial contours or features, replace faces, alter age, or process impersonation. Uploading another person’s photo is prohibited; for a minor or another person, the individual or legal guardian must confirm authority.<br>Production files are retained for up to 30 days after delivery for re-download and production support, then deleted. Payment and transaction records may be retained separately as required by law.', true);
+
+    localized('.commerce-page-machine-head > span', 'PRODUCT PHOTO → SALES PAGE → AD VIDEO');
+    localized('#commercePageTitle', 'Turn one product photo into a sales page and advertising video.');
+    localized('.commerce-page-machine-head > p', 'Enter a hero product photo and its key benefit. AVVM organises the sales flow, opening line, detail points, and advertising-video scenes in one place.');
+    const commerceSteps = ['Product photo', 'Sales point', 'Sales-page draft', 'Advertising video'];
+    document.querySelectorAll('.commerce-page-process span').forEach((node, index) => {
+      const number = String(index + 1).padStart(2, '0');
+      localized(`.commerce-page-process span:nth-of-type(${index + 1})`, `${number} ${commerceSteps[index]}`);
+    });
+    localized('#commercePageForm label[for="commerceProductImage"] > span', '01 · Hero product photo');
+    localized('#commerceProductImageLabel', 'Choose a photo');
+    localized('#commercePageForm label[for="commerceProductImage"] small', 'Start with one hero photo · we confirm the extra detail shots needed before final production.');
+    localized('#commercePageForm label[for="commerceProductName"] > span', '02 · Product or menu name');
+    localized('#commercePageForm label[for="commerceProductBenefit"] > span', '03 · The benefit customers should feel');
+    localized('.commerce-page-type button:nth-child(1)', 'Product');
+    localized('.commerce-page-type button:nth-child(2)', 'Food');
+    localized('.commerce-page-type button:nth-child(3)', 'Space');
+    localized('.commerce-page-generate', 'CREATE SALES-PAGE DRAFT ↗');
+    localized('#commercePagePreviewTitle', 'Upload a hero photo to reveal the sales structure.');
+    localized('#commercePagePreviewLead', 'Even one photo can reveal an opening line and sales-page flow that makes customers pause.');
+    ['First-screen purchase hook', 'Core benefit that creates trust', 'A scene that continues into an advertising video'].forEach((copy, index) => localized(`#commercePagePreviewPoints li:nth-child(${index + 1})`, copy));
+    localized('#commercePageVideoLine', 'VIDEO CUT · Product hero → detail → use moment → call to action');
+    localized('#commercePageOrder', 'MAKE THE SALES PAGE + AD VIDEO FROM THIS DRAFT ↗');
+    localized('#commercePageOutput > small', 'The draft is free to view in this browser. The final sales page and video are produced after confirmation.');
+    const productName = document.getElementById('commerceProductName');
+    const productBenefit = document.getElementById('commerceProductBenefit');
+    if (productName) productName.placeholder = !isKorean() ? 'e.g. Fresh basil cream-cheese bagel' : '예: 수제 바질 크림치즈 베이글';
+    if (productBenefit) productBenefit.placeholder = !isKorean() ? 'e.g. Fresh-baked chew, same-day delivery, and gift-ready packaging' : '예: 매일 아침 구운 쫄깃한 식감, 당일 배송, 선물용 패키지';
   }
 
   function applyOrderPage() {

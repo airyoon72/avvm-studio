@@ -409,6 +409,28 @@
       <article class="commerce-route commerce-route--brand"><span>07</span><div><small>LOCAL BRAND · FOUNDER</small><h3 data-i18n="commerceBrandTitle">우리 가게의 첫 브랜드 필름</h3><p data-i18n="commerceBrandCopy">사장님·매장·상품 사진을 묶어, ‘왜 이곳인가’를 전하는 브랜드 오프닝을 제작합니다.</p></div><button data-category="Product" data-open="" data-plan="Pro" type="button" data-i18n="commerceRouteStartPro">PRO로 시작 ↗</button></article>
     </div>
 
+    <section class="commerce-page-machine" id="commerce-page-machine" aria-labelledby="commercePageTitle">
+      <header class="commerce-page-machine-head">
+        <span>PRODUCT PHOTO → SALES PAGE → AD VIDEO</span>
+        <h3 id="commercePageTitle">사진 한 장을, 팔리는 상세페이지와 광고 영상으로.</h3>
+        <p>대표 제품 사진과 핵심 장점만 입력하세요. AVVM이 판매 흐름·첫 문장·상세 포인트·광고 영상 장면을 한 번에 정리합니다.</p>
+      </header>
+      <div class="commerce-page-process" aria-label="상세페이지 제작 흐름"><span><b>01</b> 제품 사진</span><i></i><span><b>02</b> 판매 포인트</span><i></i><span><b>03</b> 상세페이지 초안</span><i></i><span><b>04</b> 광고 영상</span></div>
+      <div class="commerce-page-workbench">
+        <form class="commerce-page-form" id="commercePageForm">
+          <label class="commerce-page-upload" for="commerceProductImage"><input id="commerceProductImage" type="file" accept="image/jpeg,image/png,image/webp"/><span>01 · 대표 제품 사진</span><b id="commerceProductImageLabel">사진 선택하기</b><small>대표 사진 1장으로 시작 · 상세 컷은 최종 제작 전 필요한 범위를 확인합니다.</small></label>
+          <label for="commerceProductName"><span>02 · 제품 또는 메뉴 이름</span><input id="commerceProductName" maxlength="80" placeholder="예: 수제 바질 크림치즈 베이글"/></label>
+          <label for="commerceProductBenefit"><span>03 · 고객이 느껴야 할 장점</span><textarea id="commerceProductBenefit" maxlength="240" placeholder="예: 매일 아침 구운 쫄깃한 식감, 당일 배송, 선물용 패키지"></textarea></label>
+          <div class="commerce-page-type" role="group" aria-label="업종 선택"><button class="active" type="button" data-commerce-type="product">상품</button><button type="button" data-commerce-type="food">푸드</button><button type="button" data-commerce-type="space">공간</button></div>
+          <button class="commerce-page-generate" type="submit">상세페이지 초안 만들기 <i>↗</i></button>
+        </form>
+        <aside class="commerce-page-output" id="commercePageOutput" aria-live="polite">
+          <div class="commerce-page-preview-media" id="commercePagePreviewMedia"><span>YOUR PRODUCT</span></div>
+          <span id="commercePagePreviewType">PRODUCT STORY</span><h4 id="commercePagePreviewTitle">대표 사진을 올리면 판매 구조가 나타납니다.</h4><p id="commercePagePreviewLead">한 장의 사진으로도 고객이 멈춰 보는 첫 문장과 상세페이지 흐름을 먼저 확인할 수 있습니다.</p><ul id="commercePagePreviewPoints"><li>첫 화면의 구매 훅</li><li>신뢰를 만드는 핵심 장점</li><li>광고 영상으로 이어지는 장면</li></ul><div class="commerce-page-video-line" id="commercePageVideoLine">VIDEO CUT · 제품 정면 → 디테일 → 구매 장면</div><button id="commercePageOrder" type="button" disabled>이 초안으로 상세페이지·광고 영상 제작하기 ↗</button><small>초안은 브라우저에서 무료로 확인합니다. 최종 상세페이지와 영상은 확인 후 제작됩니다.</small>
+        </aside>
+      </div>
+    </section>
+
     <section class="commerce-ba-lab" id="before-after-auto-reel" aria-labelledby="commerceBaTitle">
       <header class="commerce-ba-head">
         <div>
@@ -657,8 +679,8 @@
         <div class="service-card-glow"></div>
         <div class="service-icon">🪪</div>
         <h3>ID / Profile File</h3>
-        <p>사진관 방문 없는 여권, 면허, 사원증, 프로필용 고품질 디지털 사진 제작</p>
-        <span class="service-tag">ID Mini / Set / Profile Pro</span>
+		<p>취업·SNS·사원 프로필을 위한 고품질 디지털 사진 파일 제작</p>
+		<span class="service-tag">Profile Mini / Set / Profile Pro</span>
       </a>
     </div>
   </div>
@@ -989,37 +1011,37 @@
   <div class="container">
     <div class="section-bar">
       <h2 class="section-label">ID / Profile</h2>
-      <span class="view-all">증명사진·프로필사진 파일 제작</span>
+		<span class="view-all">취업·SNS·사원 프로필 파일 제작</span>
     </div>
 
     <div class="id-intro" style="margin-bottom: 30px;">
       <p class="id-copy" style="font-size: 15px; color: rgba(255,255,255,0.7); line-height: 1.7; word-break: keep-all;">
-        사진관 방문 없이, 기존 사진으로 제출용 사진 파일을 준비하세요.<br>
-        여권, 주민등록증, 운전면허, 이력서, 사원증, 프로필용까지 용도별 규격에 맞춘 JPG 파일로 제작해드립니다.
+		취업·사원·SNS·비즈니스 프로필을 먼저 만드세요.<br>
+		공식 제출용은 원본의 얼굴 윤곽·이목구비를 바꾸지 않는 범위에서 규격·크롭·용량만 맞춘 JPG 파일로 제공합니다.
       </p>
     </div>
 
     <!-- Products grid -->
     <div class="pricing-grid id-profile-grid">
       <article class="price-card" data-plan="ID Mini">
-        <h3>ID Mini</h3>
+		<h3>Profile Mini</h3>
         <div class="price">₩5,900</div>
-        <p style="margin-bottom: 15px; font-size: 13px; color: rgba(255,255,255,0.7);">단일 규격 파일 1종 제공</p>
+		<p style="margin-bottom: 15px; font-size: 13px; color: rgba(255,255,255,0.7);">취업·SNS 프로필 파일 1종 제공</p>
         <ul>
           <li>원본 기반 규격 맞춤 파일 제작</li>
-          <li>여권/주민등록증/운전면허/이력서 중 선택 1종</li>
+		<li>취업/사원/SNS/공식 제출용 규격 중 선택 1종</li>
           <li>납기: <b>24시간 내 전달</b></li>
         </ul>
         <button class="btn" data-open="" data-plan="ID Mini" style="margin-top: 15px;">START PROJECT ↗</button>
       </article>
       <article class="price-card featured" data-plan="ID Set">
         <span class="badge">추천</span>
-        <h3>ID Set</h3>
+		<h3>Profile Set</h3>
         <div class="price">₩9,900</div>
-        <p style="margin-bottom: 15px; font-size: 13px; color: rgba(255,255,255,0.7);">여권/주민등록증/운전면허/이력서 규격 세트</p>
+		<p style="margin-bottom: 15px; font-size: 13px; color: rgba(255,255,255,0.7);">취업·사원·SNS용 크롭 파일 세트</p>
         <ul>
           <li>원본 기반 규격 맞춤 파일 제작</li>
-          <li>제출 목적별 4대 규격 전체 패키지</li>
+		<li>대표 프로필의 활용처별 3가지 크롭 패키지</li>
           <li>납기: <b>24시간 내 전달</b></li>
         </ul>
         <button class="btn btn-primary" data-open="" data-plan="ID Set" style="margin-top: 15px;">START PROJECT ↗</button>
@@ -1030,7 +1052,7 @@
         <p style="margin-bottom: 15px; font-size: 13px; color: rgba(255,255,255,0.7);">취업/사원증/비즈니스 고급 보정</p>
         <ul>
           <li>원본 기반 규격 맞춤 파일 제작</li>
-          <li>피부, 대칭, 조명 등 1:1 디테일 고급 보정</li>
+		<li>피부·조명·배경 정리 중심의 디테일 보정</li>
           <li>납기: <b>48시간 내 전달</b></li>
         </ul>
         <button class="btn" data-open="" data-plan="Profile Pro" style="margin-top: 15px;">START PROJECT ↗</button>
@@ -1038,8 +1060,9 @@
     </div>
 
     <div class="id-bottom-notice" style="margin-top: 30px; padding: 18px; border-radius: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); font-size: 12px; color: rgba(255,255,255,0.62); line-height: 1.7; text-align: left; word-break: keep-all;">
-      💡 여권, 주민등록증, 운전면허증 등 공식 신분증 사진은 각 기관의 심사 기준에 따라 승인 여부가 달라질 수 있습니다. AVVM은 원본 사진을 기준으로 규격 맞춤, 크롭, 용량 조정, 자연스러운 보정을 지원하며 최종 접수 승인을 보장하지 않습니다.<br>
-      타인 사칭, 신원 왜곡, 연령 변경, 얼굴 교체, 실제 인물과 다른 신분 생성 목적의 편집은 진행하지 않습니다. 촬영 상태(초점, 조명, 배경)가 기준에 크게 미달하는 원본은 제작이 어려울 수 있으며, 이 경우 전액 환불됩니다.
+	  💡 AVVM의 주력은 취업·SNS·사원·비즈니스 프로필입니다. 공식 제출용은 원본 기준의 규격·크롭·용량 파일만 제공하며, 기관별 판단에 따라 반려될 수 있습니다. 최종 승인이나 접수를 보장하지 않습니다.<br>
+	  얼굴 윤곽·이목구비 변경, 얼굴 교체, 연령 변경, 타인 사칭 편집은 진행하지 않습니다. 타인의 사진 업로드는 금지되며, 미성년자 또는 타인 사진은 본인·법정대리인의 권한 확인이 필요합니다.<br>
+	  제작 파일은 전달 후 최대 30일 동안 재다운로드·제작 지원 목적으로 보관한 뒤 삭제합니다. 결제·거래 기록은 관련 법령에 따라 별도 보관될 수 있습니다.
     </div>
   </div>
 </section>
@@ -1182,24 +1205,24 @@
     </section>
 
     <section class="plan-choice-section">
-      <div class="plan-choice-kicker">증명·프로필</div>
+	  <div class="plan-choice-kicker">프로필 파일</div>
       <button type="button" class="plan-choice-card" data-plan-choice="ID Mini">
         <span class="plan-choice-tag">MINI</span>
-        <b>ID Mini</b>
+		<b>Profile Mini</b>
         <strong>₩5,900</strong>
-        <small>여권/주민등록증/면허/이력서 중 1종</small>
+		<small>취업·사원·SNS·공식 제출용 중 1종</small>
       </button>
       <button type="button" class="plan-choice-card recommended" data-plan-choice="ID Set">
         <span class="plan-choice-tag">추천</span>
-        <b>ID Set</b>
+		<b>Profile Set</b>
         <strong>₩9,900</strong>
-        <small>4대 규격 전체 패키지 (여권/주민증/면허/이력서)</small>
+		<small>활용처별 3가지 크롭 파일 패키지</small>
       </button>
       <button type="button" class="plan-choice-card" data-plan-choice="Profile Pro">
         <span class="plan-choice-tag">PRO</span>
         <b>Profile Pro</b>
         <strong>₩29,900</strong>
-        <small>취업/사원증/비즈니스 고급 보정</small>
+		<small>취업/사원/SNS/비즈니스 고급 보정</small>
       </button>
     </section>
 
@@ -1349,18 +1372,18 @@
     </section>
   </div>
   <div class="upload-guide-box" id="uploadGuideBox" style="display:none; margin-top: 10px; padding: 12px; background: rgba(216,242,51,0.06); border-radius: 12px; font-size: 11px; color: rgba(255,255,255,0.75); border: 1px solid rgba(216,242,51,0.25); text-align: left; line-height: 1.5; word-break: keep-all;">
-    💡 <b>여권용 가이드:</b> 정면·무배경·귀가 보이게 촬영된 사진을 올려주세요.
+	💡 <b>프로필·공식 제출용 가이드:</b> 본인 얼굴이 선명한 정면 사진을 올려주세요. 공식 제출용은 얼굴 윤곽·이목구비를 바꾸지 않고 규격·크롭·용량만 맞춥니다.
   </div>
 
   <div class="order-option-group" id="idSpecGroup" style="display:none; margin-top:24px">
-    <div class="order-option-title">규격 선택</div>
+	<div class="order-option-title">파일 용도 선택</div>
     <div class="option-chips" data-option-group="idSpec">
-      <button class="option-chip active" data-value="여권" type="button">여권</button>
-      <button class="option-chip" data-value="주민등록증" type="button">주민등록증</button>
-      <button class="option-chip" data-value="운전면허" type="button">운전면허</button>
-      <button class="option-chip" data-value="이력서" type="button">이력서</button>
+	  <button class="option-chip active" data-value="취업 프로필" type="button">취업 프로필</button>
+	  <button class="option-chip" data-value="사원 프로필" type="button">사원 프로필</button>
+	  <button class="option-chip" data-value="SNS 프로필" type="button">SNS 프로필</button>
+	  <button class="option-chip" data-value="공식 제출용 규격" type="button">공식 제출용 규격</button>
     </div>
-    <input id="idSpec" name="idSpec" type="hidden" value="여권"/>
+	<input id="idSpec" name="idSpec" type="hidden" value="취업 프로필"/>
   </div>
   
   <div class="source-intelligence" id="imagePreview" aria-live="polite">
@@ -1478,10 +1501,11 @@
   <b>결제 전 확인</b>
   <p>본 상품은 고객 이미지 기반 맞춤 제작 디지털 콘텐츠입니다. 제작 착수 후에는 단순 변심에 의한 취소·환불이 제한될 수 있습니다.</p>
   <p><b>서비스 제공 기간:</b> 결제 및 제작자료 접수가 모두 완료된 시점부터 Mini·Basic·Best Transform 상품은 영업일 기준 1~3일 이내, 3 Style Set은 영업일 기준 3~7일 이내, Starter는 24~48시간, Pro는 영업일 기준 2~3일, Signature는 영업일 기준 3~5일 이내 제공됩니다. Memorial 및 ID·Profile 상품은 각 상품 카드에 표시된 24~48시간의 제공 기간이 적용됩니다. 고객이 제출한 사진의 품질, 자료 보완, 추가 요청 또는 수정 여부에 따라 일정이 일부 변동될 수 있으며, 지연이 예상되는 경우 고객에게 개별 안내드립니다.</p>
-  <p>업로드한 사진, 로고, 상품 이미지, 인물 사진에 대한 사용 권한은 주문자에게 있어야 하며, 타인 사칭·신원 왜곡·무단 상업 이용 목적의 제작은 진행하지 않습니다.</p>
+  <p>업로드한 사진, 로고, 상품 이미지, 인물 사진에 대한 사용 권한은 주문자에게 있어야 하며, 타인 사칭·신원 왜곡·무단 상업 이용 목적의 제작은 진행하지 않습니다. 타인의 사진 업로드는 금지되며, 미성년자 또는 타인 사진은 본인 또는 법정대리인의 권한 확인이 필요합니다.</p>
   <p>영상은 AI 기술을 활용하여 제작되며, 이미지 품질과 요청 스타일에 따라 결과가 달라질 수 있습니다.</p>
   <p>업로드하는 사진, 로고, 상품 이미지, 인물 사진에 대한 사용 권한은 고객 본인에게 있어야 합니다.</p>
-  <p>ID·Profile 서비스는 제출용 규격 맞춤과 자연스러운 보정을 위한 서비스이며, 타인 사칭·신원 왜곡 목적의 편집은 진행하지 않습니다.</p>
+  <p><b>프로필 파일 안내:</b> AVVM은 취업·사원·SNS·비즈니스 프로필을 우선 제공합니다. 공식 제출용 파일은 원본의 얼굴 윤곽·이목구비를 유지한 채 크롭·규격·파일 용량만 맞추며, 기관별 판단에 따라 반려될 수 있습니다. 여권·면허증 등 공식 문서의 승인 또는 접수는 보장하지 않습니다.</p>
+  <p>제작 파일은 재다운로드와 제작 지원을 위해 결과 전달 후 최대 30일 보관한 뒤 삭제합니다. 결제·거래 기록은 관련 법령에 따라 별도로 보관될 수 있습니다.</p>
 </div>
 <div class="consent-group" id="consentGroup">
   <label class="consent-row">
@@ -1498,7 +1522,7 @@
   </label>
   <label class="consent-row">
     <input id="rightsConsent" type="checkbox">
-    <span><b>[필수] 이미지 사용 권한 및 초상권·저작권 확인</b><br>업로드하는 사진, 로고, 상품 이미지, 인물 사진에 대한 사용 권한이 본인에게 있으며, 타인 사칭·신원 왜곡·무단 상업 이용 목적의 제작을 요청하지 않음을 확인합니다.</span>
+    <span><b>[필수] 이미지 사용 권한 및 초상권·저작권 확인</b><br>업로드하는 사진, 로고, 상품 이미지, 인물 사진에 대한 사용 권한이 본인에게 있으며, 타인의 사진을 권한 없이 업로드하거나 타인 사칭·신원 왜곡·무단 상업 이용 목적의 제작을 요청하지 않음을 확인합니다. 미성년자 또는 타인 사진은 본인 또는 법정대리인의 권한을 확인했습니다.</span>
   </label>
   <label class="consent-row optional">
     <input id="marketingConsent" type="checkbox">
@@ -1770,10 +1794,10 @@ document.addEventListener('click', function (event) {
 
 <script src="auto-translations.js?v=2"></script>
 <script src="locales.js?v=7"></script>
-<script src="i18n.js?v=21"></script>
+<script src="i18n.js?v=22"></script>
 <script>window.AVVM_AUTH_UI_ENABLED = false;</script>
 <script src="auth.js?v=1"></script>
-<script src="app.js?v=49"></script>
+<script src="app.js?v=50"></script>
 <script>
 /* AVVM order safeguards: required consent and plan-locked delivery quality. */
 (function(){

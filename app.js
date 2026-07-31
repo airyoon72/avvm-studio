@@ -1116,6 +1116,81 @@ $$('[data-open]').forEach(b=>b.addEventListener('click',()=>{
   openOrder(b.dataset.plan);
 }));
 
+/* Small-business funnel: one representative product photo becomes a clear
+   sales-page brief first, then continues into the normal AVVM video order. */
+const commercePageState={type:'product',file:null,previewUrl:''};
+const COMMERCE_PAGE_TYPES=Object.freeze({
+  product:{label:'PRODUCT STORY',category:'Product',title:'상품의 장점을, 구매 이유로 바꿉니다.',titleEn:'Turn the product benefit into a reason to buy.',cut:'제품 정면 → 디테일 → 사용 장면 → 구매 유도',cutEn:'Product hero → detail → use moment → call to action'},
+  food:{label:'FOOD STORY',category:'Food',title:'한 입 전의 기대감을, 첫 화면에서 만듭니다.',titleEn:'Build anticipation before the first bite.',cut:'대표 메뉴 → 질감 클로즈업 → 매장 무드 → 방문 유도',cutEn:'Signature dish → texture close-up → store mood → visit call'},
+  space:{label:'SPACE STORY',category:'Custom',title:'공간의 첫인상을, 예약 이유로 바꿉니다.',titleEn:'Turn a first impression of the space into a reason to book.',cut:'공간 전경 → 디테일 → 빛과 동선 → 방문·예약 유도',cutEn:'Wide space → details → light and flow → visit or booking call'}
+});
+
+function commerceText(value,fallback){ return String(value||'').trim() || fallback; }
+function commerceLocale(korean,english){ return window.AVVM_I18N?.localize?.(korean,english)||korean; }
+function renderCommercePageDraft(){
+  const meta=COMMERCE_PAGE_TYPES[commercePageState.type]||COMMERCE_PAGE_TYPES.product;
+  const name=commerceText($('#commerceProductName')?.value,commerceLocale('대표 상품','Hero product'));
+  const benefit=commerceText($('#commerceProductBenefit')?.value,commerceLocale('사진 속 특징을 고객이 바로 이해할 수 있는 구매 포인트로 정리합니다.','We organise the visible details into a purchase point customers can understand immediately.'));
+  const preview=$('#commercePagePreviewMedia');
+  const label=$('#commerceProductImageLabel');
+  if(label) label.textContent=commercePageState.file ? commercePageState.file.name : commerceLocale('사진 선택하기','Choose a photo');
+  if(preview){
+    if(commercePageState.previewUrl) URL.revokeObjectURL(commercePageState.previewUrl);
+    commercePageState.previewUrl='';
+    preview.replaceChildren();
+    if(commercePageState.file){
+      commercePageState.previewUrl=URL.createObjectURL(commercePageState.file);
+      const image=document.createElement('img'); image.src=commercePageState.previewUrl; image.alt=commerceLocale(`${name} 대표 사진`,`${name} hero product photo`); preview.append(image);
+    }else{ const marker=document.createElement('span'); marker.textContent='YOUR PRODUCT'; preview.append(marker); }
+  }
+  const title=$('#commercePagePreviewTitle'); if(title) title.textContent=`${name}, ${commerceLocale(meta.title,meta.titleEn)}`;
+  const type=$('#commercePagePreviewType'); if(type) type.textContent=meta.label;
+  const lead=$('#commercePagePreviewLead'); if(lead) lead.textContent=benefit;
+  const points=$('#commercePagePreviewPoints');
+  if(points){
+    points.replaceChildren();
+    [
+      commerceLocale(`첫 화면: ${name}의 한 가지 강점`,`First screen: one strong reason to choose ${name}`),
+      commerceLocale(`상세 포인트: ${benefit}`,`Detail point: ${benefit}`),
+      commerceLocale('마지막: 구매·방문을 부르는 명확한 다음 행동','Final frame: one clear action to buy or visit')
+    ].forEach(text=>{const item=document.createElement('li');item.textContent=text;points.append(item);});
+  }
+  const cut=$('#commercePageVideoLine'); if(cut) cut.textContent=`VIDEO CUT · ${commerceLocale(meta.cut,meta.cutEn)}`;
+  const order=$('#commercePageOrder'); if(order) order.disabled=!commercePageState.file;
+}
+
+function setupCommercePageMachine(){
+  const form=$('#commercePageForm'); if(!form) return;
+  const fileInput=$('#commerceProductImage');
+  fileInput?.addEventListener('change',()=>{
+    const file=fileInput.files?.[0];
+    const allowed=['image/jpeg','image/png','image/webp'];
+    if(file && (!allowed.includes(file.type) || file.size>4*1024*1024)){ toast(commerceLocale('대표 사진은 4MB 이하의 JPG, PNG, WEBP 파일로 올려주세요.','Please upload a JPG, PNG, or WEBP hero photo smaller than 4 MB.')); fileInput.value=''; commercePageState.file=null; renderCommercePageDraft(); return; }
+    commercePageState.file=file||null;
+    renderCommercePageDraft();
+  });
+  $$('.commerce-page-type button').forEach(button=>button.addEventListener('click',()=>{
+    commercePageState.type=button.dataset.commerceType||'product';
+    $$('.commerce-page-type button').forEach(item=>item.classList.toggle('active',item===button));
+    renderCommercePageDraft();
+  }));
+  form.addEventListener('submit',(event)=>{event.preventDefault();renderCommercePageDraft();$('#commercePageOutput')?.scrollIntoView({behavior:'smooth',block:'center'});});
+  $('#commercePageOrder')?.addEventListener('click',()=>{
+    if(!commercePageState.file){toast(commerceLocale('먼저 대표 제품 사진을 올려주세요.','Upload a hero product photo first.'));return;}
+    const meta=COMMERCE_PAGE_TYPES[commercePageState.type]||COMMERCE_PAGE_TYPES.product;
+    selectCategory(meta.category); openOrder('Starter');
+    const source=$('#imageInput');
+    if(source && window.DataTransfer){
+      const transfer=new DataTransfer(); transfer.items.add(commercePageState.file); source.files=transfer.files; handleSourceImageChange();
+    }
+    const mood=$('#moodInput');
+    if(mood) mood.value=`${$('#commercePagePreviewTitle')?.textContent||''}\n${$('#commercePagePreviewLead')?.textContent||''}\n${$('#commercePageVideoLine')?.textContent||''}`;
+    toast(commerceLocale('상세페이지 초안과 대표 사진을 광고 영상 주문에 적용했습니다.','The sales-page draft and hero photo were applied to the advertising-video order.'));
+  });
+}
+setupCommercePageMachine();
+document.addEventListener('avvm:languagechange',renderCommercePageDraft);
+
 document.addEventListener('click',(event)=>{
   const trigger=event.target.closest('[data-before-after]');
   if(!trigger) return;
