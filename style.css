@@ -6974,7 +6974,8 @@ html[lang="ko"] .hero-tagline-fallback {
   width:calc(100% - 3px)!important;
   height:calc(100% - 3px)!important;
   border-radius:50%;
-  transform:scale(1.28)!important;
+  /* Keep the orbital particles from the supplied animation inside the aperture. */
+  transform:scale(1.04)!important;
   box-shadow:inset 0 0 0 1px rgba(0,0,0,.36);
 }
 .lang-globe-icon::after{
