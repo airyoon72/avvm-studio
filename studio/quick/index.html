@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#070707" />
+    <meta name="description" content="AVVM 쇼츠 스튜디오 — 내 가게 광고를 쉽게 기획하는 로컬 데모." />
+    <title>내 가게 광고 만들기 — AVVM 쇼츠 스튜디오</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+KR:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="quick.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#quick-main">본문으로 건너뛰기</a>
+    <header class="quick-header">
+      <a class="wordmark" href="../" aria-label="AVVM AI Design Studio로 돌아가기"><span class="mark" aria-hidden="true"></span><b>AVVM</b><em>SHORTS STUDIO</em></a>
+      <div class="header-status"><span class="live-dot"></span>로컬 데모 · 외부 전송 없음</div>
+      <a class="studio-link" href="../">전문 Studio <span>↗</span></a>
+    </header>
+
+    <main id="quick-main">
+      <section class="quick-hero" aria-labelledby="quick-title">
+        <div><p class="eyebrow lime">AVVM FOR SMALL BUSINESS</p><h1 id="quick-title">내 가게 광고,<br /><span>사진과 한 줄이면</span><br />시작됩니다.</h1></div>
+        <p>어려운 편집 화면 대신 4단계만 선택하세요. 무료로 기획안·대본·스토리보드까지 확인하고, 고화질 영상 제작은 연동 준비가 끝난 뒤 선택합니다.</p>
+      </section>
+
+      <section class="progress-shell" aria-label="광고 제작 진행 단계">
+        <ol class="progress-list">
+          <li class="is-active" data-progress="1"><b>01</b><span>업종</span></li>
+          <li data-progress="2"><b>02</b><span>상품</span></li>
+          <li data-progress="3"><b>03</b><span>형식</span></li>
+          <li data-progress="4"><b>04</b><span>기획안</span></li>
+        </ol>
+      </section>
+
+      <section class="quick-flow" aria-live="polite">
+        <section class="quick-step is-active" data-step="1" aria-labelledby="step-one-title">
+          <div class="step-title"><span>01</span><div><p class="eyebrow">START HERE</p><h2 id="step-one-title">어떤 가게의 광고인가요?</h2><p>업종에 맞는 첫 3초 훅과 장면 구성을 준비합니다.</p></div></div>
+          <div class="industry-grid" role="list">
+            <button class="industry-card is-selected" type="button" data-industry="shopping"><i>◫</i><b>쇼핑몰</b><small>상품 · 신제품 · 후기</small></button>
+            <button class="industry-card" type="button" data-industry="food"><i>◌</i><b>카페 · 식당</b><small>메뉴 · 공간 · 배달</small></button>
+            <button class="industry-card" type="button" data-industry="beauty"><i>✦</i><b>뷰티</b><small>제품 · 시술 · 분위기</small></button>
+            <button class="industry-card" type="button" data-industry="service"><i>⌁</i><b>서비스</b><small>예약 · 클래스 · 전문성</small></button>
+            <button class="industry-card" type="button" data-industry="space"><i>□</i><b>공간 · 숙소</b><small>객실 · 인테리어 · 체험</small></button>
+          </div>
+          <div class="step-actions end"><button class="primary-button" data-next-step="2" type="button">상품 정보 넣기 <b>→</b></button></div>
+        </section>
+
+        <section class="quick-step" data-step="2" aria-labelledby="step-two-title" hidden>
+          <div class="step-title"><span>02</span><div><p class="eyebrow">PRODUCT INPUT</p><h2 id="step-two-title">고객이 보게 될 상품을 알려주세요.</h2><p>사진은 최대 5장까지. 현재 파일은 브라우저 안에서만 미리보기로 사용됩니다.</p></div></div>
+          <div class="product-form-grid">
+            <section class="photo-input-card">
+              <label class="photo-drop" for="quickPhotos"><span class="plus">＋</span><b>상품 사진 첨부</b><small>JPG · PNG · WEBP · 최대 5장</small><input id="quickPhotos" type="file" multiple accept="image/jpeg,image/png,image/webp" hidden /></label>
+              <div class="photo-list" id="photoList" aria-label="선택한 상품 사진"></div>
+              <p class="field-note" id="photoHint">아직 사진이 없습니다. 사진 없이도 기획안은 만들 수 있지만, 화면 미리보기는 그래픽 데모로 표시됩니다.</p>
+            </section>
+            <section class="field-stack">
+              <label class="field-label">상품명<input id="quickProductName" maxlength="60" value="우리 가게의 신제품" placeholder="예: 수제 바닐라빈 라떼" /></label>
+              <label class="field-label">한 줄 장점<textarea id="quickBenefit" rows="3" maxlength="180" placeholder="예: 매일 아침 직접 구운 바닐라빈으로 더 깊고 부드러운 맛"></textarea></label>
+              <label class="field-label">보고 싶은 고객<select id="quickAudience"><option value="nearby">우리 동네 신규 고객</option><option value="repeat">재방문 고객</option><option value="gift">선물 · 특별한 날 고객</option><option value="trend">SNS 트렌드 탐색 고객</option></select></label>
+              <p class="consent-line"><b>⌁</b> 본인 또는 사용 권한이 있는 사진만 첨부해 주세요. 실제 인물의 후기처럼 보이게 만드는 경우, 광고·제휴 고지를 확인해야 합니다.</p>
+            </section>
+          </div>
+          <div class="step-actions"><button class="secondary-button" data-prev-step="1" type="button">← 이전</button><button class="primary-button" data-next-step="3" type="button">광고 형식 고르기 <b>→</b></button></div>
+        </section>
+
+        <section class="quick-step" data-step="3" aria-labelledby="step-three-title" hidden>
+          <div class="step-title"><span>03</span><div><p class="eyebrow">FORMAT &amp; LENGTH</p><h2 id="step-three-title">어떤 방식으로 설득할까요?</h2><p>목적에 맞는 광고의 말투와 전개를 골라 주세요.</p></div></div>
+          <div class="format-grid">
+            <button class="format-card is-selected" type="button" data-format="ugc"><span>01</span><b>UGC 후기형</b><p>실제 고객 경험을 바탕으로 한 자연스러운 발견의 흐름</p><small>추천: 신제품 · 소형 브랜드</small></button>
+            <button class="format-card" type="button" data-format="problem"><span>02</span><b>문제 해결형</b><p>불편함을 먼저 보여주고, 제품의 이유를 단번에 제시</p><small>추천: 기능성 · 서비스</small></button>
+            <button class="format-card" type="button" data-format="comparison"><span>03</span><b>비교형</b><p>전과 후, 기존과 새로운 선택을 명확하게 대비</p><small>추천: 뷰티 · 공간 · 푸드</small></button>
+          </div>
+          <div class="duration-choice" aria-label="광고 길이 선택"><p class="eyebrow">LENGTH</p><button class="duration-button is-selected" type="button" data-length="15"><b>15</b><span>초</span><small>빠른 첫 구매 유도</small></button><button class="duration-button" type="button" data-length="25"><b>25</b><span>초</span><small>설명과 신뢰 더하기</small></button></div>
+          <div class="step-actions"><button class="secondary-button" data-prev-step="2" type="button">← 이전</button><button class="primary-button" id="generateQuickBtn" type="button">무료 기획안 만들기 <b>→</b></button></div>
+        </section>
+
+        <section class="quick-step result-step" data-step="4" aria-labelledby="step-four-title" hidden>
+          <div class="result-heading"><div class="step-title"><span>04</span><div><p class="eyebrow lime">FREE PLANNING PACK</p><h2 id="step-four-title">바로 쓰는 광고 기획안이 완성됐어요.</h2><p>무료 결과물은 기획과 미리보기입니다. 실제 영상 제작·고화질 파일·다운로드는 별도 제작 연동이 필요합니다.</p></div></div><button class="secondary-button" id="quickExportBtn" type="button">기획안 JSON 저장 ↓</button></div>
+
+          <div class="result-grid">
+            <section class="vertical-preview panel" aria-label="9대16 광고 미리보기">
+              <div class="preview-top"><span>9:16 DEMO PREVIEW</span><button class="play-button" id="playPreviewBtn" type="button" aria-label="광고 미리보기 재생">▶</button></div>
+              <div class="ad-screen" id="adPreview"><div class="ad-grid"></div><div class="ad-image" id="adImage"><span>YOUR<br />PRODUCT</span></div><div class="ad-copy"><small id="adEyebrow">NEW FIND</small><strong id="adHeadline">작은 차이가<br />매일을 바꿉니다.</strong><p id="adSubline">한 줄 장점을 여기에 보여줍니다.</p></div><div class="ad-progress"><i></i></div></div>
+              <p class="preview-note">이 화면은 구성 확인용 브라우저 애니메이션입니다. MP4는 아직 렌더하지 않습니다.</p>
+            </section>
+
+            <section class="planning-pack">
+              <article class="result-card panel"><div class="card-head"><span class="eyebrow">HOOK OPTIONS</span><small>하나를 눌러 미리보기에 적용</small></div><div class="hook-list" id="hookList"></div></article>
+              <article class="result-card panel"><div class="card-head"><span class="eyebrow">SCENE STORYBOARD</span><small id="storyLength">15 SEC</small></div><ol class="storyboard-list" id="storyboardList"></ol></article>
+              <article class="result-card panel script-card"><div class="card-head"><span class="eyebrow">CAPTION + TTS SCRIPT</span><button class="text-button" id="copyScriptBtn" type="button">대본 복사</button></div><pre id="quickScript"></pre><p class="adapter-note"><b>TTS 연동 준비</b> 실제 음성 합성은 연결하지 않았습니다. 향후 TTS 어댑터가 이 대본과 타임코드를 사용합니다.</p></article>
+              <article class="result-card panel"><div class="card-head"><span class="eyebrow">CTA / POST COPY</span><button class="text-button" id="copyCaptionBtn" type="button">캡션 복사</button></div><strong class="cta-copy" id="quickCta"></strong><p class="post-copy" id="quickCaption"></p></article>
+            </section>
+          </div>
+
+          <section class="locked-delivery panel" aria-labelledby="delivery-title"><div><span class="eyebrow lime">DELIVERY — READY FOR INTEGRATION</span><h3 id="delivery-title">영상까지 필요하다면, 여기서 제작을 이어갑니다.</h3><p>현재는 기획안만 무료로 제공합니다. 결제·크레딧·실제 렌더러가 연결되기 전에는 제작 또는 다운로드를 진행하지 않습니다.</p></div><div class="locked-features"><button disabled type="button"><b>HD</b><span>고화질 MP4</span><small>서버 렌더러 연결 필요</small></button><button disabled type="button"><b>AVVM</b><span>워터마크 제거</span><small>크레딧 결제 연결 필요</small></button><button disabled type="button"><b>↓</b><span>다운로드</span><small>제작 완료본 필요</small></button></div></section>
+
+          <section class="ad-notice"><span>AD NOTICE</span><p><b>광고·AI 사용 안내</b> 실제 사용하지 않은 후기, 검증되지 않은 효능·수치, 오해를 부를 수 있는 전후 비교는 사용하지 마세요. 체험·협찬·제휴 콘텐츠는 관계를 명확히 고지하고, 타인의 사진·상표·콘텐츠는 권한을 확인한 뒤 사용해야 합니다.</p></section>
+          <div class="step-actions"><button class="secondary-button" id="restartQuickBtn" type="button">새 광고 만들기</button><a class="primary-button" href="../">전문 Studio에서 더 편집하기 <b>↗</b></a></div>
+        </section>
+      </section>
+    </main>
+
+    <div class="toast" id="quickToast" role="status" aria-live="polite"></div>
+    <script src="quick.js"></script>
+  </body>
+</html>

@@ -17,7 +17,7 @@
 
   window.AVVM_LOCALES = {
     ja: {
-      navWorks: '作品', navTransform: '変身', navBusiness: 'ビジネス', navMemorial: 'メモリアル', navProfile: '証明写真・プロフィール', navFaq: 'よくある質問',
+      navWorks: '作品', navTransform: '変身', navBusiness: 'ビジネス', navAdStudio: '広告スタジオ', navMemorial: 'メモリアル', navProfile: '証明写真・プロフィール', navFaq: 'よくある質問',
       heroSub: '一枚の写真から、プレミアムな商用映像を。', startProject: 'プロジェクトを始める ↗', viewShowreel: 'ショーリールを見る', scrollExplore: 'スクロールして見る',
       proofLabEyebrow: '結果プレビューライブラリ', proofLabTitle: 'あなたの写真を、<br>結果で確かめる。', demoEyebrow: 'IMAGE TO CINEMA', demoTitle: '一枚の画像から<br>商用映像へ。',
       portfolioKicker: 'ポートフォリオの拡張', portfolioTitle: '9つの領域。<br>ひとつのエンジン。', consumerKicker: 'すべての人のために', consumerTitle: '一枚の写真、<br>新しい世界。',
@@ -28,7 +28,7 @@
       orderReceived: '注文を受け付けました', orderProcessing: '映像を制作中', orderCompleteStatus: '制作完了', orderFailed: '制作失敗', backHome: 'ホームへ戻る'
     },
     zh: {
-      navWorks: '作品', navTransform: '风格变换', navBusiness: '商业', navMemorial: '记忆修复', navProfile: '证件照·形象照', navFaq: '常见问题',
+      navWorks: '作品', navTransform: '风格变换', navBusiness: '商业', navAdStudio: '广告工作室', navMemorial: '记忆修复', navProfile: '证件照·形象照', navFaq: '常见问题',
       heroSub: '一张照片，生成高品质商业视频。', startProject: '开始项目 ↗', viewShowreel: '观看作品集', scrollExplore: '向下探索',
       proofLabEyebrow: '效果预览库', proofLabTitle: '你的照片，<br>用结果说话。', demoEyebrow: 'IMAGE TO CINEMA', demoTitle: '从一张图片<br>到商业视频。',
       portfolioKicker: '作品集扩展', portfolioTitle: '九大领域。<br>一个引擎。', consumerKicker: '面向每一个人', consumerTitle: '一张照片，<br>一个新世界。',
@@ -39,7 +39,7 @@
       orderReceived: '订单已受理', orderProcessing: '视频制作中', orderCompleteStatus: '制作完成', orderFailed: '制作失败', backHome: '返回首页'
     },
     es: {
-      navWorks: 'Proyectos', navTransform: 'Transformación', navBusiness: 'Negocios', navMemorial: 'Memorial', navProfile: 'Documento·Perfil', navFaq: 'Preguntas frecuentes',
+      navWorks: 'Proyectos', navTransform: 'Transformación', navBusiness: 'Negocios', navAdStudio: 'ESTUDIO DE ANUNCIOS', navMemorial: 'Memorial', navProfile: 'Documento·Perfil', navFaq: 'Preguntas frecuentes',
       heroSub: 'Vídeos comerciales premium a partir de una sola foto.', startProject: 'INICIAR PROYECTO ↗', viewShowreel: 'VER SHOWREEL', scrollExplore: 'DESPLAZAR PARA EXPLORAR',
       proofLabEyebrow: 'BIBLIOTECA DE RESULTADOS', proofLabTitle: 'TU FOTO,<br>CON PRUEBAS.', demoEyebrow: 'IMAGEN A CINE', demoTitle: 'DE UNA IMAGEN<br>A UN VÍDEO COMERCIAL.',
       portfolioKicker: 'Ampliación de portafolio', portfolioTitle: '9 SECTORES.<br>UN MOTOR.', consumerKicker: 'Para todos', consumerTitle: 'UNA FOTO,<br>UN NUEVO MUNDO.',
@@ -50,7 +50,7 @@
       orderReceived: 'Pedido recibido', orderProcessing: 'Vídeo en producción', orderCompleteStatus: 'Producción completada', orderFailed: 'Producción fallida', backHome: 'VOLVER AL INICIO'
     },
     fr: {
-      navWorks: 'Réalisations', navTransform: 'Transformation', navBusiness: 'Business', navMemorial: 'Mémoire', navProfile: 'Identité·Profil', navFaq: 'FAQ',
+      navWorks: 'Réalisations', navTransform: 'Transformation', navBusiness: 'Business', navAdStudio: 'STUDIO PUBLICITÉ', navMemorial: 'Mémoire', navProfile: 'Identité·Profil', navFaq: 'FAQ',
       heroSub: 'Des vidéos commerciales premium à partir d’une seule photo.', startProject: 'DÉMARRER LE PROJET ↗', viewShowreel: 'VOIR LE SHOWREEL', scrollExplore: 'FAIRE DÉFILER POUR EXPLORER',
       proofLabEyebrow: 'BIBLIOTHÈQUE DES RÉSULTATS', proofLabTitle: 'VOTRE PHOTO,<br>LA PREUVE À L’APPUI.', demoEyebrow: 'IMAGE VERS CINÉMA', demoTitle: 'D’UNE IMAGE<br>À UNE VIDÉO COMMERCIALE.',
       portfolioKicker: 'Extension du portfolio', portfolioTitle: '9 SECTEURS.<br>UN MOTEUR.', consumerKicker: 'Pour tous', consumerTitle: 'UNE PHOTO,<br>UN NOUVEAU MONDE.',
@@ -61,7 +61,7 @@
       orderReceived: 'Commande reçue', orderProcessing: 'Vidéo en production', orderCompleteStatus: 'Production terminée', orderFailed: 'Échec de production', backHome: 'RETOUR À L’ACCUEIL'
     },
     de: {
-      navWorks: 'Arbeiten', navTransform: 'Transformation', navBusiness: 'Business', navMemorial: 'Erinnerung', navProfile: 'Ausweis·Profil', navFaq: 'FAQ',
+      navWorks: 'Arbeiten', navTransform: 'Transformation', navBusiness: 'Business', navAdStudio: 'WERBESTUDIO', navMemorial: 'Erinnerung', navProfile: 'Ausweis·Profil', navFaq: 'FAQ',
       heroSub: 'Hochwertige Werbevideos aus nur einem Foto.', startProject: 'PROJEKT STARTEN ↗', viewShowreel: 'SHOWREEL ANSEHEN', scrollExplore: 'SCROLLEN ZUM ENTDECKEN',
       proofLabEyebrow: 'ERGEBNISVORSCHAU', proofLabTitle: 'IHR FOTO,<br>MIT BEWEIS.', demoEyebrow: 'BILD ZU FILM', demoTitle: 'VON EINEM BILD<br>ZU EINEM WERBEVIDEO.',
       portfolioKicker: 'Portfolio-Erweiterung', portfolioTitle: '9 BEREICHE.<br>EIN MOTOR.', consumerKicker: 'Für alle', consumerTitle: 'EIN FOTO,<br>EINE NEUE WELT.',
@@ -72,7 +72,7 @@
       orderReceived: 'Bestellung eingegangen', orderProcessing: 'Video in Produktion', orderCompleteStatus: 'Produktion abgeschlossen', orderFailed: 'Produktion fehlgeschlagen', backHome: 'ZURÜCK ZUR STARTSEITE'
     },
     pt: {
-      navWorks: 'Projetos', navTransform: 'Transformação', navBusiness: 'Negócios', navMemorial: 'Memorial', navProfile: 'Documento·Perfil', navFaq: 'FAQ',
+      navWorks: 'Projetos', navTransform: 'Transformação', navBusiness: 'Negócios', navAdStudio: 'ESTÚDIO DE ANÚNCIOS', navMemorial: 'Memorial', navProfile: 'Documento·Perfil', navFaq: 'FAQ',
       heroSub: 'Vídeos comerciais premium a partir de uma única foto.', startProject: 'INICIAR PROJETO ↗', viewShowreel: 'VER SHOWREEL', scrollExplore: 'ROLE PARA EXPLORAR',
       proofLabEyebrow: 'BIBLIOTECA DE RESULTADOS', proofLabTitle: 'SUA FOTO,<br>COM PROVA.', demoEyebrow: 'IMAGEM PARA CINEMA', demoTitle: 'DE UMA IMAGEM<br>PARA UM VÍDEO COMERCIAL.',
       portfolioKicker: 'Expansão do portfólio', portfolioTitle: '9 SETORES.<br>UM MOTOR.', consumerKicker: 'Para todos', consumerTitle: 'UMA FOTO,<br>UM NOVO MUNDO.',
@@ -83,7 +83,7 @@
       orderReceived: 'Pedido recebido', orderProcessing: 'Vídeo em produção', orderCompleteStatus: 'Produção concluída', orderFailed: 'Falha na produção', backHome: 'VOLTAR AO INÍCIO'
     },
     hi: {
-      navWorks: 'कार्य', navTransform: 'रूपांतरण', navBusiness: 'बिज़नेस', navMemorial: 'स्मृति', navProfile: 'आईडी·प्रोफ़ाइल', navFaq: 'सहायता',
+      navWorks: 'कार्य', navTransform: 'रूपांतरण', navBusiness: 'बिज़नेस', navAdStudio: 'विज्ञापन स्टूडियो', navMemorial: 'स्मृति', navProfile: 'आईडी·प्रोफ़ाइल', navFaq: 'सहायता',
       heroSub: 'एक ही फोटो से प्रीमियम कमर्शियल वीडियो।', startProject: 'प्रोजेक्ट शुरू करें ↗', viewShowreel: 'शोरील देखें', scrollExplore: 'देखने के लिए स्क्रॉल करें',
       proofLabEyebrow: 'परिणाम पूर्वावलोकन', proofLabTitle: 'आपकी फोटो,<br>परिणाम के साथ।', demoEyebrow: 'छवि से सिनेमा', demoTitle: 'एक छवि से<br>कमर्शियल वीडियो तक।',
       portfolioKicker: 'पोर्टफोलियो विस्तार', portfolioTitle: '9 क्षेत्र।<br>एक इंजन।', consumerKicker: 'सभी के लिए', consumerTitle: 'एक फोटो,<br>एक नई दुनिया।',
@@ -94,7 +94,7 @@
       orderReceived: 'ऑर्डर प्राप्त हुआ', orderProcessing: 'वीडियो निर्माण में है', orderCompleteStatus: 'निर्माण पूर्ण', orderFailed: 'निर्माण विफल', backHome: 'होम पर वापस जाएँ'
     },
     ar: {
-      navWorks: 'الأعمال', navTransform: 'التحويل', navBusiness: 'الأعمال التجارية', navMemorial: 'الذكريات', navProfile: 'الهوية·الملف الشخصي', navFaq: 'الأسئلة الشائعة',
+      navWorks: 'الأعمال', navTransform: 'التحويل', navBusiness: 'الأعمال التجارية', navAdStudio: 'استوديو الإعلانات', navMemorial: 'الذكريات', navProfile: 'الهوية·الملف الشخصي', navFaq: 'الأسئلة الشائعة',
       heroSub: 'فيديوهات تجارية مميزة من صورة واحدة.', startProject: 'ابدأ المشروع ↗', viewShowreel: 'شاهد الشوريل', scrollExplore: 'مرّر للاستكشاف',
       proofLabEyebrow: 'مكتبة معاينة النتائج', proofLabTitle: 'صورتك،<br>مع الدليل.', demoEyebrow: 'من الصورة إلى السينما', demoTitle: 'من صورة واحدة<br>إلى فيديو تجاري.',
       portfolioKicker: 'توسيع معرض الأعمال', portfolioTitle: '9 قطاعات.<br>محرك واحد.', consumerKicker: 'للجميع', consumerTitle: 'صورة واحدة،<br>عالم جديد.',

@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#050505" />
+    <meta name="description" content="AVVM AI Design Studio — one brand, one prompt, every asset." />
+    <title>AVVM AI Design Studio — Prototype</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+KR:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="studio.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#studio-main">본문으로 건너뛰기</a>
+    <div class="studio-shell">
+      <aside class="studio-rail" aria-label="스튜디오 내비게이션">
+        <a class="studio-brand" href="#dashboard" aria-label="AVVM AI Design Studio 홈">
+          <span class="brand-mark" aria-hidden="true"><i></i><b></b></span>
+          <span><strong>AVVM</strong><em>AI DESIGN STUDIO</em></span>
+        </a>
+
+        <nav class="rail-nav" aria-label="주요 메뉴">
+          <button class="nav-item is-active" type="button" data-view="dashboard"><span class="nav-icon">⌘</span><span>프로젝트</span><kbd>1</kbd></button>
+          <button class="nav-item" type="button" data-view="brand"><span class="nav-icon">◉</span><span>브랜드 시스템</span><kbd>2</kbd></button>
+          <button class="nav-item" type="button" data-view="campaign"><span class="nav-icon">✦</span><span>캠페인</span><kbd>3</kbd></button>
+          <a class="nav-item quick-entry" href="quick/" aria-label="내 가게 광고 만들기 열기"><span class="nav-icon">⚡</span><span>광고 만들기</span><kbd>GO</kbd></a>
+          <button class="nav-item" type="button" data-view="logo"><span class="nav-icon">◈</span><span>로고 만들기</span><kbd>4</kbd></button>
+          <button class="nav-item" type="button" data-view="motion"><span class="nav-icon">▷</span><span>모션</span><kbd>5</kbd></button>
+          <button class="nav-item" type="button" data-view="templates"><span class="nav-icon">▦</span><span>템플릿</span><kbd>6</kbd></button>
+          <button class="nav-item" type="button" data-view="exports"><span class="nav-icon">⇩</span><span>내보내기</span><kbd>7</kbd></button>
+        </nav>
+
+        <section class="rail-project" aria-label="현재 프로젝트">
+          <span class="eyebrow">ACTIVE PROJECT</span>
+          <strong id="railProjectName">AVVM / Brand launch</strong>
+          <span class="autosave-dot"><i></i> 자동 저장됨</span>
+        </section>
+        <div class="rail-foot">
+          <button class="small-link" id="newProjectBtn" type="button">+ 새 프로젝트</button>
+          <span>PROTOTYPE / v0.1</span>
+        </div>
+      </aside>
+
+      <div class="studio-stage">
+        <header class="studio-topbar">
+          <div class="crumbs"><span>AVVM</span><b>/</b><strong id="topbarTitle">프로젝트</strong></div>
+          <div class="top-actions">
+            <span class="privacy-status" title="데모 모드: 파일은 브라우저 밖으로 전송되지 않습니다."><i></i> 로컬 데모 모드</span>
+            <button class="icon-button" id="keyboardHelpBtn" type="button" aria-label="키보드 단축키 보기">?</button>
+            <button class="avatar" type="button" aria-label="계정 메뉴">DK</button>
+          </div>
+        </header>
+
+        <main id="studio-main" class="studio-main">
+          <section class="studio-view is-active" id="view-dashboard" data-view-panel="dashboard">
+            <div class="dashboard-heading">
+              <div>
+                <p class="eyebrow lime">AVVM AI DESIGN STUDIO</p>
+                <h1>하나의 브랜드.<br /><span>한 번의 요청.</span><br />모든 에셋.</h1>
+              </div>
+              <div class="dashboard-pulse" aria-label="현재 브랜드 시스템 상태">
+                <span class="pulse-ring"></span><span class="pulse-core">01</span><p>BRAND<br />READY</p>
+              </div>
+            </div>
+
+            <section class="command-deck" aria-labelledby="command-title">
+              <div class="command-header">
+                <div><span class="eyebrow">ONE-PROMPT CAMPAIGN</span><h2 id="command-title">무엇을 만들까요?</h2></div>
+                <button class="text-button" id="loadDemoBtn" type="button">AVVM 데모 불러오기 ↗</button>
+              </div>
+              <div class="command-input-wrap">
+                <textarea id="campaignPrompt" rows="3" aria-label="캠페인 요청" placeholder="예: 신제품 향수를 위한 15초 럭셔리 런칭 캠페인을 만들어줘. 부드러운 골드빛, 20대 후반 여성을 위한 선물 제안으로.">AVVM의 새 캠페인을 시작해 주세요. 사진 한 장에서 영상, 랜딩페이지, 소셜 광고와 이메일까지 같은 브랜드로 완성합니다.</textarea>
+                <span class="prompt-caret" aria-hidden="true"></span>
+              </div>
+              <div class="command-controls">
+                <label class="attach-button" for="productImageInput"><span>＋</span> 제품 사진<input id="productImageInput" type="file" accept="image/*" hidden /></label>
+                <button class="control-chip" id="voiceButton" type="button" aria-describedby="voiceHint"><span>◌</span> 음성 입력</button>
+                <span class="visually-hidden" id="voiceHint">브라우저 음성 인식이 지원되는 환경에서만 사용할 수 있습니다.</span>
+                <label class="select-control">브랜드 시스템
+                  <select id="brandSelect"><option value="avvm">AVVM / Core System</option><option value="custom">새 브랜드 시스템</option></select>
+                </label>
+                <label class="select-control">결과물
+                  <select id="outputSelect"><option value="campaign">Campaign Pack</option><option value="landing">Landing Page</option><option value="motion">Short-form Video</option><option value="social">Social Ad</option></select>
+                </label>
+                <div class="ratio-control" aria-label="화면 비율">
+                  <button class="ratio-button is-selected" data-ratio="9:16" type="button">9:16</button><button class="ratio-button" data-ratio="1:1" type="button">1:1</button><button class="ratio-button" data-ratio="16:9" type="button">16:9</button>
+                </div>
+                <button id="generateCampaignBtn" class="primary-button" type="button"><span>캠페인 만들기</span><b>→</b></button>
+              </div>
+              <p class="consent-line"><span>⌁</span> 파일은 제작을 위해서만 사용됩니다. 외부 AI 처리 전 별도 동의가 필요하며, 현재는 브라우저 내 데모입니다.</p>
+            </section>
+
+            <section class="quick-grid" aria-label="최근 프로젝트와 빠른 시작">
+              <div class="section-title"><div><span class="eyebrow">RECENT PROJECTS</span><h2>최근 작업</h2></div><button class="text-button" type="button" data-open-view="campaign">전체 보기 →</button></div>
+              <div class="project-grid" id="recentProjectGrid"></div>
+            </section>
+          </section>
+
+          <section class="studio-view" id="view-brand" data-view-panel="brand">
+            <div class="view-heading">
+              <div><p class="eyebrow lime">01 / AVVM BRAND SYSTEM</p><h1>브랜드를<br /><span>재사용 가능한 규칙</span>으로.</h1></div>
+              <p>로고, 화면, 가이드와 참고 자산을 한 시스템으로 정리합니다. 아래 토큰은 사람의 판단으로 바로 수정할 수 있습니다.</p>
+            </div>
+            <div class="brand-layout">
+              <section class="brand-sources panel" aria-labelledby="brand-source-title">
+                <div class="panel-head"><div><span class="eyebrow">SOURCE MATERIALS</span><h2 id="brand-source-title">브랜드 소스</h2></div><span class="status-pill">LOCAL</span></div>
+                <div class="source-drop" id="brandDropZone">
+                  <span class="source-icon">↗</span><strong>로고 · 화면 · PDF · 영상 첨부</strong><p>드래그하거나 파일을 선택하세요. 현재 버전은 파일을 서버에 업로드하지 않습니다.</p>
+                  <label class="secondary-button" for="brandAssetsInput">파일 선택<input id="brandAssetsInput" type="file" multiple accept="image/*,video/*,.pdf,.ppt,.pptx" hidden /></label>
+                </div>
+                <label class="field-label">홈페이지 또는 참고 URL<input id="brandUrlInput" value="https://avvm.studio" placeholder="https://" /></label>
+                <div class="source-list" id="brandSourceList"></div>
+                <button id="analyzeBrandBtn" class="primary-button full" type="button">브랜드 시스템 분석 <b>→</b></button>
+                <p class="panel-note">분석은 현재 입력값과 AVVM 기본 토큰을 조합하는 데모 로직입니다. 외부 URL·파일을 자동 수집하거나 전송하지 않습니다.</p>
+              </section>
+              <section class="token-workspace">
+                <div class="token-head"><div><span class="eyebrow">EDITABLE TOKENS</span><h2 id="brandSystemTitle">AVVM / Core System</h2></div><div><button class="secondary-button" id="resetTokensBtn" type="button">기본값 복원</button><button class="primary-button compact" id="saveBrandBtn" type="button">버전 저장</button></div></div>
+                <div class="brand-preview panel">
+                  <div class="brand-preview-top"><span class="mini-logo">AVVM</span><span id="brandTonePreview">CALM / PRECISE / CINEMATIC</span></div>
+                  <div class="brand-preview-content"><span class="eyebrow">SYSTEM PREVIEW</span><h3>ONE BRAND.<br />EVERY ASSET.</h3><p>같은 색, 같은 목소리, 같은 여백이 모든 광고와 화면을 하나의 브랜드로 묶습니다.</p><div><button class="preview-cta">START CAMPAIGN</button><button class="preview-ghost">VIEW SYSTEM</button></div></div>
+                </div>
+                <div class="token-groups">
+                  <section class="token-card"><div class="token-card-title"><span>01</span><h3>Color</h3></div><div class="color-token-grid">
+                    <label><input id="tokenPrimary" type="color" value="#d8f233" /><span>강조색</span></label><label><input id="tokenInk" type="color" value="#040404" /><span>배경색</span></label><label><input id="tokenSurface" type="color" value="#151515" /><span>표면색</span></label><label><input id="tokenText" type="color" value="#f3f3f3" /><span>텍스트</span></label>
+                  </div></section>
+                  <section class="token-card"><div class="token-card-title"><span>02</span><h3>Typography</h3></div><div class="field-grid"><label class="field-label">제목 서체<select id="tokenDisplay"><option>Bebas Neue</option><option>Inter</option><option>Noto Sans KR</option></select></label><label class="field-label">본문 서체<select id="tokenBody"><option>Inter</option><option>Noto Sans KR</option><option>system-ui</option></select></label><label class="field-label">제목 자간<input id="tokenTracking" type="range" min="-4" max="8" value="1" /><output id="trackingOut">1px</output></label></div></section>
+                  <section class="token-card"><div class="token-card-title"><span>03</span><h3>Layout</h3></div><div class="field-grid"><label class="field-label">그리드<select id="tokenGrid"><option value="12">12 columns</option><option value="8">8 columns</option><option value="6">6 columns</option></select></label><label class="field-label">여백<input id="tokenSpacing" type="range" min="8" max="48" value="24" /><output id="spacingOut">24px</output></label><label class="field-label">모서리<input id="tokenRadius" type="range" min="0" max="32" value="18" /><output id="radiusOut">18px</output></label><label class="field-label">그림자<select id="tokenShadow"><option value="soft">Soft cinematic</option><option value="sharp">Sharp edge</option><option value="none">None</option></select></label></div></section>
+                  <section class="token-card"><div class="token-card-title"><span>04</span><h3>Voice & safe zones</h3></div><div class="field-grid"><label class="field-label wide">브랜드 말투<input id="tokenVoice" value="정제된 · 자신감 있는 · 간결한" /></label><label class="field-label">세로형 안전영역<select id="tokenVerticalSafe"><option value="10">상하 10%</option><option value="14">상하 14%</option><option value="18">상하 18%</option></select></label><label class="field-label">가로형 안전영역<select id="tokenHorizontalSafe"><option value="6">좌우 6%</option><option value="10">좌우 10%</option><option value="14">좌우 14%</option></select></label></div></section>
+                </div>
+              </section>
+            </div>
+          </section>
+
+          <section class="studio-view editor-view" id="view-campaign" data-view-panel="campaign">
+            <div class="editor-topbar"><div><span class="eyebrow lime">02 / ONE-PROMPT CAMPAIGN</span><h1 id="campaignProjectTitle">Scent / Launch Campaign</h1></div><div class="editor-actions"><button class="secondary-button" id="compareCampaignBtn" type="button">비교 보기</button><button class="secondary-button" id="undoBtn" type="button">↶ 되돌리기</button><button class="primary-button compact" id="saveVersionBtn" type="button">버전 저장</button></div></div>
+            <div class="editor-grid campaign-editor-grid">
+              <aside class="editor-left panel">
+                <div class="panel-head"><div><span class="eyebrow">AI CONVERSATION</span><h2>제작 지시</h2></div><span class="demo-badge">DEMO</span></div>
+                <div class="chat-thread" id="chatThread"></div>
+                <div class="chat-compose"><textarea id="chatInput" rows="3" placeholder="수정 요청을 입력하세요. 예: CTA를 더 직접적으로, 골드 톤을 줄여줘."></textarea><button id="sendChatBtn" class="send-button" type="button" aria-label="지시 보내기">↑</button></div>
+              </aside>
+              <section class="editor-canvas-area">
+                <div class="canvas-toolbar"><div class="output-tabs" role="tablist"><button class="canvas-tab is-active" data-canvas="landing" type="button">랜딩</button><button class="canvas-tab" data-canvas="social" type="button">1:1 소셜</button><button class="canvas-tab" data-canvas="banner" type="button">16:9 배너</button><button class="canvas-tab" data-canvas="email" type="button">이메일</button><button class="canvas-tab" data-canvas="storyboard" type="button">스토리보드</button></div><span id="canvasStatus">AUTO-SAVED</span></div>
+                <div class="canvas-viewport"><div id="campaignCanvas" class="campaign-canvas canvas-landing" aria-label="실시간 캠페인 미리보기"></div><div class="comparison-overlay" id="comparisonOverlay" hidden><span>BEFORE</span><div></div><span>AFTER</span></div></div>
+                <div class="pack-summary"><div><span class="eyebrow">CAMPAIGN PACK</span><strong id="campaignPackName">AVVM / Scent launch</strong></div><div class="pack-metrics"><span><b id="packCount">8</b> assets</span><span><b>1</b> brand system</span><span><b>0</b> external uploads</span></div><button class="secondary-button" id="downloadPackBtn" type="button">팩 JSON 내보내기</button></div>
+              </section>
+              <aside class="editor-right panel">
+                <div class="panel-head"><div><span class="eyebrow">LIVE CONTROLS</span><h2>디렉션</h2></div><button class="icon-button" id="inspectorResetBtn" type="button" aria-label="디렉션 초기화">↺</button></div>
+                <label class="field-label">제품명<input id="productName" value="NOCTURNE OBJECT 01" /></label>
+                <label class="field-label">가격<input id="productPrice" value="₩89,000" /></label>
+                <label class="field-label">핵심 장점<textarea id="productBenefits" rows="3">빛을 흡수하고, 가장 필요한 순간에만 존재감을 드러내는 오브제.</textarea></label>
+                <label class="field-label">목표 고객<select id="campaignAudience"><option>감각적인 20–30대 선물 고객</option><option>프리미엄 라이프스타일 고객</option><option>신규 브랜드 탐색 고객</option></select></label>
+                <label class="field-label">광고 목적<select id="campaignObjective"><option>신제품 인지도</option><option>전환 유도</option><option>리타겟팅</option></select></label>
+                <label class="field-label">분위기<select id="campaignMood"><option value="nocturne">Nocturne / Dark luxury</option><option value="clean">Clean / Editorial</option><option value="warm">Warm / Tactile</option></select></label>
+                <label class="field-label">CTA<input id="campaignCta" value="당신의 밤을 선택하세요" /></label>
+                <div class="inspector-section"><div class="slider-label"><span>모션 강도</span><output id="motionIntensityOut">55%</output></div><input id="motionIntensity" type="range" min="0" max="100" value="55" /></div>
+                <div class="inspector-section"><div class="slider-label"><span>여백 밀도</span><output id="canvasDensityOut">70%</output></div><input id="canvasDensity" type="range" min="40" max="100" value="70" /></div>
+                <button class="primary-button full" id="refreshCampaignBtn" type="button">캠페인 다시 구성 <b>↻</b></button>
+              </aside>
+            </div>
+          </section>
+
+          <section class="studio-view editor-view" id="view-logo" data-view-panel="logo">
+            <div class="editor-topbar"><div><span class="eyebrow lime">03 / LOGO STUDIO</span><h1>이름 하나로,<br /><span>움직이는 브랜드.</span></h1></div><div class="editor-actions"><span class="render-note">로컬 벡터 데모</span><button class="secondary-button" id="exportLogoProjectBtn" type="button">프로젝트 내보내기</button></div></div>
+            <div class="logo-studio-grid">
+              <aside class="logo-brief panel">
+                <div class="panel-head"><div><span class="eyebrow">LOGO BRIEF</span><h2>브랜드의 출발점</h2></div><span class="demo-badge">LOCAL</span></div>
+                <label class="field-label">브랜드명<input id="logoNameInput" maxlength="28" value="NOVA CAFE" /></label>
+                <label class="field-label">태그라인<input id="logoTaglineInput" maxlength="44" value="SLOW LIGHT, DAILY RITUAL" /></label>
+                <label class="field-label">업종<select id="logoCategoryInput"><option value="cafe">카페 · F&amp;B</option><option value="beauty">뷰티 · 웰니스</option><option value="retail">리테일 · 커머스</option><option value="service">서비스 · 스튜디오</option><option value="other">기타 브랜드</option></select></label>
+                <label class="field-label">원하는 인상<textarea id="logoIdeaInput" rows="4" maxlength="240">정제된 인상, 한 번에 기억되는 심볼, 낮과 밤 모두 선명한 브랜드.</textarea></label>
+                <label class="secondary-button full file-button" for="logoReferenceInput">스케치·참고 이미지 첨부<input id="logoReferenceInput" type="file" accept="image/*" hidden /></label>
+                <p class="reference-file" id="logoReferenceName">참고 이미지 없음 · 브라우저 밖으로 전송하지 않습니다.</p>
+                <button class="primary-button full" id="createLogoBtn" type="button">3개 로고 방향 만들기 <b>→</b></button>
+                <p class="panel-note">현재는 입력한 브랜드 정보를 바탕으로 한 로컬 벡터 시안입니다. 외부 AI 이미지 모델이 연결되기 전에는 파일을 업로드하거나 전송하지 않습니다.</p>
+              </aside>
+
+              <section class="logo-workbench">
+                <div class="logo-canvas panel" id="logoCanvas" aria-label="로고 시안 미리보기" aria-live="polite"></div>
+                <div class="logo-directions" id="logoDirections" aria-label="로고 방향 선택"></div>
+              </section>
+
+              <aside class="logo-controls panel">
+                <div class="panel-head"><div><span class="eyebrow">LOGO PACKAGE</span><h2>결과물 선택</h2></div><span id="logoModeBadge" class="status-pill">STATIC</span></div>
+                <label class="field-label">로고 구조<select id="logoTypeInput"><option value="wordmark">워드마크</option><option value="monogram">이니셜 마크</option><option value="emblem">심볼 + 워드마크</option></select></label>
+                <label class="field-label">시각 스타일<select id="logoStyleInput"><option value="minimal">미니멀</option><option value="editorial">에디토리얼</option><option value="signature">시그니처</option></select></label>
+                <label class="field-label">팔레트<select id="logoPaletteInput"><option value="system">현재 브랜드 색상</option><option value="mono">모노크롬</option><option value="warm">웜 메탈</option></select></label>
+                <label class="motion-addon" for="logoMotionAddOn"><input id="logoMotionAddOn" type="checkbox" /><span><b>움직이는 로고 리빌</b><small>브라우저 모션 미리보기와 타임라인 씬 포함</small></span><strong>+ ₩9,900</strong></label>
+                <div class="logo-price-box"><div><span>정적 로고 패키지</span><b>SVG · PNG 가이드 · 3 방향</b></div><strong>₩19,900</strong><div class="logo-total"><span>선택 총액</span><b id="logoTotalPrice">₩19,900</b></div></div>
+                <button class="secondary-button full" id="previewLogoMotionBtn" type="button">로고 모션 미리보기</button>
+                <button class="primary-button full" id="addLogoMotionBtn" type="button" disabled>모션 타임라인에 추가 <b>→</b></button>
+                <button class="text-button logo-export-button" id="exportLogoSvgBtn" type="button">SVG 로고 내보내기 ↓</button>
+                <p class="render-limitation"><b>구성 원칙</b> 로고만 원하는 경우 정적 로고 패키지만 선택하면 됩니다. 영상 인트로·릴스용 움직임이 필요할 때만 로고 리빌 옵션이 추가됩니다.</p>
+              </aside>
+            </div>
+          </section>
+
+          <section class="studio-view editor-view" id="view-motion" data-view-panel="motion">
+            <div class="editor-topbar"><div><span class="eyebrow lime">04 / MOTION STUDIO</span><h1>말하는 순간,<br /><span>화면도 움직입니다.</span></h1></div><div class="editor-actions"><span class="render-note">브라우저 미리보기</span><button class="secondary-button" id="exportMotionBtn" type="button">프로젝트 내보내기</button></div></div>
+            <div class="motion-editor-grid">
+              <aside class="motion-source panel">
+                <div class="panel-head"><div><span class="eyebrow">SUBTITLE SOURCE</span><h2>SRT / 발화 분석</h2></div><button class="text-button" id="loadDemoSrtBtn" type="button">데모</button></div>
+                <label class="secondary-button full file-button" for="srtFileInput">SRT 파일 불러오기<input id="srtFileInput" type="file" accept=".srt,text/plain" hidden /></label>
+                <textarea id="srtInput" class="srt-input" spellcheck="false" aria-label="SRT 내용"></textarea>
+                <button class="primary-button full" id="parseSrtBtn" type="button">타임코드 분석 <b>→</b></button>
+                <div class="analysis-summary" id="analysisSummary"></div>
+                <p class="panel-note">숫자·비교·순서·CTA·핵심 문장을 감지해 그래픽 씬으로 배치합니다. 실제 AI 요약 연결은 어댑터에서 확장할 수 있습니다.</p>
+              </aside>
+              <section class="motion-workbench">
+                <div class="motion-toolbar"><div class="ratio-control" aria-label="모션 화면 비율"><button class="ratio-button is-selected" data-motion-ratio="9:16" type="button">9:16</button><button class="ratio-button" data-motion-ratio="1:1" type="button">1:1</button><button class="ratio-button" data-motion-ratio="16:9" type="button">16:9</button></div><div class="playback-controls"><button class="play-button" id="motionPlayBtn" type="button" aria-label="미리보기 재생">▶</button><span id="motionTimecode">00:00 / 00:30</span></div><button class="secondary-button" id="toggleSafeAreaBtn" type="button">안전영역</button></div>
+                <div class="motion-viewport"><div id="motionPreview" class="motion-preview ratio-9-16" aria-label="모션 그래픽 미리보기"><div class="motion-safe safe-top"></div><div class="motion-safe safe-bottom"></div><div class="motion-grain"></div><div class="motion-logo">AVVM</div><div id="motionGraphic" class="motion-graphic"></div><div id="motionCaption" class="motion-caption"></div><div class="motion-progress"><i id="motionProgressBar"></i></div></div></div>
+                <div class="motion-timeline panel"><div class="timeline-head"><div><span class="eyebrow">TIMELINE</span><strong id="timelineDuration">00:30.0</strong></div><span id="timelineCueCount">0 scenes</span></div><div class="timeline-scroll"><div class="timeline-ruler" id="timelineRuler"></div><div class="timeline-tracks"><div class="track-label">TEXT</div><div class="track-row" id="captionTrack"></div><div class="track-label">GRAPHIC</div><div class="track-row" id="graphicTrack"></div><div class="timeline-playhead" id="timelinePlayhead"></div></div></div></div>
+              </section>
+              <aside class="motion-inspector panel">
+                <div class="panel-head"><div><span class="eyebrow">SELECTED SCENE</span><h2 id="sceneInspectorTitle">씬을 선택하세요</h2></div><span id="sceneTypeBadge" class="status-pill">—</span></div>
+                <div id="sceneInspectorEmpty" class="inspector-empty">타임라인의 장면을 선택하면 시작·종료·위치·크기·템플릿을 편집할 수 있습니다.</div>
+                <div id="sceneInspectorFields" hidden>
+                  <label class="field-label">문장<textarea id="sceneTextInput" rows="4"></textarea></label>
+                  <div class="two-fields"><label class="field-label">시작<input id="sceneStartInput" type="number" min="0" step="0.1" /></label><label class="field-label">종료<input id="sceneEndInput" type="number" min="0" step="0.1" /></label></div>
+                  <label class="field-label">그래픽 템플릿<select id="sceneTemplateSelect"><option value="headline">제목 리빌</option><option value="metric">숫자 / 지표</option><option value="comparison">비포·애프터</option><option value="cta">CTA</option><option value="sequence">순서 / 리스트</option></select></label>
+                  <label class="field-label">위치<select id="scenePositionSelect"><option value="center">가운데</option><option value="top">상단</option><option value="bottom">하단</option></select></label>
+                  <div class="slider-label"><span>크기</span><output id="sceneScaleOut">100%</output></div><input id="sceneScaleInput" type="range" min="65" max="150" value="100" />
+                  <button class="danger-button" id="deleteSceneBtn" type="button">이 장면 삭제</button>
+                </div>
+                <div class="motion-template-stack"><span class="eyebrow">QUICK INSERT</span><button data-insert-motion="logo" type="button">＋ 로고 리빌</button><button data-insert-motion="chart" type="button">＋ 지표 카드</button><button data-insert-motion="cta" type="button">＋ CTA</button></div>
+                <p class="render-limitation"><b>MP4 렌더링</b>은 이 정적 MVP에서 실행하지 않습니다. 현재 편집값은 JSON으로 내보내며, Remotion 렌더러 연결 방법은 README에 기록했습니다.</p>
+              </aside>
+            </div>
+          </section>
+
+          <section class="studio-view" id="view-templates" data-view-panel="templates">
+            <div class="view-heading template-heading"><div><p class="eyebrow lime">05 / TEMPLATE LIBRARY</p><h1>같은 브랜드,<br /><span>다른 목적.</span></h1></div><p>모든 템플릿은 선택한 브랜드 시스템과 안전영역을 공유합니다. 한 번의 설정을 바꾸면 관련 결과물이 함께 갱신됩니다.</p></div>
+            <div class="template-filter" role="tablist"><button class="filter-button is-active" type="button" data-template-filter="all">전체</button><button class="filter-button" type="button" data-template-filter="campaign">Campaign</button><button class="filter-button" type="button" data-template-filter="motion">Motion</button><button class="filter-button" type="button" data-template-filter="business">Business</button></div>
+            <div class="template-grid" id="templateGrid"></div>
+          </section>
+
+          <section class="studio-view" id="view-exports" data-view-panel="exports">
+            <div class="view-heading"><div><p class="eyebrow lime">06 / EXPORTS</p><h1>결과물은<br /><span>패키지로 정리합니다.</span></h1></div><p>현재 MVP는 외부 서비스 전송 없이 브라우저에서 편집한 프로젝트와 브랜드 시스템을 내려받습니다.</p></div>
+            <div class="export-grid">
+              <article class="export-card"><span class="export-number">01</span><h2>Campaign Pack</h2><p>랜딩페이지 구조, 광고 카피, CTA, 영상 스토리보드와 선택한 토큰을 하나의 JSON으로 내보냅니다.</p><button class="primary-button full" id="exportCampaignJsonBtn" type="button">Campaign Pack JSON ⇩</button></article>
+              <article class="export-card"><span class="export-number">02</span><h2>Brand System</h2><p>색상, 타입, 여백, 안전영역, 말투와 소스 메타데이터를 <code>brand-system.json</code>으로 저장합니다.</p><button class="secondary-button full" id="exportBrandJsonBtn" type="button">brand-system.json ⇩</button></article>
+              <article class="export-card muted"><span class="export-number">03</span><h2>MP4 Render</h2><p>이 버튼은 구현되지 않은 기능을 흉내 내지 않습니다. 프로젝트를 내보낸 뒤 Remotion 렌더러가 연결된 환경에서 렌더링합니다.</p><button class="disabled-button full" type="button" disabled aria-describedby="mp4Reason">렌더러 연결 필요</button><small id="mp4Reason">README의 “MP4 렌더링 확장” 참고</small></article>
+            </div>
+            <section class="export-history panel"><div class="panel-head"><div><span class="eyebrow">LOCAL VERSION HISTORY</span><h2>저장된 버전</h2></div><button class="text-button" id="clearVersionsBtn" type="button">표시 초기화</button></div><div id="versionHistory" class="version-history-list"></div></section>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <dialog id="shortcutDialog" class="shortcut-dialog"><button class="dialog-close" type="button" data-close-dialog>×</button><p class="eyebrow lime">KEYBOARD</p><h2>빠른 조작</h2><dl><div><dt>1–7</dt><dd>주요 화면 이동</dd></div><div><dt>⌘ / Ctrl + Enter</dt><dd>캠페인 만들기</dd></div><div><dt>Space</dt><dd>모션 재생·정지</dd></div><div><dt>Esc</dt><dd>대화상자 닫기</dd></div></dl></dialog>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="studio.js"></script>
+  </body>
+</html>

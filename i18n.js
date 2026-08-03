@@ -141,7 +141,7 @@
     worksPetCopy: 'Restore a cherished pet photo into a memory that moves again.',
     worksResult: 'VIEW REAL RESULT ↗',
     worksStart: 'MAKE MINE ↗',
-    authGoogleNav: 'GOOGLE LOGIN', authOptional: 'OPTIONAL SIGN-IN', authTitle: 'Start faster with Google', authCopy: 'We prefill your Google name and email for the order. You can still order without logging in.', authGoogle: 'Continue with Google', authSignedIn: 'Signed in', authSignOut: 'Sign out', authSignedOut: 'Signed out. You can continue as a guest.', authUnavailable: 'Google sign-in is not available yet. Please continue as a guest.', authError: 'We could not complete that request. Please try again.'
+    authGoogleNav: 'GOOGLE LOGIN', authOptional: 'OPTIONAL SIGN-IN', authTitle: 'Start faster with Google', authCopy: 'We prefill your Google name and email for the order. You can still order without logging in.', authGoogle: 'Continue with Google', authSignedIn: 'Signed in', authSignOut: 'Sign out', authSignedOut: 'Signed out. You can continue as a guest.', authUnavailable: 'Google sign-in is not available yet. Please continue as a guest.', authError: 'We could not complete that request. Please try again.', navAdStudio: 'AD STUDIO'
   });
 
   Object.assign(en, {
@@ -212,7 +212,7 @@
   });
 
   const ko = {
-    footerService: '서비스', footerTerms: '이용약관', footerPrivacy: '개인정보처리방침', footerRefund: '환불정책', footerDelivery: '디지털 제공 안내', footerBusiness: '사업자 정보',
+    footerService: '서비스', footerTerms: '이용약관', footerPrivacy: '개인정보처리방침', footerRefund: '환불정책', footerDelivery: '디지털 제공 안내', footerBusiness: '사업자 정보', navAdStudio: '내 가게 광고',
     paymentOpening: '결제창을 여는 중...', optimizingImage: '사진 최적화 중...', attachPhoto: '사진 첨부하기', acceptedImageTypes: 'JPG, PNG, WEBP 등 이미지 파일', imageRequired: '영상 제작에 사용할 사진을 첨부해주세요.', imageType: 'JPG, PNG 또는 WEBP 형식의 사진만 사용할 수 있습니다.', imageSize: '사진 원본은 15MB 이하로 선택해주세요.',
     planContact: 'Custom 플랜은 상담 후 견적으로 진행됩니다.', amountError: '결제 금액을 확인할 수 없습니다.', paymentClosed: '결제창이 닫혔습니다. 다시 시도해주세요.', paymentFailed: '결제가 취소되었거나 실패했습니다.', paymentComplete: '결제가 완료되었습니다. 주문을 접수합니다.',
     orderStarting: '주문 접수 시작 ✓', orderComplete: '주문 접수 완료 ✓', uploadingImage: '서버 연결 및 이미지 업로드 중...', uploadingImageHint: 'Fal.ai CDN으로 사진 데이터를 전송하고 있습니다.', requestFailed: '영상 제작 요청 실패', retryGeneration: '재시도', retrying: '영상을 다시 요청하는 중...', statusQueued: '대기열 진입 중', statusProcessing: '영상 프레임 렌더링 중...', statusCompleted: '영상 제작 완료!', statusFailed: '영상 제작에 실패했습니다.',

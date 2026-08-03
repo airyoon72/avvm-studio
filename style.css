@@ -5163,6 +5163,17 @@ body.modal-open{
 .quick-nav-item:hover .nav-sub-tag {
   opacity: 0.95;
 }
+.quick-nav-ad {
+  border-color: rgba(216, 242, 51, 0.42);
+  color: var(--lime);
+}
+.links .nav-ad-studio {
+  color: var(--lime);
+  white-space: nowrap;
+}
+@media (max-width: 1380px) {
+  .links .nav-ad-studio { display: none; }
+}
 
 @keyframes pulseGlow {
   0%, 100% {

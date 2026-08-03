@@ -1,0 +1,29 @@
+{
+  "schema": "avvm-studio-demo/v0.1",
+  "name": "AVVM / Brand launch",
+  "brandSystem": {
+    "name": "AVVM / Core System",
+    "tokens": {
+      "primary": "#d8f233",
+      "ink": "#040404",
+      "surface": "#151515",
+      "text": "#f3f3f3",
+      "display": "Bebas Neue",
+      "body": "Inter",
+      "grid": "12",
+      "verticalSafe": "10",
+      "horizontalSafe": "6"
+    }
+  },
+  "campaign": {
+    "productName": "NOCTURNE OBJECT 01",
+    "price": "₩89,000",
+    "output": ["landing-page", "social-ad", "short-form-storyboard", "email-campaign"]
+  },
+  "motion": {
+    "source": "demo-motion.srt",
+    "ratio": "9:16",
+    "durationSeconds": 30
+  },
+  "mode": "browser-local-demo"
+}
